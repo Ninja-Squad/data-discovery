@@ -27,6 +27,13 @@ repositories {
 
 tasks {
 
+    withType(JavaCompile::class.java) {
+        // make sur the parameter names are writtn in the byte code and available using reflection.
+        // this is useful for Jackson and Spring to automatically deduce propert names or path variable names
+        // based on the name of the parameter
+        options.compilerArgs.add("-parameters")
+    }
+
     // this task is always out-of-date because it generates a properties file with the build time inside
     // so the bootJar task is also always out of date, too, since it depends on it
     // but it's better to do that than using the bootInfo() method of the springBoot closure, because that
