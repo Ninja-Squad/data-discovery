@@ -5,11 +5,16 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * A genetic resource, as loaded from a JSON file, and stored in ElasticSearch
  * @author JB Nizet
  */
+@Document(
+        indexName = "#{@rareProperties.getElasticsearchPrefix()}resource-index",
+        type = "#{@rareProperties.getElasticsearchPrefix()}resource"
+)
 public final class GeneticResource {
     @JsonProperty("identifier")
     private final String id;
@@ -168,74 +173,74 @@ public final class GeneticResource {
         }
         GeneticResource that = (GeneticResource) o;
         return Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(description, that.description) &&
-            Objects.equals(pillarName, that.pillarName) &&
-            Objects.equals(databaseSource, that.databaseSource) &&
-            Objects.equals(portalURL, that.portalURL) &&
-            Objects.equals(dataURL, that.dataURL) &&
-            Objects.equals(domain, that.domain) &&
-            Objects.equals(taxon, that.taxon) &&
-            Objects.equals(family, that.family) &&
-            Objects.equals(genus, that.genus) &&
-            Objects.equals(species, that.species) &&
-            Objects.equals(materialType, that.materialType) &&
-            Objects.equals(biotopeType, that.biotopeType) &&
-            Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
-            Objects.equals(originLatitude, that.originLatitude) &&
-            Objects.equals(originLongitude, that.originLongitude) &&
-            Objects.equals(countryOfCollect, that.countryOfCollect) &&
-            Objects.equals(collectLatitude, that.collectLatitude) &&
-            Objects.equals(collectLongitude, that.collectLongitude);
+                Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(pillarName, that.pillarName) &&
+                Objects.equals(databaseSource, that.databaseSource) &&
+                Objects.equals(portalURL, that.portalURL) &&
+                Objects.equals(dataURL, that.dataURL) &&
+                Objects.equals(domain, that.domain) &&
+                Objects.equals(taxon, that.taxon) &&
+                Objects.equals(family, that.family) &&
+                Objects.equals(genus, that.genus) &&
+                Objects.equals(species, that.species) &&
+                Objects.equals(materialType, that.materialType) &&
+                Objects.equals(biotopeType, that.biotopeType) &&
+                Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
+                Objects.equals(originLatitude, that.originLatitude) &&
+                Objects.equals(originLongitude, that.originLongitude) &&
+                Objects.equals(countryOfCollect, that.countryOfCollect) &&
+                Objects.equals(collectLatitude, that.collectLatitude) &&
+                Objects.equals(collectLongitude, that.collectLongitude);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id,
-                            name,
-                            description,
-                            pillarName,
-                            databaseSource,
-                            portalURL,
-                            dataURL,
-                            domain,
-                            taxon,
-                            family,
-                            genus,
-                            species,
-                            materialType,
-                            biotopeType,
-                            countryOfOrigin,
-                            originLatitude,
-                            originLongitude,
-                            countryOfCollect,
-                            collectLatitude,
-                            collectLongitude);
+                name,
+                description,
+                pillarName,
+                databaseSource,
+                portalURL,
+                dataURL,
+                domain,
+                taxon,
+                family,
+                genus,
+                species,
+                materialType,
+                biotopeType,
+                countryOfOrigin,
+                originLatitude,
+                originLongitude,
+                countryOfCollect,
+                collectLatitude,
+                collectLongitude);
     }
 
     @Override
     public String toString() {
         return "GeneticResource{" +
-            "id='" + id + '\'' +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", pillarName='" + pillarName + '\'' +
-            ", databaseSource='" + databaseSource + '\'' +
-            ", portalURL='" + portalURL + '\'' +
-            ", dataURL='" + dataURL + '\'' +
-            ", domain='" + domain + '\'' +
-            ", taxon='" + taxon + '\'' +
-            ", family='" + family + '\'' +
-            ", genus='" + genus + '\'' +
-            ", species='" + species + '\'' +
-            ", materialType='" + materialType + '\'' +
-            ", biotopeType='" + biotopeType + '\'' +
-            ", countryOfOrigin='" + countryOfOrigin + '\'' +
-            ", originLatitude=" + originLatitude +
-            ", originLongitude=" + originLongitude +
-            ", countryOfCollect='" + countryOfCollect + '\'' +
-            ", collectLatitude=" + collectLatitude +
-            ", collectLongitude=" + collectLongitude +
-            '}';
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", pillarName='" + pillarName + '\'' +
+                ", databaseSource='" + databaseSource + '\'' +
+                ", portalURL='" + portalURL + '\'' +
+                ", dataURL='" + dataURL + '\'' +
+                ", domain='" + domain + '\'' +
+                ", taxon='" + taxon + '\'' +
+                ", family='" + family + '\'' +
+                ", genus='" + genus + '\'' +
+                ", species='" + species + '\'' +
+                ", materialType='" + materialType + '\'' +
+                ", biotopeType='" + biotopeType + '\'' +
+                ", countryOfOrigin='" + countryOfOrigin + '\'' +
+                ", originLatitude=" + originLatitude +
+                ", originLongitude=" + originLongitude +
+                ", countryOfCollect='" + countryOfCollect + '\'' +
+                ", collectLatitude=" + collectLatitude +
+                ", collectLongitude=" + collectLongitude +
+                '}';
     }
 }

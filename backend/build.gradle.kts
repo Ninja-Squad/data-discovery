@@ -23,6 +23,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://repo.spring.io/libs-milestone")
 }
 
 tasks {
@@ -71,6 +72,10 @@ tasks {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.data:spring-data-elasticsearch:3.1.0.M3")
+    implementation("org.elasticsearch:elasticsearch:6.3.1")
+    implementation("org.elasticsearch.client:transport:6.3.1")
+    implementation("org.elasticsearch.plugin:transport-netty4-client:6.3.1")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")

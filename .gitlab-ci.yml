@@ -1,4 +1,6 @@
 # Image source available on https://github.com/Ninja-Squad/docker-rare
+# It contains a JDK 8 and a Chrome browser
+# Node, NPM and Yarn are installed by Gradle
 image: ninjasquad/docker-rare
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
@@ -13,6 +15,23 @@ before_script:
 
 test:
  stage: test
+ # the backend tests need an elasticsearch instance
+ services:
+   # even if that would be ideal
+   # we can't just launch the service with just elasticsearch:6.3.1
+   # because we need to pass some variables, but they are passed to _all_ containers
+   # so they fail the start of other docker images like ninjasquad/docker-rare
+   # the only solution is to override the entrypoint of the service and pass the arguments manually
+   - name: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
+     alias: elasticsearch
+     # discovery.type=single-node
+     # single-node is necessary to start in development mode
+     # so there will be no bootstrap checks that would fail on CI
+     # especially the error regarding
+     # `max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]`
+     # cluster.name=es-rare
+     # the cluster name used in tests
+     command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
  script: ./gradlew build
  cache:
    key: "$CI_COMMIT_REF_NAME"

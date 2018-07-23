@@ -11,8 +11,20 @@ You need to install:
 
 - a recent enough JDK8
 
+The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9300`,
+in a cluster named `es-rare`.
+To have such an instance, simply run:
+
+    docker-compose up
+
+And this will start ElasticSearch and a Kibana instance (allowing to explore the data on http://localhost:5601).
+
 Then at the root of the application, run `./gradlew build` to download the dependencies.
 Then run `./gradlew bootRun` to start the app.
+
+You can stop the Elastic Search and Kibana instances by running:
+
+    docker-compose stop
 
 ### Frontend
 
