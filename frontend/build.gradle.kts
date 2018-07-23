@@ -3,10 +3,17 @@ plugins {
   id("com.moowork.node") version "1.2.0"
 }
 
+val isCi = System.getenv("CI") != null
+
 node {
   version = "8.11.3"
   npmVersion = "6.2.0"
   yarnVersion = "1.7.0"
+  if (isCi) {
+    // we specify a custom installation directory because of permission issues on Docker
+    workDir = file("/tmp/node")
+    yarnWorkDir = file("/tmp/yarn")
+  }
   download = true
 }
 
@@ -22,6 +29,7 @@ tasks {
   }
 
   val yarn_build by getting {
+    dependsOn(yarn_install)
     inputs.dir("src")
     outputs.dir("dist")
   }
