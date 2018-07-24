@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import fr.inra.urgi.rare.config.SecurityConfig;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -27,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * MVC tests for {@link SearchController}
  */
 @ExtendWith(SpringExtension.class)
+@Import(SecurityConfig.class)
 @WebMvcTest(controllers = SearchController.class)
 class SearchControllerTest {
 

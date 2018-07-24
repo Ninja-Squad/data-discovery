@@ -3,12 +3,26 @@ rare:
   elasticsearch-prefix: ''
 
 spring:
+  security:
+    user:
+      name: rare
+      password: f01a7031fc17
+
   data:
     elasticsearch:
         cluster:
           name: es-rare
         host: 127.0.0.1
         port: 9300
+
+management:
+  endpoint:
+    health:
+      show-details: 'always'
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 server:
   compression:

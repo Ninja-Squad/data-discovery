@@ -35,7 +35,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
@@ -45,7 +45,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith({MockitoExtension.class, TempDirectory.class, SpringExtension.class})
 @JsonTest
-@SpringBootTest(classes = HarvestConfig.class)
+@Import(HarvestConfig.class)
 class HarvesterTest {
 
     @Mock

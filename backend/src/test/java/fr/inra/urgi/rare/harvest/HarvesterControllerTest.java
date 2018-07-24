@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * @author JB Nizet
  */
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = HarvesterController.class)
+@WebMvcTest(controllers = HarvesterController.class, secure = false)
 class HarvesterControllerTest {
     @MockBean
     private AsyncHarvester mockAsyncHarvester;

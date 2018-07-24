@@ -72,6 +72,8 @@ tasks {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.data:spring-data-elasticsearch:3.1.0.M3")
     implementation("org.elasticsearch:elasticsearch:6.3.1")
     implementation("org.elasticsearch.client:transport:6.3.1")

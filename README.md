@@ -83,14 +83,15 @@ environment variable for example).
 The files must have the extension `.json`, and must be stored in that directory (not in a sub-directory).
 Once the files are ready and the server is started, the harvest is triggered by sending a POST request
 to the endpoint `/api/harvests`, without any request body.
+This endpoint, as well as the actuator endpoints, is only accessible to an authenticated user. The user (`rare`) and its password (`f01a7031fc17`) are configured in the application.yml file (and can thus be overridden using environment variables for example).
 
 Example with the `http` command ([HTTPie](https://httpie.org/)):
 
-    http POST http://localhost:8080/api/harvests
+    http --auth rare:f01a7031fc17 POST http://localhost:8080/api/harvests
     
 Example with the `curl` command:
 
-    curl -i -X POST http://localhost:8080/api/harvests
+    curl -i -X POST -u rare:f01a7031fc17 http://localhost:8080/api/harvests
     
 The harvest job is executed asynchronously, and a response is immediately sent back, with the URL allowing
 to get the result of the job. For example:
@@ -102,11 +103,11 @@ to get the result of the job. For example:
     
 To get the result of the job, you can then send a GET request to the returned URL:
 
-    http GET http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
+    http --auth rare:f01a7031fc17 GET http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
 
 or
 
-    curl http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
+    curl -u rare:f01a7031fc17 http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
     
 `http` has the advantage of nicely formetting the returned JSON.
 
