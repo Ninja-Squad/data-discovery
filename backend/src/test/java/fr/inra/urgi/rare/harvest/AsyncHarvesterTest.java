@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 
-import fr.inra.urgi.rare.dao.HarvestResultRepository;
+import fr.inra.urgi.rare.dao.HarvestResultDao;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ class AsyncHarvesterTest {
     private Harvester mockHarvester;
 
     @Mock
-    private HarvestResultRepository mockHarvestResultRepository;
+    private HarvestResultDao mockHarvestResultDao;
 
     @InjectMocks
     private AsyncHarvester asyncHarvester;
@@ -45,7 +45,7 @@ class AsyncHarvesterTest {
 
         verify(mockHarvester).harvest(harvestedStream1, resultBuilder);
         verify(mockHarvester).harvest(harvestedStream2, resultBuilder);
-        verify(mockHarvestResultRepository, times(3)).save(any());
-        verify(mockHarvestResultRepository).save(argThat(r -> r.getEndInstant() != null));
+        verify(mockHarvestResultDao, times(3)).save(any());
+        verify(mockHarvestResultDao).save(argThat(r -> r.getEndInstant() != null));
     }
 }

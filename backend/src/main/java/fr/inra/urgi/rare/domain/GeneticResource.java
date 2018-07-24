@@ -5,7 +5,10 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A genetic resource, as loaded from a JSON file, and stored in ElasticSearch
@@ -16,23 +19,41 @@ import org.springframework.data.elasticsearch.annotations.Document;
         type = "#{@rareProperties.getElasticsearchPrefix()}resource"
 )
 public final class GeneticResource {
+    @Id
     @JsonProperty("identifier")
     private final String id;
 
     private final String name;
     private final String description;
-
     private final String pillarName;
     private final String databaseSource;
+
+    @Field(index = false)
     private final String portalURL;
+
+    @Field(index = false)
     private final String dataURL;
+
     private final String domain;
+
+    @Field(type = FieldType.Keyword)
     private final List<String> taxon;
+
+    @Field(type = FieldType.Keyword)
     private final List<String> family;
+
+    @Field(type = FieldType.Keyword)
     private final List<String> genus;
+
+    @Field(type = FieldType.Keyword)
     private final List<String> species;
+
+    @Field(type = FieldType.Keyword)
     private final List<String> materialType;
+
+    @Field(type = FieldType.Keyword)
     private final List<String> biotopeType;
+
     private final String countryOfOrigin;
     private final Double originLatitude;
     private final Double originLongitude;

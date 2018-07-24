@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rare.config.Harvest;
 import fr.inra.urgi.rare.config.HarvestConfig;
 import fr.inra.urgi.rare.config.RareProperties;
-import fr.inra.urgi.rare.dao.GeneticResourceRepository;
+import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +49,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class HarvesterTest {
 
     @Mock
-    private GeneticResourceRepository mockGeneticResourceRepository;
+    private GeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     @Harvest
@@ -70,7 +70,7 @@ class HarvesterTest {
 
         RareProperties rareProperties = new RareProperties();
         rareProperties.setResourceDir(resourceDir);
-        harvester = new Harvester(rareProperties, objectMapper, mockGeneticResourceRepository);
+        harvester = new Harvester(rareProperties, objectMapper, mockGeneticResourceDao);
     }
 
     @Test
@@ -141,9 +141,9 @@ class HarvesterTest {
         assertThat(file2.getErrorCount()).isEqualTo(0);
         assertThat(file2.getErrors()).hasSize(0);
 
-        verify(mockGeneticResourceRepository).save(argThat(r -> r.getName().equals("Syrah")));
-        verify(mockGeneticResourceRepository).save(argThat(r -> r.getName().equals("Bermestia bianca")));
-        verify(mockGeneticResourceRepository).save(argThat(r -> r.getName().equals("CLIB 197")));
+        verify(mockGeneticResourceDao).save(argThat(r -> r.getName().equals("Syrah")));
+        verify(mockGeneticResourceDao).save(argThat(r -> r.getName().equals("Bermestia bianca")));
+        verify(mockGeneticResourceDao).save(argThat(r -> r.getName().equals("CLIB 197")));
     }
 
     @Test

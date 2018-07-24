@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Optional;
 
-import fr.inra.urgi.rare.dao.HarvestResultRepository;
+import fr.inra.urgi.rare.dao.HarvestResultDao;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class HarvesterControllerTest {
     private AsyncHarvester mockAsyncHarvester;
 
     @MockBean
-    private HarvestResultRepository mockHarvestResultRepository;
+    private HarvestResultDao mockHarvestResultDao;
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ class HarvesterControllerTest {
     void shouldGet() throws Exception {
         HarvestResult harvestResult = HarvestResult.builder().build();
 
-        when(mockHarvestResultRepository.findById(harvestResult.getId())).thenReturn(Optional.of(harvestResult));
+        when(mockHarvestResultDao.findById(harvestResult.getId())).thenReturn(Optional.of(harvestResult));
 
         mockMvc.perform(get("/api/harvests/{id}", harvestResult.getId()))
                .andExpect(status().isOk())

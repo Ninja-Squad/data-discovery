@@ -2,7 +2,7 @@ package fr.inra.urgi.rare.harvest;
 
 import java.util.stream.Stream;
 
-import fr.inra.urgi.rare.dao.HarvestResultRepository;
+import fr.inra.urgi.rare.dao.HarvestResultDao;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 public class AsyncHarvester {
 
     private final Harvester harvester;
-    private final HarvestResultRepository harvestResultRepository;
+    private final HarvestResultDao harvestResultDao;
 
-    public AsyncHarvester(Harvester harvester, HarvestResultRepository harvestResultRepository) {
+    public AsyncHarvester(Harvester harvester, HarvestResultDao harvestResultDao) {
         this.harvester = harvester;
-        this.harvestResultRepository = harvestResultRepository;
+        this.harvestResultDao = harvestResultDao;
     }
 
     @Async
@@ -27,11 +27,11 @@ public class AsyncHarvester {
         try (Stream<HarvestedStream> jsonFiles = this.harvester.jsonFiles(resultBuilder)) {
             jsonFiles.forEach(harvestedStream -> {
                 this.harvester.harvest(harvestedStream, resultBuilder);
-                harvestResultRepository.save(resultBuilder.build());
+                harvestResultDao.save(resultBuilder.build());
             });
         }
 
         HarvestResult finalResult = resultBuilder.end();
-        harvestResultRepository.save(finalResult);
+        harvestResultDao.save(finalResult);
     }
 }

@@ -24,7 +24,7 @@ class GeneticResourceDaoTest {
     private GeneticResourceDao geneticResourceDao;
 
     @Test
-    void shouldSaveAndList() {
+    void shouldSaveAndGet() {
 
         GeneticResource geneticResource =
                 new GeneticResource(
@@ -54,9 +54,7 @@ class GeneticResourceDaoTest {
 
         geneticResourceDao.save(geneticResource);
 
-        assertThat(geneticResourceDao.findAll())
-                .extracting(GeneticResource::getName)
-                .containsExactly("Grecanico dorato");
+        assertThat(geneticResourceDao.findById(geneticResource.getId()).get()).isEqualTo(geneticResource);
     }
 }
 

@@ -2,7 +2,7 @@ package fr.inra.urgi.rare.harvest;
 
 import java.net.URI;
 
-import fr.inra.urgi.rare.dao.HarvestResultRepository;
+import fr.inra.urgi.rare.dao.HarvestResultDao;
 import fr.inra.urgi.rare.exception.NotFoundException;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +24,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class HarvesterController {
 
     private final AsyncHarvester asyncHarvester;
-    private final HarvestResultRepository harvestResultRepository;
+    private final HarvestResultDao harvestResultDao;
 
     public HarvesterController(AsyncHarvester asyncHarvester,
-                               HarvestResultRepository harvestResultRepository) {
+                               HarvestResultDao harvestResultDao) {
         this.asyncHarvester = asyncHarvester;
-        this.harvestResultRepository = harvestResultRepository;
+        this.harvestResultDao = harvestResultDao;
     }
 
     @PostMapping
@@ -37,7 +37,7 @@ public class HarvesterController {
         HarvestResultBuilder resultBuilder = HarvestResult.builder();
         HarvestResult temporaryHarvestResult = resultBuilder.build();
 
-        harvestResultRepository.save(temporaryHarvestResult);
+        harvestResultDao.save(temporaryHarvestResult);
         asyncHarvester.harvest(resultBuilder);
 
         URI location = ServletUriComponentsBuilder
@@ -51,6 +51,6 @@ public class HarvesterController {
 
     @GetMapping("/{id}")
     public HarvestResult get(@PathVariable("id") String id) {
-        return harvestResultRepository.findById(id).orElseThrow(NotFoundException::new);
+        return harvestResultDao.findById(id).orElseThrow(NotFoundException::new);
     }
 }

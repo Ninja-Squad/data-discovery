@@ -9,17 +9,31 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import fr.inra.urgi.rare.harvest.HarvestedFile.HarvestedFileBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 /**
  * The result of a harvesting operation, stored in ElasticSearch in order to allow diagnosing what happened
  * during the harvesting (which files were harvested, which errors occurred, etc.).
  * @author JB Nizet
  */
+@Document(indexName = "#{@rareProperties.getElasticsearchPrefix()}harvest-index",
+          type = "#{@rareProperties.getElasticsearchPrefix()}harvest")
 public final class HarvestResult {
+    @Id
     private final String id;
+
+    @Field(index = false)
     private final Instant startInstant;
+
+    @Field(index = false)
     private final Instant endInstant;
+
+    @Field(index = false)
     private final List<String> globalErrors;
+
+    @Field(index = false)
     private final List<HarvestedFile> files;
 
     private HarvestResult(HarvestResultBuilder builder) {

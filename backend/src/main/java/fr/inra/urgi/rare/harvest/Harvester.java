@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rare.config.RareProperties;
-import fr.inra.urgi.rare.dao.GeneticResourceRepository;
+import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.rare.harvest.HarvestedFile.HarvestedFileBuilder;
@@ -35,14 +35,14 @@ public class Harvester {
 
     private final Path resourceDir;
     private final ObjectMapper objectMapper;
-    private final GeneticResourceRepository geneticResourceRepository;
+    private final GeneticResourceDao geneticResourceDao;
 
     public Harvester(RareProperties rareProperties,
                      ObjectMapper objectMapper,
-                     GeneticResourceRepository geneticResourceRepository) {
+                     GeneticResourceDao geneticResourceDao) {
         this.resourceDir = rareProperties.getResourceDir();
         this.objectMapper = objectMapper;
-        this.geneticResourceRepository = geneticResourceRepository;
+        this.geneticResourceDao = geneticResourceDao;
     }
 
     /**
@@ -112,7 +112,7 @@ public class Harvester {
                         // necessary to avoid failing in the middle of an object
                         TreeNode treeNode = objectMapper.readTree(parser);
                         GeneticResource geneticResource = objectMapper.treeToValue(treeNode, GeneticResource.class);
-                        geneticResourceRepository.save(geneticResource);
+                        geneticResourceDao.save(geneticResource);
                         fileBuilder.addSuccess();
                     }
                     catch (IOException e) {
