@@ -1,0 +1,28 @@
+<div>
+  <div class="row">
+    <div class="col title">
+      <a class="main-link"
+         [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL">
+        <strong class="name">{{ geneticResource.name }}</strong>
+      </a> - {{ geneticResource.pillarName }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a class="datasource-link" [href]="geneticResource.portalURL">{{ geneticResource.databaseSource }}</a>
+    </div>
+    <div class="col type">
+      {{ geneticResource.materialType?.join(', ') }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col description" *ngIf="descriptionCollapsed; else descriptionExpanded">
+      {{ geneticResource.description | slice:0:255 }}<button class="btn btn-link" (click)="toggleDescription()" *ngIf="geneticResource.description?.length > 255">... (Voir tout)</button>
+    </div>
+    <ng-template #descriptionExpanded>
+      <div class="col full-description">
+        {{ geneticResource.description }}<button class="btn btn-link" (click)="toggleDescription()">Réduire</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

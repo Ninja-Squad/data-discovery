@@ -1,0 +1,13 @@
+<div class="mt-2">
+  <form class="input-group"[formGroup]="searchForm" (ngSubmit)="newSearch()">
+    <input class="form-control" type="text"
+           placeholder="Exemples: canis lupus, levure fromage"
+           formControlName="search">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="submit">Recherche</button>
+    </div>
+  </form>
+</div>
+<div class="mt-5">
+  <rare-genetic-resources [geneticResources]="results"></rare-genetic-resources>
+</div>
