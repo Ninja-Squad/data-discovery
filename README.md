@@ -58,3 +58,83 @@ to avoid symbolic links issues on Docker.
 You can approximate what runs on CI by executing:
 
     docker run --rm -v "$PWD":/home/rare -w /home/rare ninjasquad/docker-rare ./gradlew build
+
+## Harvest
+
+Harvesting (i.e. importing genetic resources stored in JSON files into ElasticSearch) consists in
+placing the JSON files into a directory where the server can find them.
+
+This directory, by default is `/tmp/rare/resources`. But it's externalized into the Spring Boot property
+`rare.resource-dir`, so it can be easily changed by modifying the value of this property (using an 
+environment variable for example).
+
+The files must have the extension `.json`, and must be stored in that directory (not in a sub-directory).
+Once the files are ready and the server is started, the harvest is triggered by sending a POST request
+to the endpoint `/api/harvests`, without any request body.
+
+Example with the `http` command ([HTTPie](https://httpie.org/)):
+
+    http POST http://localhost:8080/api/harvests
+    
+Example with the `curl` command:
+
+    curl -i -X POST http://localhost:8080/api/harvests
+    
+The harvest job is executed asynchronously, and a response is immediately sent back, with the URL allowing
+to get the result of the job. For example:
+
+    HTTP/1.1 201 
+    Content-Length: 0
+    Date: Tue, 24 Jul 2018 12:58:04 GMT
+    Location: http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
+    
+To get the result of the job, you can then send a GET request to the returned URL:
+
+    http GET http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
+
+or
+
+    curl http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
+    
+`http` has the advantage of nicely formetting the returned JSON.
+
+The response contains a detailed report containing the start instant, and the list of files
+that have been processed, with the number of successfully imported resources, and the errors
+that occurred, if any.
+
+It's only when the property `endInstant` of the returned JSON is non-null that the job is complete.
+```
+{
+    "endInstant": "2018-07-24T12:56:28.077Z",
+    "files": [
+        {
+            "errorCount": 0,
+            "errors": [],
+            "fileName": "rare_pilier_microbial.json",
+            "successCount": 10
+        },
+        {
+            "errorCount": 2,
+            "errors": [
+                {
+                    "column": 4,
+                    "error": "Error while parsing object: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.lang.String` out of START_ARRAY token\n at [Source: UNKNOWN; line: -1, column: -1] (through reference chain: fr.inra.urgi.rare.domain.GeneticResource[\"name\"])",
+                    "index": 4790,
+                    "line": 105594
+                },
+                {
+                    "column": 4,
+                    "error": "Error while parsing object: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.lang.String` out of START_ARRAY token\n at [Source: UNKNOWN; line: -1, column: -1] (through reference chain: fr.inra.urgi.rare.domain.GeneticResource[\"countryOfCollect\"])",
+                    "index": 5905,
+                    "line": 130127
+                }
+            ],
+            "fileName": "rare_pilier_plant.json",
+            "successCount": 14522
+        }
+    ],
+    "globalErrors": [],
+    "id": "55e70557-79e8-4e40-a44b-2ef4b3df076a",
+    "startInstant": "2018-07-24T12:56:27.322Z"
+}
+```

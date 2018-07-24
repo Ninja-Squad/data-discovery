@@ -1,5 +1,6 @@
 package fr.inra.urgi.rare.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -21,12 +22,12 @@ public final class GeneticResource {
     private final String portalURL;
     private final String dataURL;
     private final String domain;
-    private final String taxon;
-    private final String family;
-    private final String genus;
-    private final String species;
-    private final String materialType;
-    private final String biotopeType;
+    private final List<String> taxon;
+    private final List<String> family;
+    private final List<String> genus;
+    private final List<String> species;
+    private final List<String> materialType;
+    private final List<String> biotopeType;
     private final String countryOfOrigin;
     private final Double originLatitude;
     private final Double originLongitude;
@@ -43,12 +44,12 @@ public final class GeneticResource {
                            String portalURL,
                            String dataURL,
                            String domain,
-                           String taxon,
-                           String family,
-                           String genus,
-                           String species,
-                           String materialType,
-                           String biotopeType,
+                           List<String> taxon,
+                           List<String> family,
+                           List<String> genus,
+                           List<String> species,
+                           List<String> materialType,
+                           List<String> biotopeType,
                            String countryOfOrigin,
                            Double originLatitude,
                            Double originLongitude,
@@ -109,27 +110,27 @@ public final class GeneticResource {
         return domain;
     }
 
-    public String getTaxon() {
+    public List<String> getTaxon() {
         return taxon;
     }
 
-    public String getFamily() {
+    public List<String> getFamily() {
         return family;
     }
 
-    public String getGenus() {
+    public List<String> getGenus() {
         return genus;
     }
 
-    public String getSpecies() {
+    public List<String> getSpecies() {
         return species;
     }
 
-    public String getMaterialType() {
+    public List<String> getMaterialType() {
         return materialType;
     }
 
-    public String getBiotopeType() {
+    public List<String> getBiotopeType() {
         return biotopeType;
     }
 

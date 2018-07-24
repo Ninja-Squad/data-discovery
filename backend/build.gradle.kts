@@ -77,6 +77,7 @@ dependencies {
     }
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-
+    testImplementation("org.mockito:mockito-junit-jupiter:2.19.1")
+    testImplementation("org.junit-pioneer:junit-pioneer:0.1.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
