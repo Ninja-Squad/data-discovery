@@ -9,3 +9,12 @@ spring:
           name: es-rare
         host: 127.0.0.1
         port: 9300
+
+server:
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/javascript
+      - text/html
+      - text/css
