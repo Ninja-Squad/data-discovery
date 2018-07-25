@@ -6,5 +6,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 /**
  * DAO for {@link GeneticResource}
  */
-public interface GeneticResourceDao extends ElasticsearchRepository<GeneticResource, String> {
+public interface GeneticResourceDao extends ElasticsearchRepository<GeneticResource, String>, GeneticResourceDaoCustom {
 }
