@@ -7,17 +7,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
  * A genetic resource, as loaded from a JSON file, and stored in ElasticSearch
  * @author JB Nizet
  */
 @Document(
-        indexName = "#{@rareProperties.getElasticsearchPrefix()}resource-index",
-        type = "#{@rareProperties.getElasticsearchPrefix()}resource"
+    indexName = "#{@rareProperties.getElasticsearchPrefix()}resource-index",
+    type = "#{@rareProperties.getElasticsearchPrefix()}resource"
 )
+@Mapping(mappingPath = "fr/inra/urgi/rare/domain/GeneticResource.mapping.json")
 public final class GeneticResource {
     @Id
     @JsonProperty("identifier")
@@ -27,33 +27,15 @@ public final class GeneticResource {
     private final String description;
     private final String pillarName;
     private final String databaseSource;
-
-    @Field(index = false)
     private final String portalURL;
-
-    @Field(index = false)
     private final String dataURL;
-
     private final String domain;
-
-    @Field(type = FieldType.Keyword)
     private final List<String> taxon;
-
-    @Field(type = FieldType.Keyword)
     private final List<String> family;
-
-    @Field(type = FieldType.Keyword)
     private final List<String> genus;
-
-    @Field(type = FieldType.Keyword)
     private final List<String> species;
-
-    @Field(type = FieldType.Keyword)
     private final List<String> materialType;
-
-    @Field(type = FieldType.Keyword)
     private final List<String> biotopeType;
-
     private final String countryOfOrigin;
     private final Double originLatitude;
     private final Double originLongitude;
@@ -194,74 +176,74 @@ public final class GeneticResource {
         }
         GeneticResource that = (GeneticResource) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(pillarName, that.pillarName) &&
-                Objects.equals(databaseSource, that.databaseSource) &&
-                Objects.equals(portalURL, that.portalURL) &&
-                Objects.equals(dataURL, that.dataURL) &&
-                Objects.equals(domain, that.domain) &&
-                Objects.equals(taxon, that.taxon) &&
-                Objects.equals(family, that.family) &&
-                Objects.equals(genus, that.genus) &&
-                Objects.equals(species, that.species) &&
-                Objects.equals(materialType, that.materialType) &&
-                Objects.equals(biotopeType, that.biotopeType) &&
-                Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
-                Objects.equals(originLatitude, that.originLatitude) &&
-                Objects.equals(originLongitude, that.originLongitude) &&
-                Objects.equals(countryOfCollect, that.countryOfCollect) &&
-                Objects.equals(collectLatitude, that.collectLatitude) &&
-                Objects.equals(collectLongitude, that.collectLongitude);
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(pillarName, that.pillarName) &&
+            Objects.equals(databaseSource, that.databaseSource) &&
+            Objects.equals(portalURL, that.portalURL) &&
+            Objects.equals(dataURL, that.dataURL) &&
+            Objects.equals(domain, that.domain) &&
+            Objects.equals(taxon, that.taxon) &&
+            Objects.equals(family, that.family) &&
+            Objects.equals(genus, that.genus) &&
+            Objects.equals(species, that.species) &&
+            Objects.equals(materialType, that.materialType) &&
+            Objects.equals(biotopeType, that.biotopeType) &&
+            Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
+            Objects.equals(originLatitude, that.originLatitude) &&
+            Objects.equals(originLongitude, that.originLongitude) &&
+            Objects.equals(countryOfCollect, that.countryOfCollect) &&
+            Objects.equals(collectLatitude, that.collectLatitude) &&
+            Objects.equals(collectLongitude, that.collectLongitude);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id,
-                name,
-                description,
-                pillarName,
-                databaseSource,
-                portalURL,
-                dataURL,
-                domain,
-                taxon,
-                family,
-                genus,
-                species,
-                materialType,
-                biotopeType,
-                countryOfOrigin,
-                originLatitude,
-                originLongitude,
-                countryOfCollect,
-                collectLatitude,
-                collectLongitude);
+                            name,
+                            description,
+                            pillarName,
+                            databaseSource,
+                            portalURL,
+                            dataURL,
+                            domain,
+                            taxon,
+                            family,
+                            genus,
+                            species,
+                            materialType,
+                            biotopeType,
+                            countryOfOrigin,
+                            originLatitude,
+                            originLongitude,
+                            countryOfCollect,
+                            collectLatitude,
+                            collectLongitude);
     }
 
     @Override
     public String toString() {
         return "GeneticResource{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", pillarName='" + pillarName + '\'' +
-                ", databaseSource='" + databaseSource + '\'' +
-                ", portalURL='" + portalURL + '\'' +
-                ", dataURL='" + dataURL + '\'' +
-                ", domain='" + domain + '\'' +
-                ", taxon='" + taxon + '\'' +
-                ", family='" + family + '\'' +
-                ", genus='" + genus + '\'' +
-                ", species='" + species + '\'' +
-                ", materialType='" + materialType + '\'' +
-                ", biotopeType='" + biotopeType + '\'' +
-                ", countryOfOrigin='" + countryOfOrigin + '\'' +
-                ", originLatitude=" + originLatitude +
-                ", originLongitude=" + originLongitude +
-                ", countryOfCollect='" + countryOfCollect + '\'' +
-                ", collectLatitude=" + collectLatitude +
-                ", collectLongitude=" + collectLongitude +
-                '}';
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", pillarName='" + pillarName + '\'' +
+            ", databaseSource='" + databaseSource + '\'' +
+            ", portalURL='" + portalURL + '\'' +
+            ", dataURL='" + dataURL + '\'' +
+            ", domain='" + domain + '\'' +
+            ", taxon='" + taxon + '\'' +
+            ", family='" + family + '\'' +
+            ", genus='" + genus + '\'' +
+            ", species='" + species + '\'' +
+            ", materialType='" + materialType + '\'' +
+            ", biotopeType='" + biotopeType + '\'' +
+            ", countryOfOrigin='" + countryOfOrigin + '\'' +
+            ", originLatitude=" + originLatitude +
+            ", originLongitude=" + originLongitude +
+            ", countryOfCollect='" + countryOfCollect + '\'' +
+            ", collectLatitude=" + collectLatitude +
+            ", collectLongitude=" + collectLongitude +
+            '}';
     }
 }
