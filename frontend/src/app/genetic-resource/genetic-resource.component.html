@@ -1,26 +1,28 @@
 <div>
-  <div class="row">
-    <div class="col title">
-      <a class="main-link"
-         [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL">
-        <strong class="name">{{ geneticResource.name }}</strong>
-      </a> - {{ geneticResource.pillarName }}
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
+  <h2>
+    <a class="main-link name"
+     [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL">
+      {{ geneticResource.name }}
+    </a>
+    <small> - {{ geneticResource.pillarName }}</small>
+  </h2>
+  <div>
+    <span class="mr-4">
       <a class="datasource-link" [href]="geneticResource.portalURL">{{ geneticResource.databaseSource }}</a>
-    </div>
-    <div class="col type">
+    </span>
+    <span class="taxon mr-4">
+      <span *ngFor="let taxon of geneticResource.taxon" class="badge badge-secondary mr-2">{{ taxon }}</span>
+    </span>
+    <span class="type">
       {{ geneticResource.materialType?.join(', ') }}
-    </div>
+    </span>
   </div>
-  <div class="row">
-    <div class="col description" *ngIf="descriptionCollapsed; else descriptionExpanded">
+  <div>
+    <div class="description" *ngIf="descriptionCollapsed; else expandedDescription">
       {{ geneticResource.description | slice:0:255 }}<button class="btn btn-link" (click)="toggleDescription()" *ngIf="geneticResource.description?.length > 255">... (Voir tout)</button>
     </div>
-    <ng-template #descriptionExpanded>
-      <div class="col full-description">
+    <ng-template #expandedDescription>
+      <div class="full-description">
         {{ geneticResource.description }}<button class="btn btn-link" (click)="toggleDescription()">Réduire</button>
       </div>
     </ng-template>

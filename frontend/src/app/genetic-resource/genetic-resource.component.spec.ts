@@ -12,7 +12,7 @@ describe('GeneticResourceComponent', () => {
     }
 
     get title() {
-      return this.element('.title');
+      return this.element('h2');
     }
 
     get link() {
@@ -21,6 +21,10 @@ describe('GeneticResourceComponent', () => {
 
     get datasourceLink() {
       return this.element('.datasource-link');
+    }
+
+    get taxon() {
+      return this.element('.taxon');
     }
 
     get type() {
@@ -60,11 +64,13 @@ describe('GeneticResourceComponent', () => {
     tester.detectChanges();
 
     // then we should display it
-    expect(tester.title).toContainText(`${resource.name} - ${resource.pillarName}`);
+    expect(tester.title).toContainText(resource.name);
+    expect(tester.title).toContainText(resource.pillarName);
     expect(tester.link).toContainText(resource.name);
     expect(tester.link.attr('href')).toBe(resource.dataURL);
     expect(tester.datasourceLink).toContainText(resource.databaseSource);
     expect(tester.datasourceLink.attr('href')).toBe(resource.portalURL);
+    resource.taxon.forEach(text => expect(tester.taxon).toContainText(text));
     expect(tester.type).toContainText(resource.materialType[0]);
     expect(tester.description).toContainText(resource.description);
     expect(tester.fullDescriptionLink).toBeNull();

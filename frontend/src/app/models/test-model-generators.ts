@@ -21,7 +21,7 @@ export function toGeneticResource(name: string): GeneticResourceModel {
     portalURL: 'http://brc4env.fr',
     dataURL: `http://brc4env.fr/${name}`,
     domain: 'Plantae',
-    taxon: [name],
+    taxon: [`${name} taxon1`, `${name} taxon2`],
     family: [`${name} family`],
     genus: [`${name} genus`],
     species: [`${name} species`],
