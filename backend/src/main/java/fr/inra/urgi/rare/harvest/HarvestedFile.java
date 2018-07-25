@@ -126,6 +126,14 @@ public final class HarvestedFile {
         }
 
         /**
+         * Adds N successes, i.e. records a success for N of the genetic resources stored in the file
+         */
+        public HarvestedFileBuilder addSuccesses(int count) {
+            this.successCount += count;
+            return this;
+        }
+
+        /**
          * Adds an error, i.e. records an error for one of the genetic resources stored in the file
          * @param index the index of the genetic resource for which the error happened
          * @param error the message of the error

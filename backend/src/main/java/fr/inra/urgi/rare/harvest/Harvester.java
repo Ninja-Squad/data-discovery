@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -32,6 +34,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Harvester {
+
+    private static final int BATCH_SIZE = 100;
 
     private final Path resourceDir;
     private final ObjectMapper objectMapper;
@@ -89,6 +93,8 @@ public class Harvester {
         HarvestedFileBuilder fileBuilder = HarvestedFile.builder(harvestedStream.getFileName());
         int index = 0;
 
+        List<GeneticResource> batch = new ArrayList<>(BATCH_SIZE);
+
         try (BufferedInputStream bis = new BufferedInputStream(harvestedStream.getInputStream());
              JsonParser parser = objectMapper.getFactory().createParser(bis)) {
 
@@ -112,8 +118,12 @@ public class Harvester {
                         // necessary to avoid failing in the middle of an object
                         TreeNode treeNode = objectMapper.readTree(parser);
                         GeneticResource geneticResource = objectMapper.treeToValue(treeNode, GeneticResource.class);
-                        geneticResourceDao.save(geneticResource);
-                        fileBuilder.addSuccess();
+                        batch.add(geneticResource);
+                        if (batch.size() == BATCH_SIZE) {
+                            geneticResourceDao.saveAll(batch);
+                            fileBuilder.addSuccesses(batch.size());
+                            batch = new ArrayList<>(BATCH_SIZE);
+                        }
                     }
                     catch (IOException e) {
                         fileBuilder.addError(index,
@@ -123,6 +133,11 @@ public class Harvester {
                     }
 
                     index++;
+                }
+
+                if (!batch.isEmpty()) {
+                    geneticResourceDao.saveAll(batch);
+                    fileBuilder.addSuccesses(batch.size());
                 }
             }
         }

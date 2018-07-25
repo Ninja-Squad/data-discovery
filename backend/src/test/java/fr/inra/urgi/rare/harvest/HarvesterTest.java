@@ -1,7 +1,7 @@
 package fr.inra.urgi.rare.harvest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
@@ -11,11 +11,13 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rare.config.Harvest;
@@ -23,6 +25,7 @@ import fr.inra.urgi.rare.config.HarvestConfig;
 import fr.inra.urgi.rare.config.RareProperties;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
+import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +59,9 @@ class HarvesterTest {
     @Autowired
     @Harvest
     private ObjectMapper objectMapper;
+
+    @Captor
+    private ArgumentCaptor<Iterable<GeneticResource>> resourcesCaptor;
 
     private Harvester harvester;
 
@@ -141,9 +149,10 @@ class HarvesterTest {
         assertThat(file2.getErrorCount()).isEqualTo(0);
         assertThat(file2.getErrors()).hasSize(0);
 
-        verify(mockGeneticResourceDao).save(argThat(r -> r.getName().equals("Syrah")));
-        verify(mockGeneticResourceDao).save(argThat(r -> r.getName().equals("Bermestia bianca")));
-        verify(mockGeneticResourceDao).save(argThat(r -> r.getName().equals("CLIB 197")));
+        verify(mockGeneticResourceDao, times(2)).saveAll(resourcesCaptor.capture());
+        List<Iterable<GeneticResource>> batches = resourcesCaptor.getAllValues();
+        assertThat(batches.get(0)).extracting(GeneticResource::getName).containsExactly("Syrah", "Bermestia bianca");
+        assertThat(batches.get(1)).extracting(GeneticResource::getName).containsExactly("CLIB 197");
     }
 
     @Test
@@ -191,6 +200,27 @@ class HarvesterTest {
         HarvestResult result = resultBuilder.build();
         assertThat(result.getFiles().get(0).getErrors()).hasSize(1);
         assertThat(result.getFiles().get(0).getSuccessCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldSplitInBatches() throws JsonProcessingException {
+        List<GeneticResource> geneticResources = new ArrayList<>();
+        for (int i = 0; i < 250; i++) {
+            geneticResources.add(new GeneticResourceBuilder().withId("id-" + i).build());
+        }
+        byte[] jsonArray = objectMapper.writeValueAsBytes(geneticResources);
+
+        HarvestedStream stream = new HarvestedStream("test.json", new ByteArrayInputStream(jsonArray));
+        HarvestResultBuilder resultBuilder = HarvestResult.builder();
+        harvester.harvest(stream, resultBuilder);
+
+        HarvestResult result = resultBuilder.build();
+        assertThat(result.getFiles().get(0).getSuccessCount()).isEqualTo(250);
+
+        verify(mockGeneticResourceDao, times(3)).saveAll(resourcesCaptor.capture());
+        assertThat(resourcesCaptor.getAllValues().get(0)).hasSize(100);
+        assertThat(resourcesCaptor.getAllValues().get(1)).hasSize(100);
+        assertThat(resourcesCaptor.getAllValues().get(2)).hasSize(50);
     }
 
     private void delete(Path file) {
