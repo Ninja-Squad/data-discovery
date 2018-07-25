@@ -14,14 +14,14 @@ describe('SearchService', () => {
   it('should search for the query', () => {
     const service = TestBed.get(SearchService) as SearchService;
     let actualResults: Page<GeneticResourceModel>;
-    service.search('Bacteria')
+    service.search('Bacteria', 2)
       .subscribe(results => actualResults = results);
 
     const resource = toGeneticResource('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
     const http = TestBed.get(HttpTestingController) as HttpTestingController;
-    http.expectOne('/api/genetic-resources?query=Bacteria').flush(expectedResults);
+    http.expectOne('/api/genetic-resources?query=Bacteria&page=1').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
 
     http.verify();

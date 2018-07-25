@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { GeneticResourcesComponent } from './genetic-resources/genetic-resources.component';
 import { GeneticResourceComponent } from './genetic-resource/genetic-resource.component';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { GeneticResourceComponent } from './genetic-resource/genetic-resource.co
     BrowserModule,
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbPaginationModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

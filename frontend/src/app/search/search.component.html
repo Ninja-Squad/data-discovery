@@ -1,5 +1,5 @@
 <div class="mt-2">
-  <form class="input-group"[formGroup]="searchForm" (ngSubmit)="newSearch()">
+  <form class="input-group" [formGroup]="searchForm" (ngSubmit)="newSearch()">
     <input class="form-control" type="text"
            placeholder="Exemples: canis lupus, levure fromage"
            formControlName="search">
@@ -8,6 +8,16 @@
     </div>
   </form>
 </div>
+<!-- pagination -->
+<div class="d-flex justify-content-center mt-5">
+  <!-- we add 1 to the page because ngb-pagination is 1 based -->
+  <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
+                  [collectionSize]="results.totalElements"
+                  [pageSize]="results.size"
+                  [maxSize]="20">
+  </ngb-pagination>
+</div>
+<!-- results -->
 <div class="mt-5">
   <rare-genetic-resources [geneticResources]="results"></rare-genetic-resources>
 </div>

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
+import { EMPTY } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 
 import { SearchService } from '../search.service';
 import { GeneticResourceModel } from '../models/genetic-resource.model';
 import { Page } from '../models/page';
-import { map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'rare-search',
@@ -13,6 +14,8 @@ import { map, switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+  query = '';
+  page = 0;
   searchForm: FormGroup;
   results: Page<GeneticResourceModel>;
 
@@ -25,20 +28,39 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParamMap
       .pipe(
-        map(params => params.get('query')),
-        tap(query => this.searchForm.get('search').setValue(query)),
-        switchMap(query => this.searchService.search(query))
+        // extract query parameters
+        switchMap(params => {
+          this.query = params.get('query');
+          // set the search field
+          this.searchForm.get('search').setValue(this.query);
+          if (params.get('page')) {
+            this.page = +params.get('page');
+          }
+          // launch the search
+          return this.searchService.search(this.query, this.page)
+            .pipe(catchError(() => EMPTY));
+        })
       )
       .subscribe(results => this.results = results);
   }
 
-  newSearch() {
-    const query = this.searchForm.get('search').value;
+  search() {
     this.router.navigate(['.'], {
       relativeTo: this.route,
       queryParams: {
-        query
+        query: this.query,
+        page: this.page
       }
     });
+  }
+
+  newSearch() {
+    this.query = this.searchForm.get('search').value;
+    this.search();
+  }
+
+  navigateToPage(nextPage: number) {
+    this.page = nextPage;
+    this.search();
   }
 }

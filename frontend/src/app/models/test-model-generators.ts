@@ -4,7 +4,7 @@ import { GeneticResourceModel } from './genetic-resource.model';
 export function toSinglePage<T>(content: Array<T>): Page<T> {
   return {
     content,
-    number: 1,
+    number: 0,
     size: content ? content.length : 0,
     totalElements: content ? content.length : 0,
     totalPages: 1
