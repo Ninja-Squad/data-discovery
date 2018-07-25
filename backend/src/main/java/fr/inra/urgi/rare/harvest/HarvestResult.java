@@ -53,8 +53,8 @@ public final class HarvestResult {
         this.id = id;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
-        this.globalErrors = Collections.unmodifiableList(new ArrayList<>(globalErrors));
-        this.files = Collections.unmodifiableList(new ArrayList<>(files));
+        this.globalErrors = globalErrors == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(globalErrors));
+        this.files = files == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(files));
     }
 
     public String getId() {
@@ -118,7 +118,7 @@ public final class HarvestResult {
      */
     public static final class HarvestResultBuilder {
         private final String id;
-        private final Instant startInstant;
+        private Instant startInstant;
         private Instant endInstant;
         private final List<HarvestedFile> files = new ArrayList<>();
         private final List<String> globalErrors = new ArrayList<>();
@@ -126,6 +126,14 @@ public final class HarvestResult {
         private HarvestResultBuilder() {
             this.id = UUID.randomUUID().toString();
             this.startInstant = Instant.now();
+        }
+
+        /**
+         * Sets the start instant (useful in tests)
+         */
+        public HarvestResultBuilder withStartInstant(Instant startInstant) {
+            this.startInstant = startInstant;
+            return this;
         }
 
         /**

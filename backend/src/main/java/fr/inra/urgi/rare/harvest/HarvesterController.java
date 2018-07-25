@@ -1,15 +1,19 @@
 package fr.inra.urgi.rare.harvest;
 
 import java.net.URI;
+import java.util.Optional;
 
 import fr.inra.urgi.rare.dao.HarvestResultDao;
+import fr.inra.urgi.rare.dto.PageDTO;
 import fr.inra.urgi.rare.exception.NotFoundException;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,6 +26,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/harvests")
 public class HarvesterController {
+
+    public static final int PAGE_SIZE = 10;
 
     private final AsyncHarvester asyncHarvester;
     private final HarvestResultDao harvestResultDao;
@@ -40,17 +46,30 @@ public class HarvesterController {
         harvestResultDao.save(temporaryHarvestResult);
         asyncHarvester.harvest(resultBuilder);
 
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(temporaryHarvestResult.getId())
-            .toUri();
-
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(toDetail(temporaryHarvestResult.getId())).build();
     }
 
     @GetMapping("/{id}")
     public HarvestResult get(@PathVariable("id") String id) {
         return harvestResultDao.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    @GetMapping
+    public PageDTO<LightHarvestResultDTO> list(@RequestParam(name = "page") Optional<Integer> page) {
+        return PageDTO.fromPage(
+            harvestResultDao.list(PageRequest.of(page.orElse(0), PAGE_SIZE)),
+            result -> new LightHarvestResultDTO(result.getId(),
+                                                toDetail(result.getId()).toString(),
+                                                result.getStartInstant(),
+                                                result.getEndInstant())
+        );
+    }
+
+    private URI toDetail(String id) {
+        return ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(id)
+            .toUri();
     }
 }

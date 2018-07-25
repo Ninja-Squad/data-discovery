@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -17,7 +18,7 @@ import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "fr.inra.urgi.rare.dao")
+@EnableElasticsearchRepositories(basePackageClasses = GeneticResourceDao.class)
 public class ElasticSearchConfig {
 
     @Value("${spring.data.elasticsearch.cluster.name}")

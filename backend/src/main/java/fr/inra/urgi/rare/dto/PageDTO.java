@@ -1,6 +1,8 @@
 package fr.inra.urgi.rare.dto;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
@@ -49,6 +51,14 @@ public final class PageDTO<T> {
                 page.getSize(),
                 page.getTotalElements(),
                 page.getTotalPages());
+    }
+
+    public static <T, R> PageDTO<R> fromPage(Page<T> page, Function<T, R> mapper) {
+        return new PageDTO<R>(page.getContent().stream().map(mapper).collect(Collectors.toList()),
+                              page.getNumber(),
+                              page.getSize(),
+                              page.getTotalElements(),
+                              page.getTotalPages());
     }
 
     public List<T> getContent() {

@@ -6,5 +6,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 /**
  * DAO for {@link HarvestResult}
  */
-public interface HarvestResultDao extends ElasticsearchRepository<HarvestResult, String> {
+public interface HarvestResultDao extends ElasticsearchRepository<HarvestResult, String>, HarvestResultDaoCustom {
 }

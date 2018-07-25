@@ -1,9 +1,9 @@
 package fr.inra.urgi.rare.harvest;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -55,5 +55,22 @@ class HarvestResultTest {
         assertThat(firstFile.getSuccessCount()).isEqualTo(2);
         assertThat(firstFile.getErrorCount()).isEqualTo(1);
         assertThat(firstFile.getErrors()).hasSize(1);
+    }
+
+    @Test
+    void shouldUnmarshallPartialResult() throws IOException {
+        String json = "{\n" +
+            "    \"id\": \"abcd\",\n" +
+            "    \"startInstant\": \"2018-07-25T13:31:00Z\",\n" +
+            "    \"endInstant\": \"2018-07-25T13:31:20Z\"\n" +
+            "}";
+
+        HarvestResult unmarshalled = objectMapper.readValue(json, HarvestResult.class);
+
+        assertThat(unmarshalled.getId()).isEqualTo("abcd");
+        assertThat(unmarshalled.getStartInstant()).isEqualTo(Instant.parse("2018-07-25T13:31:00Z"));
+        assertThat(unmarshalled.getEndInstant()).isEqualTo(Instant.parse("2018-07-25T13:31:20Z"));
+        assertThat(unmarshalled.getFiles()).isEmpty();
+        assertThat(unmarshalled.getGlobalErrors()).isEmpty();
     }
 }

@@ -151,3 +151,13 @@ It's only when the property `endInstant` of the returned JSON is non-null that t
     "startInstant": "2018-07-24T12:56:27.322Z"
 }
 ```
+
+In case you lost the response to the POST request and thus don't know what the URL of the harvest is, 
+you can list the harvests, in descending order of their start instant, by sending a GET request to
+`/api/harvests`:
+
+    http --auth rare:f01a7031fc17 GET http://localhost:8080/api/harvests
+
+or
+
+    curl -u rare:f01a7031fc17 http://localhost:8080/api/harvests
