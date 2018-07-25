@@ -19,11 +19,11 @@
   </div>
   <div>
     <div class="description" *ngIf="descriptionCollapsed; else expandedDescription">
-      {{ geneticResource.description | slice:0:255 }}<button class="btn btn-link" (click)="toggleDescription()" *ngIf="geneticResource.description?.length > 255">... (Voir tout)</button>
+      {{ geneticResource.description | slice:0:255 }}<button class="btn btn-link btn-inline" (click)="toggleDescription()" *ngIf="geneticResource.description?.length > 255">... (Voir tout)</button>
     </div>
     <ng-template #expandedDescription>
       <div class="full-description">
-        {{ geneticResource.description }}<button class="btn btn-link" (click)="toggleDescription()">Réduire</button>
+        {{ geneticResource.description }}<button class="btn btn-link btn-inline" (click)="toggleDescription()">Réduire</button>
       </div>
     </ng-template>
   </div>
