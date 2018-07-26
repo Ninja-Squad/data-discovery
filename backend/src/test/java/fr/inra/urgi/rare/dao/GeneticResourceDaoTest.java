@@ -4,11 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import fr.inra.urgi.rare.config.ElasticSearchConfig;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
+import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +72,7 @@ class GeneticResourceDaoTest {
                         37.5,
                         15.099722);
 
-        geneticResourceDao.save(geneticResource);
+        geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
 
         assertThat(geneticResourceDao.findById(geneticResource.getId()).get()).isEqualTo(geneticResource);
     }
@@ -141,7 +144,7 @@ class GeneticResourceDaoTest {
 
     @Test
     public void shouldNotSearchOnIdentifier() {
-        GeneticResource geneticResource = new GeneticResourceBuilder().build();
+        GeneticResource geneticResource = new GeneticResourceBuilder().withId("foo-bar").build();
         geneticResourceDao.save(geneticResource);
 
         assertThat(geneticResourceDao.search(geneticResource.getId(),
@@ -162,12 +165,125 @@ class GeneticResourceDaoTest {
                                              firstPage).getContent()).isEmpty();
     }
 
+    @Test
+    public void shouldSuggestOnName() {
+        shouldSuggest(GeneticResourceBuilder::withName);
+    }
+
+    @Test
+    public void shouldSuggestOnPillarName() {
+        shouldSuggest(GeneticResourceBuilder::withPillarName);
+    }
+
+    @Test
+    public void shouldSuggestOnDatabaseSource() {
+        shouldSuggest(GeneticResourceBuilder::withDatabaseSource);
+    }
+
+    @Test
+    public void shouldSuggestOnDomain() {
+        shouldSuggest(GeneticResourceBuilder::withDomain);
+    }
+
+    @Test
+    public void shouldSuggestOnTaxon() {
+        shouldSuggest((b, s) -> b.withTaxon(Collections.singletonList(s)));
+    }
+
+    @Test
+    public void shouldSuggestOnFamily() {
+        shouldSuggest((b, s) -> b.withFamily(Collections.singletonList(s)));
+    }
+
+    @Test
+    public void shouldSuggestOnGenus() {
+        shouldSuggest((b, s) -> b.withGenus(Collections.singletonList(s)));
+    }
+
+    @Test
+    public void shouldSuggestOnSpecies() {
+        shouldSuggest((b, s) -> b.withSpecies(Collections.singletonList(s)));
+    }
+
+    @Test
+    public void shouldSuggestOnMaterialType() {
+        shouldSuggest((b, s) -> b.withMaterialType(Collections.singletonList(s)));
+    }
+
+    @Test
+    public void shouldSuggestOnBiotopeType() {
+        shouldSuggest((b, s) -> b.withBiotopeType(Collections.singletonList(s)));
+    }
+
+    @Test
+    public void shouldSuggestOnCountryOfOrigin() {
+        shouldSuggest(GeneticResourceBuilder::withCountryOfOrigin);
+    }
+
+    @Test
+    public void shouldSuggestOnCountryOfCollect() {
+        shouldSuggest(GeneticResourceBuilder::withCountryOfCollect);
+    }
+
+    @Test
+    public void shouldNotSuggestOnIdentifier() {
+        GeneticResource geneticResource = new GeneticResourceBuilder().withId("foo-bar").build();
+        geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
+
+        assertThat(geneticResourceDao.suggest("foo")).isEmpty();
+    }
+
+    @Test
+    public void shouldNotSuggestOnUrls() {
+        GeneticResource geneticResource =
+            new GeneticResourceBuilder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
+        geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
+
+        assertThat(geneticResourceDao.suggest("foo")).isEmpty();
+    }
+
+    @Test
+    public void shouldSuggestOnDescription() {
+        GeneticResource geneticResource =
+            new GeneticResourceBuilder().withDescription("Hello world").build();
+        geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
+
+        assertThat(geneticResourceDao.suggest("hel")).containsOnly("Hello");
+        assertThat(geneticResourceDao.suggest("wor")).containsOnly("world");
+    }
+
+    @Test
+    public void shouldSuggestSeveralResults() {
+        GeneticResource resource =
+            new GeneticResourceBuilder()
+                .withId(UUID.randomUUID().toString())
+                .withName("vita e bella")
+                .withDatabaseSource("Florilege")
+                .build();
+
+        GeneticResource resource2 =
+            new GeneticResourceBuilder()
+                .withId(UUID.randomUUID().toString())
+                .withTaxon(Collections.singletonList("vitis vinifera"))
+                .withFamily(Collections.singletonList("vitis"))
+                .withDatabaseSource("Florilege")
+                .build();
+
+        geneticResourceDao.saveAll(Arrays.asList(new IndexedGeneticResource(resource), new IndexedGeneticResource(resource2)));
+
+        List<String> result = geneticResourceDao.suggest("vit");
+        assertThat(result).containsOnly("vitis", "vita e bella");
+
+        result = geneticResourceDao.suggest("vitis v");
+        assertThat(result).containsOnly("vitis vinifera");
+    }
+
     private void shouldSearch(BiConsumer<GeneticResourceBuilder, String> config) {
         GeneticResourceBuilder geneticResourceBuilder = new GeneticResourceBuilder();
         config.accept(geneticResourceBuilder, "foo bar baz");
         GeneticResource geneticResource = geneticResourceBuilder.build();
 
-        geneticResourceDao.save(geneticResource);
+        geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
 
         AggregatedPage<GeneticResource> result =
             geneticResourceDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
@@ -309,6 +425,17 @@ class GeneticResourceDaoTest {
                 geneticResourceDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).isEmpty();
         }
+    }
+
+    private void shouldSuggest(BiConsumer<GeneticResourceBuilder, String> config) {
+        GeneticResourceBuilder geneticResourceBuilder = new GeneticResourceBuilder();
+        config.accept(geneticResourceBuilder, "foo bar baz");
+        GeneticResource geneticResource = geneticResourceBuilder.build();
+
+        geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
+
+        assertThat(geneticResourceDao.suggest("FOO")).containsExactly("foo bar baz");
+        assertThat(geneticResourceDao.suggest("bing")).isEmpty();
     }
 }
 

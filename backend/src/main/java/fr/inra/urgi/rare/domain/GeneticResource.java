@@ -1,5 +1,7 @@
 package fr.inra.urgi.rare.domain;
 
+import static fr.inra.urgi.rare.util.Utils.nullSafeUnmodifiableCopy;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
     type = "#{@rareProperties.getElasticsearchPrefix()}resource"
 )
 @Mapping(mappingPath = "fr/inra/urgi/rare/domain/GeneticResource.mapping.json")
-public final class GeneticResource {
+public class GeneticResource {
     @Id
     @JsonProperty("identifier")
     private final String id;
@@ -72,12 +74,12 @@ public final class GeneticResource {
         this.portalURL = portalURL;
         this.dataURL = dataURL;
         this.domain = domain;
-        this.taxon = taxon;
-        this.family = family;
-        this.genus = genus;
-        this.species = species;
-        this.materialType = materialType;
-        this.biotopeType = biotopeType;
+        this.taxon = nullSafeUnmodifiableCopy(taxon);
+        this.family = nullSafeUnmodifiableCopy(family);
+        this.genus = nullSafeUnmodifiableCopy(genus);
+        this.species = nullSafeUnmodifiableCopy(species);
+        this.materialType = nullSafeUnmodifiableCopy(materialType);
+        this.biotopeType = nullSafeUnmodifiableCopy(biotopeType);
         this.countryOfOrigin = countryOfOrigin;
         this.originLatitude = originLatitude;
         this.originLongitude = originLongitude;

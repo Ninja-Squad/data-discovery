@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +27,7 @@ import fr.inra.urgi.rare.config.RareProperties;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
+import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +63,7 @@ class HarvesterTest {
     private ObjectMapper objectMapper;
 
     @Captor
-    private ArgumentCaptor<Iterable<GeneticResource>> resourcesCaptor;
+    private ArgumentCaptor<Collection<IndexedGeneticResource>> indexedResourcesCaptor;
 
     private Harvester harvester;
 
@@ -149,10 +151,10 @@ class HarvesterTest {
         assertThat(file2.getErrorCount()).isEqualTo(0);
         assertThat(file2.getErrors()).hasSize(0);
 
-        verify(mockGeneticResourceDao, times(2)).saveAll(resourcesCaptor.capture());
-        List<Iterable<GeneticResource>> batches = resourcesCaptor.getAllValues();
-        assertThat(batches.get(0)).extracting(GeneticResource::getName).containsExactly("Syrah", "Bermestia bianca");
-        assertThat(batches.get(1)).extracting(GeneticResource::getName).containsExactly("CLIB 197");
+        verify(mockGeneticResourceDao, times(2)).saveAll(indexedResourcesCaptor.capture());
+        List<Collection<IndexedGeneticResource>> batches = indexedResourcesCaptor.getAllValues();
+        assertThat(batches.get(0)).extracting(r -> r.getGeneticResource().getName()).containsExactly("Syrah", "Bermestia bianca");
+        assertThat(batches.get(1)).extracting(r -> r.getGeneticResource().getName()).containsExactly("CLIB 197");
     }
 
     @Test
@@ -217,10 +219,10 @@ class HarvesterTest {
         HarvestResult result = resultBuilder.build();
         assertThat(result.getFiles().get(0).getSuccessCount()).isEqualTo(250);
 
-        verify(mockGeneticResourceDao, times(3)).saveAll(resourcesCaptor.capture());
-        assertThat(resourcesCaptor.getAllValues().get(0)).hasSize(100);
-        assertThat(resourcesCaptor.getAllValues().get(1)).hasSize(100);
-        assertThat(resourcesCaptor.getAllValues().get(2)).hasSize(50);
+        verify(mockGeneticResourceDao, times(3)).saveAll(indexedResourcesCaptor.capture());
+        assertThat(indexedResourcesCaptor.getAllValues().get(0)).hasSize(100);
+        assertThat(indexedResourcesCaptor.getAllValues().get(1)).hasSize(100);
+        assertThat(indexedResourcesCaptor.getAllValues().get(2)).hasSize(50);
     }
 
     private void delete(Path file) {

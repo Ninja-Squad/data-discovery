@@ -1,8 +1,9 @@
 package fr.inra.urgi.rare.harvest;
 
+import static fr.inra.urgi.rare.util.Utils.nullSafeUnmodifiableCopy;
+
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -53,8 +54,8 @@ public final class HarvestResult {
         this.id = id;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
-        this.globalErrors = globalErrors == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(globalErrors));
-        this.files = files == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(files));
+        this.globalErrors = nullSafeUnmodifiableCopy(globalErrors);
+        this.files = nullSafeUnmodifiableCopy(files);
     }
 
     public String getId() {

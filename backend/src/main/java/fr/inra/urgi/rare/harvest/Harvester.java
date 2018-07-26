@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rare.config.RareProperties;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
+import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.rare.harvest.HarvestedFile.HarvestedFileBuilder;
 import org.springframework.stereotype.Component;
@@ -93,7 +94,7 @@ public class Harvester {
         HarvestedFileBuilder fileBuilder = HarvestedFile.builder(harvestedStream.getFileName());
         int index = 0;
 
-        List<GeneticResource> batch = new ArrayList<>(BATCH_SIZE);
+        List<IndexedGeneticResource> batch = new ArrayList<>(BATCH_SIZE);
 
         try (BufferedInputStream bis = new BufferedInputStream(harvestedStream.getInputStream());
              JsonParser parser = objectMapper.getFactory().createParser(bis)) {
@@ -118,7 +119,7 @@ public class Harvester {
                         // necessary to avoid failing in the middle of an object
                         TreeNode treeNode = objectMapper.readTree(parser);
                         GeneticResource geneticResource = objectMapper.treeToValue(treeNode, GeneticResource.class);
-                        batch.add(geneticResource);
+                        batch.add(new IndexedGeneticResource(geneticResource));
                         if (batch.size() == BATCH_SIZE) {
                             geneticResourceDao.saveAll(batch);
                             fileBuilder.addSuccesses(batch.size());

@@ -1,6 +1,10 @@
 package fr.inra.urgi.rare.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import fr.inra.urgi.rare.domain.GeneticResource;
+import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 
@@ -20,4 +24,21 @@ public interface GeneticResourceDaoCustom {
                                            boolean aggregate,
                                            SearchRefinements refinements,
                                            Pageable page);
+
+    /**
+     * Suggests completions for the given term. It autocompletes all the fields except the identifier, the URL and
+     * numeric fields, and the description.
+     * @return The N first distinct suggested completions
+     */
+    List<String> suggest(String term);
+
+    /**
+     * Saves all the given genetic resources given as argument. Since {@link IndexedGeneticResource} is in fact the
+     * same document as {@link GeneticResource}, but with an additional computed field used only to enable suggestions
+     * implementation, and used only when saving the entities, this method has been added to the
+     * {@link GeneticResourceDao} as a custom method instead of creating a whole DAO only for thsi "fake" document:
+     * we don't want to encourage doing anything other than saving {@link IndexedGeneticResource} instances, which
+     * a specific DAO would do.
+     */
+    void saveAll(Collection<IndexedGeneticResource> indexedGeneticResources);
 }
