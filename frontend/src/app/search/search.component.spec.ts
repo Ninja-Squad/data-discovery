@@ -64,7 +64,7 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called
-    expect(searchService.search).toHaveBeenCalledWith(query, 0);
+    expect(searchService.search).toHaveBeenCalledWith(query, 1);
     // and the results fetched
     expect(component.results).toEqual(results);
   });
@@ -95,26 +95,28 @@ describe('SearchComponent', () => {
     expect(component.results).toEqual(results);
   });
 
-  it('should navigate to search when a query is entered', () => {
+  it('should navigate to search and reset the page to default when a query is entered', () => {
     // given a component
     const router = TestBed.get(Router) as Router;
     spyOn(router, 'navigate');
     const searchService = TestBed.get(SearchService) as SearchService;
     spyOn(searchService, 'search');
-    const activatedRoute = fakeRoute({});
+    // with a current query Rosa and a current page 2
+    let query = 'Rosa';
+    const queryParams = of({ query, page: 2 });
+    const activatedRoute = fakeRoute({ queryParams });
     const component = new SearchComponent(activatedRoute, router, searchService);
 
-    // with a query
-    const query = 'Bacteria';
+    query = 'Bacteria';
     component.searchForm.get('search').setValue(query);
-    // when searching
+    // when searching with a new query Bacteria
     component.newSearch();
 
-    // then it should redirect to the search with correct parameters
-    expect(router.navigate).toHaveBeenCalledWith(['.'], { relativeTo: activatedRoute, queryParams: { query, page: 0 } });
+    // then it should redirect to the search with the new query and no page
+    expect(router.navigate).toHaveBeenCalledWith(['.'], { relativeTo: activatedRoute, queryParams: { query, page: undefined } });
   });
 
-  it('should navigate to next page when pagination is used', () => {
+  it('should navigate to requested page when pagination is used', () => {
     // given a component
     const router = TestBed.get(Router) as Router;
     spyOn(router, 'navigate');
@@ -130,7 +132,6 @@ describe('SearchComponent', () => {
     component.navigateToPage(2);
 
     // then it should redirect to the search with correct parameters
-    expect(component.page).toBe(2);
     expect(router.navigate).toHaveBeenCalledWith(['.'], { relativeTo: activatedRoute, queryParams: { query, page: 2 } });
   });
 

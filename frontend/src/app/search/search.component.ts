@@ -15,7 +15,6 @@ import { Page } from '../models/page';
 })
 export class SearchComponent implements OnInit {
   query = '';
-  page = 0;
   searchForm: FormGroup;
   results: Page<GeneticResourceModel>;
 
@@ -33,34 +32,42 @@ export class SearchComponent implements OnInit {
           this.query = params.get('query');
           // set the search field
           this.searchForm.get('search').setValue(this.query);
+          let page = 1;
           if (params.get('page')) {
-            this.page = +params.get('page');
+            page = +params.get('page');
           }
           // launch the search
-          return this.searchService.search(this.query, this.page)
+          return this.searchService.search(this.query, page)
             .pipe(catchError(() => EMPTY));
         })
       )
       .subscribe(results => this.results = results);
   }
 
-  search() {
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      queryParams: {
-        query: this.query,
-        page: this.page
-      }
-    });
-  }
-
+  /**
+   * Method called when the user enters a new value in the search field and submits the search form.
+   * It uses the new search terms in the form, and asks for the default page (1) for this new query
+   */
   newSearch() {
     this.query = this.searchForm.get('search').value;
     this.search();
   }
 
-  navigateToPage(nextPage: number) {
-    this.page = nextPage;
-    this.search();
+  /**
+   * Method called when the user navigates to a different page using the pagination. It uses the current query
+   * and navigates to the requested page.
+   */
+  navigateToPage(requestedPage: number) {
+    this.search(requestedPage);
+  }
+
+  private search(page?: number) {
+    this.router.navigate(['.'], {
+      relativeTo: this.route,
+      queryParams: {
+        query: this.query,
+        page
+      }
+    });
   }
 }
