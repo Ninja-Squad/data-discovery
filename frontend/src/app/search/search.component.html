@@ -13,7 +13,7 @@
   <rare-genetic-resources [geneticResources]="results"></rare-genetic-resources>
 </div>
 <!-- pagination -->
-<div class="d-flex justify-content-center mt-5">
+<div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">
   <!-- we add 1 to the page because ngb-pagination is 1 based -->
   <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
                   [collectionSize]="results.totalElements"

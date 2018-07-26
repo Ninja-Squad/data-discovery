@@ -12,7 +12,7 @@ import { SearchComponent } from './search.component';
 import { GeneticResourcesComponent } from '../genetic-resources/genetic-resources.component';
 import { GeneticResourceComponent } from '../genetic-resource/genetic-resource.component';
 import { SearchService } from '../search.service';
-import { toGeneticResource, toSinglePage } from '../models/test-model-generators';
+import { toGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -156,7 +156,7 @@ describe('SearchComponent', () => {
     expect(component.searchForm.get('search').value).toBe(query);
   });
 
-  it('should display results', () => {
+  it('should display results and pagination', () => {
     // given a component
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
@@ -166,7 +166,7 @@ describe('SearchComponent', () => {
 
     // when it has results
     const resource = toGeneticResource('Bacteria');
-    component.results = toSinglePage([resource]);
+    component.results = toSecondPage([resource]);
     tester.detectChanges();
 
     // then it should display them
@@ -177,35 +177,37 @@ describe('SearchComponent', () => {
     // and a pagination with one page
     expect(tester.pagination).not.toBeNull();
     const paginationComponent = tester.pagination.componentInstance as NgbPagination;
-    expect(paginationComponent.page).toBe(1);
-    expect(paginationComponent.pageCount).toBe(1);
+    expect(paginationComponent.page).toBe(2);
+    expect(paginationComponent.pageCount).toBe(2);
   });
 
-  it('should display paginated results', () => {
-    // given a component
+  it('should not display pagination if no result yet', () => {
+    // given a component with no result yet
+    const tester = new SearchComponentTester();
+
+    // then it should not display the pagination bar
+    expect(tester.pagination).toBeNull();
+  });
+
+  it('should not display pagination if empty result', () => {
+    // given a component with an empty result
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
-
-    // then it should display results even if empty
-    expect(tester.results).not.toBeNull();
-
-    // when it has paginated results
-    const resource = toGeneticResource('Bacteria');
-    component.results = toSinglePage([resource]);
-    // 10 pages of results (10*10)
-    component.results.totalElements = 100;
-    component.results.size = 10;
+    component.results = toSinglePage([]);
     tester.detectChanges();
 
-    // then it should display them
-    expect(tester.results).not.toBeNull();
-    const componentInstance = tester.results.componentInstance as GeneticResourcesComponent;
-    expect(componentInstance.geneticResources).toEqual(component.results);
+    // then it should display results even if empty
+    expect(tester.pagination).toBeNull();
+  });
 
-    // and a pagination
-    expect(tester.pagination).not.toBeNull();
-    const paginationComponent = tester.pagination.componentInstance as NgbPagination;
-    expect(paginationComponent.page).toBe(1);
-    expect(paginationComponent.pageCount).toBe(10);
+  it('should not display pagination if only one page of results', () => {
+    // given a component with an empty result
+    const tester = new SearchComponentTester();
+    const component = tester.componentInstance;
+    component.results = toSinglePage([toGeneticResource('Bacteria')]);
+    tester.detectChanges();
+
+    // then it should display results even if empty
+    expect(tester.pagination).toBeNull();
   });
 });

@@ -5,9 +5,19 @@ export function toSinglePage<T>(content: Array<T>): Page<T> {
   return {
     content,
     number: 0,
-    size: content ? content.length : 0,
-    totalElements: content ? content.length : 0,
+    size: 20,
+    totalElements: content.length,
     totalPages: 1
+  };
+}
+
+export function toSecondPage<T>(content: Array<T>): Page<T> {
+  return {
+    content,
+    number: 1,
+    size: 20,
+    totalElements: 20 + content.length,
+    totalPages: 2
   };
 }
 
