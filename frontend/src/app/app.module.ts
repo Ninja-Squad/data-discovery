@@ -10,7 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { GeneticResourcesComponent } from './genetic-resources/genetic-resources.component';
 import { GeneticResourceComponent } from './genetic-resource/genetic-resource.component';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -29,7 +29,8 @@ registerLocaleData(localeFr);
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
     HttpClientModule,
-    NgbPaginationModule.forRoot()
+    NgbPaginationModule.forRoot(),
+    NgbTypeaheadModule.forRoot()
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' }

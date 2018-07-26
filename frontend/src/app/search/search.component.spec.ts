@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
-import { NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPagination, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
 import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
 
@@ -39,7 +39,13 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
 
 describe('SearchComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, NgbPaginationModule.forRoot()],
+    imports: [
+      ReactiveFormsModule,
+      RouterTestingModule,
+      HttpClientTestingModule,
+      NgbPaginationModule.forRoot(),
+      NgbTypeaheadModule.forRoot()
+    ],
     declarations: [SearchComponent, GeneticResourcesComponent, GeneticResourceComponent]
   }));
 

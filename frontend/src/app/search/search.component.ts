@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
 import { SearchService } from '../search.service';
@@ -17,6 +17,7 @@ export class SearchComponent implements OnInit {
   query = '';
   searchForm: FormGroup;
   results: Page<GeneticResourceModel>;
+  suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
   constructor(private route: ActivatedRoute, private router: Router, private searchService: SearchService) {
     this.searchForm = new FormGroup({
@@ -42,6 +43,8 @@ export class SearchComponent implements OnInit {
         })
       )
       .subscribe(results => this.results = results);
+
+    this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
   }
 
   /**

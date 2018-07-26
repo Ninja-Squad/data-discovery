@@ -2,7 +2,8 @@
   <form class="input-group" [formGroup]="searchForm" (ngSubmit)="newSearch()">
     <input class="form-control" type="text"
            placeholder="Exemples : pisum sativum, rosa"
-           formControlName="search">
+           formControlName="search"
+           [ngbTypeahead]="suggesterTypeahead">
     <div class="input-group-append">
       <button class="btn btn-outline-secondary" type="submit">Recherche</button>
     </div>

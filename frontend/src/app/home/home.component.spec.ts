@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { HomeComponent } from './home.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { SearchService } from '../search.service';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -22,7 +25,7 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
 
 describe('HomeComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule],
+    imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, NgbTypeaheadModule.forRoot()],
     declarations: [HomeComponent]
   }));
 
@@ -32,7 +35,10 @@ describe('HomeComponent', () => {
     // given a component
     const router = TestBed.get(Router) as Router;
     spyOn(router, 'navigate');
-    const component = new HomeComponent(router);
+
+    const searchService = TestBed.get(SearchService) as SearchService;
+
+    const component = new HomeComponent(router, searchService);
 
     // with a query
     const query = 'Bacteria';
