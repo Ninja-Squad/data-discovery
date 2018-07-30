@@ -49,6 +49,7 @@ export class SearchComponent implements OnInit {
    * It uses the new search terms in the form, and asks for the default page (1) for this new query
    */
   newSearch() {
+    this.results = undefined;
     this.query = this.searchForm.get('search').value;
     this.search();
   }

@@ -161,8 +161,8 @@ describe('SearchComponent', () => {
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
 
-    // then it should display results even if empty
-    expect(tester.results).not.toBeNull();
+    // then it should not display results if empty
+    expect(tester.results).toBeNull();
 
     // when it has results
     const resource = toGeneticResource('Bacteria');
@@ -179,6 +179,29 @@ describe('SearchComponent', () => {
     const paginationComponent = tester.pagination.componentInstance as NgbPagination;
     expect(paginationComponent.page).toBe(2);
     expect(paginationComponent.pageCount).toBe(2);
+  });
+
+  it('should hide results and pagination on a new search', () => {
+    // given a component
+    const tester = new SearchComponentTester();
+    const component = tester.componentInstance;
+    // with results
+    const resource = toGeneticResource('Bacteria');
+    component.results = toSecondPage([resource]);
+    tester.detectChanges();
+
+    // displayed
+    expect(tester.results).not.toBeNull();
+
+    // when a new search is triggered
+    component.newSearch();
+    tester.detectChanges();
+
+    // then it should hide previous results
+    expect(tester.results).toBeNull();
+
+    // and pagination
+    expect(tester.pagination).toBeNull();
   });
 
   it('should not display pagination if no result yet', () => {
