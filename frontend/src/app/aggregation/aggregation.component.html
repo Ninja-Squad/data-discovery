@@ -1,0 +1,19 @@
+<div class="card mb-1" *ngIf="aggregation.buckets.length">
+  <div class="card-body">
+
+    <!-- title -->
+    <h3 class="card-title">{{ aggregation.name }}</h3>
+
+    <!-- values -->
+    <form [formGroup]="aggregationForm">
+      <div class="card-text" *ngFor="let bucket of aggregation.buckets">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"
+                 [id]="aggregation.name + bucket.key"
+                 [formControlName]="bucket.key">
+          <label class="form-check-label" [for]="aggregation.name + bucket.key">{{ bucket.key }} [{{ bucket.documentCount | number }}]</label>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

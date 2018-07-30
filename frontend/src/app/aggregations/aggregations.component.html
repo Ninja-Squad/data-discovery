@@ -1,0 +1,7 @@
+<div *ngIf="aggregations?.length">
+  <div *ngFor="let aggregation of aggregations">
+    <rare-aggregation [aggregation]="aggregation"
+                      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+                      (aggregationChange)="onAggregationChange($event)"></rare-aggregation>
+  </div>
+</div>

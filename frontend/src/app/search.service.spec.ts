@@ -2,9 +2,9 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
 
-import { toGeneticResource, toSinglePage } from './models/test-model-generators';
+import { toAggregation, toAggregationCriterion, toGeneticResource, toSinglePage } from './models/test-model-generators';
 import { SearchService } from './search.service';
-import { Page } from './models/page';
+import { AggregatedPage } from './models/page';
 import { GeneticResourceModel } from './models/genetic-resource.model';
 
 describe('SearchService', () => {
@@ -21,8 +21,8 @@ describe('SearchService', () => {
   });
 
   it('should search for the query', () => {
-    let actualResults: Page<GeneticResourceModel>;
-    service.search('Bacteria', 2)
+    let actualResults: AggregatedPage<GeneticResourceModel>;
+    service.search('Bacteria', false, [], 2)
       .subscribe(results => actualResults = results);
 
     const resource = toGeneticResource('Bacteria');
@@ -30,8 +30,48 @@ describe('SearchService', () => {
 
     http.expectOne('/api/genetic-resources?query=Bacteria&page=1').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
+  });
 
-    http.verify();
+  it('should search for the query and fetch the aggregations', () => {
+    let actualResults: AggregatedPage<GeneticResourceModel>;
+    service.search('Bacteria', true, [], 1)
+      .subscribe(results => actualResults = results);
+
+    const resource = toGeneticResource('Bacteria');
+    const aggregation = toAggregation('coo', ['France', 'Italy']);
+    const expectedResults = toSinglePage([resource], [aggregation]);
+
+    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&agg=true').flush(expectedResults);
+    expect(actualResults).toEqual(expectedResults);
+  });
+
+  it('should search for the query and add the aggregations selected', () => {
+    let actualResults: AggregatedPage<GeneticResourceModel>;
+    const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
+    const domainCriteria = toAggregationCriterion('domain', ['Forest']);
+    service.search('Bacteria', false, [cooCriteria, domainCriteria], 1)
+      .subscribe(results => actualResults = results);
+
+    const resource = toGeneticResource('Bacteria');
+    const expectedResults = toSinglePage([resource]);
+
+    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&coo=France&coo=Italy&domain=Forest').flush(expectedResults);
+    expect(actualResults).toEqual(expectedResults);
+  });
+
+  it('should search for the query, fetch the aggregations and add the aggregations selected', () => {
+    let actualResults: AggregatedPage<GeneticResourceModel>;
+    const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
+    const domainCriteria = toAggregationCriterion('domain', ['Forest']);
+    service.search('Bacteria', true, [cooCriteria, domainCriteria], 1)
+      .subscribe(results => actualResults = results);
+
+    const resource = toGeneticResource('Bacteria');
+    const aggregation = toAggregation('coo', ['France', 'Italy']);
+    const expectedResults = toSinglePage([resource], [aggregation]);
+
+    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&agg=true&coo=France&coo=Italy&domain=Forest').flush(expectedResults);
+    expect(actualResults).toEqual(expectedResults);
   });
 
   it('should have a typeahead that suggests if text longer than 1, after 300 ms and only if changed', fakeAsync(() => {

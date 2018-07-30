@@ -1,25 +1,44 @@
-import { Page } from './page';
+import { AggregatedPage, Aggregation, Bucket } from './page';
 import { GeneticResourceModel } from './genetic-resource.model';
+import { AggregationCriterion } from './aggregation-criterion';
 
-export function toSinglePage<T>(content: Array<T>): Page<T> {
+export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
   return {
     content,
     number: 0,
     size: 20,
     totalElements: content.length,
     totalPages: 1,
-    maxResults: 10000
+    maxResults: 10000,
+    aggregations: aggregations || []
   };
 }
 
-export function toSecondPage<T>(content: Array<T>): Page<T> {
+export function toSecondPage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
   return {
     content,
     number: 1,
     size: 20,
     totalElements: 20 + content.length,
     totalPages: 2,
-    maxResults: 10000
+    maxResults: 10000,
+    aggregations: aggregations || []
+  };
+}
+
+export function toAggregation(name: string, values: Array<string>): Aggregation {
+  // creates a bucket for each value, with a document count of (index+1)*10
+  const buckets: Array<Bucket> = values.map((key, index) => ({ key, documentCount: (index + 1) * 10 }));
+  return {
+    name,
+    buckets
+  };
+}
+
+export function toAggregationCriterion(name: string, values: Array<string>): AggregationCriterion {
+  return {
+    name,
+    values
   };
 }
 

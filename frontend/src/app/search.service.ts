@@ -4,7 +4,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { GeneticResourceModel } from './models/genetic-resource.model';
-import { Page } from './models/page';
+import { AggregatedPage } from './models/page';
+import { AggregationCriterion } from './models/aggregation-criterion';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,24 @@ export class SearchService {
   /**
    * Searches genetic resources for the given query (full-text search), and retrieves the given page (starting at 1)
    */
-  search(query: string, pageAsNumber: number): Observable<Page<GeneticResourceModel>> {
+  search(query: string,
+         aggregate: boolean,
+         aggregationCriteria: Array<AggregationCriterion>,
+         pageAsNumber: number): Observable<AggregatedPage<GeneticResourceModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = (pageAsNumber - 1).toString();
-    return this.http.get<Page<GeneticResourceModel>>('/api/genetic-resources', {
-      params: { query, page }
+    // we built the search parameters
+    const params: { [key: string]: string | Array<string> } = { query, page };
+    // if we need to fetch the aggregation, add the `agg` parameter
+    if (aggregate) {
+      params.agg = 'true';
+    }
+    // if we have aggregation values, add them as domain=Plantae&domain=...
+    if (aggregationCriteria) {
+      aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
+    }
+    return this.http.get<AggregatedPage<GeneticResourceModel>>('/api/genetic-resources', {
+      params
     });
   }
 

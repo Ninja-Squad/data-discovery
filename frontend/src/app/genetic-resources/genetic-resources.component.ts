@@ -14,7 +14,7 @@ export class GeneticResourcesComponent {
   @Input() geneticResources: Page<GeneticResourceModel>;
 
   get firstResultIndex() {
-    return (this.geneticResources.number * this.geneticResources.size) + 1
+    return (this.geneticResources.number * this.geneticResources.size) + 1;
   }
 
   get lastResultIndex() {
