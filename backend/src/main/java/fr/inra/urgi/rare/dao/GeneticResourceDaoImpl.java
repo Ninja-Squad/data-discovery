@@ -1,6 +1,8 @@
 package fr.inra.urgi.rare.dao;
 
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 import java.util.Collections;
 import java.util.Set;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -52,9 +55,17 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     @Override
     public AggregatedPage<GeneticResource> search(String query,
                                                   boolean aggregate,
+                                                  SearchRefinements refinements,
                                                   Pageable page) {
+        BoolQueryBuilder boolQueryBuilder = boolQuery()
+            .must(multiMatchQuery(query, SEARCHABLE_FIELDS.toArray(new String[0])));
+
+        for (RareAggregation term : refinements.getTerms()) {
+            boolQueryBuilder.must(termsQuery(term.getField(), refinements.getRefinementsForTerm(term)));
+        }
+
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
-            .withQuery(multiMatchQuery(query, SEARCHABLE_FIELDS.toArray(new String[0])))
+            .withQuery(boolQueryBuilder)
             .withPageable(page);
 
         if (aggregate) {
@@ -63,6 +74,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
                                                           .field(rareAggregation.getField())
                                                           .size(MAX_BUCKETS)));
         }
+
         return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class);
     }
 }

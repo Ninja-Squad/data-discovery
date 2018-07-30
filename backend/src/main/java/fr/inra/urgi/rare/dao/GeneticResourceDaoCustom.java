@@ -18,5 +18,6 @@ public interface GeneticResourceDaoCustom {
      */
     AggregatedPage<GeneticResource> search(String query,
                                            boolean aggregate,
+                                           SearchRefinements refinements,
                                            Pageable page);
 }

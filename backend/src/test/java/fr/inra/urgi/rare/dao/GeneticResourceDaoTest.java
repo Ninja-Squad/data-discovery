@@ -12,6 +12,7 @@ import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +144,10 @@ class GeneticResourceDaoTest {
         GeneticResource geneticResource = new GeneticResourceBuilder().build();
         geneticResourceDao.save(geneticResource);
 
-        assertThat(geneticResourceDao.search(geneticResource.getId(), false, firstPage).getContent()).isEmpty();
+        assertThat(geneticResourceDao.search(geneticResource.getId(),
+                                             false,
+                                             SearchRefinements.EMPTY,
+                                             firstPage).getContent()).isEmpty();
     }
 
     @Test
@@ -152,7 +156,10 @@ class GeneticResourceDaoTest {
             new GeneticResourceBuilder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
         geneticResourceDao.save(geneticResource);
 
-        assertThat(geneticResourceDao.search("bar", false, firstPage).getContent()).isEmpty();
+        assertThat(geneticResourceDao.search("bar",
+                                             false,
+                                             SearchRefinements.EMPTY,
+                                             firstPage).getContent()).isEmpty();
     }
 
     private void shouldSearch(BiConsumer<GeneticResourceBuilder, String> config) {
@@ -162,11 +169,12 @@ class GeneticResourceDaoTest {
 
         geneticResourceDao.save(geneticResource);
 
-        AggregatedPage<GeneticResource> result = geneticResourceDao.search("bar", false, firstPage);
+        AggregatedPage<GeneticResource> result =
+            geneticResourceDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getAggregations()).isNull();
 
-        result = geneticResourceDao.search("bing", false, firstPage);
+        result = geneticResourceDao.search("bing", false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
     }
 
@@ -192,7 +200,8 @@ class GeneticResourceDaoTest {
 
         geneticResourceDao.saveAll(Arrays.asList(geneticResource1, geneticResource2));
 
-        AggregatedPage<GeneticResource> result = geneticResourceDao.search("foo", true, firstPage);
+        AggregatedPage<GeneticResource> result =
+            geneticResourceDao.search("foo", true, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(2);
 
         Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
@@ -214,6 +223,85 @@ class GeneticResourceDaoTest {
         assertThat(countryOfOrigin.getName()).isEqualTo(RareAggregation.COUNTRY_OF_ORIGIN.getName());
         assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("France");
         assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+    }
+
+    @Nested
+    class RefinementTest {
+        @BeforeEach
+        public void prepare() {
+            GeneticResource geneticResource1 = new GeneticResourceBuilder()
+                .withId("r1")
+                .withName("foo")
+                .withDomain("Plantae")
+                .withBiotopeType(Arrays.asList("Biotope", "Human host"))
+                .withMaterialType(Arrays.asList("Specimen", "DNA"))
+                .withCountryOfOrigin("France")
+                .withDescription("hello world")
+                .build();
+
+            GeneticResource geneticResource2 = new GeneticResourceBuilder()
+                .withId("r2")
+                .withName("bar foo")
+                .withDomain("Fungi")
+                .withBiotopeType(Arrays.asList("Biotope"))
+                .withMaterialType(Arrays.asList("DNA"))
+                .withCountryOfOrigin("France")
+                .withDescription("hello world")
+                .build();
+
+            geneticResourceDao.saveAll(Arrays.asList(geneticResource1, geneticResource2));
+        }
+
+        @Test
+        public void shouldApplyRefinementsOnSingleTermWithOr() {
+            SearchRefinements refinements =
+                SearchRefinements.builder()
+                                 .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Plantae"))
+                                 .build();
+
+            AggregatedPage<GeneticResource> result =
+                geneticResourceDao.search("hello", false, refinements, firstPage);
+
+            assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r1");
+
+            refinements = SearchRefinements.builder()
+                                           .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Fungi"))
+                                           .build();
+            result =
+                geneticResourceDao.search("hello", false, refinements, firstPage);
+            assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r2");
+
+            refinements = SearchRefinements.builder()
+                                           .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting"))
+                                           .build();
+            result =
+                geneticResourceDao.search("hello", false, refinements, firstPage);
+            assertThat(result.getContent()).extracting(GeneticResource::getId).isEmpty();
+        }
+
+        @Test
+        public void shouldApplyRefinementsOnMultipleTermsWithAnd() {
+            SearchRefinements refinements =
+                SearchRefinements.builder()
+                                 .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Fungi"))
+                                 .withTerm(RareAggregation.BIOTOPE, Arrays.asList("unexisting", "Biotope"))
+                                 .build();
+
+            AggregatedPage<GeneticResource> result =
+                geneticResourceDao.search("hello", false, refinements, firstPage);
+
+            assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r2");
+
+            refinements =
+                SearchRefinements.builder()
+                                 .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Fungi"))
+                                 .withTerm(RareAggregation.BIOTOPE, Arrays.asList("Human host"))
+                                 .build();
+
+            result =
+                geneticResourceDao.search("hello", false, refinements, firstPage);
+            assertThat(result.getContent()).isEmpty();
+        }
     }
 }
 

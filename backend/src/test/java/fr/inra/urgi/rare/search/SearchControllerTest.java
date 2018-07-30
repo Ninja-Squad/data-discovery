@@ -10,6 +10,8 @@ import java.util.Collections;
 
 import fr.inra.urgi.rare.config.SecurityConfig;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.RareAggregation;
+import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -48,7 +50,7 @@ class SearchControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
-        when(mockGeneticResourceDao.search(query, false, pageRequest))
+        when(mockGeneticResourceDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
         mockMvc.perform(get("/api/genetic-resources").param("query", query))
@@ -71,7 +73,7 @@ class SearchControllerTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
 
-        when(mockGeneticResourceDao.search(query, true, pageRequest))
+        when(mockGeneticResourceDao.search(query, true, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(resource),
                 pageRequest,
@@ -100,5 +102,29 @@ class SearchControllerTest {
                .andExpect(jsonPath("$.aggregations[0].buckets[1].key").value("Fungi"))
                .andExpect(jsonPath("$.aggregations[0].buckets[1].documentCount").value(2))
                .andExpect(jsonPath("$.aggregations[1].name").value("countryOfOrigin"));
+    }
+
+    @Test
+    void shouldSearchWIthRefinements() throws Exception {
+        PageRequest pageRequest = PageRequest.of(1, SearchController.PAGE_SIZE);
+        String query = "pauca";
+
+        SearchRefinements expectedRefinements =
+            SearchRefinements.builder()
+                             .withTerm(RareAggregation.DOMAIN, Arrays.asList("d1"))
+                             .withTerm(RareAggregation.BIOTOPE, Arrays.asList("b1", "b2"))
+                             .withTerm(RareAggregation.MATERIAL, Arrays.asList("m1"))
+                             .build();
+
+        when(mockGeneticResourceDao.search(query, false, expectedRefinements, pageRequest))
+            .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
+
+        mockMvc.perform(get("/api/genetic-resources")
+                            .param("query", query)
+                            .param("page", "1")
+                            .param(RareAggregation.DOMAIN.getName(), "d1")
+                            .param(RareAggregation.BIOTOPE.getName(), "b2", "b1")
+                            .param(RareAggregation.MATERIAL.getName(), "m1"))
+               .andExpect(status().isOk());
     }
 }
