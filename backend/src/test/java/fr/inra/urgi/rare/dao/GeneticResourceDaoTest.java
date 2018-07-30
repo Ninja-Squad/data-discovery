@@ -2,12 +2,15 @@ package fr.inra.urgi.rare.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.BiConsumer;
 
 import fr.inra.urgi.rare.config.ElasticSearchConfig;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -139,7 +143,7 @@ class GeneticResourceDaoTest {
         GeneticResource geneticResource = new GeneticResourceBuilder().build();
         geneticResourceDao.save(geneticResource);
 
-        assertThat(geneticResourceDao.search(geneticResource.getId(), firstPage).getContent()).isEmpty();
+        assertThat(geneticResourceDao.search(geneticResource.getId(), false, firstPage).getContent()).isEmpty();
     }
 
     @Test
@@ -148,7 +152,7 @@ class GeneticResourceDaoTest {
             new GeneticResourceBuilder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
         geneticResourceDao.save(geneticResource);
 
-        assertThat(geneticResourceDao.search("bar", firstPage).getContent()).isEmpty();
+        assertThat(geneticResourceDao.search("bar", false, firstPage).getContent()).isEmpty();
     }
 
     private void shouldSearch(BiConsumer<GeneticResourceBuilder, String> config) {
@@ -158,8 +162,58 @@ class GeneticResourceDaoTest {
 
         geneticResourceDao.save(geneticResource);
 
-        assertThat(geneticResourceDao.search("bar", firstPage).getContent()).hasSize(1);
-        assertThat(geneticResourceDao.search("bing", firstPage).getContent()).isEmpty();
+        AggregatedPage<GeneticResource> result = geneticResourceDao.search("bar", false, firstPage);
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getAggregations()).isNull();
+
+        result = geneticResourceDao.search("bing", false, firstPage);
+        assertThat(result.getContent()).isEmpty();
+    }
+
+    @Test
+    public void shouldSearchAndAggregate() {
+        GeneticResource geneticResource1 = new GeneticResourceBuilder()
+            .withId("r1")
+            .withName("foo")
+            .withDomain("Plantae")
+            .withBiotopeType(Arrays.asList("Biotope", "Human host"))
+            .withMaterialType(Arrays.asList("Specimen", "DNA"))
+            .withCountryOfOrigin("France")
+            .build();
+
+        GeneticResource geneticResource2 = new GeneticResourceBuilder()
+            .withId("r2")
+            .withName("bar foo")
+            .withDomain("Fungi")
+            .withBiotopeType(Arrays.asList("Biotope"))
+            .withMaterialType(Arrays.asList("DNA"))
+            .withCountryOfOrigin("France")
+            .build();
+
+        geneticResourceDao.saveAll(Arrays.asList(geneticResource1, geneticResource2));
+
+        AggregatedPage<GeneticResource> result = geneticResourceDao.search("foo", true, firstPage);
+        assertThat(result.getContent()).hasSize(2);
+
+        Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
+        assertThat(domain.getName()).isEqualTo(RareAggregation.DOMAIN.getName());
+        assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
+        assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+        Terms biotopeType = result.getAggregations().get(RareAggregation.BIOTOPE.getName());
+        assertThat(biotopeType.getName()).isEqualTo(RareAggregation.BIOTOPE.getName());
+        assertThat(biotopeType.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("Biotope", "Human host");
+        assertThat(biotopeType.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L, 1L);
+
+        Terms materialType = result.getAggregations().get(RareAggregation.MATERIAL.getName());
+        assertThat(materialType.getName()).isEqualTo(RareAggregation.MATERIAL.getName());
+        assertThat(materialType.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("DNA", "Specimen");
+        assertThat(materialType.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L, 1L);
+
+        Terms countryOfOrigin = result.getAggregations().get(RareAggregation.COUNTRY_OF_ORIGIN.getName());
+        assertThat(countryOfOrigin.getName()).isEqualTo(RareAggregation.COUNTRY_OF_ORIGIN.getName());
+        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("France");
+        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
     }
 }
 

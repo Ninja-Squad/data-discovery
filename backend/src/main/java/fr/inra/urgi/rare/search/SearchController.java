@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
-import fr.inra.urgi.rare.dto.PageDTO;
+import fr.inra.urgi.rare.dto.AggregatedPageDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +27,13 @@ public class SearchController {
     }
 
     @GetMapping
-    public PageDTO<GeneticResource> search(@RequestParam("query") String query, Optional<Integer> page) {
-        return PageDTO.fromPage(geneticResourceDao.search(query, PageRequest.of(page.orElse(0), PAGE_SIZE)));
+    public AggregatedPageDTO<GeneticResource> search(@RequestParam("query") String query,
+                                                     @RequestParam("agg") Optional<Boolean> agg,
+                                                     @RequestParam("page") Optional<Integer> page) {
+        boolean aggregate = agg.orElse(false);
+        return AggregatedPageDTO.fromPage(geneticResourceDao.search(query,
+                                                                    aggregate,
+                                                                    PageRequest.of(page.orElse(0), PAGE_SIZE)));
+
     }
 }

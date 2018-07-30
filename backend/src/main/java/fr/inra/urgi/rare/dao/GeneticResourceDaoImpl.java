@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
-import org.springframework.data.domain.Page;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 /**
@@ -19,6 +19,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
  * @author JB Nizet
  */
 public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
+
+    private static final int MAX_BUCKETS = 100;
 
     /**
      * Contains the fields searchable on a {@link GeneticResource}.
@@ -48,11 +50,19 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     }
 
     @Override
-    public Page<GeneticResource> search(String query, Pageable page) {
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+    public AggregatedPage<GeneticResource> search(String query,
+                                                  boolean aggregate,
+                                                  Pageable page) {
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
             .withQuery(multiMatchQuery(query, SEARCHABLE_FIELDS.toArray(new String[0])))
-            .withPageable(page)
-            .build();
-        return elasticsearchTemplate.queryForPage(searchQuery, GeneticResource.class);
+            .withPageable(page);
+
+        if (aggregate) {
+            Stream.of(RareAggregation.values()).forEach(rareAggregation ->
+                builder.addAggregation(AggregationBuilders.terms(rareAggregation.getName())
+                                                          .field(rareAggregation.getField())
+                                                          .size(MAX_BUCKETS)));
+        }
+        return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class);
     }
 }

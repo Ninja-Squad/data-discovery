@@ -6,19 +6,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import fr.inra.urgi.rare.config.SecurityConfig;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -46,14 +48,57 @@ class SearchControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
-        when(mockGeneticResourceDao.search(query, pageRequest))
-            .thenReturn(new PageImpl<>(Arrays.asList(resource), pageRequest, 1));
+        when(mockGeneticResourceDao.search(query, false, pageRequest))
+            .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
         mockMvc.perform(get("/api/genetic-resources").param("query", query))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
                .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
                .andExpect(jsonPath("$.content[0].name").value(resource.getName()))
-               .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()));
+               .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()))
+               .andExpect(jsonPath("$.aggregations").isEmpty());
+    }
+
+    @Test
+    void shouldSearchAndAggregate() throws Exception {
+        GeneticResource resource = new GeneticResourceBuilder()
+            .withId("CFBP 8402")
+            .withName("CFBP 8402")
+            .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
+            .build();
+
+        PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
+        String query = "pauca";
+
+        when(mockGeneticResourceDao.search(query, true, pageRequest))
+            .thenReturn(new AggregatedPageImpl<>(
+                Arrays.asList(resource),
+                pageRequest,
+                1,
+                new Aggregations(
+                    Arrays.asList(new MockTermsAggregation("domain",
+                                                           Arrays.asList(new MockBucket("Plantae", 123),
+                                                                         new MockBucket("Fungi", 2))),
+                                  new MockTermsAggregation("countryOfOrigin",
+                                                           Collections.emptyList())))
+                ));
+
+        mockMvc.perform(get("/api/genetic-resources")
+                            .param("query", query)
+                            .param("agg", "true"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.number").value(0))
+               .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
+               .andExpect(jsonPath("$.content[0].name").value(resource.getName()))
+               .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()))
+               .andExpect(jsonPath("$.aggregations").isArray())
+               .andExpect(jsonPath("$.aggregations[0].name").value("domain"))
+               .andExpect(jsonPath("$.aggregations[0].buckets").isArray())
+               .andExpect(jsonPath("$.aggregations[0].buckets[0].key").value("Plantae"))
+               .andExpect(jsonPath("$.aggregations[0].buckets[0].documentCount").value(123))
+               .andExpect(jsonPath("$.aggregations[0].buckets[1].key").value("Fungi"))
+               .andExpect(jsonPath("$.aggregations[0].buckets[1].documentCount").value(2))
+               .andExpect(jsonPath("$.aggregations[1].name").value("countryOfOrigin"));
     }
 }

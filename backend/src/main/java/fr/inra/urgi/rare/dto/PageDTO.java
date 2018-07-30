@@ -47,10 +47,10 @@ public final class PageDTO<T> {
 
     public static <T> PageDTO<T> fromPage(Page<T> page) {
         return new PageDTO<>(page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages());
+                             page.getNumber(),
+                             page.getSize(),
+                             page.getTotalElements(),
+                             page.getTotalPages());
     }
 
     public static <T, R> PageDTO<R> fromPage(Page<T> page, Function<T, R> mapper) {
