@@ -80,10 +80,10 @@ class SearchControllerTest {
                 pageRequest,
                 1,
                 new Aggregations(
-                    Arrays.asList(new MockTermsAggregation("domain",
+                    Arrays.asList(new MockTermsAggregation(RareAggregation.DOMAIN.getName(),
                                                            Arrays.asList(new MockBucket("Plantae", 123),
                                                                          new MockBucket("Fungi", 2))),
-                                  new MockTermsAggregation("countryOfOrigin",
+                                  new MockTermsAggregation(RareAggregation.COUNTRY_OF_ORIGIN.getName(),
                                                            Collections.emptyList())))
                 ));
 
@@ -96,13 +96,14 @@ class SearchControllerTest {
                .andExpect(jsonPath("$.content[0].name").value(resource.getName()))
                .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()))
                .andExpect(jsonPath("$.aggregations").isArray())
-               .andExpect(jsonPath("$.aggregations[0].name").value("domain"))
+               .andExpect(jsonPath("$.aggregations[0].name").value(RareAggregation.DOMAIN.getName()))
                .andExpect(jsonPath("$.aggregations[0].buckets").isArray())
                .andExpect(jsonPath("$.aggregations[0].buckets[0].key").value("Plantae"))
                .andExpect(jsonPath("$.aggregations[0].buckets[0].documentCount").value(123))
                .andExpect(jsonPath("$.aggregations[0].buckets[1].key").value("Fungi"))
                .andExpect(jsonPath("$.aggregations[0].buckets[1].documentCount").value(2))
-               .andExpect(jsonPath("$.aggregations[1].name").value("countryOfOrigin"));
+               .andExpect(jsonPath("$.aggregations[0].type").value(RareAggregation.Type.SMALL.toString()))
+               .andExpect(jsonPath("$.aggregations[1].name").value(RareAggregation.COUNTRY_OF_ORIGIN.getName()));
     }
 
     @Test

@@ -23,8 +23,6 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
  */
 public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
 
-    private static final int MAX_BUCKETS = 100;
-
     /**
      * Contains the fields searchable on a {@link GeneticResource}.
      * This is basically all fields at the exception of a few ones like `identifier`,
@@ -72,7 +70,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
             Stream.of(RareAggregation.values()).forEach(rareAggregation ->
                 builder.addAggregation(AggregationBuilders.terms(rareAggregation.getName())
                                                           .field(rareAggregation.getField())
-                                                          .size(MAX_BUCKETS)));
+                                                          .size(rareAggregation.getType().getMaxBuckets())));
         }
 
         return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class);

@@ -187,6 +187,7 @@ class GeneticResourceDaoTest {
             .withBiotopeType(Arrays.asList("Biotope", "Human host"))
             .withMaterialType(Arrays.asList("Specimen", "DNA"))
             .withCountryOfOrigin("France")
+            .withTaxon(Arrays.asList("Vitis vinifera"))
             .build();
 
         GeneticResource geneticResource2 = new GeneticResourceBuilder()
@@ -196,6 +197,7 @@ class GeneticResourceDaoTest {
             .withBiotopeType(Arrays.asList("Biotope"))
             .withMaterialType(Arrays.asList("DNA"))
             .withCountryOfOrigin("France")
+            .withTaxon(Arrays.asList("Girolla mucha gusta"))
             .build();
 
         geneticResourceDao.saveAll(Arrays.asList(geneticResource1, geneticResource2));
@@ -223,6 +225,11 @@ class GeneticResourceDaoTest {
         assertThat(countryOfOrigin.getName()).isEqualTo(RareAggregation.COUNTRY_OF_ORIGIN.getName());
         assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("France");
         assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+
+        Terms taxon = result.getAggregations().get(RareAggregation.TAXON.getName());
+        assertThat(taxon.getName()).isEqualTo(RareAggregation.TAXON.getName());
+        assertThat(taxon.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Vitis vinifera", "Girolla mucha gusta");
+        assertThat(taxon.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
     }
 
     @Nested
