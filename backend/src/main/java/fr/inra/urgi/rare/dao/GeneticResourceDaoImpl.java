@@ -23,6 +23,7 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
@@ -32,7 +33,15 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
  */
 public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
 
+    /**
+     * The name of the completion suggestion
+     */
     private static final String COMPLETION = "completion";
+
+    /**
+     * The name of the field on which the completion suggester is applied
+     */
+    private static final String SUGGESTIONS_FIELD = "suggestions";
 
     /**
      * Contains the fields searchable on a {@link GeneticResource}.
@@ -75,6 +84,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
 
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
             .withQuery(boolQueryBuilder)
+            .withSourceFilter(new FetchSourceFilterBuilder().withExcludes(SUGGESTIONS_FIELD).build())
             .withPageable(page);
 
         if (aggregate) {
@@ -91,7 +101,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     public List<String> suggest(String term) {
         SuggestBuilder suggestion =
             new SuggestBuilder().addSuggestion(COMPLETION,
-                                               SuggestBuilders.completionSuggestion("suggestions")
+                                               SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
                                                               .text(term)
                                                               .size(8)
                                                               .skipDuplicates(true));
