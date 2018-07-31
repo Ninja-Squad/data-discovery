@@ -8,6 +8,8 @@ import fr.inra.urgi.rare.dao.RareAggregation;
 import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.dto.AggregatedPageDTO;
+import fr.inra.urgi.rare.dto.PageDTO;
+import fr.inra.urgi.rare.exception.BadRequestException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
     public static final int PAGE_SIZE = 20;
+
+    /**
+     * The maximum number of results that Elasticsearch accepts to paginate.
+     */
+    public static final int MAX_RESULTS = PageDTO.MAX_RESULTS;
 
     private GeneticResourceDao geneticResourceDao;
 
@@ -49,6 +56,8 @@ public class SearchController {
                                                      @RequestParam("page") Optional<Integer> page,
                                                      @RequestParam MultiValueMap<String, String> parameters) {
         boolean aggregate = agg.orElse(false);
+        int requestedPage = page.orElse(0);
+        validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(geneticResourceDao.search(query,
                                                                     aggregate,
                                                                     createRefinementsFromParameters(parameters),
@@ -66,5 +75,12 @@ public class SearchController {
         }
 
         return builder.build();
+    }
+
+    private void validatePage(int requestedPage) {
+        int maxPage = MAX_RESULTS / PAGE_SIZE;
+        if (requestedPage >= maxPage) {
+            throw new BadRequestException("The requested page is too high. It must be less than " + maxPage);
+        }
     }
 }

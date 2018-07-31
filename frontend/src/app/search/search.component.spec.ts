@@ -13,6 +13,7 @@ import { GeneticResourcesComponent } from '../genetic-resources/genetic-resource
 import { GeneticResourceComponent } from '../genetic-resource/genetic-resource.component';
 import { SearchService } from '../search.service';
 import { toGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
+import { GeneticResourceModel } from '../models/genetic-resource.model';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -179,6 +180,32 @@ describe('SearchComponent', () => {
     const paginationComponent = tester.pagination.componentInstance as NgbPagination;
     expect(paginationComponent.page).toBe(2);
     expect(paginationComponent.pageCount).toBe(2);
+  });
+
+  it('should limit pagination to 500 pages, even if more results', () => {
+    // given a component
+    const tester = new SearchComponentTester();
+    const component = tester.componentInstance;
+
+    // when it has results
+    const content: Array<GeneticResourceModel> = [];
+    for (let i = 0; i < 20; i++) {
+      content.push(toGeneticResource(`Bacteria ${i}`));
+    }
+
+    // in page 200 on a limited number of pages
+    component.results = toSinglePage(content);
+    component.results.totalElements = 12000;
+    component.results.totalPages = 500;
+    component.results.number = 200;
+    tester.detectChanges();
+
+    // then it should limit the pagination to 500 pages in the pagination
+    // and a pagination with one page
+    expect(tester.pagination).not.toBeNull();
+    const paginationComponent = tester.pagination.componentInstance as NgbPagination;
+    expect(paginationComponent.page).toBe(201);
+    expect(paginationComponent.pageCount).toBe(500);
   });
 
   it('should hide results and pagination on a new search', () => {

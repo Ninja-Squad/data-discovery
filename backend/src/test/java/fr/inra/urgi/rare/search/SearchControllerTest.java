@@ -56,6 +56,7 @@ class SearchControllerTest {
         mockMvc.perform(get("/api/genetic-resources").param("query", query))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
+               .andExpect(jsonPath("$.maxResults").value(SearchController.MAX_RESULTS))
                .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
                .andExpect(jsonPath("$.content[0].name").value(resource.getName()))
                .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()))
@@ -126,5 +127,16 @@ class SearchControllerTest {
                             .param(RareAggregation.BIOTOPE.getName(), "b2", "b1")
                             .param(RareAggregation.MATERIAL.getName(), "m1"))
                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldThrowIfPageTooLarge() throws Exception {
+        int page = SearchController.MAX_RESULTS / SearchController.PAGE_SIZE;
+        String query = "pauca";
+
+        mockMvc.perform(get("/api/genetic-resources")
+                            .param("query", query)
+                            .param("page", Integer.toString(page)))
+               .andExpect(status().isBadRequest());
     }
 }

@@ -13,6 +13,11 @@ import org.springframework.data.domain.Page;
  */
 public final class PageDTO<T> {
     /**
+     * The maximum number of results that Elasticsearch accepts to paginate.
+     */
+    public static final int MAX_RESULTS = 10_000;
+
+    /**
      * The elements in this page. Its size is less than or equal to {@link #size}
      */
     private final List<T> content;
@@ -50,7 +55,7 @@ public final class PageDTO<T> {
                              page.getNumber(),
                              page.getSize(),
                              page.getTotalElements(),
-                             page.getTotalPages());
+                             Math.min(page.getTotalPages(), MAX_RESULTS / page.getSize()));
     }
 
     public static <T, R> PageDTO<R> fromPage(Page<T> page, Function<T, R> mapper) {
@@ -58,7 +63,7 @@ public final class PageDTO<T> {
                               page.getNumber(),
                               page.getSize(),
                               page.getTotalElements(),
-                              page.getTotalPages());
+                              Math.min(page.getTotalPages(), MAX_RESULTS / page.getSize()));
     }
 
     public List<T> getContent() {
@@ -79,5 +84,9 @@ public final class PageDTO<T> {
 
     public int getTotalPages() {
         return totalPages;
+    }
+
+    public int getMaxResults() {
+        return MAX_RESULTS;
     }
 }

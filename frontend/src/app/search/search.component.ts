@@ -62,6 +62,10 @@ export class SearchComponent implements OnInit {
     this.search(requestedPage);
   }
 
+  collectionSize() {
+    return Math.min(this.results.totalElements, this.results.maxResults);
+  }
+
   private search(page?: number) {
     this.router.navigate(['.'], {
       relativeTo: this.route,
