@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -26,6 +27,7 @@ import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SourceFilter;
 
 /**
  * Implementation of {@link GeneticResourceDaoCustom}
@@ -75,16 +77,26 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
                                                   boolean aggregate,
                                                   SearchRefinements refinements,
                                                   Pageable page) {
-        BoolQueryBuilder boolQueryBuilder = boolQuery()
-            .must(multiMatchQuery(query, SEARCHABLE_FIELDS.toArray(new String[0])));
 
+        // this full text query is executed, and its results are used to compute aggregations
+        MultiMatchQueryBuilder fullTextQuery = multiMatchQuery(query, SEARCHABLE_FIELDS.toArray(new String[0]));
+
+        // this post filter query is applied, after the aggregation have been computed, to apply the
+        // refinements (i.e. the aggregation/facet criteria).
+        // See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
+        BoolQueryBuilder refinementQuery = boolQuery();
         for (RareAggregation term : refinements.getTerms()) {
-            boolQueryBuilder.must(termsQuery(term.getField(), refinements.getRefinementsForTerm(term)));
+            refinementQuery.must(termsQuery(term.getField(), refinements.getRefinementsForTerm(term)));
         }
 
+        // this allows avoiding to get back the suggestions field in the found documents, since we don't care
+        // about them, and they're large
+        SourceFilter sourceFilter = new FetchSourceFilterBuilder().withExcludes(SUGGESTIONS_FIELD).build();
+
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
-            .withQuery(boolQueryBuilder)
-            .withSourceFilter(new FetchSourceFilterBuilder().withExcludes(SUGGESTIONS_FIELD).build())
+            .withQuery(fullTextQuery)
+            .withSourceFilter(sourceFilter)
+            .withFilter(refinementQuery)
             .withPageable(page);
 
         if (aggregate) {

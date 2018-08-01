@@ -425,6 +425,35 @@ class GeneticResourceDaoTest {
                 geneticResourceDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).isEmpty();
         }
+
+        @Test
+        public void shouldApplyRefinementsAfterAggregating() {
+            SearchRefinements refinements =
+                SearchRefinements.builder()
+                                 .withTerm(RareAggregation.DOMAIN, Arrays.asList("Plantae"))
+                                 .build();
+
+            AggregatedPage<GeneticResource> result =
+                geneticResourceDao.search("hello", true, refinements, firstPage);
+
+            assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r1");
+
+            // aggregations are computed based on the result of the full-text-query, not based on the result
+            // of the refinements
+            Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
+            assertThat(domain.getBuckets()).hasSize(2);
+            assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
+            assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+            result = geneticResourceDao.search("Human", true, refinements, firstPage);
+
+            assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r1");
+
+            domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
+            assertThat(domain.getBuckets()).hasSize(1);
+            assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae");
+            assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        }
     }
 
     private void shouldSuggest(BiConsumer<GeneticResourceBuilder, String> config) {
