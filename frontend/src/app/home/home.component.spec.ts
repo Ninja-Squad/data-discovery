@@ -8,6 +8,8 @@ import { HomeComponent } from './home.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { SearchService } from '../search.service';
+import { PillarsComponent } from '../pillars/pillars.component';
+import { By } from '@angular/platform-browser';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -21,12 +23,17 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
   get searchButton() {
     return this.button('button');
   }
+
+  get pillarsComponent() {
+    return this.debugElement.query(By.directive(PillarsComponent));
+  }
 }
 
 describe('HomeComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, NgbTypeaheadModule.forRoot()],
-    declarations: [HomeComponent]
+    declarations: [HomeComponent, PillarsComponent],
+    providers: [HttpClientTestingModule]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
@@ -69,5 +76,12 @@ describe('HomeComponent', () => {
     tester.searchButton.click();
     expect(component.search).toHaveBeenCalled();
     expect(component.searchForm.get('search').value).toBe(query);
+  });
+
+  it('should display the pillars', () => {
+    const tester = new HomeComponentTester();
+    tester.detectChanges();
+
+    expect(tester.pillarsComponent).not.toBeNull();
   });
 });

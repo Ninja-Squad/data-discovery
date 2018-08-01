@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import { LOCALE_ID } from '@angular/core';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { GeneticResourcesComponent } from './genetic-resources.component';
 import { GeneticResourceComponent } from '../genetic-resource/genetic-resource.component';
 import { toGeneticResource, toSinglePage } from '../models/test-model-generators';
-import { LOCALE_ID } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
 import { GeneticResourceModel } from '../models/genetic-resource.model';
 
 describe('GeneticResourcesComponent', () => {

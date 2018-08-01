@@ -15,6 +15,7 @@ import { GeneticResourcesComponent } from './genetic-resources/genetic-resources
 import { GeneticResourceComponent } from './genetic-resource/genetic-resource.component';
 import { AggregationsComponent } from './aggregations/aggregations.component';
 import { AggregationComponent } from './aggregation/aggregation.component';
+import { PillarsComponent } from './pillars/pillars.component';
 
 registerLocaleData(localeFr);
 
@@ -26,7 +27,8 @@ registerLocaleData(localeFr);
     GeneticResourcesComponent,
     GeneticResourceComponent,
     AggregationsComponent,
-    AggregationComponent
+    AggregationComponent,
+    PillarsComponent
   ],
   imports: [
     BrowserModule,
