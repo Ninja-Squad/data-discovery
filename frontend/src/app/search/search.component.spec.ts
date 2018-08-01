@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbPagination, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
 import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
@@ -50,7 +51,8 @@ describe('SearchComponent', () => {
       RouterTestingModule,
       HttpClientTestingModule,
       NgbPaginationModule.forRoot(),
-      NgbTypeaheadModule.forRoot()
+      NgbTypeaheadModule.forRoot(),
+      NoopAnimationsModule
     ],
     declarations: [SearchComponent, GeneticResourcesComponent, GeneticResourceComponent, AggregationsComponent, AggregationComponent]
   }));
@@ -236,6 +238,27 @@ describe('SearchComponent', () => {
         domain
       }
     });
+  });
+
+  it('should toggle filters', () => {
+    // given a component
+    const router = TestBed.get(Router) as Router;
+    const searchService = TestBed.get(SearchService) as SearchService;
+    const activatedRoute = fakeRoute({});
+    const component = new SearchComponent(activatedRoute, router, searchService);
+    expect(component.filters).toBe('hide');
+
+    // when toggling filters
+    component.toggleFilters();
+
+    // then it should show the filters
+    expect(component.filters).toBe('show');
+
+    // when toggling filters again
+    component.toggleFilters();
+
+    // then it should hide the filters
+    expect(component.filters).toBe('hide');
   });
 
   it('should display a search bar and trigger a search', () => {
