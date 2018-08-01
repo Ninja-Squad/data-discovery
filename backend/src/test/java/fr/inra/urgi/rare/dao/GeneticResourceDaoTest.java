@@ -348,6 +348,82 @@ class GeneticResourceDaoTest {
         assertThat(taxon.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
     }
 
+    @Test
+    public void shouldFindPillars() {
+        GeneticResource resource1 = new GeneticResourceBuilder()
+            .withId("r1")
+            .withPillarName("P1")
+            .withDatabaseSource("D11")
+            .withPortalURL("D11Url")
+            .build();
+
+        GeneticResource resource2 = new GeneticResourceBuilder()
+            .withId("r2")
+            .withPillarName("P1")
+            .withDatabaseSource("D11")
+            .withPortalURL("D11Url")
+            .build();
+
+        GeneticResource resource3 = new GeneticResourceBuilder()
+            .withId("r3")
+            .withPillarName("P1")
+            .withDatabaseSource("D12")
+            .withPortalURL("D12Url")
+            .build();
+
+        GeneticResource resource4 = new GeneticResourceBuilder()
+            .withId("r4")
+            .withPillarName("P2")
+            .withDatabaseSource("D21")
+            .withPortalURL("D21Url")
+            .build();
+
+        GeneticResource resource5 = new GeneticResourceBuilder()
+            .withId("r5")
+            .withPillarName("P2")
+            .withDatabaseSource("D22")
+            .build();
+
+        geneticResourceDao.saveAll(Arrays.asList(resource1, resource2, resource3, resource4, resource5));
+
+        Terms pillars = geneticResourceDao.findPillars();
+
+        assertThat(pillars.getBuckets()).hasSize(2);
+
+        Bucket p1 = pillars.getBucketByKey("P1");
+
+        Terms databaseSource = p1.getAggregations().get(GeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME);
+        assertThat(databaseSource.getBuckets()).hasSize(2);
+
+        Bucket d11 = databaseSource.getBucketByKey("D11");
+        assertThat(d11.getDocCount()).isEqualTo(2);
+        Terms d11Url = d11.getAggregations().get(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME);
+        assertThat(d11Url.getBuckets()).hasSize(1);
+        assertThat(d11Url.getBuckets().get(0).getKeyAsString()).isEqualTo("D11Url");
+
+        Bucket d12 = databaseSource.getBucketByKey("D12");
+        assertThat(d12.getDocCount()).isEqualTo(1);
+        Terms d12Url = d12.getAggregations().get(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME);
+        assertThat(d12Url.getBuckets()).hasSize(1);
+        assertThat(d12Url.getBuckets().get(0).getKeyAsString()).isEqualTo("D12Url");
+
+        Bucket p2 = pillars.getBucketByKey("P2");
+
+        databaseSource = p2.getAggregations().get(GeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME);
+        assertThat(databaseSource.getBuckets()).hasSize(2);
+
+        Bucket d21 = databaseSource.getBucketByKey("D21");
+        assertThat(d21.getDocCount()).isEqualTo(1);
+        Terms d21Url = d21.getAggregations().get(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME);
+        assertThat(d21Url.getBuckets()).hasSize(1);
+        assertThat(d21Url.getBuckets().get(0).getKeyAsString()).isEqualTo("D21Url");
+
+        Bucket d22 = databaseSource.getBucketByKey("D22");
+        assertThat(d22.getDocCount()).isEqualTo(1);
+        Terms d22Url = d22.getAggregations().get(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME);
+        assertThat(d22Url.getBuckets()).isEmpty();
+    }
+
     @Nested
     class RefinementTest {
         @BeforeEach

@@ -15,10 +15,16 @@ public final class MockBucket implements Bucket {
 
     private final String key;
     private final long docCount;
+    private final Aggregations aggregations;
 
     public MockBucket(String key, long docCount) {
+        this(key, docCount, null);
+    }
+
+    public MockBucket(String key, long docCount, Aggregations subAggregations) {
         this.key = key;
         this.docCount = docCount;
+        this.aggregations = subAggregations;
     }
 
     @Override
@@ -48,7 +54,7 @@ public final class MockBucket implements Bucket {
 
     @Override
     public Aggregations getAggregations() {
-        throw new UnsupportedOperationException();
+        return this.aggregations;
     }
 
     @Override

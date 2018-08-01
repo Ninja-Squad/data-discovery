@@ -1,8 +1,6 @@
 package fr.inra.urgi.rare.dao;
 
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,16 +10,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
@@ -143,10 +145,88 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
         elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(GeneticResource.class).getIndexName());
     }
 
+    @Override
+    public Terms findPillars() {
+        String pillarAggregationName = "pillar";
+        TermsAggregationBuilder pillar =
+            AggregationBuilders.terms(pillarAggregationName).field("pillarName.keyword").size(100);
+        TermsAggregationBuilder databaseSource =
+            AggregationBuilders.terms(DATABASE_SOURCE_AGGREGATION_NAME).field("databaseSource.keyword").size(100);
+        TermsAggregationBuilder portalURL =
+            AggregationBuilders.terms(PORTAL_URL_AGGREGATION_NAME).field("portalURL.keyword").size(2);
+        databaseSource.subAggregation(portalURL);
+        pillar.subAggregation(databaseSource);
+
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
+            .withQuery(new MatchAllQueryBuilder())
+            .addAggregation(pillar)
+            .withPageable(NoPage.INSTANCE);
+
+        AggregatedPage<GeneticResource> geneticResources = elasticsearchTemplate.queryForPage(builder.build(),
+                                                                                              GeneticResource.class);
+        return geneticResources.getAggregations().get(pillarAggregationName);
+    }
+
     private IndexQuery createIndexQuery(IndexedGeneticResource entity) {
         IndexQuery query = new IndexQuery();
         query.setObject(entity);
         query.setId(entity.getGeneticResource().getId());
         return query;
+    }
+
+    /**
+     * A Pageable implementation allowing to avoid loading any page (i.e. with a size equal to 0), because we
+     * are not interested in loading search results, but only the aggregations
+     * (see https://www.elastic.co/guide/en/elasticsearch/reference/6.3/returning-only-agg-results.html).
+     *
+     * We would normally use a {@link org.springframework.data.domain.PageRequest} as an implementation of
+     * {@link Pageable}, but PageRequest considers 0 as an invalid size. Hence this implementation.
+     */
+    private static final class NoPage implements Pageable {
+
+        public static final NoPage INSTANCE = new NoPage();
+
+        private NoPage() {
+        }
+
+        @Override
+        public int getPageNumber() {
+            return 0;
+        }
+
+        @Override
+        public int getPageSize() {
+            return 0;
+        }
+
+        @Override
+        public long getOffset() {
+            return 0;
+        }
+
+        @Override
+        public Sort getSort() {
+            return null;
+        }
+
+        @Override
+        public Pageable next() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Pageable previousOrFirst() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Pageable first() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return false;
+        }
     }
 }

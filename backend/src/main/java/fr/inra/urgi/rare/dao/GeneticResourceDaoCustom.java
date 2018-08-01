@@ -5,6 +5,7 @@ import java.util.List;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 
@@ -13,6 +14,9 @@ import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
  * @author JB Nizet
  */
 public interface GeneticResourceDaoCustom {
+
+    String DATABASE_SOURCE_AGGREGATION_NAME = "databaseSource";
+    String PORTAL_URL_AGGREGATION_NAME = "portalURL";
 
     /**
      * Searches for the given text anywhere (except in identifier, URL and numeric fields) in the genetic resources,
@@ -41,4 +45,6 @@ public interface GeneticResourceDaoCustom {
      * a specific DAO would do.
      */
     void saveAll(Collection<IndexedGeneticResource> indexedGeneticResources);
+
+    Terms findPillars();
 }

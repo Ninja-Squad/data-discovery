@@ -43,7 +43,13 @@
         },
         "portalURL": {
             "type": "text",
-            "index": false
+            "index": false,
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
         },
         "dataURL": {
             "type": "text",
