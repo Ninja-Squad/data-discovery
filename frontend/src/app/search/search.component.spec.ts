@@ -17,6 +17,7 @@ import { GeneticResourceModel } from '../models/genetic-resource.model';
 import { toAggregation, toGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { AggregationComponent } from '../aggregation/aggregation.component';
+import { AggregationNamePipe } from '../aggregation-name.pipe';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -54,7 +55,14 @@ describe('SearchComponent', () => {
       NgbTypeaheadModule.forRoot(),
       NoopAnimationsModule
     ],
-    declarations: [SearchComponent, GeneticResourcesComponent, GeneticResourceComponent, AggregationsComponent, AggregationComponent]
+    declarations: [
+      SearchComponent,
+      GeneticResourcesComponent,
+      GeneticResourceComponent,
+      AggregationsComponent,
+      AggregationComponent,
+      AggregationNamePipe
+    ]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));

@@ -17,6 +17,7 @@ import { GeneticResourceComponent } from './genetic-resource/genetic-resource.co
 import { AggregationsComponent } from './aggregations/aggregations.component';
 import { AggregationComponent } from './aggregation/aggregation.component';
 import { PillarsComponent } from './pillars/pillars.component';
+import { AggregationNamePipe } from './aggregation-name.pipe';
 
 registerLocaleData(localeFr);
 
@@ -29,7 +30,8 @@ registerLocaleData(localeFr);
     GeneticResourceComponent,
     AggregationsComponent,
     AggregationComponent,
-    PillarsComponent
+    PillarsComponent,
+    AggregationNamePipe
   ],
   imports: [
     BrowserAnimationsModule,

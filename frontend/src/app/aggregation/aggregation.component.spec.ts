@@ -5,6 +5,7 @@ import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { AggregationComponent } from './aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { AggregationNamePipe } from '../aggregation-name.pipe';
 
 describe('AggregationsComponent', () => {
 
@@ -30,7 +31,7 @@ describe('AggregationsComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule],
-    declarations: [AggregationComponent]
+    declarations: [AggregationComponent, AggregationNamePipe]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
@@ -43,7 +44,7 @@ describe('AggregationsComponent', () => {
     tester.detectChanges();
 
     // then it should display a title
-    expect(tester.title).toHaveText('coo');
+    expect(tester.title).toHaveText('Pays d\'origine');
     // and the buckets with their name and count
     expect(tester.labels.length).toBe(3);
     expect(tester.labels[0]).toContainText('France');

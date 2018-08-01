@@ -7,6 +7,7 @@ import { AggregationsComponent } from './aggregations.component';
 import { AggregationComponent } from '../aggregation/aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { AggregationNamePipe } from '../aggregation-name.pipe';
 
 describe('AggregationsComponent', () => {
 
@@ -22,7 +23,7 @@ describe('AggregationsComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule],
-    declarations: [AggregationsComponent, AggregationComponent]
+    declarations: [AggregationsComponent, AggregationComponent, AggregationNamePipe]
   }));
 
   it('should display no aggregations if null', () => {
