@@ -11,7 +11,10 @@
           <input class="form-check-input" type="checkbox"
                  [id]="aggregation.name + bucket.key"
                  [formControlName]="bucket.key">
-          <label class="form-check-label" [for]="aggregation.name + bucket.key">{{ bucket.key }} [{{ bucket.documentCount | number }}]</label>
+          <label class="form-check-label" [for]="aggregation.name + bucket.key">
+            <span>{{ bucket.key }}</span>
+            <small class="text-muted ml-1">[{{ bucket.documentCount | number }}]</small>
+          </label>
         </div>
       </div>
     </form>

@@ -46,9 +46,12 @@ describe('AggregationsComponent', () => {
     expect(tester.title).toHaveText('coo');
     // and the buckets with their name and count
     expect(tester.labels.length).toBe(3);
-    expect(tester.labels[0]).toHaveText('France [10]');
-    expect(tester.labels[1]).toHaveText('Italy [20]');
-    expect(tester.labels[2]).toHaveText('New Zealand [30]');
+    expect(tester.labels[0]).toContainText('France');
+    expect(tester.labels[0]).toContainText('[10]');
+    expect(tester.labels[1]).toContainText('Italy');
+    expect(tester.labels[1]).toContainText('[20]');
+    expect(tester.labels[2]).toContainText('New Zealand');
+    expect(tester.labels[2]).toContainText('[30]');
   });
 
   it('should not display an aggregation with empty buckets', () => {
