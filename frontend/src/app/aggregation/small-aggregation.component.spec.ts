@@ -2,19 +2,19 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
-import { AggregationComponent } from './aggregation.component';
+import { SmallAggregationComponent } from './small-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 
-describe('AggregationComponent', () => {
+describe('SmallAggregationComponent', () => {
 
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand']);
 
-  class AggregationComponentTester extends ComponentTester<AggregationComponent> {
+  class SmallAggregationComponentTester extends ComponentTester<SmallAggregationComponent> {
     constructor() {
-      super(AggregationComponent);
+      super(SmallAggregationComponent);
     }
 
     get title() {
@@ -32,13 +32,13 @@ describe('AggregationComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule],
-    declarations: [AggregationComponent, AggregationNamePipe, DocumentCountComponent]
+    declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display an aggregation with buckets', () => {
-    const tester = new AggregationComponentTester();
+    const tester = new SmallAggregationComponentTester();
 
     // given an aggregation
     tester.componentInstance.aggregation = aggregation;
@@ -57,7 +57,7 @@ describe('AggregationComponent', () => {
   });
 
   it('should not display an aggregation with empty buckets', () => {
-    const tester = new AggregationComponentTester();
+    const tester = new SmallAggregationComponentTester();
 
     // given an aggregation
     tester.componentInstance.aggregation = toAggregation('coo', []);
@@ -69,13 +69,12 @@ describe('AggregationComponent', () => {
     expect(tester.labels.length).toBe(0);
   });
 
-
   it('should extract keys from selected values', () => {
     // given a few selected values among a bucket
     const values: { [key: string]: boolean | null } = { 'France': true, 'England': false, 'Italy': true, 'New Zealand': null };
 
     // when extracting keys
-    const keys = AggregationComponent.extractKeys(values);
+    const keys = SmallAggregationComponent.extractKeys(values);
 
     // then it should return only the truthy ones
     expect(keys).toEqual(['France', 'Italy']);
@@ -83,7 +82,7 @@ describe('AggregationComponent', () => {
 
   it('should build a form based on the bucket', () => {
     // given an aggregation with a bucket
-    const component = new AggregationComponent();
+    const component = new SmallAggregationComponent();
     component.aggregation = aggregation;
 
     // when initializing the component
@@ -98,7 +97,7 @@ describe('AggregationComponent', () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France'];
 
-    const component = new AggregationComponent();
+    const component = new SmallAggregationComponent();
     component.aggregation = aggregation;
     component.selectedKeys = selectedKeys;
 
@@ -114,7 +113,7 @@ describe('AggregationComponent', () => {
 
   it('should build a form and disable the unique criteria', () => {
     // given an aggregation with a bucket and a unique value
-    const component = new AggregationComponent();
+    const component = new SmallAggregationComponent();
     component.aggregation = toAggregation('coo', ['France']);
 
     // when initializing the component
@@ -128,7 +127,7 @@ describe('AggregationComponent', () => {
   });
 
   it('should emit an event when a checkbox is toggled', fakeAsync(() => {
-    const tester = new AggregationComponentTester();
+    const tester = new SmallAggregationComponentTester();
 
     // given an aggregation
     const component = tester.componentInstance;

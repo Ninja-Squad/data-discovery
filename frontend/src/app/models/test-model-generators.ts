@@ -31,7 +31,8 @@ export function toAggregation(name: string, values: Array<string>): Aggregation 
   const buckets: Array<Bucket> = values.map((key, index) => ({ key, documentCount: (index + 1) * 10 }));
   return {
     name,
-    buckets
+    buckets,
+    type: 'SMALL'
   };
 }
 

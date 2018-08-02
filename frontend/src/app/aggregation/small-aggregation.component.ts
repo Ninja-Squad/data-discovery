@@ -5,12 +5,12 @@ import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 
 @Component({
-  selector: 'rare-aggregation',
-  templateUrl: './aggregation.component.html',
-  styleUrls: ['./aggregation.component.scss'],
+  selector: 'rare-small-aggregation',
+  templateUrl: './small-aggregation.component.html',
+  styleUrls: ['./small-aggregation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AggregationComponent implements OnInit {
+export class SmallAggregationComponent implements OnInit {
 
   @Input() aggregation: Aggregation;
   @Input() selectedKeys: Array<string> = [];
@@ -51,7 +51,7 @@ export class AggregationComponent implements OnInit {
     // subscribe to form changes
     // to emit a new event every time a value changes
     this.aggregationForm.valueChanges.subscribe(formValues => {
-      const values = AggregationComponent.extractKeys(formValues);
+      const values = SmallAggregationComponent.extractKeys(formValues);
       const event: AggregationCriterion = {
         name: this.aggregation.name,
         values

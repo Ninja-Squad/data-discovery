@@ -1,10 +1,12 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { AggregationsComponent } from './aggregations.component';
-import { AggregationComponent } from '../aggregation/aggregation.component';
+import { SmallAggregationComponent } from '../aggregation/small-aggregation.component';
+import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
@@ -18,13 +20,26 @@ describe('AggregationsComponent', () => {
     }
 
     get aggregations() {
-      return this.debugElement.queryAll(By.directive(AggregationComponent));
+      return this.debugElement.queryAll(By.directive(SmallAggregationComponent));
+    }
+
+    get largeAggregations() {
+      return this.debugElement.queryAll(By.directive(LargeAggregationComponent));
     }
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule],
-    declarations: [AggregationsComponent, AggregationComponent, AggregationNamePipe, DocumentCountComponent]
+    imports: [
+      ReactiveFormsModule,
+      NgbTypeaheadModule.forRoot()
+    ],
+    declarations: [
+      AggregationsComponent,
+      SmallAggregationComponent,
+      LargeAggregationComponent,
+      AggregationNamePipe,
+      DocumentCountComponent
+    ]
   }));
 
   it('should display no aggregations if null', () => {
@@ -75,12 +90,36 @@ describe('AggregationsComponent', () => {
 
     // then it should display each aggregation
     expect(tester.aggregations.length).toBe(2);
-    const aggregation1 = tester.aggregations[0].componentInstance as AggregationComponent;
+    const aggregation1 = tester.aggregations[0].componentInstance as SmallAggregationComponent;
     expect(aggregation1.aggregation).toBe(domain);
     expect(aggregation1.selectedKeys).toEqual([]);
-    const aggregation2 = tester.aggregations[1].componentInstance as AggregationComponent;
+    const aggregation2 = tester.aggregations[1].componentInstance as SmallAggregationComponent;
     expect(aggregation2.aggregation).toBe(coo);
     expect(aggregation2.selectedKeys).toEqual(['France']);
+  });
+
+  it('should display aggregations of different types', () => {
+    const tester = new AggregationsComponentTester();
+    const component = tester.componentInstance;
+
+    // given a few aggregations
+    const domain = toAggregation('domain', ['Plant']);
+    const coo = toAggregation('coo', ['France', 'Italy']);
+    coo.type = 'LARGE';
+    component.aggregations = [domain, coo];
+    component.selectedCriteria = [{ name: 'coo', values: ['France'] }];
+    tester.detectChanges();
+
+    // then it should display an aggregation of each type
+    expect(tester.aggregations.length).toBe(1);
+    const small = tester.aggregations[0].componentInstance as SmallAggregationComponent;
+    expect(small.aggregation).toBe(domain);
+    expect(small.selectedKeys).toEqual([]);
+
+    expect(tester.largeAggregations.length).toBe(1);
+    const large = tester.largeAggregations[0].componentInstance as LargeAggregationComponent;
+    expect(large.aggregation).toBe(coo);
+    expect(large.selectedKeys).toEqual(['France']);
   });
 
   it('should update criteria when a criterion changes', () => {
@@ -95,7 +134,7 @@ describe('AggregationsComponent', () => {
     tester.detectChanges();
 
     // when the aggregation emits an event
-    const aggregationComponent = tester.aggregations[0].componentInstance as AggregationComponent;
+    const aggregationComponent = tester.aggregations[0].componentInstance as SmallAggregationComponent;
     const criteria = { name: 'coo', values: ['France'] };
     aggregationComponent.aggregationChange.emit(criteria);
 
@@ -139,7 +178,7 @@ describe('AggregationsComponent', () => {
     component.aggregationsChange.subscribe((event: Array<AggregationCriterion>) => emittedEvent = event);
 
     // when an event is emitted by an aggregation
-    const aggregationComponent = tester.aggregations[0].componentInstance as AggregationComponent;
+    const aggregationComponent = tester.aggregations[0].componentInstance as SmallAggregationComponent;
     aggregationComponent.aggregationChange.emit({
       name: 'coo',
       values: ['France']

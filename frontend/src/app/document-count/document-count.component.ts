@@ -11,5 +11,6 @@ export class DocumentCountComponent {
   @Input() name: string;
   @Input() url: string;
   @Input() count: number;
+  @Input() muted = true;
 
 }

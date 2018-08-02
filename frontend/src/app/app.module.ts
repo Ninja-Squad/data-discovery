@@ -15,7 +15,8 @@ import { SearchComponent } from './search/search.component';
 import { GeneticResourcesComponent } from './genetic-resources/genetic-resources.component';
 import { GeneticResourceComponent } from './genetic-resource/genetic-resource.component';
 import { AggregationsComponent } from './aggregations/aggregations.component';
-import { AggregationComponent } from './aggregation/aggregation.component';
+import { SmallAggregationComponent } from './aggregation/small-aggregation.component';
+import { LargeAggregationComponent } from './large-aggregation/large-aggregation.component';
 import { PillarsComponent } from './pillars/pillars.component';
 import { AggregationNamePipe } from './aggregation-name.pipe';
 import { DocumentCountComponent } from './document-count/document-count.component';
@@ -30,7 +31,8 @@ registerLocaleData(localeFr);
     GeneticResourcesComponent,
     GeneticResourceComponent,
     AggregationsComponent,
-    AggregationComponent,
+    SmallAggregationComponent,
+    LargeAggregationComponent,
     PillarsComponent,
     AggregationNamePipe,
     DocumentCountComponent

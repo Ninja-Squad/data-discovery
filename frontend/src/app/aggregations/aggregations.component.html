@@ -1,7 +1,12 @@
 <div *ngIf="aggregations?.length">
   <div *ngFor="let aggregation of aggregations">
-    <rare-aggregation [aggregation]="aggregation"
+    <!-- we display checkboxes if there are only a few options -->
+    <rare-small-aggregation *ngIf="aggregation.type === 'SMALL'" [aggregation]="aggregation"
                       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-                      (aggregationChange)="onAggregationChange($event)"></rare-aggregation>
+                      (aggregationChange)="onAggregationChange($event)"></rare-small-aggregation>
+    <!-- we display an input with autocomplete if there are many options, like for the taxon -->
+    <rare-large-aggregation *ngIf="aggregation.type === 'LARGE'" [aggregation]="aggregation"
+                      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+                      (aggregationChange)="onAggregationChange($event)"></rare-large-aggregation>
   </div>
 </div>
