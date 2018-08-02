@@ -24,7 +24,7 @@ export class SearchService {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = (pageAsNumber - 1).toString();
     // we built the search parameters
-    const params: { [key: string]: string | Array<string> } = { query, page };
+    const params: { [key: string]: string | Array<string> } = { query, page, highlight: 'true' };
     // if we need to fetch the aggregation, add the `agg` parameter
     if (aggregate) {
       params.agg = 'true';

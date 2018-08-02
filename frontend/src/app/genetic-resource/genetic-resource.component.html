@@ -1,7 +1,6 @@
 <div>
   <h2>
-    <a class="main-link name"
-     [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL">
+    <a class="main-link name" [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL">
       {{ geneticResource.name }}
     </a>
     <small> - {{ geneticResource.pillarName }}</small>
@@ -19,11 +18,13 @@
   </div>
   <div>
     <div class="description" *ngIf="descriptionCollapsed; else expandedDescription">
-      {{ geneticResource.description | slice:0:255 }}<button class="btn btn-link btn-inline" (click)="toggleDescription()" *ngIf="geneticResource.description?.length > 255">... (Voir tout)</button>
+      <span class="highlight" [innerHTML]="truncatedDescription"></span>
+      <button class="btn btn-link btn-inline" (click)="toggleDescription()" *ngIf="truncatedDescription !== geneticResource.description">... (Voir tout)</button>
     </div>
     <ng-template #expandedDescription>
       <div class="full-description">
-        {{ geneticResource.description }}<button class="btn btn-link btn-inline" (click)="toggleDescription()">Réduire</button>
+        <span class="highlight" [innerHTML]="geneticResource.description"></span>
+        <button class="btn btn-link btn-inline" (click)="toggleDescription()">Réduire</button>
       </div>
     </ng-template>
   </div>

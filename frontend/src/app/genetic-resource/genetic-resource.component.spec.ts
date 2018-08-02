@@ -35,16 +35,16 @@ describe('GeneticResourceComponent', () => {
       return this.element('.description');
     }
 
-    get fullDescriptionLink() {
-      return this.element('.description button');
+    get fullDescriptionButton() {
+      return this.button('.description button');
     }
 
     get fullDescription() {
       return this.element('.full-description');
     }
 
-    get shortDescriptionLink() {
-      return this.element('.full-description button');
+    get shortDescriptionButton() {
+      return this.button('.full-description button');
     }
   }
 
@@ -73,9 +73,9 @@ describe('GeneticResourceComponent', () => {
     resource.taxon.forEach(text => expect(tester.taxon).toContainText(text));
     expect(tester.type).toContainText(resource.materialType[0]);
     expect(tester.description).toContainText(resource.description);
-    expect(tester.fullDescriptionLink).toBeNull();
+    expect(tester.fullDescriptionButton).toBeNull();
     expect(tester.fullDescription).toBeNull();
-    expect(tester.shortDescriptionLink).toBeNull();
+    expect(tester.shortDescriptionButton).toBeNull();
   });
 
   it('should have a link to portal if data url is null or empty', () => {
@@ -106,31 +106,52 @@ describe('GeneticResourceComponent', () => {
     expect(tester.type).toContainText('type1, type2');
   });
 
-  it('should have truncate the long description and allow to display it fully', () => {
+  it('should truncate the long description and allow to display it fully', () => {
     const tester = new GeneticResourceComponentTester();
     const component = tester.componentInstance;
 
     // given a resource with a long description
     const resource = toGeneticResource('Bacteria');
-    resource.description = Array(500).fill('a').join('');
+    resource.description = Array(200).fill('aaa').join(' ');
     component.geneticResource = resource;
     tester.detectChanges();
 
     // then we should truncate it
-    expect(tester.fullDescriptionLink).not.toBeNull();
+    expect(tester.fullDescriptionButton).not.toBeNull();
     const linkContent = '... (Voir tout)';
-    expect(tester.fullDescriptionLink).toContainText(linkContent);
-    expect(tester.description.textContent.length).toBe(256 + linkContent.length);
+    expect(tester.fullDescriptionButton).toContainText(linkContent);
+    expect(tester.description.textContent.length).toBeLessThanOrEqual(256 + linkContent.length);
+    expect(tester.description.textContent.length).toBeGreaterThanOrEqual(252 + linkContent.length);
 
     // when we click on the link
-    tester.fullDescriptionLink.dispatchEventOfType('click');
+    tester.fullDescriptionButton.click();
 
     // then we should display the full description
     expect(tester.fullDescription).not.toBeNull();
     expect(tester.fullDescription).toContainText(resource.description);
-    expect(tester.shortDescriptionLink).not.toBeNull();
-    expect(tester.shortDescriptionLink).toContainText('Réduire');
+    expect(tester.shortDescriptionButton).not.toBeNull();
+    expect(tester.shortDescriptionButton).toContainText('Réduire');
     expect(tester.description).toBeNull();
-    expect(tester.fullDescriptionLink).toBeNull();
+    expect(tester.fullDescriptionButton).toBeNull();
+  });
+
+  it('should display a highlighted description (truncated and full)', () => {
+    const tester = new GeneticResourceComponentTester();
+    const component = tester.componentInstance;
+
+    // given a resource with a long highlighted description
+    const resource = toGeneticResource('Bacteria');
+    const description = 'Hello <em>world</em>! The <em>world</em> is&nbsp;beautiful.';
+    resource.description = description + ' ' + Array(200).fill('aaa').join(' ');
+    component.geneticResource = resource;
+    tester.detectChanges();
+
+    // it should highlight the short description
+    expect(tester.description).toContainText('Hello world! The world is\u00A0beautiful.');
+
+    tester.fullDescriptionButton.click();
+
+    // and also the long description
+    expect(tester.fullDescription).toContainText('Hello world! The world is\u00A0beautiful.');
   });
 });
