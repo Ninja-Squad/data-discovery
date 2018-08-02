@@ -3,9 +3,10 @@
     <span class="pillar-name">{{ pillar.name }}</span>
     <ul class="list-unstyled source">
       <li *ngFor="let databaseSource of pillar.databaseSources">
-        <a *ngIf="databaseSource.url" [href]="databaseSource.url">{{ databaseSource.name }}</a>
-        <span *ngIf="!databaseSource.url">{{ databaseSource.name }}</span>
-        <small class="text-muted ml-1">[{{ databaseSource.documentCount | number }}]</small>
+        <rare-document-count [name]="databaseSource.name"
+                             [url]="databaseSource.url"
+                             [count]="databaseSource.documentCount">
+        </rare-document-count>
       </li>
     </ul>
   </li>

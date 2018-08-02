@@ -8,6 +8,7 @@ import { AggregationComponent } from '../aggregation/aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
+import { DocumentCountComponent } from '../document-count/document-count.component';
 
 describe('AggregationsComponent', () => {
 
@@ -23,7 +24,7 @@ describe('AggregationsComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule],
-    declarations: [AggregationsComponent, AggregationComponent, AggregationNamePipe]
+    declarations: [AggregationsComponent, AggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));
 
   it('should display no aggregations if null', () => {
@@ -130,7 +131,7 @@ describe('AggregationsComponent', () => {
     component.selectedCriteria = [
       { name: 'domain', values: ['Plant'] },
       { name: 'coo', values: ['Italy'] }
-      ];
+    ];
     tester.detectChanges();
 
     // then it should emit an event

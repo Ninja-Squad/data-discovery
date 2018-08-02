@@ -18,6 +18,7 @@ import { AggregationsComponent } from './aggregations/aggregations.component';
 import { AggregationComponent } from './aggregation/aggregation.component';
 import { PillarsComponent } from './pillars/pillars.component';
 import { AggregationNamePipe } from './aggregation-name.pipe';
+import { DocumentCountComponent } from './document-count/document-count.component';
 
 registerLocaleData(localeFr);
 
@@ -31,7 +32,8 @@ registerLocaleData(localeFr);
     AggregationsComponent,
     AggregationComponent,
     PillarsComponent,
-    AggregationNamePipe
+    AggregationNamePipe,
+    DocumentCountComponent
   ],
   imports: [
     BrowserAnimationsModule,

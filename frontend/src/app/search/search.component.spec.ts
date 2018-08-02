@@ -18,6 +18,7 @@ import { toAggregation, toGeneticResource, toSecondPage, toSinglePage } from '..
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { AggregationComponent } from '../aggregation/aggregation.component';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
+import { DocumentCountComponent } from '../document-count/document-count.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -61,7 +62,8 @@ describe('SearchComponent', () => {
       GeneticResourceComponent,
       AggregationsComponent,
       AggregationComponent,
-      AggregationNamePipe
+      AggregationNamePipe,
+      DocumentCountComponent
     ]
   }));
 

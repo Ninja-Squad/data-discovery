@@ -2,14 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
-
-import { HomeComponent } from './home.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { HomeComponent } from './home.component';
 import { SearchService } from '../search.service';
 import { PillarsComponent } from '../pillars/pillars.component';
-import { By } from '@angular/platform-browser';
+import { DocumentCountComponent } from '../document-count/document-count.component';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -32,7 +33,7 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
 describe('HomeComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, NgbTypeaheadModule.forRoot()],
-    declarations: [HomeComponent, PillarsComponent],
+    declarations: [HomeComponent, PillarsComponent, DocumentCountComponent],
     providers: [HttpClientTestingModule]
   }));
 

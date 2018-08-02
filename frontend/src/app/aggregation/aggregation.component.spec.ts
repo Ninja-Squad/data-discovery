@@ -6,8 +6,9 @@ import { AggregationComponent } from './aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
+import { DocumentCountComponent } from '../document-count/document-count.component';
 
-describe('AggregationsComponent', () => {
+describe('AggregationComponent', () => {
 
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand']);
 
@@ -31,7 +32,7 @@ describe('AggregationsComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [ReactiveFormsModule],
-    declarations: [AggregationComponent, AggregationNamePipe]
+    declarations: [AggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));

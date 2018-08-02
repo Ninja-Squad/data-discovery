@@ -9,6 +9,7 @@ import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
+import { DocumentCountComponent } from '../document-count/document-count.component';
 
 class PillarsComponentTester extends ComponentTester<PillarsComponent> {
   constructor() {
@@ -39,7 +40,7 @@ describe('PillarsComponent', () => {
   beforeEach(() => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
-      declarations: [PillarsComponent],
+      declarations: [PillarsComponent, DocumentCountComponent],
       imports: [HttpClientTestingModule],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' }
