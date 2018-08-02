@@ -22,11 +22,13 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
@@ -76,14 +78,18 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     private int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
     private final ElasticsearchTemplate elasticsearchTemplate;
+    private final GeneticResourceHighlightMapper geneticResourceHighlightMapper;
 
-    public GeneticResourceDaoImpl(ElasticsearchTemplate elasticsearchTemplate) {
+    public GeneticResourceDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
+                                  EntityMapper entityMapper) {
         this.elasticsearchTemplate = elasticsearchTemplate;
+        this.geneticResourceHighlightMapper = new GeneticResourceHighlightMapper(entityMapper);
     }
 
     @Override
     public AggregatedPage<GeneticResource> search(String query,
                                                   boolean aggregate,
+                                                  boolean highlight,
                                                   SearchRefinements refinements,
                                                   Pageable page) {
 
@@ -115,7 +121,11 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
                                                           .size(rareAggregation.getType().getMaxBuckets())));
         }
 
-        return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class);
+        if (highlight) {
+            builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0));
+        }
+
+        return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class, geneticResourceHighlightMapper);
     }
 
     @Override

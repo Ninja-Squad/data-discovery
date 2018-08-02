@@ -11,7 +11,6 @@ import java.util.function.BiConsumer;
 
 import fr.inra.urgi.rare.config.ElasticSearchConfig;
 import fr.inra.urgi.rare.domain.GeneticResource;
-import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
@@ -79,174 +78,176 @@ class GeneticResourceDaoTest {
     }
 
     @Test
-    public void shouldSearchOnName() {
-        shouldSearch(GeneticResourceBuilder::withName);
+    void shouldSearchOnName() {
+        shouldSearch(GeneticResource.Builder::withName);
     }
 
     @Test
-    public void shouldSearchOnDescription() {
-        shouldSearch(GeneticResourceBuilder::withDescription);
+    void shouldSearchOnDescription() {
+        shouldSearch(GeneticResource.Builder::withDescription);
     }
 
     @Test
-    public void shouldSearchOnPillarName() {
-        shouldSearch(GeneticResourceBuilder::withPillarName);
+    void shouldSearchOnPillarName() {
+        shouldSearch(GeneticResource.Builder::withPillarName);
     }
 
     @Test
-    public void shouldSearchOnDatabaseSource() {
-        shouldSearch(GeneticResourceBuilder::withDatabaseSource);
+    void shouldSearchOnDatabaseSource() {
+        shouldSearch(GeneticResource.Builder::withDatabaseSource);
     }
 
     @Test
-    public void shouldSearchOnDomain() {
-        shouldSearch(GeneticResourceBuilder::withDomain);
+    void shouldSearchOnDomain() {
+        shouldSearch(GeneticResource.Builder::withDomain);
     }
 
     @Test
-    public void shouldSearchOnTaxon() {
+    void shouldSearchOnTaxon() {
         shouldSearch((b, s) -> b.withTaxon(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSearchOnFamily() {
+    void shouldSearchOnFamily() {
         shouldSearch((b, s) -> b.withFamily(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSearchOnGenus() {
+    void shouldSearchOnGenus() {
         shouldSearch((b, s) -> b.withGenus(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSearchOnSpecies() {
+    void shouldSearchOnSpecies() {
         shouldSearch((b, s) -> b.withSpecies(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSearchOnMaterialType() {
+    void shouldSearchOnMaterialType() {
         shouldSearch((b, s) -> b.withMaterialType(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSearchOnBiotopeType() {
+    void shouldSearchOnBiotopeType() {
         shouldSearch((b, s) -> b.withBiotopeType(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSearchOnCountryOfOrigin() {
-        shouldSearch(GeneticResourceBuilder::withCountryOfOrigin);
+    void shouldSearchOnCountryOfOrigin() {
+        shouldSearch(GeneticResource.Builder::withCountryOfOrigin);
     }
 
     @Test
-    public void shouldSearchOnCountryOfCollect() {
-        shouldSearch(GeneticResourceBuilder::withCountryOfCollect);
+    void shouldSearchOnCountryOfCollect() {
+        shouldSearch(GeneticResource.Builder::withCountryOfCollect);
     }
 
     @Test
-    public void shouldNotSearchOnIdentifier() {
-        GeneticResource geneticResource = new GeneticResourceBuilder().withId("foo-bar").build();
+    void shouldNotSearchOnIdentifier() {
+        GeneticResource geneticResource = GeneticResource.builder().withId("foo-bar").build();
         geneticResourceDao.save(geneticResource);
 
         assertThat(geneticResourceDao.search(geneticResource.getId(),
                                              false,
-                                             SearchRefinements.EMPTY,
-                                             firstPage).getContent()).isEmpty();
-    }
-
-    @Test
-    public void shouldNotSearchOnUrls() {
-        GeneticResource geneticResource =
-            new GeneticResourceBuilder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
-        geneticResourceDao.save(geneticResource);
-
-        assertThat(geneticResourceDao.search("bar",
                                              false,
                                              SearchRefinements.EMPTY,
                                              firstPage).getContent()).isEmpty();
     }
 
     @Test
-    public void shouldSuggestOnName() {
-        shouldSuggest(GeneticResourceBuilder::withName);
+    void shouldNotSearchOnUrls() {
+        GeneticResource geneticResource =
+            GeneticResource.builder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
+        geneticResourceDao.save(geneticResource);
+
+        assertThat(geneticResourceDao.search("bar",
+                                             false,
+                                             false,
+                                             SearchRefinements.EMPTY,
+                                             firstPage).getContent()).isEmpty();
     }
 
     @Test
-    public void shouldSuggestOnPillarName() {
-        shouldSuggest(GeneticResourceBuilder::withPillarName);
+    void shouldSuggestOnName() {
+        shouldSuggest(GeneticResource.Builder::withName);
     }
 
     @Test
-    public void shouldSuggestOnDatabaseSource() {
-        shouldSuggest(GeneticResourceBuilder::withDatabaseSource);
+    void shouldSuggestOnPillarName() {
+        shouldSuggest(GeneticResource.Builder::withPillarName);
     }
 
     @Test
-    public void shouldSuggestOnDomain() {
-        shouldSuggest(GeneticResourceBuilder::withDomain);
+    void shouldSuggestOnDatabaseSource() {
+        shouldSuggest(GeneticResource.Builder::withDatabaseSource);
     }
 
     @Test
-    public void shouldSuggestOnTaxon() {
+    void shouldSuggestOnDomain() {
+        shouldSuggest(GeneticResource.Builder::withDomain);
+    }
+
+    @Test
+    void shouldSuggestOnTaxon() {
         shouldSuggest((b, s) -> b.withTaxon(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSuggestOnFamily() {
+    void shouldSuggestOnFamily() {
         shouldSuggest((b, s) -> b.withFamily(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSuggestOnGenus() {
+    void shouldSuggestOnGenus() {
         shouldSuggest((b, s) -> b.withGenus(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSuggestOnSpecies() {
+    void shouldSuggestOnSpecies() {
         shouldSuggest((b, s) -> b.withSpecies(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSuggestOnMaterialType() {
+    void shouldSuggestOnMaterialType() {
         shouldSuggest((b, s) -> b.withMaterialType(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSuggestOnBiotopeType() {
+    void shouldSuggestOnBiotopeType() {
         shouldSuggest((b, s) -> b.withBiotopeType(Collections.singletonList(s)));
     }
 
     @Test
-    public void shouldSuggestOnCountryOfOrigin() {
-        shouldSuggest(GeneticResourceBuilder::withCountryOfOrigin);
+    void shouldSuggestOnCountryOfOrigin() {
+        shouldSuggest(GeneticResource.Builder::withCountryOfOrigin);
     }
 
     @Test
-    public void shouldSuggestOnCountryOfCollect() {
-        shouldSuggest(GeneticResourceBuilder::withCountryOfCollect);
+    void shouldSuggestOnCountryOfCollect() {
+        shouldSuggest(GeneticResource.Builder::withCountryOfCollect);
     }
 
     @Test
-    public void shouldNotSuggestOnIdentifier() {
-        GeneticResource geneticResource = new GeneticResourceBuilder().withId("foo-bar").build();
+    void shouldNotSuggestOnIdentifier() {
+        GeneticResource geneticResource = GeneticResource.builder().withId("foo-bar").build();
         geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
 
         assertThat(geneticResourceDao.suggest("foo")).isEmpty();
     }
 
     @Test
-    public void shouldNotSuggestOnUrls() {
+    void shouldNotSuggestOnUrls() {
         GeneticResource geneticResource =
-            new GeneticResourceBuilder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
+            GeneticResource.builder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
         geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
 
         assertThat(geneticResourceDao.suggest("foo")).isEmpty();
     }
 
     @Test
-    public void shouldSuggestOnDescription() {
+    void shouldSuggestOnDescription() {
         GeneticResource geneticResource =
-            new GeneticResourceBuilder().withDescription("Hello world").build();
+            GeneticResource.builder().withDescription("Hello world").build();
         geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
 
         assertThat(geneticResourceDao.suggest("hel")).containsOnly("Hello");
@@ -254,16 +255,16 @@ class GeneticResourceDaoTest {
     }
 
     @Test
-    public void shouldSuggestSeveralResults() {
+    void shouldSuggestSeveralResults() {
         GeneticResource resource =
-            new GeneticResourceBuilder()
+            GeneticResource.builder()
                 .withId(UUID.randomUUID().toString())
                 .withName("vita e bella")
                 .withDatabaseSource("Florilege")
                 .build();
 
         GeneticResource resource2 =
-            new GeneticResourceBuilder()
+            GeneticResource.builder()
                 .withId(UUID.randomUUID().toString())
                 .withTaxon(Collections.singletonList("vitis vinifera"))
                 .withFamily(Collections.singletonList("vitis"))
@@ -280,21 +281,21 @@ class GeneticResourceDaoTest {
     }
 
     @Test
-    public void shouldRemoveCaseDifferingResults() {
+    void shouldRemoveCaseDifferingResults() {
         GeneticResource resource =
-            new GeneticResourceBuilder()
+            GeneticResource.builder()
                 .withId(UUID.randomUUID().toString())
                 .withName("vita")
                 .build();
 
         GeneticResource resource2 =
-            new GeneticResourceBuilder()
+            GeneticResource.builder()
                 .withId(UUID.randomUUID().toString())
                 .withName("vitis")
                 .build();
 
         GeneticResource resource3 =
-            new GeneticResourceBuilder()
+            GeneticResource.builder()
                 .withId(UUID.randomUUID().toString())
                 .withName("VITIS")
                 .build();
@@ -311,25 +312,25 @@ class GeneticResourceDaoTest {
         assertThat(ignoringCaseSet).hasSize(2);
     }
 
-    private void shouldSearch(BiConsumer<GeneticResourceBuilder, String> config) {
-        GeneticResourceBuilder geneticResourceBuilder = new GeneticResourceBuilder();
+    private void shouldSearch(BiConsumer<GeneticResource.Builder, String> config) {
+        GeneticResource.Builder geneticResourceBuilder = GeneticResource.builder();
         config.accept(geneticResourceBuilder, "foo bar baz");
         GeneticResource geneticResource = geneticResourceBuilder.build();
 
         geneticResourceDao.saveAll(Collections.singleton(new IndexedGeneticResource(geneticResource)));
 
         AggregatedPage<GeneticResource> result =
-            geneticResourceDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
+            geneticResourceDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getAggregations()).isNull();
 
-        result = geneticResourceDao.search("bing", false, SearchRefinements.EMPTY, firstPage);
+        result = geneticResourceDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
     }
 
     @Test
-    public void shouldSearchAndAggregate() {
-        GeneticResource geneticResource1 = new GeneticResourceBuilder()
+    void shouldSearchAndAggregate() {
+        GeneticResource geneticResource1 = GeneticResource.builder()
             .withId("r1")
             .withName("foo")
             .withDomain("Plantae")
@@ -339,7 +340,7 @@ class GeneticResourceDaoTest {
             .withTaxon(Arrays.asList("Vitis vinifera"))
             .build();
 
-        GeneticResource geneticResource2 = new GeneticResourceBuilder()
+        GeneticResource geneticResource2 = GeneticResource.builder()
             .withId("r2")
             .withName("bar foo")
             .withDomain("Fungi")
@@ -353,7 +354,7 @@ class GeneticResourceDaoTest {
                                                  new IndexedGeneticResource(geneticResource2)));
 
         AggregatedPage<GeneticResource> result =
-            geneticResourceDao.search("foo", true, SearchRefinements.EMPTY, firstPage);
+            geneticResourceDao.search("foo", true, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(2);
 
         Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
@@ -383,36 +384,36 @@ class GeneticResourceDaoTest {
     }
 
     @Test
-    public void shouldFindPillars() {
-        GeneticResource resource1 = new GeneticResourceBuilder()
+    void shouldFindPillars() {
+        GeneticResource resource1 = GeneticResource.builder()
             .withId("r1")
             .withPillarName("P1")
             .withDatabaseSource("D11")
             .withPortalURL("D11Url")
             .build();
 
-        GeneticResource resource2 = new GeneticResourceBuilder()
+        GeneticResource resource2 = GeneticResource.builder()
             .withId("r2")
             .withPillarName("P1")
             .withDatabaseSource("D11")
             .withPortalURL("D11Url")
             .build();
 
-        GeneticResource resource3 = new GeneticResourceBuilder()
+        GeneticResource resource3 = GeneticResource.builder()
             .withId("r3")
             .withPillarName("P1")
             .withDatabaseSource("D12")
             .withPortalURL("D12Url")
             .build();
 
-        GeneticResource resource4 = new GeneticResourceBuilder()
+        GeneticResource resource4 = GeneticResource.builder()
             .withId("r4")
             .withPillarName("P2")
             .withDatabaseSource("D21")
             .withPortalURL("D21Url")
             .build();
 
-        GeneticResource resource5 = new GeneticResourceBuilder()
+        GeneticResource resource5 = GeneticResource.builder()
             .withId("r5")
             .withPillarName("P2")
             .withDatabaseSource("D22")
@@ -463,11 +464,41 @@ class GeneticResourceDaoTest {
         assertThat(d22Url.getBuckets()).isEmpty();
     }
 
+    @Test
+    void shouldHighlightDescription() {
+        GeneticResource resource1 =
+            GeneticResource.builder()
+                           .withId("r1")
+                           .withDescription("Here comes the sun, tadadada. It's alright.")
+                           .build();
+
+
+        GeneticResource resource2 =
+            GeneticResource.builder()
+                           .withId("r2")
+                           .withName("The sun.")
+                           .withDescription("Imagine all the people")
+                           .build();
+
+        geneticResourceDao.saveAll(Arrays.asList(new IndexedGeneticResource(resource1),
+                                                 new IndexedGeneticResource(resource2)));
+
+        AggregatedPage<GeneticResource> result = geneticResourceDao.search("comes sun",
+                                                                              false,
+                                                                              true,
+                                                                              SearchRefinements.EMPTY,
+                                                                              firstPage);
+
+        assertThat(result.getContent())
+            .extracting(GeneticResource::getDescription)
+            .containsOnly("Here <em>comes</em> the <em>sun</em>, tadadada. It's alright.", "Imagine all the people");
+    }
+
     @Nested
     class RefinementTest {
         @BeforeEach
-        public void prepare() {
-            GeneticResource geneticResource1 = new GeneticResourceBuilder()
+        void prepare() {
+            GeneticResource geneticResource1 = GeneticResource.builder()
                 .withId("r1")
                 .withName("foo")
                 .withDomain("Plantae")
@@ -477,7 +508,7 @@ class GeneticResourceDaoTest {
                 .withDescription("hello world")
                 .build();
 
-            GeneticResource geneticResource2 = new GeneticResourceBuilder()
+            GeneticResource geneticResource2 = GeneticResource.builder()
                 .withId("r2")
                 .withName("bar foo")
                 .withDomain("Fungi")
@@ -492,14 +523,14 @@ class GeneticResourceDaoTest {
         }
 
         @Test
-        public void shouldApplyRefinementsOnSingleTermWithOr() {
+        void shouldApplyRefinementsOnSingleTermWithOr() {
             SearchRefinements refinements =
                 SearchRefinements.builder()
                                  .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Plantae"))
                                  .build();
 
             AggregatedPage<GeneticResource> result =
-                geneticResourceDao.search("hello", false, refinements, firstPage);
+                geneticResourceDao.search("hello", false, false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r1");
 
@@ -507,19 +538,19 @@ class GeneticResourceDaoTest {
                                            .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Fungi"))
                                            .build();
             result =
-                geneticResourceDao.search("hello", false, refinements, firstPage);
+                geneticResourceDao.search("hello", false, false, refinements, firstPage);
             assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r2");
 
             refinements = SearchRefinements.builder()
                                            .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting"))
                                            .build();
             result =
-                geneticResourceDao.search("hello", false, refinements, firstPage);
+                geneticResourceDao.search("hello", false, false, refinements, firstPage);
             assertThat(result.getContent()).extracting(GeneticResource::getId).isEmpty();
         }
 
         @Test
-        public void shouldApplyRefinementsOnMultipleTermsWithAnd() {
+        void shouldApplyRefinementsOnMultipleTermsWithAnd() {
             SearchRefinements refinements =
                 SearchRefinements.builder()
                                  .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Fungi"))
@@ -527,7 +558,7 @@ class GeneticResourceDaoTest {
                                  .build();
 
             AggregatedPage<GeneticResource> result =
-                geneticResourceDao.search("hello", false, refinements, firstPage);
+                geneticResourceDao.search("hello", false, false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r2");
 
@@ -538,19 +569,19 @@ class GeneticResourceDaoTest {
                                  .build();
 
             result =
-                geneticResourceDao.search("hello", false, refinements, firstPage);
+                geneticResourceDao.search("hello", false, false, refinements, firstPage);
             assertThat(result.getContent()).isEmpty();
         }
 
         @Test
-        public void shouldApplyRefinementsAfterAggregating() {
+        void shouldApplyRefinementsAfterAggregating() {
             SearchRefinements refinements =
                 SearchRefinements.builder()
                                  .withTerm(RareAggregation.DOMAIN, Arrays.asList("Plantae"))
                                  .build();
 
             AggregatedPage<GeneticResource> result =
-                geneticResourceDao.search("hello", true, refinements, firstPage);
+                geneticResourceDao.search("hello", true, false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r1");
 
@@ -561,7 +592,7 @@ class GeneticResourceDaoTest {
             assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
             assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
 
-            result = geneticResourceDao.search("Human", true, refinements, firstPage);
+            result = geneticResourceDao.search("Human", true, false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(GeneticResource::getId).containsOnly("r1");
 
@@ -572,8 +603,8 @@ class GeneticResourceDaoTest {
         }
     }
 
-    private void shouldSuggest(BiConsumer<GeneticResourceBuilder, String> config) {
-        GeneticResourceBuilder geneticResourceBuilder = new GeneticResourceBuilder();
+    private void shouldSuggest(BiConsumer<GeneticResource.Builder, String> config) {
+        GeneticResource.Builder geneticResourceBuilder = GeneticResource.builder();
         config.accept(geneticResourceBuilder, "foo bar baz");
         GeneticResource geneticResource = geneticResourceBuilder.build();
 

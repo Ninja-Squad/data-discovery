@@ -49,7 +49,7 @@ class SearchControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
-        when(mockGeneticResourceDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockGeneticResourceDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
         mockMvc.perform(get("/api/genetic-resources").param("query", query))
@@ -73,7 +73,7 @@ class SearchControllerTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
 
-        when(mockGeneticResourceDao.search(query, true, SearchRefinements.EMPTY, pageRequest))
+        when(mockGeneticResourceDao.search(query, true, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(resource),
                 pageRequest,
@@ -117,7 +117,7 @@ class SearchControllerTest {
                              .withTerm(RareAggregation.MATERIAL, Arrays.asList("m1"))
                              .build();
 
-        when(mockGeneticResourceDao.search(query, false, expectedRefinements, pageRequest))
+        when(mockGeneticResourceDao.search(query, false, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
         mockMvc.perform(get("/api/genetic-resources")

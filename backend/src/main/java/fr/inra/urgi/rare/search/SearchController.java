@@ -53,6 +53,7 @@ public class SearchController {
     @GetMapping
     public AggregatedPageDTO<GeneticResource> search(@RequestParam("query") String query,
                                                      @RequestParam("agg") Optional<Boolean> agg,
+                                                     @RequestParam("highlight") Optional<Boolean> highlight,
                                                      @RequestParam("page") Optional<Integer> page,
                                                      @RequestParam MultiValueMap<String, String> parameters) {
         boolean aggregate = agg.orElse(false);
@@ -60,6 +61,7 @@ public class SearchController {
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(geneticResourceDao.search(query,
                                                                     aggregate,
+                                                                    highlight.orElse(false),
                                                                     createRefinementsFromParameters(parameters),
                                                                     PageRequest.of(page.orElse(0), PAGE_SIZE)));
 

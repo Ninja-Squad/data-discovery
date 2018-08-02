@@ -26,6 +26,7 @@ public interface GeneticResourceDaoCustom {
      */
     AggregatedPage<GeneticResource> search(String query,
                                            boolean aggregate,
+                                           boolean highlight,
                                            SearchRefinements refinements,
                                            Pageable page);
 
