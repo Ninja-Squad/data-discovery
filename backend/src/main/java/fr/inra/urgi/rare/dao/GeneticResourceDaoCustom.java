@@ -32,7 +32,7 @@ public interface GeneticResourceDaoCustom {
     /**
      * Suggests completions for the given term. It autocompletes all the fields except the identifier, the URL and
      * numeric fields, and the description.
-     * @return The N first distinct suggested completions
+     * @return The 10 first suggested completions
      */
     List<String> suggest(String term);
 

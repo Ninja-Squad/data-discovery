@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -276,6 +277,38 @@ class GeneticResourceDaoTest {
 
         result = geneticResourceDao.suggest("vitis v");
         assertThat(result).containsOnly("vitis vinifera");
+    }
+
+    @Test
+    public void shouldRemoveCaseDifferingResults() {
+        GeneticResource resource =
+            new GeneticResourceBuilder()
+                .withId(UUID.randomUUID().toString())
+                .withName("vita")
+                .build();
+
+        GeneticResource resource2 =
+            new GeneticResourceBuilder()
+                .withId(UUID.randomUUID().toString())
+                .withName("vitis")
+                .build();
+
+        GeneticResource resource3 =
+            new GeneticResourceBuilder()
+                .withId(UUID.randomUUID().toString())
+                .withName("VITIS")
+                .build();
+
+        geneticResourceDao.saveAll(Arrays.asList(new IndexedGeneticResource(resource),
+                                                 new IndexedGeneticResource(resource2),
+                                                 new IndexedGeneticResource(resource3)));
+
+        List<String> result = geneticResourceDao.suggest("vit");
+        assertThat(result).hasSize(2);
+
+        TreeSet<String> ignoringCaseSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        ignoringCaseSet.addAll(result);
+        assertThat(ignoringCaseSet).hasSize(2);
     }
 
     private void shouldSearch(BiConsumer<GeneticResourceBuilder, String> config) {

@@ -4,8 +4,10 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,6 +70,11 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
         "countryOfCollect"
     ).collect(Collectors.toSet()));
 
+    /**
+     * The max number of suggestions returned to the caller
+     */
+    private int MAX_RETURNED_SUGGESTION_COUNT = 10;
+
     private final ElasticsearchTemplate elasticsearchTemplate;
 
     public GeneticResourceDaoImpl(ElasticsearchTemplate elasticsearchTemplate) {
@@ -114,11 +121,13 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     @Override
     public List<String> suggest(String term) {
         SuggestBuilder suggestion =
-            new SuggestBuilder().addSuggestion(COMPLETION,
-                                               SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
-                                                              .text(term)
-                                                              .size(8)
-                                                              .skipDuplicates(true));
+            new SuggestBuilder().addSuggestion(
+                COMPLETION,
+                SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
+                               .text(term)
+                               .size(MAX_RETURNED_SUGGESTION_COUNT * 2) // because we deduplicate case-differing
+                                                                        // suggestions after
+                               .skipDuplicates(true));
 
         Client client = elasticsearchTemplate.getClient();
         String index = elasticsearchTemplate.getPersistentEntityFor(GeneticResource.class).getIndexName();
@@ -129,13 +138,28 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
                                 .setFetchSource(false) // avoid getting the source documents, which are useless
                                 .get();
 
-        return response.getSuggest()
-                       .getSuggestion(COMPLETION)
-                       .getEntries()
-                       .stream()
-                       .flatMap(entry -> entry.getOptions().stream())
-                       .map(option -> option.getText().string())
-                       .collect(Collectors.toList());
+        List<String> suggestions = response.getSuggest()
+                                           .getSuggestion(COMPLETION)
+                                           .getEntries()
+                                           .stream()
+                                           .flatMap(entry -> entry.getOptions().stream())
+                                           .map(option -> option.getText().string())
+                                           .collect(Collectors.toList());
+
+        return removeSuggestionsDifferingByCase(suggestions);
+    }
+
+    private List<String> removeSuggestionsDifferingByCase(List<String> suggestions) {
+        // Use a TreeSet with case insensitive order to only keep unique values, ignoring case
+        TreeSet<String> distinctSuggestions = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        distinctSuggestions.addAll(suggestions);
+
+        // Copy the remaining values to a HashSet, comparing by equality
+        Set<String> remainingSuggestions = new HashSet<>(distinctSuggestions);
+
+        // keep max 10 suggestions, in the original order, but only keep those which are equal one of the remaining
+        // suggestions
+        return suggestions.stream().filter(remainingSuggestions::contains).limit(MAX_RETURNED_SUGGESTION_COUNT).collect(Collectors.toList());
     }
 
     @Override
