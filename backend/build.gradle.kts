@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
@@ -59,6 +60,9 @@ tasks {
 
     val test by getting(Test::class) {
         useJUnitPlatform()
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+        }
     }
 
     val jacocoTestReport by getting(JacocoReport::class) {

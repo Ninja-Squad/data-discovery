@@ -11,6 +11,7 @@
         },
         "name": {
             "type": "text",
+            "analyzer": "french",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -19,11 +20,11 @@
             }
         },
         "description": {
+            "analyzer": "english",
             "type": "text"
         },
         "pillarName": {
             "type": "text",
-            "analyzer": "french",
             "fields": {
                 "keyword": {
                     "type": "keyword",

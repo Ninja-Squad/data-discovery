@@ -349,7 +349,8 @@ class GeneticResourceDaoTest {
             .withTaxon(Arrays.asList("Girolla mucha gusta"))
             .build();
 
-        geneticResourceDao.saveAll(Arrays.asList(geneticResource1, geneticResource2));
+        geneticResourceDao.saveAll(Arrays.asList(new IndexedGeneticResource(geneticResource1),
+                                                 new IndexedGeneticResource(geneticResource2)));
 
         AggregatedPage<GeneticResource> result =
             geneticResourceDao.search("foo", true, SearchRefinements.EMPTY, firstPage);
@@ -417,7 +418,12 @@ class GeneticResourceDaoTest {
             .withDatabaseSource("D22")
             .build();
 
-        geneticResourceDao.saveAll(Arrays.asList(resource1, resource2, resource3, resource4, resource5));
+        geneticResourceDao.saveAll(Arrays.asList(
+            new IndexedGeneticResource(resource1),
+            new IndexedGeneticResource(resource2),
+            new IndexedGeneticResource(resource3),
+            new IndexedGeneticResource(resource4),
+            new IndexedGeneticResource(resource5)));
 
         Terms pillars = geneticResourceDao.findPillars();
 
@@ -481,7 +487,8 @@ class GeneticResourceDaoTest {
                 .withDescription("hello world")
                 .build();
 
-            geneticResourceDao.saveAll(Arrays.asList(geneticResource1, geneticResource2));
+            geneticResourceDao.saveAll(Arrays.asList(new IndexedGeneticResource(geneticResource1),
+                                                     new IndexedGeneticResource(geneticResource2)));
         }
 
         @Test
