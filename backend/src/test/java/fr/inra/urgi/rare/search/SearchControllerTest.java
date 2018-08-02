@@ -13,7 +13,6 @@ import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.dao.RareAggregation;
 import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.domain.GeneticResource;
-import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +41,7 @@ class SearchControllerTest {
 
     @Test
     void shouldSearch() throws Exception {
-        GeneticResource resource = new GeneticResourceBuilder()
+        GeneticResource resource = GeneticResource.builder()
             .withId("CFBP 8402")
             .withName("CFBP 8402")
             .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
@@ -65,7 +64,7 @@ class SearchControllerTest {
 
     @Test
     void shouldSearchAndAggregate() throws Exception {
-        GeneticResource resource = new GeneticResourceBuilder()
+        GeneticResource resource = GeneticResource.builder()
             .withId("CFBP 8402")
             .withName("CFBP 8402")
             .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")

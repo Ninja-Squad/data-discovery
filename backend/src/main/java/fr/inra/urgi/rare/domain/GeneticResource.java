@@ -2,6 +2,7 @@ package fr.inra.urgi.rare.domain;
 
 import static fr.inra.urgi.rare.util.Utils.nullSafeUnmodifiableCopy;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,6 +87,29 @@ public class GeneticResource {
         this.countryOfCollect = countryOfCollect;
         this.collectLatitude = collectLatitude;
         this.collectLongitude = collectLongitude;
+    }
+
+    private GeneticResource(Builder builder) {
+        this(builder.id,
+             builder.name,
+             builder.description,
+             builder.pillarName,
+             builder.databaseSource,
+             builder.portalURL,
+             builder.dataURL,
+             builder.domain,
+             builder.taxon,
+             builder.family,
+             builder.genus,
+             builder.species,
+             builder.materialType,
+             builder.biotopeType,
+             builder.countryOfOrigin,
+             builder.originLatitude,
+             builder.originLongitude,
+             builder.countryOfCollect,
+             builder.collectLatitude,
+             builder.collectLongitude);
     }
 
     public String getId() {
@@ -247,5 +271,168 @@ public class GeneticResource {
             ", collectLatitude=" + collectLatitude +
             ", collectLongitude=" + collectLongitude +
             '}';
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(GeneticResource geneticResource) {
+        return new Builder(geneticResource);
+    }
+
+    public static class Builder {
+        private String id;
+
+        private String name;
+        private String description;
+
+        private String pillarName;
+        private String databaseSource;
+        private String portalURL;
+        private String dataURL;
+        private String domain;
+        private List<String> taxon = Collections.emptyList();
+        private List<String> family = Collections.emptyList();
+        private List<String> genus = Collections.emptyList();
+        private List<String> species = Collections.emptyList();
+        private List<String> materialType = Collections.emptyList();
+        private List<String> biotopeType = Collections.emptyList();
+        private String countryOfOrigin;
+        private Double originLatitude;
+        private Double originLongitude;
+        private String countryOfCollect;
+        private Double collectLatitude;
+        private Double collectLongitude;
+
+        private Builder() {
+        }
+
+        private Builder(GeneticResource geneticResource) {
+            this.id = geneticResource.getId();
+            this.name = geneticResource.getName();
+            this.description = geneticResource.getDescription();
+            this.pillarName = geneticResource.getPillarName();
+            this.databaseSource = geneticResource.getDatabaseSource();
+            this.portalURL = geneticResource.getPortalURL();
+            this.dataURL = geneticResource.getDataURL();
+            this.domain = geneticResource.getDomain();
+            this.taxon = geneticResource.getTaxon();
+            this.family = geneticResource.getFamily();
+            this.genus = geneticResource.getGenus();
+            this.species = geneticResource.getSpecies();
+            this.materialType = geneticResource.getMaterialType();
+            this.biotopeType = geneticResource.getBiotopeType();
+            this.countryOfOrigin = geneticResource.getCountryOfOrigin();
+            this.originLatitude = geneticResource.getOriginLatitude();
+            this.originLongitude = geneticResource.getOriginLongitude();
+            this.countryOfCollect = geneticResource.getCountryOfCollect();
+            this.collectLatitude = geneticResource.getCollectLatitude();
+            this.collectLongitude = geneticResource.getCollectLongitude();
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withPillarName(String pillarName) {
+            this.pillarName = pillarName;
+            return this;
+        }
+
+        public Builder withDatabaseSource(String databaseSource) {
+            this.databaseSource = databaseSource;
+            return this;
+        }
+
+        public Builder withPortalURL(String portalURL) {
+            this.portalURL = portalURL;
+            return this;
+        }
+
+        public Builder withDataURL(String dataURL) {
+            this.dataURL = dataURL;
+            return this;
+        }
+
+        public Builder withDomain(String domain) {
+            this.domain = domain;
+            return this;
+        }
+
+        public Builder withTaxon(List<String> taxon) {
+            this.taxon = taxon;
+            return this;
+        }
+
+        public Builder withFamily(List<String> family) {
+            this.family = family;
+            return this;
+        }
+
+        public Builder withGenus(List<String> genus) {
+            this.genus = genus;
+            return this;
+        }
+
+        public Builder withSpecies(List<String> species) {
+            this.species = species;
+            return this;
+        }
+
+        public Builder withMaterialType(List<String> materialType) {
+            this.materialType = materialType;
+            return this;
+        }
+
+        public Builder withBiotopeType(List<String> biotopeType) {
+            this.biotopeType = biotopeType;
+            return this;
+        }
+
+        public Builder withCountryOfOrigin(String countryOfOrigin) {
+            this.countryOfOrigin = countryOfOrigin;
+            return this;
+        }
+
+        public Builder withOriginLatitude(Double originLatitude) {
+            this.originLatitude = originLatitude;
+            return this;
+        }
+
+        public Builder withOriginLongitude(Double originLongitude) {
+            this.originLongitude = originLongitude;
+            return this;
+        }
+
+        public Builder withCountryOfCollect(String countryOfCollect) {
+            this.countryOfCollect = countryOfCollect;
+            return this;
+        }
+
+        public Builder withCollectLatitude(Double collectLatitude) {
+            this.collectLatitude = collectLatitude;
+            return this;
+        }
+
+        public Builder withCollectLongitude(Double collectLongitude) {
+            this.collectLongitude = collectLongitude;
+            return this;
+        }
+
+        public GeneticResource build() {
+            return new GeneticResource(this);
+        }
     }
 }

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class IndexedGeneticResourceTest {
     @Test
     public void shouldStoreSuggestions() {
-        GeneticResource resource = new GeneticResourceBuilder()
+        GeneticResource resource = GeneticResource.builder()
             .withDatabaseSource("databaseResource")
             .withFamily(Arrays.asList("family"))
             .withName("name")

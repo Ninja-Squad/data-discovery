@@ -26,7 +26,6 @@ import fr.inra.urgi.rare.config.HarvestConfig;
 import fr.inra.urgi.rare.config.RareProperties;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
-import fr.inra.urgi.rare.domain.GeneticResourceBuilder;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -208,7 +207,7 @@ class HarvesterTest {
     public void shouldSplitInBatches() throws JsonProcessingException {
         List<GeneticResource> geneticResources = new ArrayList<>();
         for (int i = 0; i < 250; i++) {
-            geneticResources.add(new GeneticResourceBuilder().withId("id-" + i).build());
+            geneticResources.add(GeneticResource.builder().withId("id-" + i).build());
         }
         byte[] jsonArray = objectMapper.writeValueAsBytes(geneticResources);
 
