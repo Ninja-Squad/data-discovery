@@ -93,7 +93,9 @@ class HarvesterControllerDocTest {
                                responseFields(
                                    fieldWithPath("id").description("The unique ID of the harvest"),
                                    fieldWithPath("startInstant").description("The instant when the harvest job started"),
-                                   fieldWithPath("endInstant").description("The instant when the harvest job finished. Null if it's not finished yet"),
+                                   fieldWithPath("endInstant")
+                                       .optional()
+                                       .description("The instant when the harvest job finished. Null if it's not finished yet"),
                                    fieldWithPath("globalErrors").description("An array of global errors. Such a global error would exist, for example, for each file that can't be read"),
                                    fieldWithPath("files").description("An array of files that have been harvested. Files that have not been harvested yet are not listed."),
                                    fieldWithPath("files[].fileName").description("The name of the harvested file"),

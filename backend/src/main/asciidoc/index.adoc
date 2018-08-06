@@ -27,7 +27,8 @@ Harvested resources which already exist are updated (they are identified by thei
 
 Note that, to avoid letting anyone trigger a harvest, the endpoints are secured using basic authentication. The
 user and the password are configured in the Spring configuration. The following snippets assume the user is
-`rare`, and the password is `f01a7031fc17`.
+`rare`, and the password is `f01a7031fc17`. If you don't provide the authentication information, or if it's incorrect
+you'll get back a response with the status `401 Unauthorized`.
 
 .Request
 include::{snippets}/harvests/post/http-request.adoc[]
@@ -108,3 +109,23 @@ include::{snippets}/harvests/list2/curl-request.adoc[]
 .HTTPie
 include::{snippets}/harvests/list2/httpie-request.adoc[]
 
+== Pillars
+
+=== List pillars
+
+The pillars service is used to list pillars, their database sources, and the number of genetic resources existing for each of them in the database.
+
+.Request
+include::{snippets}/pillars/list/http-request.adoc[]
+
+.Curl
+include::{snippets}/pillars/list/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/pillars/list/httpie-request.adoc[]
+
+.Response
+include::{snippets}/pillars/list/http-response.adoc[]
+
+.Response fields
+include::{snippets}/pillars/list/response-fields.adoc[]
