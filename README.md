@@ -82,82 +82,9 @@ environment variable for example).
 
 The files must have the extension `.json`, and must be stored in that directory (not in a sub-directory).
 Once the files are ready and the server is started, the harvest is triggered by sending a POST request
-to the endpoint `/api/harvests`, without any request body.
-This endpoint, as well as the actuator endpoints, is only accessible to an authenticated user. The user (`rare`) and its password (`f01a7031fc17`) are configured in the application.yml file (and can thus be overridden using environment variables for example).
+to the endpoint `/api/harvests`, as described in the API documentation that you can generate using the 
+build task `asciidoctor`, which executes tests and generates documentation based on snippets generated 
+by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`/
 
-Example with the `http` command ([HTTPie](https://httpie.org/)):
-
-    http --auth rare:f01a7031fc17 POST http://localhost:8080/api/harvests
+    ./gradlew asciidoctor
     
-Example with the `curl` command:
-
-    curl -i -X POST -u rare:f01a7031fc17 http://localhost:8080/api/harvests
-    
-The harvest job is executed asynchronously, and a response is immediately sent back, with the URL allowing
-to get the result of the job. For example:
-
-    HTTP/1.1 201 
-    Content-Length: 0
-    Date: Tue, 24 Jul 2018 12:58:04 GMT
-    Location: http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
-    
-To get the result of the job, you can then send a GET request to the returned URL:
-
-    http --auth rare:f01a7031fc17 GET http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
-
-or
-
-    curl -u rare:f01a7031fc17 http://localhost:8080/api/harvests/abb5784d-3006-48fb-b5db-d3ff9583e8b9
-    
-`http` has the advantage of nicely formetting the returned JSON.
-
-The response contains a detailed report containing the start instant, and the list of files
-that have been processed, with the number of successfully imported resources, and the errors
-that occurred, if any.
-
-It's only when the property `endInstant` of the returned JSON is non-null that the job is complete.
-```
-{
-    "endInstant": "2018-07-24T12:56:28.077Z",
-    "files": [
-        {
-            "errorCount": 0,
-            "errors": [],
-            "fileName": "rare_pilier_microbial.json",
-            "successCount": 10
-        },
-        {
-            "errorCount": 2,
-            "errors": [
-                {
-                    "column": 4,
-                    "error": "Error while parsing object: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.lang.String` out of START_ARRAY token\n at [Source: UNKNOWN; line: -1, column: -1] (through reference chain: fr.inra.urgi.rare.domain.GeneticResource[\"name\"])",
-                    "index": 4790,
-                    "line": 105594
-                },
-                {
-                    "column": 4,
-                    "error": "Error while parsing object: com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.lang.String` out of START_ARRAY token\n at [Source: UNKNOWN; line: -1, column: -1] (through reference chain: fr.inra.urgi.rare.domain.GeneticResource[\"countryOfCollect\"])",
-                    "index": 5905,
-                    "line": 130127
-                }
-            ],
-            "fileName": "rare_pilier_plant.json",
-            "successCount": 14522
-        }
-    ],
-    "globalErrors": [],
-    "id": "55e70557-79e8-4e40-a44b-2ef4b3df076a",
-    "startInstant": "2018-07-24T12:56:27.322Z"
-}
-```
-
-In case you lost the response to the POST request and thus don't know what the URL of the harvest is, 
-you can list the harvests, in descending order of their start instant, by sending a GET request to
-`/api/harvests`:
-
-    http --auth rare:f01a7031fc17 GET http://localhost:8080/api/harvests
-
-or
-
-    curl -u rare:f01a7031fc17 http://localhost:8080/api/harvests

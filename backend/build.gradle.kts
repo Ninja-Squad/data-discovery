@@ -1,3 +1,4 @@
+import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
 import org.springframework.boot.gradle.tasks.bundling.BootJar
@@ -14,6 +15,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "2.0.3.RELEASE"
     id("com.gorylenko.gradle-git-properties") version "1.4.21"
+    id("org.asciidoctor.convert") version "1.5.3"
 }
 
 apply(plugin = "io.spring.dependency-management")
@@ -26,6 +28,8 @@ repositories {
     mavenCentral()
     maven("https://repo.spring.io/libs-milestone")
 }
+
+val snippetsDir = file("build/generated-snippets")
 
 tasks {
 
@@ -63,6 +67,7 @@ tasks {
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
         }
+        outputs.dir(snippetsDir)
     }
 
     val jacocoTestReport by getting(JacocoReport::class) {
@@ -71,7 +76,15 @@ tasks {
             html.setEnabled(true)
         }
     }
+
+    val asciidoctor by getting(AsciidoctorTask::class) {
+        inputs.dir(snippetsDir)
+        dependsOn(test)
+        sourceDir("src/main/asciidoc")
+    }
 }
+
+
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -90,5 +103,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.mockito:mockito-junit-jupiter:2.19.1")
     testImplementation("org.junit-pioneer:junit-pioneer:0.1.2")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.2.RELEASE")
 }

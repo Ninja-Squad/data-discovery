@@ -70,7 +70,7 @@ class HarvesterControllerTest {
         when(mockHarvestResultDao.list(pageRequest))
             .thenReturn(new PageImpl<>(Arrays.asList(harvestResult), pageRequest, 1));
 
-        mockMvc.perform(get("/api/harvests", harvestResult.getId()))
+        mockMvc.perform(get("/api/harvests"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
                .andExpect(jsonPath("$.content[0].id").value(harvestResult.getId()))
