@@ -1,12 +1,18 @@
+<h1 class="sr-only">Résultats de la recherche</h1>
+
 <div class="mt-4">
-  <!-- search bar -->
-  <form class="input-group" [formGroup]="searchForm" (ngSubmit)="newSearch()">
-    <input class="form-control" type="text"
-           placeholder="Exemples : pisum sativum, rosa"
-           formControlName="search"
-           [ngbTypeahead]="suggesterTypeahead">
-    <div class="input-group-append">
-      <button class="btn btn-outline-secondary" type="submit">Recherche</button>
+  <h2 class="sr-only">Nouvelle recherche</h2>
+  <form [formGroup]="searchForm" (ngSubmit)="newSearch()">
+    <label class="sr-only" for="query">Rechercher</label>
+    <div class="input-group">
+      <input id="query"
+             class="form-control"
+             placeholder="Exemples : pisum sativum, rosa"
+             formControlName="search"
+             [ngbTypeahead]="suggesterTypeahead">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary">Recherche</button>
+      </div>
     </div>
   </form>
 </div>
@@ -18,7 +24,7 @@
 </div>
 <div class="row mt-sm-2 mt-md-5">
   <div class="col-lg-3 col-md-4 col-xs-12 filters" [@showHide]="filters">
-    <!-- aggregations -->
+    <h2 class="sr-only">Filtres</h2>
     <rare-aggregations *ngIf="aggregations"
                        [aggregations]="aggregations"
                        [selectedCriteria]="aggregationCriteria"
@@ -26,12 +32,13 @@
     </rare-aggregations>
   </div>
   <div class="col-lg-9 col-md-8 col-xs-12">
-    <!-- results -->
+    <h2 class="sr-only">Résultats</h2>
     <div *ngIf="results">
       <rare-genetic-resources [geneticResources]="results"></rare-genetic-resources>
     </div>
-    <!-- pagination -->
+
     <div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">
+      <h2 class="sr-only">Pagination</h2>
       <!-- we add 1 to the page because ngb-pagination is 1 based -->
       <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
                       [collectionSize]="collectionSize()"

@@ -12,7 +12,7 @@ describe('GeneticResourceComponent', () => {
     }
 
     get title() {
-      return this.element('h2');
+      return this.element('h3');
     }
 
     get link() {
