@@ -129,3 +129,29 @@ include::{snippets}/pillars/list/http-response.adoc[]
 
 .Response fields
 include::{snippets}/pillars/list/response-fields.adoc[]
+
+== Suggestions
+
+=== List suggestions
+
+The suggestions service is used to implement the _typeahead_ functionality of the search input field. Based on what the user has typed, the service is called to get completion suggestions.
+
+The number of distinct suggested completions is limited to 10.
+
+.Request
+include::{snippets}/suggestions/list/http-request.adoc[]
+
+.Request parameters
+include::{snippets}/suggestions/list/request-parameters.adoc[]
+
+.Curl
+include::{snippets}/suggestions/list/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/suggestions/list/httpie-request.adoc[]
+
+.Response
+include::{snippets}/suggestions/list/http-response.adoc[]
+
+.Response fields
+include::{snippets}/suggestions/list/response-fields.adoc[]
