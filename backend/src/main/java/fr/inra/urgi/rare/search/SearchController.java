@@ -41,7 +41,7 @@ public class SearchController {
      * Searches for the given query, and returns an aggregated page of results
      * @param query the query (mandatory parameter)
      * @param page the requested page number, starting at 0. Defaults to 0 if not passed.
-     * @param agg if true, the aggregated page's aggregations will be a non-empty array containing all the terms
+     * @param aggregate if true, the aggregated page's aggregations will be a non-empty array containing all the terms
      * aggregations allowing to refine the query. If false or omitted, the aggregations won't be loaded and the
      * aggregations array in the result will be empty
      * @param parameters all the parameters, containing the refinements based on the aggregations. The names
@@ -52,15 +52,14 @@ public class SearchController {
      */
     @GetMapping
     public AggregatedPageDTO<GeneticResource> search(@RequestParam("query") String query,
-                                                     @RequestParam("agg") Optional<Boolean> agg,
+                                                     @RequestParam("aggregate") Optional<Boolean> aggregate,
                                                      @RequestParam("highlight") Optional<Boolean> highlight,
                                                      @RequestParam("page") Optional<Integer> page,
                                                      @RequestParam MultiValueMap<String, String> parameters) {
-        boolean aggregate = agg.orElse(false);
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(geneticResourceDao.search(query,
-                                                                    aggregate,
+                                                                    aggregate.orElse(false),
                                                                     highlight.orElse(false),
                                                                     createRefinementsFromParameters(parameters),
                                                                     PageRequest.of(page.orElse(0), PAGE_SIZE)));

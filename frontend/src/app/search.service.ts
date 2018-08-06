@@ -27,7 +27,7 @@ export class SearchService {
     const params: { [key: string]: string | Array<string> } = { query, page, highlight: 'true' };
     // if we need to fetch the aggregation, add the `agg` parameter
     if (aggregate) {
-      params.agg = 'true';
+      params.aggregate = 'true';
     }
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {

@@ -88,7 +88,7 @@ class SearchControllerTest {
 
         mockMvc.perform(get("/api/genetic-resources")
                             .param("query", query)
-                            .param("agg", "true"))
+                            .param("aggregate", "true"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
                .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
