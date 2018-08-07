@@ -1,5 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { SmallAggregationComponent } from './small-aggregation.component';
@@ -31,7 +32,10 @@ describe('SmallAggregationComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule],
+    imports: [
+      ReactiveFormsModule,
+      NgbTooltipModule.forRoot()
+    ],
     declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));
 

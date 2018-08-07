@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { AggregationsComponent } from './aggregations.component';
@@ -31,7 +31,8 @@ describe('AggregationsComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTypeaheadModule.forRoot()
+      NgbTypeaheadModule.forRoot(),
+      NgbTooltipModule.forRoot()
     ],
     declarations: [
       AggregationsComponent,

@@ -1,3 +1,11 @@
+<!-- tooltip precising what is the number displayed -->
+<ng-template #tooltipContent>
+  <ng-container [ngPlural]="count">
+    <ng-template ngPluralCase="=1">Un seul document correspond à <em>{{ name }}</em></ng-template>
+    <ng-template ngPluralCase="other">{{ count | number }} documents correspondent à <em>{{ name }}</em></ng-template>
+  </ng-container>
+</ng-template>
+<!-- name, with a link if necessary, followed by the count -->
 <a *ngIf="url" [href]="url">{{ name }}</a>
 <span *ngIf="!url">{{ name }}</span>
-<small class="ml-1" [class.text-muted]="muted">[{{ count | number }}]</small>
+<small class="ml-1" [class.text-muted]="muted" [ngbTooltip]="tooltipContent" placement="top" container="body">[{{ count | number }}]</small>

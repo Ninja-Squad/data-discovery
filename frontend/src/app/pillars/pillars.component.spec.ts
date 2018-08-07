@@ -4,6 +4,7 @@ import { EMPTY, of } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { PillarsComponent } from './pillars.component';
@@ -41,7 +42,10 @@ describe('PillarsComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       declarations: [PillarsComponent, DocumentCountComponent],
-      imports: [HttpClientTestingModule],
+      imports: [
+        HttpClientTestingModule,
+        NgbTooltipModule.forRoot()
+      ],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' }
       ]

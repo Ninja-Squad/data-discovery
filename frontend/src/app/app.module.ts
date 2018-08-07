@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { routes } from './app.routes';
 import { AppComponent } from './app.component';
@@ -46,7 +46,8 @@ registerLocaleData(localeFr);
     ReactiveFormsModule,
     HttpClientModule,
     NgbPaginationModule.forRoot(),
-    NgbTypeaheadModule.forRoot()
+    NgbTypeaheadModule.forRoot(),
+    NgbTooltipModule.forRoot()
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' }

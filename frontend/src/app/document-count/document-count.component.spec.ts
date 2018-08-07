@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { LOCALE_ID } from '@angular/core';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { DocumentCountComponent } from './document-count.component';
-import { LOCALE_ID } from '@angular/core';
 
 describe('DocumentCountComponent', () => {
 
@@ -24,12 +25,17 @@ describe('DocumentCountComponent', () => {
     get count() {
       return this.element('small');
     }
+
+    get tooltip() {
+      return document.querySelector('ngb-tooltip-window');
+    }
   }
 
   beforeEach(() => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       declarations: [DocumentCountComponent],
+      imports: [NgbTooltipModule.forRoot()],
       providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
     });
     jasmine.addMatchers(speculoosMatchers);
@@ -65,5 +71,38 @@ describe('DocumentCountComponent', () => {
     expect(tester.link).toHaveText('Florilège');
     expect(tester.link.attr('href')).toBe('http://florilege.arcad-project.org/fr/collections');
     expect(tester.count).toHaveText('[1\u00a0298]');
+  });
+
+  it('should display a tooltip to explain the count', () => {
+    // given a component with a name, a url and a count
+    const tester = new DocumentCountComponentTester();
+    const component = tester.componentInstance;
+    component.name = 'Florilège';
+    component.count = 1298;
+    component.url = 'http://florilege.arcad-project.org/fr/collections';
+
+    // when displaying it
+    tester.detectChanges();
+    // and hovering the element
+    tester.count.dispatchEventOfType('mouseenter');
+
+    // then we should have the tooltip displayed
+    expect(tester.tooltip).not.toBeNull();
+    expect(tester.tooltip.textContent).toBe('1\u00a0298 documents correspondent à Florilège');
+
+    // and hide it when leaving
+    tester.count.dispatchEventOfType('mouseleave');
+    expect(tester.tooltip).toBeNull();
+
+    // with only one document
+    component.count = 1;
+
+    // when displaying it again
+    tester.detectChanges();
+    tester.count.dispatchEventOfType('mouseenter');
+
+    // then we should have the tooltip displayed with special text for one document
+    expect(tester.tooltip).not.toBeNull();
+    expect(tester.tooltip.textContent).toBe('Un seul document correspond à Florilège');
   });
 });

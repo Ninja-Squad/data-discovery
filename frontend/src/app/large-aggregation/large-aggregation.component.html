@@ -12,8 +12,15 @@
   <div class="card-body">
 
     <!-- title -->
+    <!-- tooltip precising what is the number displayed -->
+    <ng-template #tooltipContent>
+      <ng-container [ngPlural]="aggregation.buckets.length">
+        <ng-template ngPluralCase="=1">Un seule valeur possible pour <i>{{ aggregation.name | aggregationName }}</i></ng-template>
+        <ng-template ngPluralCase="other">{{ aggregation.buckets.length | number }} valeurs possibles pour <i>{{ aggregation.name | aggregationName }}</i></ng-template>
+      </ng-container>
+    </ng-template>
     <h3 class="card-title">{{ aggregation.name | aggregationName }}
-      <small class="text-muted ml-1">({{ aggregation.buckets.length | number }})</small>
+      <small class="text-muted ml-1" [ngbTooltip]="tooltipContent" placement="top" container="body">({{ aggregation.buckets.length | number }})</small>
     </h3>
 
     <!-- values as pills and a typeahead to add them -->

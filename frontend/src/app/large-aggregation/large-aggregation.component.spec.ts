@@ -2,7 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { NgbTypeahead, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTooltipModule, NgbTypeahead, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
@@ -47,7 +47,11 @@ describe('LargeAggregationComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, NgbTypeaheadModule.forRoot()],
+    imports: [
+      ReactiveFormsModule,
+      NgbTypeaheadModule.forRoot(),
+      NgbTooltipModule.forRoot()
+    ],
     declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));
 

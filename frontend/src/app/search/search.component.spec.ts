@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NgbPagination, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPagination, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
 import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
 
@@ -55,6 +55,7 @@ describe('SearchComponent', () => {
       HttpClientTestingModule,
       NgbPaginationModule.forRoot(),
       NgbTypeaheadModule.forRoot(),
+      NgbTooltipModule.forRoot(),
       NoopAnimationsModule
     ],
     declarations: [
