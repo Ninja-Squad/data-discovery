@@ -1,6 +1,7 @@
 = RARe REST services documentation
 :toc: left
 :source-highlighter: highlightjs
+:icons: font
 
 == Introduction
 
@@ -108,6 +109,135 @@ include::{snippets}/harvests/list2/curl-request.adoc[]
 
 .HTTPie
 include::{snippets}/harvests/list2/httpie-request.adoc[]
+
+== Genetic Resources (aka Search)
+
+=== Full text search
+
+The genetic resources endpoint is used to search for genetic resources.
+The simplest way to use this service is to provide a query, that will be used to do a full-text search in the
+various properties (except identifiers, numeric fields and URLs) of all the genetic resources.
+
+.Request
+include::{snippets}/search/fulltext/http-request.adoc[]
+
+.Request parameters
+include::{snippets}/search/fulltext/request-parameters.adoc[]
+
+.Curl
+include::{snippets}/search/fulltext/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/search/fulltext/httpie-request.adoc[]
+
+.Response
+include::{snippets}/search/fulltext/http-response.adoc[]
+
+.Response fields
+include::{snippets}/search/fulltext/response-fields.adoc[]
+
+=== Pagination
+
+As you can see, you actually get back a page of results. The above example shows a search that would find only 2
+matching genetic resources. In reality, most searches will find much more matching resources than that, and you might thus want to navigate to a different page.
+
+Suppose the previous search gets back a page where `totalPages` is 254.
+You can request any page between 0 and 253 included by passing the page number as an additional request parameter.
+If you omit the page parameter, the requested page is 0.
+
+.Request
+include::{snippets}/search/page/http-request.adoc[]
+
+.Request parameters
+include::{snippets}/search/page/request-parameters.adoc[]
+
+.Curl
+include::{snippets}/search/page/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/search/page/httpie-request.adoc[]
+
+.Response
+include::{snippets}/search/page/http-response.adoc[]
+
+=== Highlighting
+
+By passing an additional `highlight=true` request parameter, you can ask the search results to be highlighted.
+To be accurate, only the description of the returned genetic resources will be highlighted, by surrounding the matching
+words between `<em></em>` HTML tags.
+
+.Request
+include::{snippets}/search/highlight/http-request.adoc[]
+
+.Request parameters
+include::{snippets}/search/highlight/request-parameters.adoc[]
+
+.Curl
+include::{snippets}/search/highlight/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/search/highlight/httpie-request.adoc[]
+
+.Response
+include::{snippets}/search/highlight/http-response.adoc[]
+
+=== Aggregations
+
+In addition to the page of genetic resources, the service can also aggregate the search results.
+To request the aggregations, you must pass an additional `aggregate=true` request parameter.
+The set of properties used to compute aggregations is hard-coded on the server, and is thus always the same:
+`domain`, `biotopeType`, `materialType`, `countryOfOrigin` and `taxon`.
+
+If you request aggregations, then for each property, an aggregation will be computed and the results will contain
+every distinct value of the property along with the number of matching documents for each distinct value.
+
+.Request
+include::{snippets}/search/aggregate/http-request.adoc[]
+
+.Request parameters
+include::{snippets}/search/aggregate/request-parameters.adoc[]
+
+.Curl
+include::{snippets}/search/aggregate/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/search/aggregate/httpie-request.adoc[]
+
+.Response
+include::{snippets}/search/aggregate/http-response.adoc[]
+
+.Response fields
+include::{snippets}/search/aggregate/response-fields.adoc[]
+
+=== Filtering
+
+Based on the aggregations obtained when searching, you can execute the same search query, but filter the results
+by choosing one or several values for every aggregation.
+
+For example, if you want only the search results which have _France_ **or** _Italy_ as their country of origin,
+you can pass the following additional request parameters: `coo=France&coo=Italy`.
+
+If you want only the search results which have _France_ **or** _Italy_ as their country of origin, *and* _Plantae_
+as their domain, you can pass the following additional request parameters: `coo=France&coo=Italy&domain=Plantae`.
+
+NOTE: These additional filters are applied *after* the full-text search.
+This means that they will not be highlighted in the description, and more importantly, it means that if you combine
+filters with aggregation (i.e. `aggregate=true`), the aggregations will be computed *before* the filters are applied.
+This is necessary, otherwise there wouldn't be any other value then _Plantae_ in the returned aggregations, and
+any other country than _France_ and _Italy_, which would prevent you from knowing which additional filters you
+can apply to further refine the query.
+
+.Request
+include::{snippets}/search/filter/http-request.adoc[]
+
+.Request parameters
+include::{snippets}/search/filter/request-parameters.adoc[]
+
+.Curl
+include::{snippets}/search/filter/curl-request.adoc[]
+
+.HTTPie
+include::{snippets}/search/filter/httpie-request.adoc[]
 
 == Pillars
 

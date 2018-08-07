@@ -106,7 +106,7 @@ class SearchControllerTest {
     }
 
     @Test
-    void shouldSearchWIthRefinements() throws Exception {
+    void shouldSearchWithRefinements() throws Exception {
         PageRequest pageRequest = PageRequest.of(1, SearchController.PAGE_SIZE);
         String query = "pauca";
 
