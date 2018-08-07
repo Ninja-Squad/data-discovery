@@ -55,7 +55,8 @@ describe('SearchService', () => {
     const resource = toGeneticResource('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest').flush(expectedResults);
+    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
+      .flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -70,7 +71,8 @@ describe('SearchService', () => {
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&aggregate=true&coo=France&coo=Italy&domain=Forest').flush(expectedResults);
+    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&aggregate=true&coo=France&coo=Italy&domain=Forest')
+      .flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 

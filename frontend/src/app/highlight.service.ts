@@ -25,8 +25,7 @@ export class HighlightService {
       if (textContent.length > remainingLength) {
         childNode.textContent = textContent.substring(0, remainingLength);
         length += remainingLength;
-      }
-      else {
+      } else {
         length += textContent.length;
       }
     }
