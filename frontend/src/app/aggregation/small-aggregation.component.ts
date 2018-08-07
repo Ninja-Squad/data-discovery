@@ -43,10 +43,6 @@ export class SmallAggregationComponent implements OnInit {
       }
       this.aggregationForm.addControl(bucket.key, control);
     });
-    // disable if only one bucket
-    if (buckets.length === 1) {
-      this.aggregationForm.disable();
-    }
 
     // subscribe to form changes
     // to emit a new event every time a value changes

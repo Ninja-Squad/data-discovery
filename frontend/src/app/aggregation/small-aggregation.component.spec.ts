@@ -111,21 +111,6 @@ describe('SmallAggregationComponent', () => {
     expect(component.aggregationForm.get('France').value).toBeTruthy();
   });
 
-  it('should build a form and disable the unique criteria', () => {
-    // given an aggregation with a bucket and a unique value
-    const component = new SmallAggregationComponent();
-    component.aggregation = toAggregation('coo', ['France']);
-
-    // when initializing the component
-    component.ngOnInit();
-
-    // then it should have a form with one disabled field
-    const controls = component.aggregationForm.controls;
-    expect(Object.keys(controls)).toEqual(['France']);
-    // and France should be disabled
-    expect(component.aggregationForm.get('France').disable).toBeTruthy();
-  });
-
   it('should emit an event when a checkbox is toggled', fakeAsync(() => {
     const tester = new SmallAggregationComponentTester();
 
