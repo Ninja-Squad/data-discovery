@@ -9,7 +9,8 @@
              class="form-control"
              placeholder="Exemples : pisum sativum, rosa"
              formControlName="search"
-             [ngbTypeahead]="suggesterTypeahead">
+             [ngbTypeahead]="suggesterTypeahead"
+             [focusFirst]="false">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary">Recherche</button>
       </div>
