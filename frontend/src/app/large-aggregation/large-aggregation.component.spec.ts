@@ -122,25 +122,6 @@ describe('LargeAggregationComponent', () => {
     expect(tester.pills[1].button('button')).not.toBeNull();
   });
 
-  it('should disable the unique criterion and display it as a pill', () => {
-    // given an aggregation with a bucket and a unique value
-    const tester = new LargeAggregationComponentTester();
-    const component = tester.componentInstance;
-    component.aggregation = toAggregation('coo', ['France']);
-
-    // when displaying the component
-    tester.detectChanges();
-
-    // then it should have no input
-    expect(tester.inputField).toBeNull();
-    expect(tester.typeahead).toBeNull();
-    // and France should be displayed a pill
-    expect(tester.pills.length).toBe(1);
-    expect(tester.pills[0]).toContainText('France[10]');
-    // but not a removable one
-    expect(tester.pills[0].button('button')).toBeNull();
-  });
-
   it('should find one results containing the term entered', () => {
     // given an aggregation with a bucket
     const component = new LargeAggregationComponent();

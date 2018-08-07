@@ -11,25 +11,16 @@
       <small class="text-muted ml-1">({{ aggregation.buckets.length | number }})</small>
     </h3>
 
-    <!-- multiple values as pills and a typeahead to add them -->
-    <div *ngIf="aggregation.buckets.length > 1; else singleValue">
-      <div class="mb-2">
+    <!-- values as pills and a typeahead to add them -->
+    <div class="mb-2">
       <span class="badge badge-pill badge-secondary mr-1" *ngFor="let key of selectedKeys" tabindex="0"
             (keydown.backspace)="removeKey(key)">
         <rare-document-count [name]="key" [count]="documentCountForKey(key)" [muted]="false"></rare-document-count>
         <button tabindex="-1" type="button" class="btn btn-link" (click)="removeKey(key)">&times;</button>
       </span>
-      </div>
-      <input id="typeahead-basic" type="text" class="form-control" [formControl]="criterion" [ngbTypeahead]="search"
-             (selectItem)="selectKey($event)" [resultTemplate]="resultTemplate"/>
     </div>
-    <!-- single value as a pill not removable -->
-    <ng-template #singleValue>
-      <span class="badge badge-pill badge-light">
-        <rare-document-count [name]="aggregation.buckets[0].key" [count]="aggregation.buckets[0].documentCount"
-                             [muted]="false"></rare-document-count>
-      </span>
-    </ng-template>
+    <input class="form-control" [formControl]="criterion" [ngbTypeahead]="search"
+           (selectItem)="selectKey($event)" [resultTemplate]="resultTemplate"/>
   </div>
 </div>
 
