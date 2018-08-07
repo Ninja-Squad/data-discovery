@@ -104,7 +104,9 @@ describe('AggregationsComponent', () => {
 
     // given a few aggregations
     const domain = toAggregation('domain', ['Plant']);
-    const coo = toAggregation('coo', ['France', 'Italy']);
+    // country of origin as a large aggregation with 10 options to keep being large
+    const coo = toAggregation('coo', ['France', 'Italy', 'Japan', 'Indonesia', 'New Zealand',
+      'Chile', 'Bolivia', 'Argentina', 'Antarctica', 'Canada']);
     coo.type = 'LARGE';
     component.aggregations = [domain, coo];
     component.selectedCriteria = [{ name: 'coo', values: ['France'] }];
@@ -120,6 +122,29 @@ describe('AggregationsComponent', () => {
     const large = tester.largeAggregations[0].componentInstance as LargeAggregationComponent;
     expect(large.aggregation).toBe(coo);
     expect(large.selectedKeys).toEqual(['France']);
+  });
+
+  it('should display a small aggregation for a large one with few results', () => {
+    const tester = new AggregationsComponentTester();
+    const component = tester.componentInstance;
+
+    // given a few aggregations
+    const domain = toAggregation('domain', ['Plant']);
+    // country of origin as a large aggregation with only 2 options to see if it is displayed as a small one
+    const coo = toAggregation('coo', ['France', 'Italy']);
+    coo.type = 'LARGE';
+    component.aggregations = [domain, coo];
+    component.selectedCriteria = [{ name: 'coo', values: ['France'] }];
+    tester.detectChanges();
+
+    // then it should display 2 small aggregations
+    expect(tester.aggregations.length).toBe(2);
+    const small = tester.aggregations[0].componentInstance as SmallAggregationComponent;
+    expect(small.aggregation).toBe(domain);
+    expect(small.selectedKeys).toEqual([]);
+    const largeAsSmall = tester.aggregations[1].componentInstance as LargeAggregationComponent;
+    expect(largeAsSmall.aggregation).toBe(coo);
+    expect(largeAsSmall.selectedKeys).toEqual(['France']);
   });
 
   it('should update criteria when a criterion changes', () => {
