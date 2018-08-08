@@ -24,7 +24,7 @@
         <button tabindex="-1" type="button" class="btn btn-link" (click)="removeKey(key)">&times;</button>
       </span>
     </div>
-    <input class="form-control" [formControl]="criterion" [ngbTypeahead]="search"
+    <input #typeahead class="form-control" [formControl]="criterion" [ngbTypeahead]="search"
            (selectItem)="selectKey($event)" [resultTemplate]="resultTemplate" container="body"/>
   </div>
 </div>

@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Aggregation, Bucket } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+
+import { Aggregation, Bucket } from '../models/page';
+import { AggregationCriterion } from '../models/aggregation-criterion';
 
 export type BucketOrRefine = Bucket | 'REFINE';
 
@@ -23,9 +24,11 @@ export class LargeAggregationComponent {
   // the component emits an event if the user adds or remove a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
 
+  @ViewChild('typeahead') typeahead: ElementRef<HTMLInputElement>;
+
   criterion = new FormControl('');
 
-  search: (text$: Observable<string>) => Observable<Array<BucketOrRefine>> = text$ =>
+  search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -74,6 +77,7 @@ export class LargeAggregationComponent {
       this.criterion.setValue('');
       this.emitEvent();
     }
+    this.typeahead.nativeElement.focus();
   }
 
   documentCountForKey(key: string) {

@@ -191,9 +191,15 @@ describe('LargeAggregationComponent', () => {
     tester.results[0].click();
     tester.detectChanges();
 
+    // an event is emitted
     expect(emittedEvent.name).toBe('coo');
     expect(emittedEvent.values).toEqual(['France']);
+
+    // the input is emptied
     expect(tester.inputField).toHaveValue('');
+
+    // the focus is given back to the input
+    expect(tester.element(':focus')).toEqual(tester.inputField);
 
     // and a pill should appear
     expect(tester.pills.length).toBe(1);
@@ -215,6 +221,9 @@ describe('LargeAggregationComponent', () => {
     expect(tester.inputField).toHaveValue('');
     expect(emittedEvent.name).toBe('coo');
     expect(emittedEvent.values).toEqual(['France', 'Italy']);
+
+    // the focus is given back to the input
+    expect(tester.element(':focus')).toEqual(tester.inputField);
 
     // and another pill should appear
     expect(tester.pills.length).toBe(2);
@@ -264,8 +273,14 @@ describe('LargeAggregationComponent', () => {
     tester.results[tester.results.length - 1].click();
     tester.detectChanges();
 
+    // no event is emitted
     expect(emittedEvent).toBeUndefined();
+
+    // the input value stays the same
     expect(tester.inputField).toHaveValue('a');
+
+    // the focus is given back to the input
+    expect(tester.element(':focus')).toEqual(tester.inputField);
 
     // and a pill should not appear
     expect(tester.pills.length).toBe(0);
