@@ -250,6 +250,11 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
         return geneticResources.getAggregations().get(pillarAggregationName);
     }
 
+    @Override
+    public void putMapping() {
+        elasticsearchTemplate.putMapping(IndexedGeneticResource.class);
+    }
+
     private IndexQuery createIndexQuery(IndexedGeneticResource entity) {
         IndexQuery query = new IndexQuery();
         query.setObject(entity);

@@ -48,4 +48,9 @@ public interface GeneticResourceDaoCustom {
     void saveAll(Collection<IndexedGeneticResource> indexedGeneticResources);
 
     Terms findPillars();
+
+    /**
+     * Puts the mapping for the alias of the {@link IndexedGeneticResource} document
+     */
+    void putMapping();
 }

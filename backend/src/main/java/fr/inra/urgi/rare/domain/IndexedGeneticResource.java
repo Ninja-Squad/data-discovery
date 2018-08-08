@@ -16,17 +16,26 @@ import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
  * A class containing all the fields of a GeneticResource, and additional fields used uniquely for indexing
  * and which thus make it possible or easier to implement completion suggestions.
+ *
+ * This document is used by the harvesting process. Its index is in fact an alias which typically refers to the same
+ * physical index as the alias used by {@link GeneticResource}, except when we want to harvest to a new index
+ * (in order to delete obsolete documents, or to accomodate with incompatible schema changes). In that case, once the
+ * harvest process is finished, the alias of {@link GeneticResource} can be modified to refer to the new physical
+ * index, in order to start searching in the newly harvested documents.
+ *
  * @author JB Nizet
  */
 @Document(
-    indexName = "#{@rareProperties.getElasticsearchPrefix()}resource-index",
+    indexName = "#{@rareProperties.getElasticsearchPrefix()}resource-harvest-index",
     type = "#{@rareProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )
+@Mapping(mappingPath = "fr/inra/urgi/rare/domain/GeneticResource.mapping.json")
 public final class IndexedGeneticResource {
     @JsonUnwrapped
     private final GeneticResource geneticResource;

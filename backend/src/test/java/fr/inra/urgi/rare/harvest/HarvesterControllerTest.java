@@ -1,5 +1,6 @@
 package fr.inra.urgi.rare.harvest;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -8,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.Optional;
 
+import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.dao.HarvestResultDao;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Matcher;
@@ -35,6 +37,9 @@ class HarvesterControllerTest {
     @MockBean
     private HarvestResultDao mockHarvestResultDao;
 
+    @MockBean
+    private GeneticResourceDao mockGeneticResourceDao;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -60,6 +65,8 @@ class HarvesterControllerTest {
         mockMvc.perform(post("/api/harvests"))
                .andExpect(status().isCreated())
                .andExpect(header().string(HttpHeaders.LOCATION, matches("^(.*)/api/harvests/(.+)$")));
+
+        verify(mockGeneticResourceDao).putMapping();
     }
 
     @Test

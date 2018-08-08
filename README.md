@@ -74,9 +74,13 @@ You can approximate what runs on CI by executing:
 ## Harvest
 
 Harvesting (i.e. importing genetic resources stored in JSON files into ElasticSearch) consists in
-placing the JSON files into a directory where the server can find them.
+creating the necessary index and aliases, and then placing the JSON files into a directory where the server can find them.
 
-This directory, by default is `/tmp/rare/resources`. But it's externalized into the Spring Boot property
+To create the index and its aliases execute the script 
+
+    ./scripts/createIndexAndAliases.sh
+
+The directory, by default is `/tmp/rare/resources`. But it's externalized into the Spring Boot property
 `rare.resource-dir`, so it can be easily changed by modifying the value of this property (using an 
 environment variable for example).
 
@@ -87,4 +91,101 @@ build task `asciidoctor`, which executes tests and generates documentation based
 by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`/
 
     ./gradlew asciidoctor
-    
+
+## Indices and aliases
+
+The application uses two physical indices: 
+
+ * one to store the harvest results. This one is created automatically if it doesn't exist yet when the application starts.
+   It doesn't contain important data, and can be deleted and recreated if really needed.
+ * one to store physical resources. This one must be created explicitly before using the application. If not,
+ requests to the web services will return errors.
+
+The application doesn't use the physical resources index directly. Instead, it uses two aliases, that must be created 
+before using the application:
+
+ * `resource-index` is the alias used by the application to search for genetic resources
+ * `resource-harvest-index` is the alias used by the application to store genetic resources when the harvest is triggered.
+ 
+In normal operations, these two aliases should refer to the same physical resource index. The script
+`createIndexAndAliases.sh` creates a physical index (named `resource-physical-index`) and creates these two aliases 
+referring to this physical index.
+
+Once the index and the aliases have been created, a harvest can be triggered. The first operation that a harvest
+does is to create or update (put) the mapping for the genetic resource entity into the index aliased by `resource-harvest-index`. 
+Then it parses the JSON files and stores them into this same index. Since the `resource-index` alias 
+normally refers to the same physical index, searches will find the resources stored by the harvester.
+
+### Why two aliases
+
+Using two aliases is useful when deleting obsolete documents. This is actually done by removing everything
+and then harvesting the new JSON files again, to re-populate the index from scratch.
+
+Two scenarios are possible:
+
+#### Deleting with some downtime
+
+The harvest duration depends on the performance of Elasticsearch, of the performance of the harvester, and 
+of course, of the number of documents to harvest. If you don't mind about having a period of time 
+where the documents are not available, you can simply 
+
+ - delete the physical index;
+ - re-create it with its aliases;
+ - trigger a new harvest.
+ 
+Keep in mind that, with the current known set of documents (17172), on a development machine where everything is running
+concurrently, when both the Elasticsearch server and the application are hot, a harvest only takes 12 seconds.
+So, even if you have 10 times that number of documents (170K documents), it should only take around 2 minutes of downtime.
+If you have 100 times that number of documents (1.7M documents), it should take around 20 minutes, which is still not a 
+very long time.
+
+(Your mileage may vary: I assumed a linear complexity here).
+
+#### Deleting with no downtime
+
+If you don't want any downtime, you can instead use the following procedure:
+
+ - create a new physical index (let's name it `resource-new-physical-index`);
+ - delete the `resource-harvest-index` alias, and recreate it so that it refers to `resource-new-physical-index`;
+ - trigger a harvest. During the harvest, the `resource-index` alias, used by the search,
+   still refers to the old physical index, and it thus still works flawlessly;
+ - once the harvest is finished, delete the `resource-index` alias, and recreate it so that it refers to 
+   `resource-new-physical-index`. All the search operations will now use the new index, containing up-to-date
+   documents;
+ - delete the old physical index.
+ 
+### Mapping migration
+
+Another situation where you might need to reindex all the documents is when the mapping has changed and a new version
+of the application must be redeployed. 
+
+#### Upgrading with some downtime
+
+This is the easiest and safest procedure, that I would recommend:
+
+ - create a new physical index (let's name it `resource-new-physical-index`);
+ - delete the `resource-harvest-index` and the `resource-index` aliases, and recreate them both so that they refer to 
+   `resource-new-physical-index`;
+ - stop the existing application, deploy and start the new one;
+ - trigger a harvest;
+ - once everything is running fine, remove the old physical index.
+ 
+In case anything goes wrong, the two aliases can always be recreated to refer to the old physical index, and the old
+application can be restarted.
+
+#### Upgrading with a very short downtime (or no downtime at all)
+
+ - create a new physical index (let's name it `resource-new-physical-index`);
+ - delete the `resource-harvest-index` alias, and recreate it so that it refers to `resource-new-physical-index`;
+ - start the new application, on another machine, or on a different port, so that the new application code can be
+   used to trigger a harvest with the new schema, while the old application is still running and exposed to the users
+ - trigger the harvest on the **new** application
+ - once the harvest is finished, delete the `resource-harvest-index` alias, and recreate it so that it refers to 
+   `resource-new-physical-index`;
+ - expose the new application to the users instead of the old one
+ - stop the old application
+ 
+How you execute these various steps depend on the production infrastructure, which is unknown to me. You could
+use your own development server to start the new application and do the harvest, and then stop the production application,
+deploy the new one and start it. Or you could have a reverse proxy in front of the application, and change its 
+configuration to route to the new application once the harvest is done, for example.

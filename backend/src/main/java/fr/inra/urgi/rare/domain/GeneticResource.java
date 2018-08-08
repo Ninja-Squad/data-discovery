@@ -10,17 +10,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
- * A genetic resource, as loaded from a JSON file, and stored in ElasticSearch
+ * A genetic resource, as loaded from a JSON file, and stored in ElasticSearch.
+ *
+ * This document is used by all the search operations, but not by the harvesting process, which instead uses
+ * {@link IndexedGeneticResource}. Its index is in fact an alias which typically refers to the same physical index as
+ * the alias used by {@link IndexedGeneticResource}, except when we want to harvest to a new index
+ * (in order to delete obsolete documents, or to accomodate with incompatible schema changes). In that case, once the
+ * harvest process is finished, the alias of {@link GeneticResource} can be modified to refer to the new physical
+ * index, in order to start searching in the newly harvested documents.
+ *
  * @author JB Nizet
  */
 @Document(
     indexName = "#{@rareProperties.getElasticsearchPrefix()}resource-index",
-    type = "#{@rareProperties.getElasticsearchPrefix()}resource"
+    type = "#{@rareProperties.getElasticsearchPrefix()}resource",
+    createIndex = false
 )
-@Mapping(mappingPath = "fr/inra/urgi/rare/domain/GeneticResource.mapping.json")
 public class GeneticResource {
 
     /**

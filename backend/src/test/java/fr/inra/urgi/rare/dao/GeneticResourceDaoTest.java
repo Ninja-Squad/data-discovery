@@ -14,16 +14,21 @@ import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
+import org.springframework.data.elasticsearch.core.query.AliasBuilder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -31,12 +36,39 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource("/test.properties")
 @Import(ElasticSearchConfig.class)
 @JsonTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GeneticResourceDaoTest {
+
+    private static final String PHYSICAL_INDEX = "test-resource-physical-index";
 
     @Autowired
     private GeneticResourceDao geneticResourceDao;
 
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
     private Pageable firstPage = PageRequest.of(0, 10);
+
+    @BeforeAll
+    void prepareIndex() {
+        ElasticsearchPersistentEntity indexedGeneticResourceEntity = elasticsearchTemplate.getPersistentEntityFor(
+            IndexedGeneticResource.class);
+        ElasticsearchPersistentEntity geneticResourceEntity = elasticsearchTemplate.getPersistentEntityFor(
+            GeneticResource.class);
+        elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
+        elasticsearchTemplate.createIndex(PHYSICAL_INDEX);
+        elasticsearchTemplate.addAlias(
+            new AliasBuilder().withAliasName(indexedGeneticResourceEntity.getIndexName())
+                              .withIndexName(PHYSICAL_INDEX)
+                              .build()
+        );
+        elasticsearchTemplate.addAlias(
+            new AliasBuilder().withAliasName(geneticResourceEntity.getIndexName())
+                              .withIndexName(PHYSICAL_INDEX)
+                              .build()
+        );
+        elasticsearchTemplate.putMapping(IndexedGeneticResource.class);
+    }
 
     @BeforeEach
     void prepare() {
