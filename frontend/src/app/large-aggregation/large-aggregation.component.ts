@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Aggregation } from '../models/page';
+import { Aggregation, Bucket } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { Observable } from 'rxjs/internal/Observable';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
-const maxResultsDisplayed = 10;
+export type BucketOrRefine = Bucket | 'REFINE';
+
+const maxResultsDisplayed = 8;
 
 @Component({
   selector: 'rare-large-aggregation',
@@ -23,18 +25,27 @@ export class LargeAggregationComponent {
 
   criterion = new FormControl('');
 
-  search = (text$: Observable<string>) =>
+  search: (text$: Observable<string>) => Observable<Array<BucketOrRefine>> = text$ =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term =>
-        this.aggregation.buckets
+      map(term => {
+        const allMatchingBuckets = this.aggregation.buckets
         // returns values not already selected
           .filter(bucket => !this.selectedKeys.includes(bucket.key)
             // and that contains the term, ignoring the case
-            && bucket.key.toLowerCase().includes(term.toLowerCase()))
-          // returns the first 10 results
-          .slice(0, maxResultsDisplayed))
+            && bucket.key.toLowerCase().includes(term.toLowerCase()));
+
+        // return the first N results
+        const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
+
+        // if more results exist, add a fake refine bucket
+        if (allMatchingBuckets.length > maxResultsDisplayed) {
+          result.push('REFINE');
+        }
+
+        return result;
+      })
     )
 
   emitEvent(): void {
@@ -55,11 +66,14 @@ export class LargeAggregationComponent {
 
   selectKey(event: NgbTypeaheadSelectItemEvent) {
     event.preventDefault();
-    // the item field of the event contains the bucket
-    // we push the selected key to our collection of keys
-    this.selectedKeys = [...this.selectedKeys, event.item.key];
-    this.criterion.setValue('');
-    this.emitEvent();
+    const selected: BucketOrRefine = event.item;
+    if (selected !== 'REFINE') {
+      // the item field of the event contains the bucket
+      // we push the selected key to our collection of keys
+      this.selectedKeys = [...this.selectedKeys, event.item.key];
+      this.criterion.setValue('');
+      this.emitEvent();
+    }
   }
 
   documentCountForKey(key: string) {

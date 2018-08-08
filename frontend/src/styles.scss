@@ -8,3 +8,9 @@ $fa-font-path: '../node_modules/font-awesome/fonts';
   font-style: normal;
   font-weight: bold;
 }
+
+.dropdown-item.active {
+  .text-muted {
+    color: $white !important;
+  }
+}

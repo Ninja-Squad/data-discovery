@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { NgbTypeahead, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
-import { LargeAggregationComponent } from './large-aggregation.component';
+import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
@@ -33,11 +33,12 @@ describe('LargeAggregationComponent', () => {
       return this.debugElement.query(By.directive(NgbTypeahead));
     }
 
-    get results() {
-      // based on the typeahead test itself
+    get results(): NodeListOf<HTMLButtonElement> {
+      // Based on the typeahead test itself
       // see https://github.com/ng-bootstrap/ng-bootstrap/blob/master/src/typeahead/typeahead.spec.ts
-      return this.element('ngb-typeahead-window.dropdown-menu')
-        .elements('button.dropdown-item');
+      // The dropdown is appended to the body, not to this element, so we can't unfortunatly return an array of
+      // TestButton, but only DOM elements
+      return document.querySelectorAll('ngb-typeahead-window.dropdown-menu button.dropdown-item');
     }
 
     get pills() {
@@ -79,29 +80,6 @@ describe('LargeAggregationComponent', () => {
     expect(tester.inputField).toBeNull();
   });
 
-  it('should display the 10 first matching results as options', () => {
-    // given an aggregation with a bucket and a selected value
-    const selectedKeys = [
-      'France',
-      'Italy'
-    ];
-
-    const tester = new LargeAggregationComponentTester();
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
-    component.selectedKeys = selectedKeys;
-
-    // when displaying the component
-    tester.detectChanges();
-
-    // then it should have several removable pills
-    expect(tester.pills.length).toBe(2);
-    expect(tester.pills[0]).toContainText('France[10]');
-    expect(tester.pills[0].button('button')).not.toBeNull();
-    expect(tester.pills[1]).toContainText('Italy[20]');
-    expect(tester.pills[1].button('button')).not.toBeNull();
-  });
-
   it('should display the selected criteria as pills', () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France', 'Italy'];
@@ -128,13 +106,13 @@ describe('LargeAggregationComponent', () => {
     component.aggregation = aggregation;
 
     // when searching for a result
-    let actualResults: Array<Bucket> = [];
+    let actualResults: Array<BucketOrRefine> = [];
     component.search(of('anc'))
       .subscribe(results => actualResults = results);
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
-    expect(actualResults[0].key).toBe('France');
+    expect((actualResults[0] as Bucket).key).toBe('France');
   });
 
   it('should find the results containing the term entered and ignore the case', () => {
@@ -143,15 +121,15 @@ describe('LargeAggregationComponent', () => {
     component.aggregation = aggregation;
 
     // when searching for a result
-    let actualResults: Array<Bucket> = [];
+    let actualResults: Array<BucketOrRefine> = [];
     component.search(of('A'))
       .subscribe(results => actualResults = results);
 
     // then it should have one match
     expect(actualResults.length).toBe(3);
-    expect(actualResults[0].key).toBe('France');
-    expect(actualResults[1].key).toBe('Italy');
-    expect(actualResults[2].key).toBe('New Zealand');
+    expect((actualResults[0] as Bucket).key).toBe('France');
+    expect((actualResults[1] as Bucket).key).toBe('Italy');
+    expect((actualResults[2] as Bucket).key).toBe('New Zealand');
   });
 
   it('should not find the results containing the term entered if it is already selected', () => {
@@ -161,7 +139,7 @@ describe('LargeAggregationComponent', () => {
     component.selectedKeys = ['France'];
 
     // when searching for a result
-    let actualResults: Array<Bucket> = [];
+    let actualResults: Array<BucketOrRefine> = [];
     component.search(of('anc'))
       .subscribe(results => actualResults = results);
 
@@ -169,18 +147,22 @@ describe('LargeAggregationComponent', () => {
     expect(actualResults.length).toBe(0);
   });
 
-  it('should find 10 results max', () => {
+  it('should find 8 results max + a fake refine result', () => {
     // given an aggregation with a bucket
     const component = new LargeAggregationComponent();
     component.aggregation = toAggregation('coo', Array(30).fill('a'));
 
     // when searching for a result
-    let actualResults: Array<Bucket> = [];
+    let actualResults: Array<BucketOrRefine> = [];
     component.search(of('a'))
       .subscribe(results => actualResults = results);
 
     // then it should have no match
-    expect(actualResults.length).toBe(10);
+    expect(actualResults.length).toBe(9);
+    for (let i = 0; i < actualResults.length - 1; i++) {
+      expect((actualResults[0] as Bucket).key).toBe('a');
+    }
+    expect(actualResults[actualResults.length - 1]).toBe('REFINE');
   });
 
   it('should emit an event when a value is added or removed and update pills', fakeAsync(() => {
@@ -203,10 +185,11 @@ describe('LargeAggregationComponent', () => {
 
     // results should appear
     expect(tester.results.length).toBe(1);
-    expect(tester.results[0]).toHaveText('France[10]');
+    expect(tester.results[0].textContent).toBe('France[10]');
 
     // when the result is selected
-    tester.results[0].dispatchEventOfType('click');
+    tester.results[0].click();
+    tester.detectChanges();
 
     expect(emittedEvent.name).toBe('coo');
     expect(emittedEvent.values).toEqual(['France']);
@@ -222,10 +205,11 @@ describe('LargeAggregationComponent', () => {
 
     // results should appear
     expect(tester.results.length).toBe(1);
-    expect(tester.results[0]).toHaveText('Italy[20]');
+    expect(tester.results[0].textContent).toBe('Italy[20]');
 
     // when the result is selected
-    tester.results[0].dispatchEventOfType('click');
+    tester.results[0].click();
+    tester.detectChanges();
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
@@ -249,6 +233,42 @@ describe('LargeAggregationComponent', () => {
     // and the pill should disappear
     expect(tester.pills.length).toBe(1);
     expect(tester.pills[0]).toContainText('Italy[20]');
+
+    // discard the remaining timer
+    tick(200);
+  }));
+
+  it('should not do anything if REFINE is selected', fakeAsync(() => {
+    const tester = new LargeAggregationComponentTester();
+
+    // given an aggregation
+    const component = tester.componentInstance;
+    component.aggregation = toAggregation('coo', Array(30).fill('a'));
+    tester.detectChanges();
+    expect(tester.inputField).toHaveValue('');
+    expect(tester.pills.length).toBe(0);
+
+    // then it should not emit an event
+    let emittedEvent: AggregationCriterion;
+    component.aggregationChange.subscribe((event: AggregationCriterion) => emittedEvent = event);
+
+    // when a value is entered
+    tester.inputField.fillWith('a');
+    tick(200);
+
+    // results should appear
+    expect(tester.results.length).toBe(9);
+    expect(tester.results[tester.results.length - 1].textContent).toContain(`D'autres résultats existent`);
+
+    // when the result is selected
+    tester.results[tester.results.length - 1].click();
+    tester.detectChanges();
+
+    expect(emittedEvent).toBeUndefined();
+    expect(tester.inputField).toHaveValue('a');
+
+    // and a pill should not appear
+    expect(tester.pills.length).toBe(0);
 
     // discard the remaining timer
     tick(200);

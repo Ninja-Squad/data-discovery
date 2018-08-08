@@ -1,6 +1,11 @@
 <ng-template #resultTemplate let-bucket="result" let-t="term">
-  <ngb-highlight [result]="bucket.key" [term]="t"></ngb-highlight>
-  <small class="ml-1">[{{ bucket.documentCount | number }}]</small>
+  <ng-container *ngIf="bucket !== 'REFINE'; else refine">
+    <ngb-highlight [result]="bucket.key" [term]="t"></ngb-highlight>
+    <small class="ml-1 text-muted">[{{ bucket.documentCount | number }}]</small>
+  </ng-container>
+  <ng-template #refine>
+    <div class="text-muted small">D'autres résultats existent.<br/>Affinez votre recherche.</div>
+  </ng-template>
 </ng-template>
 
 <div class="card mb-1" *ngIf="aggregation.buckets.length">
@@ -20,7 +25,7 @@
       </span>
     </div>
     <input class="form-control" [formControl]="criterion" [ngbTypeahead]="search"
-           (selectItem)="selectKey($event)" [resultTemplate]="resultTemplate"/>
+           (selectItem)="selectKey($event)" [resultTemplate]="resultTemplate" container="body"/>
   </div>
 </div>
 
