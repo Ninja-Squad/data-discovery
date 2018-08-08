@@ -1,6 +1,6 @@
 <ng-template #resultTemplate let-bucket="result" let-t="term">
   <ng-container *ngIf="bucket !== 'REFINE'; else refine">
-    <ngb-highlight [result]="bucket.key" [term]="t"></ngb-highlight>
+    <ngb-highlight [result]="displayableKey(bucket.key)" [term]="t"></ngb-highlight>
     <small class="ml-1 text-muted">[{{ bucket.documentCount | number }}]</small>
   </ng-container>
   <ng-template #refine>
@@ -27,7 +27,7 @@
     <div class="mb-2">
       <span class="badge badge-pill badge-secondary mr-1" *ngFor="let key of selectedKeys" tabindex="0"
             (keydown.backspace)="removeKey(key)">
-        <rare-document-count [name]="key" [count]="documentCountForKey(key)" [muted]="false"></rare-document-count>
+        <rare-document-count [name]="displayableKey(key)" [count]="documentCountForKey(key)" [muted]="false"></rare-document-count>
         <button tabindex="-1" type="button" class="btn btn-link" (click)="removeKey(key)">&times;</button>
       </span>
     </div>

@@ -8,10 +8,11 @@ import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
+import { NULL_VALUE } from '../models/genetic-resource.model';
 
 describe('SmallAggregationComponent', () => {
 
-  const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand']);
+  const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
 
   class SmallAggregationComponentTester extends ComponentTester<SmallAggregationComponent> {
     constructor() {
@@ -51,13 +52,15 @@ describe('SmallAggregationComponent', () => {
     // then it should display a title
     expect(tester.title).toHaveText('Pays d\'origine');
     // and the buckets with their name and count
-    expect(tester.labels.length).toBe(3);
+    expect(tester.labels.length).toBe(4);
     expect(tester.labels[0]).toContainText('France');
     expect(tester.labels[0]).toContainText('[10]');
     expect(tester.labels[1]).toContainText('Italy');
     expect(tester.labels[1]).toContainText('[20]');
     expect(tester.labels[2]).toContainText('New Zealand');
     expect(tester.labels[2]).toContainText('[30]');
+    expect(tester.labels[3]).toContainText('Aucun');
+    expect(tester.labels[3]).toContainText('[40]');
   });
 
   it('should not display an aggregation with empty buckets', () => {
@@ -75,13 +78,20 @@ describe('SmallAggregationComponent', () => {
 
   it('should extract keys from selected values', () => {
     // given a few selected values among a bucket
-    const values: { [key: string]: boolean | null } = { 'France': true, 'England': false, 'Italy': true, 'New Zealand': null };
+    const values: { [key: string]: boolean | null } =
+      {
+        'France': true,
+        'England': false,
+        'Italy': true,
+        'New Zealand': null,
+        [NULL_VALUE]: true
+      };
 
     // when extracting keys
     const keys = SmallAggregationComponent.extractKeys(values);
 
     // then it should return only the truthy ones
-    expect(keys).toEqual(['France', 'Italy']);
+    expect(keys).toEqual(['France', 'Italy', NULL_VALUE]);
   });
 
   it('should build a form based on the bucket', () => {
@@ -94,7 +104,7 @@ describe('SmallAggregationComponent', () => {
 
     // then it should have a form with several fields
     const controls = component.aggregationForm.controls;
-    expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand']);
+    expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
   });
 
   it('should build a form and check selected criteria', () => {
@@ -110,7 +120,7 @@ describe('SmallAggregationComponent', () => {
 
     // then it should have a form with several fields
     const controls = component.aggregationForm.controls;
-    expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand']);
+    expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
     // and France should be checked
     expect(component.aggregationForm.get('France').value).toBeTruthy();
   });

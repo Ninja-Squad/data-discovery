@@ -16,7 +16,7 @@ import { SearchService } from '../search.service';
 import { GeneticResourceModel } from '../models/genetic-resource.model';
 import { toAggregation, toGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
-import { SmallAggregationComponent } from '../aggregation/small-aggregation.component';
+import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';

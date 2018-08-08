@@ -22,6 +22,14 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
 )
 @Mapping(mappingPath = "fr/inra/urgi/rare/domain/GeneticResource.mapping.json")
 public class GeneticResource {
+
+    /**
+     * The value used to index null values, in order to be able to create a refinement query for this value.
+     * Note that this value is only used when a field has the value `null`. If a field is an empty array, it's
+     * considered by ElasticSearch as missing.
+     */
+    public static final String NULL_VALUE = "NULL";
+
     @Id
     @JsonProperty("identifier")
     private final String id;

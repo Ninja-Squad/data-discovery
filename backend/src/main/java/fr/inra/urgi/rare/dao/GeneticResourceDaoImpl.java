@@ -19,6 +19,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
@@ -101,7 +103,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
         // See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
         BoolQueryBuilder refinementQuery = boolQuery();
         for (RareAggregation term : refinements.getTerms()) {
-            refinementQuery.must(termsQuery(term.getField(), refinements.getRefinementsForTerm(term)));
+            refinementQuery.must(createRefinementQuery(refinements, term));
         }
 
         // this allows avoiding to get back the suggestions field in the found documents, since we don't care
@@ -118,6 +120,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
             Stream.of(RareAggregation.values()).forEach(rareAggregation ->
                 builder.addAggregation(AggregationBuilders.terms(rareAggregation.getName())
                                                           .field(rareAggregation.getField())
+                                                          .missing(GeneticResource.NULL_VALUE)
                                                           .size(rareAggregation.getType().getMaxBuckets())));
         }
 
@@ -126,6 +129,46 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
         }
 
         return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class, geneticResourceHighlightMapper);
+    }
+
+    /**
+     * Creates a refinement query for the given term of the given refinements.
+     * Here are the various cases:
+     * <ul>
+     *     <li>
+     *         The field can't possibly be null (like the name, for example). In that case, all the acceptable values
+     *         for the term are actual names, and all we need is a terms query containing all the accepted values
+     *     </li>
+     *     <li>
+     *         The field is of type string and can be null. In that case, the null value is indexed, thanks to the
+     *         mapping, as {@link GeneticResource#NULL_VALUE}. This NULL value can be considered as any other real value
+     *         and all we need is thus a terms query containing all the accepted values, including NULL
+     *     </li>
+     *     <li>
+     *         The field is an array, and can be an empty array. In that case, it's considered by ElasticSearch as
+     *         missing, but the aggregation created in {@link #search(String, boolean, boolean, SearchRefinements, Pageable)}
+     *         puts missing values in the bucket with the key {@link GeneticResource#NULL_VALUE}. So, the aggregation
+     *         considers null values and missing values as the same value: {@link GeneticResource#NULL_VALUE}.
+     *         It's still considered, when searching, as a missing value though. So, if {@link GeneticResource#NULL_VALUE}
+     *         is present in the set of accepted values, we want both the null values and the missing values. We thus
+     *         create an <code>or</code> query (i.e. a <code>should</code> bool query in Elasticsearch terms), which
+     *         combines a terms query containing all the accepted values, including NULL, and a "not exists" query.
+     *         This combined query thus returns all the documents that have one of the real accepted values, or is null
+     *         and thus has the value {@link GeneticResource#NULL_VALUE} in the index, or does not exist.
+     *     </li>
+     * </ul>
+     */
+    private QueryBuilder createRefinementQuery(SearchRefinements refinements, RareAggregation term) {
+        Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
+        TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
+        if (acceptedValues.contains(GeneticResource.NULL_VALUE)) {
+            return boolQuery()
+                .should(termsQuery)
+                .should(boolQuery().mustNot(existsQuery(term.getField())));
+        }
+        else {
+            return termsQuery;
+        }
     }
 
     @Override

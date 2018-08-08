@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NULL_VALUE } from '../models/genetic-resource.model';
 
 import { Aggregation, Bucket } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -37,7 +38,7 @@ export class LargeAggregationComponent {
         // returns values not already selected
           .filter(bucket => !this.selectedKeys.includes(bucket.key)
             // and that contains the term, ignoring the case
-            && bucket.key.toLowerCase().includes(term.toLowerCase()));
+            && this.displayableKey(bucket.key).toLowerCase().includes(term.toLowerCase()));
 
         // return the first N results
         const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
@@ -82,5 +83,9 @@ export class LargeAggregationComponent {
 
   documentCountForKey(key: string) {
     return this.aggregation.buckets.find(bucket => bucket.key === key).documentCount;
+  }
+
+  displayableKey(key: string): string {
+    return key === NULL_VALUE ? 'Aucun' : key;
   }
 }

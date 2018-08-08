@@ -11,10 +11,11 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { Bucket } from '../models/page';
+import { NULL_VALUE } from '../models/genetic-resource.model';
 
 describe('LargeAggregationComponent', () => {
 
-  const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand']);
+  const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
 
   class LargeAggregationComponentTester extends ComponentTester<LargeAggregationComponent> {
     constructor() {
@@ -65,7 +66,7 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should display a title and the number of possible keys
-    expect(tester.title).toHaveText('Pays d\'origine (3)');
+    expect(tester.title).toHaveText('Pays d\'origine (4)');
     // and the buckets with their name and count in a typeahead
     expect(tester.inputField).not.toBeNull();
     expect(tester.typeahead).not.toBeNull();
@@ -86,7 +87,7 @@ describe('LargeAggregationComponent', () => {
 
   it('should display the selected criteria as pills', () => {
     // given an aggregation with a bucket and a selected value
-    const selectedKeys = ['France', 'Italy'];
+    const selectedKeys = ['France', 'Italy', NULL_VALUE];
 
     const tester = new LargeAggregationComponentTester();
     const component = tester.componentInstance;
@@ -97,11 +98,13 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should have several removable pills
-    expect(tester.pills.length).toBe(2);
+    expect(tester.pills.length).toBe(3);
     expect(tester.pills[0]).toContainText('France[10]');
     expect(tester.pills[0].button('button')).not.toBeNull();
     expect(tester.pills[1]).toContainText('Italy[20]');
     expect(tester.pills[1].button('button')).not.toBeNull();
+    expect(tester.pills[2]).toContainText('Aucun[40]');
+    expect(tester.pills[2].button('button')).not.toBeNull();
   });
 
   it('should find one results containing the term entered', () => {
@@ -119,6 +122,21 @@ describe('LargeAggregationComponent', () => {
     expect((actualResults[0] as Bucket).key).toBe('France');
   });
 
+  it('should find one results containing the term entered when it is the null value translation', () => {
+    // given an aggregation with a bucket
+    const component = new LargeAggregationComponent();
+    component.aggregation = aggregation;
+
+    // when searching for a result
+    let actualResults: Array<BucketOrRefine> = [];
+    component.search(of('auc'))
+      .subscribe(results => actualResults = results);
+
+    // then it should have no match
+    expect(actualResults.length).toBe(1);
+    expect((actualResults[0] as Bucket).key).toBe(NULL_VALUE);
+  });
+
   it('should find the results containing the term entered and ignore the case', () => {
     // given an aggregation with a bucket
     const component = new LargeAggregationComponent();
@@ -130,10 +148,11 @@ describe('LargeAggregationComponent', () => {
       .subscribe(results => actualResults = results);
 
     // then it should have one match
-    expect(actualResults.length).toBe(3);
+    expect(actualResults.length).toBe(4);
     expect((actualResults[0] as Bucket).key).toBe('France');
     expect((actualResults[1] as Bucket).key).toBe('Italy');
     expect((actualResults[2] as Bucket).key).toBe('New Zealand');
+    expect((actualResults[3] as Bucket).key).toBe(NULL_VALUE);
   });
 
   it('should not find the results containing the term entered if it is already selected', () => {

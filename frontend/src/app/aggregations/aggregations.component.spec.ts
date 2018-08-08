@@ -5,7 +5,7 @@ import { NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap
 import { ComponentTester } from 'ngx-speculoos';
 
 import { AggregationsComponent } from './aggregations.component';
-import { SmallAggregationComponent } from '../aggregation/small-aggregation.component';
+import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';

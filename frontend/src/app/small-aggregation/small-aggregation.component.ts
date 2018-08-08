@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { NULL_VALUE } from '../models/genetic-resource.model';
 
 @Component({
   selector: 'rare-small-aggregation',
@@ -54,5 +55,9 @@ export class SmallAggregationComponent implements OnInit {
       };
       this.aggregationChange.emit(event);
     });
+  }
+
+  displayableKey(key: string): string {
+    return key === NULL_VALUE ? 'Aucun' : key;
   }
 }
