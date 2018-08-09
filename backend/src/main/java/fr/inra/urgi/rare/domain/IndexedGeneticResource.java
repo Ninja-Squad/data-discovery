@@ -1,14 +1,18 @@
 package fr.inra.urgi.rare.domain;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
@@ -22,8 +26,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
     createIndex = false
 )
 public final class IndexedGeneticResource {
-    private static final Pattern WORD_SPLIT_PATTERN = Pattern.compile("\\p{Punct}|\\p{Space}");
-
     @JsonUnwrapped
     private final GeneticResource geneticResource;
 
@@ -97,11 +99,38 @@ public final class IndexedGeneticResource {
         toAdd.forEach(s -> addIfNotBlank(list, s));
     }
 
+    /**
+     * Uses the standard tokenizer of Lucene (which is itself used by ElasticSearch) to tokenize the description.
+     * This makes sure that words in the index used by the full-text search are the same as the ones in the suggestions,
+     * used to autocomplete terms. Othwerwise, we could have suggestions that lead to no search result.
+     * Note that words that are less than 3 characters-long are excluded from the suggestions, since it doesn't make
+     * much sense to suggest those words, and since the UI only starts suggesting after 2 characters anyway.
+     */
     private Stream<String> extractTokensOutOfDescription(String description) {
         if (description == null) {
             return Stream.empty();
         }
-        return WORD_SPLIT_PATTERN.splitAsStream(description)
-            .filter(s -> s.length() >= 3);
+
+        try (StandardTokenizer tokenizer = new StandardTokenizer()) {
+            tokenizer.setReader(new StringReader(description));
+            CharTermAttribute termAttribute = tokenizer.addAttribute(CharTermAttribute.class);
+
+            tokenizer.reset();
+
+            List<String> terms = new ArrayList<>();
+            while (tokenizer.incrementToken()) {
+                String word = termAttribute.toString();
+                if (word.length() > 2) {
+                    terms.add(word);
+                }
+            }
+
+            tokenizer.end();
+
+            return terms.stream();
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
