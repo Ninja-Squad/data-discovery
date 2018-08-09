@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -103,8 +105,11 @@ public final class IndexedGeneticResource {
      * Uses the standard tokenizer of Lucene (which is itself used by ElasticSearch) to tokenize the description.
      * This makes sure that words in the index used by the full-text search are the same as the ones in the suggestions,
      * used to autocomplete terms. Othwerwise, we could have suggestions that lead to no search result.
+     *
      * Note that words that are less than 3 characters-long are excluded from the suggestions, since it doesn't make
      * much sense to suggest those words, and since the UI only starts suggesting after 2 characters anyway.
+     *
+     * Words which, after being lowercased, belong to the set of English stopwords, are also excluded.
      */
     private Stream<String> extractTokensOutOfDescription(String description) {
         if (description == null) {
@@ -120,7 +125,7 @@ public final class IndexedGeneticResource {
             List<String> terms = new ArrayList<>();
             while (tokenizer.incrementToken()) {
                 String word = termAttribute.toString();
-                if (word.length() > 2) {
+                if (word.length() > 2 && !EnglishAnalyzer.getDefaultStopSet().contains(word.toLowerCase(Locale.ENGLISH))) {
                     terms.add(word);
                 }
             }

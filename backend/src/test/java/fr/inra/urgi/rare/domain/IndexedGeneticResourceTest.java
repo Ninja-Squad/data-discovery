@@ -26,7 +26,7 @@ class IndexedGeneticResourceTest {
             .withMaterialType(Arrays.asList("materialType"))
             .withPillarName("pillarName")
             .withSpecies(Arrays.asList("species"))
-            .withDescription("Hello world! How\n is he/she doing? Très bien. GrapeReSeq_Illumina_20K_experiment?")
+            .withDescription("Hello the world! How\n is he/she doing? Très bien. With GrapeReSeq_Illumina_20K_experiment?")
             .build();
 
         IndexedGeneticResource result = new IndexedGeneticResource(resource);
