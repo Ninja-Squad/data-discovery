@@ -48,7 +48,7 @@ describe('PillarsComponent', () => {
       declarations: [PillarsComponent, DocumentCountComponent],
       imports: [
         HttpClientTestingModule,
-        NgbTooltipModule.forRoot()
+        NgbTooltipModule
       ],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' }

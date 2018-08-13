@@ -35,7 +35,7 @@ describe('DocumentCountComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       declarations: [DocumentCountComponent],
-      imports: [NgbTooltipModule.forRoot()],
+      imports: [NgbTooltipModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
     });
     jasmine.addMatchers(speculoosMatchers);

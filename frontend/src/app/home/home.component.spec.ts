@@ -36,8 +36,8 @@ describe('HomeComponent', () => {
       ReactiveFormsModule,
       RouterTestingModule,
       HttpClientTestingModule,
-      NgbTypeaheadModule.forRoot(),
-      NgbTooltipModule.forRoot()
+      NgbTypeaheadModule,
+      NgbTooltipModule
     ],
     declarations: [HomeComponent, PillarsComponent, DocumentCountComponent],
     providers: [HttpClientTestingModule]

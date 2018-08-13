@@ -50,8 +50,8 @@ describe('LargeAggregationComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTypeaheadModule.forRoot(),
-      NgbTooltipModule.forRoot()
+      NgbTypeaheadModule,
+      NgbTooltipModule
     ],
     declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));

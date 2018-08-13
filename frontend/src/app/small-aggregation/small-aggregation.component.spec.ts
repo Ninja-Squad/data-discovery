@@ -35,7 +35,7 @@ describe('SmallAggregationComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTooltipModule.forRoot()
+      NgbTooltipModule
     ],
     declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));

@@ -53,9 +53,9 @@ describe('SearchComponent', () => {
       ReactiveFormsModule,
       RouterTestingModule,
       HttpClientTestingModule,
-      NgbPaginationModule.forRoot(),
-      NgbTypeaheadModule.forRoot(),
-      NgbTooltipModule.forRoot(),
+      NgbPaginationModule,
+      NgbTypeaheadModule,
+      NgbTooltipModule,
       NoopAnimationsModule
     ],
     declarations: [

@@ -31,8 +31,8 @@ describe('AggregationsComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTypeaheadModule.forRoot(),
-      NgbTooltipModule.forRoot()
+      NgbTypeaheadModule,
+      NgbTooltipModule
     ],
     declarations: [
       AggregationsComponent,

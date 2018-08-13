@@ -45,9 +45,9 @@ registerLocaleData(localeFr);
     }),
     ReactiveFormsModule,
     HttpClientModule,
-    NgbPaginationModule.forRoot(),
-    NgbTypeaheadModule.forRoot(),
-    NgbTooltipModule.forRoot()
+    NgbPaginationModule,
+    NgbTypeaheadModule,
+    NgbTooltipModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' }
