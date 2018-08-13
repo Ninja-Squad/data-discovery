@@ -32,30 +32,29 @@ class GeneticResourceTest {
     @Test
     void shouldMarshallAndUnMarshall() throws IOException {
         GeneticResource geneticResource =
-            new GeneticResource(
-                "doi:10.15454/1.492178535151698E12",
-                "Grecanico dorato",
-                "Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: "
-                    + "1310Mtp1, doi:10.15454/1.492178535151698E12) maintained by the GRAPEVINE (managed by INRA) and held "
-                    + "by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar "
-                    + "traditionnel",
-                "Plant",
-                "Florilège",
-                "http://florilege.arcad-project.org/fr/collections",
-                "https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy",
-                "Plantae",
-                Collections.singletonList("Vitis vinifera"),
-                Collections.singletonList("Vitaceae"),
-                Collections.singletonList("Vitis"),
-                Collections.singletonList("Vitis vinifera"),
-                Collections.singletonList("testMaterialType"),
-                Collections.singletonList("testBiotopeType"),
-                "France",
-                0.1,
-                0.2,
-                "Italy",
-                37.5,
-                15.099722);
+            GeneticResource.builder()
+                           .withId("doi:10.15454/1.492178535151698E12")
+                           .withName("Grecanico dorato")
+                           .withDescription("Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: "
+                                + "1310Mtp1, doi:10.15454/1.492178535151698E12) maintained by the GRAPEVINE (managed by INRA) and held "
+                                + "by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar "
+                                + "traditionnel")
+                           .withPillarName("Plant")
+                           .withDatabaseSource("Florilège")
+                           .withPortalURL("http://florilege.arcad-project.org/fr/collections")
+                           .withDataURL("https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
+                           .withDomain("Plantae")
+                           .withTaxon(Collections.singletonList("Vitis vinifera"))
+                           .withFamily(Collections.singletonList("Vitaceae"))
+                           .withGenus(Collections.singletonList("Vitis"))
+                           .withSpecies(Collections.singletonList("Vitis vinifera"))
+                           .withMaterialType(Collections.singletonList("testMaterialType"))
+                           .withBiotopeType(Collections.singletonList("testBiotopeType"))
+                           .withCountryOfOrigin("France")
+                           .withLocationOfOrigin(new Location(0.1,0.2))
+                           .withCountryOfCollect("Italy")
+                           .withLocationOfCollect(new Location(37.5,15.099722))
+                           .build();
 
         String json = objectMapper.writer()
                                   .withFeatures(SerializationFeature.INDENT_OUTPUT)
@@ -84,11 +83,9 @@ class GeneticResourceTest {
             "    \"materialType\": \"Test Material Type\",\n" +
             "    \"biotopeType\": \"Test Biotope Type\",\n" +
             "    \"countryOfOrigin\": null,\n" +
-            "    \"originLatitude\": null,\n" +
-            "    \"originLongitude\": null,\n" +
+            "    \"locationOfOrigin\": null,\n" +
             "    \"countryOfCollect\": null,\n" +
-            "    \"collectLatitude\": null,\n" +
-            "    \"collectLongitude\": null\n" +
+            "    \"locationOfCollect\": null\n" +
             "}";
 
         GeneticResource geneticResource = objectMapper.readValue(json, GeneticResource.class);

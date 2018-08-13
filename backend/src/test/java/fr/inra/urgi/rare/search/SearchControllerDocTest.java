@@ -18,6 +18,7 @@ import fr.inra.urgi.rare.dao.RareAggregation;
 import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.doc.DocumentationConfig;
 import fr.inra.urgi.rare.domain.GeneticResource;
+import fr.inra.urgi.rare.domain.Location;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -104,8 +105,7 @@ class SearchControllerDocTest {
                            .withGenus(Collections.singletonList("Vitis"))
                            .withSpecies(Collections.singletonList("Vitis vinifera"))
                            .withCountryOfCollect("Italy")
-                           .withCollectLatitude(37.5)
-                           .withCollectLongitude(15.099722)
+                           .withLocationOfCollect(new Location(37.5, 15.099722))
                            .build();
 
         highlightedSyrah =

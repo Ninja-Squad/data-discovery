@@ -1,5 +1,10 @@
 export const NULL_VALUE = 'NULL';
 
+export interface Location {
+  lat: number;
+  lon: number;
+}
+
 export interface GeneticResourceModel {
   identifier: string;
   name: string;
@@ -16,9 +21,7 @@ export interface GeneticResourceModel {
   materialType: Array<string>;
   biotopeType: Array<string>;
   countryOfOrigin: string;
-  originLatitude: number;
-  originLongitude: number;
+  locationOfOrigin: Location;
   countryOfCollect: string;
-  collectLatitude: number;
-  collectLongitude: number;
+  locationOfCollect: Location;
 }

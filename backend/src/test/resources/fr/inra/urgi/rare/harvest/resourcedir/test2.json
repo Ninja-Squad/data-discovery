@@ -15,10 +15,8 @@
         "materialType": null,
         "biotopeType": "Food",
         "countryOfOrigin": "Denmark",
-        "originLatitude": null,
-        "originLongitude": null,
+        "locationOfOrigin": null,
         "countryOfCollect": null,
-        "collectLatitude": null,
-        "collectLongitude": null
+        "locationOfCollect": null
     }
 ]

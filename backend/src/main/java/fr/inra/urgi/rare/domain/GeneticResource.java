@@ -55,11 +55,9 @@ public class GeneticResource {
     private final List<String> materialType;
     private final List<String> biotopeType;
     private final String countryOfOrigin;
-    private final Double originLatitude;
-    private final Double originLongitude;
+    private final Location locationOfOrigin;
     private final String countryOfCollect;
-    private final Double collectLatitude;
-    private final Double collectLongitude;
+    private final Location locationOfCollect;
 
     @JsonCreator
     public GeneticResource(@JsonProperty("identifier") String id,
@@ -77,11 +75,9 @@ public class GeneticResource {
                            List<String> materialType,
                            List<String> biotopeType,
                            String countryOfOrigin,
-                           Double originLatitude,
-                           Double originLongitude,
+                           Location locationOfOrigin,
                            String countryOfCollect,
-                           Double collectLatitude,
-                           Double collectLongitude) {
+                           Location locationOfCollect) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -97,11 +93,9 @@ public class GeneticResource {
         this.materialType = nullSafeUnmodifiableCopy(materialType);
         this.biotopeType = nullSafeUnmodifiableCopy(biotopeType);
         this.countryOfOrigin = countryOfOrigin;
-        this.originLatitude = originLatitude;
-        this.originLongitude = originLongitude;
+        this.locationOfOrigin = locationOfOrigin;
         this.countryOfCollect = countryOfCollect;
-        this.collectLatitude = collectLatitude;
-        this.collectLongitude = collectLongitude;
+        this.locationOfCollect = locationOfCollect;
     }
 
     private GeneticResource(Builder builder) {
@@ -120,11 +114,9 @@ public class GeneticResource {
              builder.materialType,
              builder.biotopeType,
              builder.countryOfOrigin,
-             builder.originLatitude,
-             builder.originLongitude,
+             builder.locationOfOrigin,
              builder.countryOfCollect,
-             builder.collectLatitude,
-             builder.collectLongitude);
+             builder.locationOfCollect);
     }
 
     public String getId() {
@@ -187,24 +179,16 @@ public class GeneticResource {
         return countryOfOrigin;
     }
 
-    public Double getOriginLatitude() {
-        return originLatitude;
-    }
-
-    public Double getOriginLongitude() {
-        return originLongitude;
+    public Location getLocationOfOrigin() {
+        return locationOfOrigin;
     }
 
     public String getCountryOfCollect() {
         return countryOfCollect;
     }
 
-    public Double getCollectLatitude() {
-        return collectLatitude;
-    }
-
-    public Double getCollectLongitude() {
-        return collectLongitude;
+    public Location getLocationOfCollect() {
+        return locationOfCollect;
     }
 
     @Override
@@ -231,11 +215,9 @@ public class GeneticResource {
             Objects.equals(materialType, that.materialType) &&
             Objects.equals(biotopeType, that.biotopeType) &&
             Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
-            Objects.equals(originLatitude, that.originLatitude) &&
-            Objects.equals(originLongitude, that.originLongitude) &&
+            Objects.equals(locationOfOrigin, that.locationOfOrigin) &&
             Objects.equals(countryOfCollect, that.countryOfCollect) &&
-            Objects.equals(collectLatitude, that.collectLatitude) &&
-            Objects.equals(collectLongitude, that.collectLongitude);
+            Objects.equals(locationOfCollect, that.locationOfCollect);
     }
 
     @Override
@@ -255,11 +237,9 @@ public class GeneticResource {
                             materialType,
                             biotopeType,
                             countryOfOrigin,
-                            originLatitude,
-                            originLongitude,
+                            locationOfOrigin,
                             countryOfCollect,
-                            collectLatitude,
-                            collectLongitude);
+                            locationOfCollect);
     }
 
     @Override
@@ -280,11 +260,9 @@ public class GeneticResource {
             ", materialType='" + materialType + '\'' +
             ", biotopeType='" + biotopeType + '\'' +
             ", countryOfOrigin='" + countryOfOrigin + '\'' +
-            ", originLatitude=" + originLatitude +
-            ", originLongitude=" + originLongitude +
+            ", locationOfOrigin=" + locationOfOrigin +
             ", countryOfCollect='" + countryOfCollect + '\'' +
-            ", collectLatitude=" + collectLatitude +
-            ", collectLongitude=" + collectLongitude +
+            ", locationOfCollect=" + locationOfCollect +
             '}';
     }
 
@@ -314,11 +292,9 @@ public class GeneticResource {
         private List<String> materialType = Collections.emptyList();
         private List<String> biotopeType = Collections.emptyList();
         private String countryOfOrigin;
-        private Double originLatitude;
-        private Double originLongitude;
+        private Location locationOfOrigin;
         private String countryOfCollect;
-        private Double collectLatitude;
-        private Double collectLongitude;
+        private Location locationOfCollect;
 
         private Builder() {
         }
@@ -339,11 +315,9 @@ public class GeneticResource {
             this.materialType = geneticResource.getMaterialType();
             this.biotopeType = geneticResource.getBiotopeType();
             this.countryOfOrigin = geneticResource.getCountryOfOrigin();
-            this.originLatitude = geneticResource.getOriginLatitude();
-            this.originLongitude = geneticResource.getOriginLongitude();
+            this.locationOfOrigin = geneticResource.getLocationOfOrigin();
             this.countryOfCollect = geneticResource.getCountryOfCollect();
-            this.collectLatitude = geneticResource.getCollectLatitude();
-            this.collectLongitude = geneticResource.getCollectLongitude();
+            this.locationOfCollect = geneticResource.getLocationOfCollect();
         }
 
         public Builder withId(String id) {
@@ -421,13 +395,8 @@ public class GeneticResource {
             return this;
         }
 
-        public Builder withOriginLatitude(Double originLatitude) {
-            this.originLatitude = originLatitude;
-            return this;
-        }
-
-        public Builder withOriginLongitude(Double originLongitude) {
-            this.originLongitude = originLongitude;
+        public Builder withLocationOfOrigin(Location locationOfOrigin) {
+            this.locationOfOrigin = locationOfOrigin;
             return this;
         }
 
@@ -436,13 +405,8 @@ public class GeneticResource {
             return this;
         }
 
-        public Builder withCollectLatitude(Double collectLatitude) {
-            this.collectLatitude = collectLatitude;
-            return this;
-        }
-
-        public Builder withCollectLongitude(Double collectLongitude) {
-            this.collectLongitude = collectLongitude;
+        public Builder withLocationOfCollect(Location locationOfCollect) {
+            this.locationOfCollect = locationOfCollect;
             return this;
         }
 

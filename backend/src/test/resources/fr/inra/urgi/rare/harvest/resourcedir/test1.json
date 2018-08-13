@@ -15,11 +15,9 @@
         "materialType": null,
         "biotopeType": null,
         "countryOfOrigin": null,
-        "originLatitude": null,
-        "originLongitude": null,
+        "locationOfOrigin": null,
         "countryOfCollect": null,
-        "collectLatitude": null,
-        "collectLongitude": null
+        "locationOfCollect": null
     },
     {
         "pillarName": "Plant",
@@ -40,11 +38,12 @@
         "materialType": null,
         "biotopeType": null,
         "countryOfOrigin": null,
-        "originLatitude": null,
-        "originLongitude": null,
+        "locationOfOrigin": null,
         "countryOfCollect": "Italy",
-        "collectLatitude": 37.5,
-        "collectLongitude": 15.099722
+        "locationOfCollect": {
+            "lat": 37.5,
+            "lon": 15.099722
+        }
     },
     {
         "pillarName": "Plant",
@@ -62,10 +61,8 @@
         "materialType": null,
         "biotopeType": null,
         "countryOfOrigin": null,
-        "originLatitude": null,
-        "originLongitude": null,
+        "locationOfOrigin": null,
         "countryOfCollect": "Italy",
-        "collectLatitude": null,
-        "collectLongitude": null
+        "locationOfCollect": null
     }
 ]

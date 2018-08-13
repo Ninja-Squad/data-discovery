@@ -131,11 +131,8 @@
                 }
             }
         },
-        "originLatitude": {
-            "type": "double"
-        },
-        "originLongitude": {
-            "type": "double"
+        "locationOfOrigin": {
+            "type": "geo_point"
         },
         "countryOfCollect": {
             "type": "text",
@@ -147,11 +144,8 @@
                 }
             }
         },
-        "collectLatitude": {
-            "type": "double"
-        },
-        "collectLongitude": {
-            "type": "double"
+        "locationOfCollect": {
+            "type": "geo_point"
         },
         "suggestions": {
             "type" : "completion"

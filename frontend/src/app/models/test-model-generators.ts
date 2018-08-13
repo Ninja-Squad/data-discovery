@@ -60,10 +60,14 @@ export function toGeneticResource(name: string): GeneticResourceModel {
     materialType: ['Specimen'],
     biotopeType: ['Plant host'],
     countryOfOrigin: 'France',
-    originLatitude: 45.7542224,
-    originLongitude: 4.8298569,
+    locationOfOrigin: {
+      lat: 45.7542224,
+      lon: 4.8298569
+    },
     countryOfCollect: 'France',
-    collectLatitude: 45.7542224,
-    collectLongitude: 4.8298569
+    locationOfCollect: {
+      lat: 45.7542224,
+      lon: 4.8298569
+    }
   };
 }
