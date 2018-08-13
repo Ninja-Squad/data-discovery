@@ -141,6 +141,22 @@ very long time.
 
 (Your mileage may vary: I assumed a linear complexity here).
 
+Here are curl commands illustrating the above scenario:
+```
+# delete the physical index and its aliases
+curl -X DELETE "localhost:9200/resource-physical-index"
+
+# recreate the physical index and its aliases
+curl -X PUT "localhost:9200/resource-physical-index" -H 'Content-Type: application/json' -d'
+{
+    "aliases" : {
+        "resource-index" : {},
+        "resource-harvest-index" : {}
+    }
+}
+'
+```
+
 #### Deleting with no downtime
 
 If you don't want any downtime, you can instead use the following procedure:
@@ -153,6 +169,37 @@ If you don't want any downtime, you can instead use the following procedure:
    `resource-new-physical-index`. All the search operations will now use the new index, containing up-to-date
    documents;
  - delete the old physical index.
+ 
+Here are curl commands illustrating the above scenario:
+```
+# create a new physical index
+curl -X PUT "localhost:9200/resource-new-physical-index" -H 'Content-Type: application/json' -d'
+{}
+'
+
+# delete the `resource-harvest-index` alias, and recreate it so that it refers to `resource-new-physical-index`
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "remove" : { "index" : "resource-physical-index", "alias" : "resource-harvest-index" } },
+        { "add" : { "index" : "resource-new-physical-index", "alias" : "resource-harvest-index" } }
+    ]
+}
+'
+
+# once the harvest is finished, delete the `resource-index` alias, and recreate it so that it refers to `resource-new-physical-index`
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "remove" : { "index" : "resource-physical-index", "alias" : "resource-index" } },
+        { "add" : { "index" : "resource-new-physical-index", "alias" : "resource-index" } }
+    ]
+}
+'
+
+# delete the old physical index
+curl -X DELETE "localhost:9200/resource-physical-index"
+```
  
 ### Mapping migration
 
@@ -173,6 +220,29 @@ This is the easiest and safest procedure, that I would recommend:
 In case anything goes wrong, the two aliases can always be recreated to refer to the old physical index, and the old
 application can be restarted.
 
+Here are curl commands illustrating the above scenario:
+```
+# create a new physical index
+curl -X PUT "localhost:9200/resource-new-physical-index" -H 'Content-Type: application/json' -d'
+{}
+'
+
+# delete the `resource-harvest-index` and the `resource-index` aliases, and recreate them both so that they refer to `resource-new-physical-index`
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "remove" : { "index" : "resource-physical-index", "alias" : "resource-harvest-index" } },
+        { "add" : { "index" : "resource-new-physical-index", "alias" : "resource-harvest-index" } },
+        { "remove" : { "index" : "resource-physical-index", "alias" : "resource-index" } },
+        { "add" : { "index" : "resource-new-physical-index", "alias" : "resource-index" } }
+    ]
+}
+'
+
+# once everything is running fine, remove the old physical index.
+curl -X DELETE "localhost:9200/resource-physical-index"
+```
+
 #### Upgrading with a very short downtime (or no downtime at all)
 
  - create a new physical index (let's name it `resource-new-physical-index`);
@@ -180,7 +250,7 @@ application can be restarted.
  - start the new application, on another machine, or on a different port, so that the new application code can be
    used to trigger a harvest with the new schema, while the old application is still running and exposed to the users
  - trigger the harvest on the **new** application
- - once the harvest is finished, delete the `resource-harvest-index` alias, and recreate it so that it refers to 
+ - once the harvest is finished, delete the `resource-index` alias, and recreate it so that it refers to 
    `resource-new-physical-index`;
  - expose the new application to the users instead of the old one
  - stop the old application
@@ -189,3 +259,31 @@ How you execute these various steps depend on the production infrastructure, whi
 use your own development server to start the new application and do the harvest, and then stop the production application,
 deploy the new one and start it. Or you could have a reverse proxy in front of the application, and change its 
 configuration to route to the new application once the harvest is done, for example.
+
+Here are curl commands illustrating the above scenario:
+```
+# create a new physical index
+curl -X PUT "localhost:9200/resource-new-physical-index" -H 'Content-Type: application/json' -d'
+{}
+'
+
+# delete the `resource-harvest-index` alias, and recreate it so that it refers to `resource-new-physical-index`
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "remove" : { "index" : "resource-physical-index", "alias" : "resource-harvest-index" } },
+        { "add" : { "index" : "resource-new-physical-index", "alias" : "resource-harvest-index" } }
+    ]
+}
+'
+
+# once the harvest is finished, delete the `resource-index` alias, and recreate it so that it refers to `resource-new-physical-index`
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+    "actions" : [
+        { "remove" : { "index" : "resource-physical-index", "alias" : "resource-index" } },
+        { "add" : { "index" : "resource-new-physical-index", "alias" : "resource-index" } }
+    ]
+}
+'
+```
