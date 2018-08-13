@@ -312,6 +312,11 @@ class GeneticResourceDaoTest {
         assertThat(ignoringCaseSet).hasSize(2);
     }
 
+    @Test
+    void shouldNotFailSuggestingIfNoData() {
+        assertThat(geneticResourceDao.suggest("vitis")).isEmpty();
+    }
+
     private void shouldSearch(BiConsumer<GeneticResource.Builder, String> config) {
         GeneticResource.Builder geneticResourceBuilder = GeneticResource.builder();
         config.accept(geneticResourceBuilder, "foo bar baz");

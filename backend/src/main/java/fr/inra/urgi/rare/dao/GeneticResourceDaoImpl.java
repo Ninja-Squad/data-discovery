@@ -25,6 +25,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.data.domain.Pageable;
@@ -191,13 +192,18 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
                                 .setFetchSource(false) // avoid getting the source documents, which are useless
                                 .get();
 
-        List<String> suggestions = response.getSuggest()
-                                           .getSuggestion(COMPLETION)
-                                           .getEntries()
-                                           .stream()
-                                           .flatMap(entry -> entry.getOptions().stream())
-                                           .map(option -> option.getText().string())
-                                           .collect(Collectors.toList());
+        Suggest suggest = response.getSuggest();
+        if (suggest == null) {
+            // no data in the database
+            return Collections.emptyList();
+        }
+
+        List<String> suggestions = suggest.getSuggestion(COMPLETION)
+                                          .getEntries()
+                                          .stream()
+                                          .flatMap(entry -> entry.getOptions().stream())
+                                          .map(option -> option.getText().string())
+                                          .collect(Collectors.toList());
 
         return removeSuggestionsDifferingByCase(suggestions);
     }
