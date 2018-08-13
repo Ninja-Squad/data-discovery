@@ -1,11 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { AppComponent } from './app.component';
+import { ErrorComponent } from './error/error.component';
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [AppComponent]
+    imports: [RouterTestingModule, HttpClientTestingModule],
+    declarations: [AppComponent, ErrorComponent]
   }));
 
   it('should create the app', () => {

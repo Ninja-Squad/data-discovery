@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -20,6 +20,8 @@ import { LargeAggregationComponent } from './large-aggregation/large-aggregation
 import { PillarsComponent } from './pillars/pillars.component';
 import { AggregationNamePipe } from './aggregation-name.pipe';
 import { DocumentCountComponent } from './document-count/document-count.component';
+import { ErrorComponent } from './error/error.component';
+import { ErrorInterceptorService } from './error-interceptor.service';
 
 registerLocaleData(localeFr);
 
@@ -35,7 +37,8 @@ registerLocaleData(localeFr);
     LargeAggregationComponent,
     PillarsComponent,
     AggregationNamePipe,
-    DocumentCountComponent
+    DocumentCountComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -50,7 +53,8 @@ registerLocaleData(localeFr);
     NgbTooltipModule
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'fr-FR' }
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
+    { provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent]
 })
