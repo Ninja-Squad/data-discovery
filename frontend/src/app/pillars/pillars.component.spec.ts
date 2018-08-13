@@ -32,6 +32,10 @@ class PillarsComponentTester extends ComponentTester<PillarsComponent> {
   databaseSourceLink(pillarIndex: number, sourceIndex: number) {
     return this.databaseSourceItem(pillarIndex, sourceIndex).element('a');
   }
+
+  get noDataAlert() {
+    return this.element('.alert');
+  }
 }
 
 describe('PillarsComponent', () => {
@@ -57,12 +61,13 @@ describe('PillarsComponent', () => {
     jasmine.addMatchers(speculoosMatchers);
   });
 
-  it('should not display any pillar while pillars are not available yet', () => {
+  it('should not display any pillar nor any alert while pillars are not available yet', () => {
     spyOn(pillarService, 'list').and.returnValue(EMPTY);
 
     tester.detectChanges();
 
     expect(tester.pillarListItems.length).toBe(0);
+    expect(tester.noDataAlert).toBeNull();
   });
 
   it('should display pillars', () => {
@@ -103,5 +108,13 @@ describe('PillarsComponent', () => {
     expect(tester.databaseSourceLink(0, 0).attr('href'))
       .toBe('http://florilege.arcad-project.org/fr/collections');
     expect(tester.databaseSourceLink(0, 1)).toBeNull();
+  });
+
+  it('should display alert if no pillar has been found', () => {
+    spyOn(pillarService, 'list').and.returnValue(of([]));
+
+    tester.detectChanges();
+
+    expect(tester.noDataAlert).toContainText('Aucune donnée trouvée');
   });
 });

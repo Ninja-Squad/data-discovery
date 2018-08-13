@@ -1,13 +1,24 @@
-<ul class="list-unstyled pillar">
-  <li *ngFor="let pillar of (pillars$ | async)">
-    <span class="pillar-name">{{ pillar.name }}</span>
-    <ul class="list-unstyled source">
-      <li *ngFor="let databaseSource of pillar.databaseSources">
-        <rare-document-count [name]="databaseSource.name"
-                             [url]="databaseSource.url"
-                             [count]="databaseSource.documentCount">
-        </rare-document-count>
-      </li>
-    </ul>
-  </li>
-</ul>
+<ng-container *ngIf="(pillars$ | async) as pillars">
+  <ul *ngIf="pillars.length > 0; else noPillar" class="list-unstyled pillar">
+    <li *ngFor="let pillar of pillars">
+      <span class="pillar-name">{{ pillar.name }}</span>
+      <ul class="list-unstyled source">
+        <li *ngFor="let databaseSource of pillar.databaseSources">
+          <rare-document-count [name]="databaseSource.name"
+                               [url]="databaseSource.url"
+                               [count]="databaseSource.documentCount">
+          </rare-document-count>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <ng-template #noPillar>
+    <div class="alert alert-warning" role="alert">
+      <div class="text-center" style="font-size: 6em;"><span class="fa fa-frown-o"></span></div>
+      <div>
+        Aucune donnée trouvée.<br/>
+        Merci de contacter l'administrateur de l'application pour qu'il remplisse la base de données.
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
