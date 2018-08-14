@@ -1,6 +1,7 @@
 package fr.inra.urgi.rare.dto;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -27,19 +28,22 @@ public final class AggregatedPageDTO<T> {
         this.aggregations = aggregations;
     }
 
-    public static <T> AggregatedPageDTO<T> fromPage(AggregatedPage<T> page) {
+    public static <T> AggregatedPageDTO<T> fromPage(AggregatedPage<T> page, Comparator<AggregationDTO> aggregationComparator) {
         return new AggregatedPageDTO<>(
             PageDTO.fromPage(page),
-            toAggregationDTOs(page.getAggregations()));
+            toAggregationDTOs(page.getAggregations(), aggregationComparator));
     }
 
-    public static <T, R> AggregatedPageDTO<R> fromPage(AggregatedPage<T> page, Function<T, R> mapper) {
+    public static <T, R> AggregatedPageDTO<R> fromPage(AggregatedPage<T> page,
+                                                       Comparator<AggregationDTO> aggregationComparator,
+                                                       Function<T, R> mapper) {
         return new AggregatedPageDTO<>(
             PageDTO.fromPage(page, mapper),
-            toAggregationDTOs(page.getAggregations()));
+            toAggregationDTOs(page.getAggregations(), aggregationComparator));
     }
 
-    private static List<AggregationDTO> toAggregationDTOs(Aggregations aggregations) {
+    private static List<AggregationDTO> toAggregationDTOs(Aggregations aggregations,
+                                                          Comparator<AggregationDTO> aggregationComparator) {
         if (aggregations == null) {
             return Collections.emptyList();
         }
@@ -48,6 +52,7 @@ public final class AggregatedPageDTO<T> {
                            .filter(aggregation -> aggregation instanceof Terms)
                            .map(Terms.class::cast)
                            .map(AggregationDTO::new)
+                           .sorted(aggregationComparator)
                            .collect(Collectors.toList());
     }
 

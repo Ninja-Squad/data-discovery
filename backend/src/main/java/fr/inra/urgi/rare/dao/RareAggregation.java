@@ -6,15 +6,20 @@ import static fr.inra.urgi.rare.dao.RareAggregation.Type.SMALL;
 import java.util.stream.Stream;
 
 /**
- * Enum listing the terms aggregations used by RARe, and their corresponding name and field
+ * Enum listing the terms aggregations used by RARe, and their corresponding name and field.
+ *
+ * The order of the elements here is also the order of the aggregations in the UI. So don't change the order
+ * unless you want to change the UI.
+ *
  * @author JB Nizet
  */
 public enum RareAggregation {
     DOMAIN("domain", "domain.keyword", SMALL),
-    BIOTOPE("biotope", "biotopeType.keyword", SMALL),
+    TAXON("taxon", "taxon.keyword", LARGE),
     MATERIAL("material", "materialType.keyword", SMALL),
     COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", SMALL),
-    TAXON("taxon", "taxon.keyword", LARGE);
+    COUNTRY_OF_COLLECT("coc", "countryOfCollect.keyword", LARGE),
+    BIOTOPE("biotope", "biotopeType.keyword", SMALL);
 
     private final String name;
     private final String field;

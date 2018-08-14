@@ -374,6 +374,7 @@ class GeneticResourceDaoTest {
             .withBiotopeType(Arrays.asList("Biotope", "Human host"))
             .withMaterialType(Arrays.asList("Specimen", "DNA"))
             .withCountryOfOrigin("France")
+            .withCountryOfCollect("Belgium")
             .withTaxon(Arrays.asList("Vitis vinifera"))
             .build();
 
@@ -384,6 +385,7 @@ class GeneticResourceDaoTest {
             .withBiotopeType(Arrays.asList("Biotope"))
             .withMaterialType(Arrays.asList("DNA"))
             .withCountryOfOrigin("France")
+            .withCountryOfCollect("Belgium")
             .withTaxon(Arrays.asList("Girolla mucha gusta"))
             .build();
 
@@ -414,6 +416,11 @@ class GeneticResourceDaoTest {
         assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("France");
         assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
 
+        Terms countryOfCollect = result.getAggregations().get(RareAggregation.COUNTRY_OF_COLLECT.getName());
+        assertThat(countryOfCollect.getName()).isEqualTo(RareAggregation.COUNTRY_OF_COLLECT.getName());
+        assertThat(countryOfCollect.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("Belgium");
+        assertThat(countryOfCollect.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+
         Terms taxon = result.getAggregations().get(RareAggregation.TAXON.getName());
         assertThat(taxon.getName()).isEqualTo(RareAggregation.TAXON.getName());
         assertThat(taxon.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Vitis vinifera", "Girolla mucha gusta");
@@ -422,16 +429,37 @@ class GeneticResourceDaoTest {
 
     @Test
     void shouldAggregateNullCountryOfOriginValueAsNullValue() {
-        GeneticResource geneticResource1 = GeneticResource.builder()
-                                                          .withId("r1")
-                                                          .withName("vitis 1")
-                                                          .withCountryOfOrigin("France")
-                                                          .build();
+        shouldAggregateNullValue(RareAggregation.COUNTRY_OF_ORIGIN, GeneticResource.Builder::withCountryOfOrigin);
+    }
+
+    @Test
+    void shouldAggregateNullCountryOfCollectValueAsNullValue() {
+        shouldAggregateNullValue(RareAggregation.COUNTRY_OF_COLLECT, GeneticResource.Builder::withCountryOfCollect);
+    }
+
+    @Test
+    void shouldAggregateEmptyMaterialTypeAsNullValue() {
+        shouldAggregateEmptyArrayAsNullValue(RareAggregation.MATERIAL,
+                                             GeneticResource.Builder::withMaterialType);
+    }
+
+    @Test
+    void shouldAggregateEmptyBiotopeTypeAsNullValue() {
+        shouldAggregateEmptyArrayAsNullValue(RareAggregation.BIOTOPE,
+                                             GeneticResource.Builder::withBiotopeType);
+    }
+
+    private void shouldAggregateNullValue(RareAggregation rareAggregation,
+                                          BiConsumer<GeneticResource.Builder, String> initializer) {
+        GeneticResource.Builder resource1Builder = GeneticResource.builder()
+                                                                  .withId("r1")
+                                                                  .withName("vitis 1");
+        initializer.accept(resource1Builder, "foo");
+        GeneticResource geneticResource1 = resource1Builder.build();
 
         GeneticResource geneticResource2 = GeneticResource.builder()
                                                           .withId("r2")
                                                           .withName("vitis 2")
-                                                          .withCountryOfOrigin(null)
                                                           .build();
 
         geneticResourceDao.saveAll(Arrays.asList(new IndexedGeneticResource(geneticResource1),
@@ -441,22 +469,10 @@ class GeneticResourceDaoTest {
             geneticResourceDao.search("vitis", true, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(2);
 
-        Terms countryOfOrigin = result.getAggregations().get(RareAggregation.COUNTRY_OF_ORIGIN.getName());
-        assertThat(countryOfOrigin.getName()).isEqualTo(RareAggregation.COUNTRY_OF_ORIGIN.getName());
-        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("France", GeneticResource.NULL_VALUE);
-        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
-    }
-
-    @Test
-    void shouldAggregateEmptyMaterialTypeAsNullValue() {
-        shouldAggregateEmptyArrayAsNullValue(RareAggregation.MATERIAL,
-                                             (builder, value) -> builder.withMaterialType(value));
-    }
-
-    @Test
-    void shouldAggregateEmptyBiotopeTypeAsNullValue() {
-        shouldAggregateEmptyArrayAsNullValue(RareAggregation.BIOTOPE,
-                                             (builder, value) -> builder.withBiotopeType(value));
+        Terms material = result.getAggregations().get(rareAggregation.getName());
+        assertThat(material.getName()).isEqualTo(rareAggregation.getName());
+        assertThat(material.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("foo", GeneticResource.NULL_VALUE);
+        assertThat(material.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
     }
 
     private void shouldAggregateEmptyArrayAsNullValue(RareAggregation rareAggregation,

@@ -1,5 +1,6 @@
 package fr.inra.urgi.rare.search;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +63,8 @@ public class SearchController {
                                                                     aggregate.orElse(false),
                                                                     highlight.orElse(false),
                                                                     createRefinementsFromParameters(parameters),
-                                                                    PageRequest.of(page.orElse(0), PAGE_SIZE)));
+                                                                    PageRequest.of(page.orElse(0), PAGE_SIZE)),
+                                          Comparator.comparing(dto -> RareAggregation.fromName(dto.getName())));
 
     }
 

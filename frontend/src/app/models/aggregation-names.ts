@@ -4,6 +4,7 @@
  */
 export const aggregationNames: { [key: string]: string } = {
   coo: 'Pays d\'origine',
+  coc: 'Pays de collecte',
   domain: 'Domaine',
   material: 'Matériel',
   taxon: 'Taxon',
