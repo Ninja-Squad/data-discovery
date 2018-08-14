@@ -114,13 +114,14 @@ class HarvesterTest {
         HarvestResultBuilder resultBuilder = HarvestResult.builder();
         Stream<HarvestedStream> stream = harvester.jsonFiles(resultBuilder);
 
+        List<HarvestedStream> jsonFiles = new ArrayList<>();
+
         stream.forEach(file -> {
             if (file.getFileName().equals("test1.json")) {
                 delete(resourceDir.resolve("test2.json"));
             }
+            jsonFiles.add(file);
         });
-
-        List<HarvestedStream> jsonFiles = harvester.jsonFiles(resultBuilder).collect(Collectors.toList());
 
         assertThat(jsonFiles).hasSize(1);
         assertThat(resultBuilder.build().getGlobalErrors()).hasSize(1);

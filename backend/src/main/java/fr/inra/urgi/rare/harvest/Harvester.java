@@ -64,6 +64,7 @@ public class Harvester {
         try {
             return Files.list(this.resourceDir)
                         .filter(path -> path.toString().endsWith(".json"))
+                        .sorted() // helps tests, and makes harvesting more stable by harvesting in a well-known order
                         .map(path -> {
                             try {
                                 return new HarvestedStream(path.getFileName().toString(), Files.newInputStream(path));
