@@ -147,4 +147,83 @@ describe('SmallAggregationComponent', () => {
     expect(emittedEvent.name).toBe('coo');
     expect(emittedEvent.values).toEqual(['France']);
   }));
+
+  it('should change the selected values in the form when the selectedValues input changes, without emitting events', () => {
+    // given an aggregation with a bucket and no selected value
+    const component = new SmallAggregationComponent();
+    component.aggregation = aggregation;
+    component.selectedKeys = [];
+
+    let eventEmitted = false;
+    component.aggregationChange.subscribe(() => eventEmitted = true);
+
+    // when initializing the component
+    component.ngOnInit();
+
+    // it should have a form with no selected checkbox
+    expect(component.aggregationForm.value).toEqual({
+      France: false,
+      Italy: false,
+      'New Zealand': false,
+      [NULL_VALUE]: false
+    });
+
+    // when changing the selected values
+    component.selectedKeys = ['France'];
+
+    // it should update the form selected checkbox
+    expect(component.aggregationForm.value).toEqual({
+      France: true,
+      Italy: false,
+      'New Zealand': false,
+      [NULL_VALUE]: false
+    });
+
+    // when changing the selected values
+    component.selectedKeys = ['France', 'Italy'];
+
+    // it should update the form selected checkboxes
+    expect(component.aggregationForm.value).toEqual({
+      France: true,
+      Italy: true,
+      'New Zealand': false,
+      [NULL_VALUE]: false
+    });
+
+    // when changing the selected values but with no actual change
+    component.selectedKeys = ['Italy', 'France'];
+
+    // it should leave the form selected checkboxes as they are
+    expect(component.aggregationForm.value).toEqual({
+      France: true,
+      Italy: true,
+      'New Zealand': false,
+      [NULL_VALUE]: false
+    });
+
+    // when changing the selected values
+    component.selectedKeys = ['France'];
+
+    // it should update the form selected checkboxes
+    expect(component.aggregationForm.value).toEqual({
+      France: true,
+      Italy: false,
+      'New Zealand': false,
+      [NULL_VALUE]: false
+    });
+
+    // when changing the selected values
+    component.selectedKeys = [];
+
+    // it should update the form selected checkboxes
+    expect(component.aggregationForm.value).toEqual({
+      France: false,
+      Italy: false,
+      'New Zealand': false,
+      [NULL_VALUE]: false
+    });
+
+    // and all this shouldn't emit any event
+    expect(eventEmitted).toBe(false);
+  });
 });

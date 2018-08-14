@@ -14,7 +14,7 @@ import { NULL_VALUE } from '../models/genetic-resource.model';
 export class SmallAggregationComponent implements OnInit {
 
   @Input() aggregation: Aggregation;
-  @Input() selectedKeys: Array<string> = [];
+  private _selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or remove a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
 
@@ -33,13 +33,23 @@ export class SmallAggregationComponent implements OnInit {
       .map(([key]) => key);
   }
 
+  static sameSelectedKeys(a: Array<string>, b: Array<string>) {
+    if (a.length !== b.length) {
+      return false;
+    }
+
+    const secondSet = new Set(b);
+
+    return a.every(value => secondSet.has(value));
+  }
+
   ngOnInit(): void {
     // create as many form control as there are buckets
     const buckets = this.aggregation.buckets;
     buckets.map(bucket => {
       const control = new FormControl(false);
       // if the criteria is selected, set the field to true
-      if (this.selectedKeys.includes(bucket.key)) {
+      if (this._selectedKeys.includes(bucket.key)) {
         control.setValue(true);
       }
       this.aggregationForm.addControl(bucket.key, control);
@@ -55,6 +65,20 @@ export class SmallAggregationComponent implements OnInit {
       };
       this.aggregationChange.emit(event);
     });
+  }
+
+  @Input()
+  set selectedKeys(newSelectedKeys: Array<string>) {
+    if (!SmallAggregationComponent.sameSelectedKeys(this._selectedKeys, newSelectedKeys)) {
+      this._selectedKeys = newSelectedKeys;
+      for (const [key, control] of Object.entries(this.aggregationForm.controls)) {
+        control.setValue(newSelectedKeys.includes(key), {emitEvent: false});
+      }
+    }
+  }
+
+  get selectedKeys() {
+    return this._selectedKeys;
   }
 
   displayableKey(key: string): string {
