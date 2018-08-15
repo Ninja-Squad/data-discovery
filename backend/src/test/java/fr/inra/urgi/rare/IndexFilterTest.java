@@ -4,14 +4,13 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
-import java.util.Arrays;
-import java.util.List;
-
 import fr.inra.urgi.rare.config.SecurityConfig;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.search.SearchController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,21 +44,20 @@ class IndexFilterTest {
                .andExpect(forwardedUrl(null));
     }
 
-    @Test
-    void shouldNotForwardToIndexWhenStaticResource() throws Exception {
-        List<String> urls = Arrays.asList("/index.html",
-                                          "/script.js",
-                                          "/style.css",
-                                          "/image.gif",
-                                          "/icon.ico",
-                                          "/image.png",
-                                          "/image.jpg",
-                                          "/font.woff",
-                                          "/font.ttf",
-                                          "/actuator/info");
-        for (String url : urls) {
-            mockMvc.perform(get(url))
-                   .andExpect(forwardedUrl(null));
-        }
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "/index.html",
+        "/script.js",
+        "/style.css",
+        "/image.gif",
+        "/icon.ico",
+        "/image.png",
+        "/image.jpg",
+        "/font.woff",
+        "/font.ttf",
+        "/actuator/info"
+    })
+    void shouldNotForwardToIndexWhenStaticResource(String url) throws Exception {
+        mockMvc.perform(get(url)).andExpect(forwardedUrl(null));
     }
 }
