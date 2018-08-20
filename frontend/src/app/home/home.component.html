@@ -1,26 +1,44 @@
-<h1 class="sr-only">Ressources Agronomiques pour la Recherche</h1>
-
-<div class="row mt-5">
+<div class="row">
   <div class="col-md-8 col-lg-9 order-md-last">
-    <h2 class="sr-only">Rechercher des ressources</h2>
-
-    <form [formGroup]="searchForm" (ngSubmit)="search()">
-      <label class="sr-only" for="query">Rechercher</label>
-      <div class="input-group">
-        <input id="query"
-               class="form-control form-control-lg"
-               placeholder="Exemples : pisum sativum, rosa"
-               formControlName="search"
-               [ngbTypeahead]="suggesterTypeahead"
-               [focusFirst]="false">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary">Recherche</button>
-        </div>
+    <div class="d-flex align-items-start flex-column-reverse flex-xl-row pb-4 pb-md-5">
+      <h1 class="mr-xl-4">
+        RARe<br/>
+        <div class="small">
+          <strong>R</strong>essources
+          <strong>A</strong>gronomiques pour la
+          <strong>Re</strong>cherche</div>
+      </h1>
+      <div class="flex-fill">
+        <img class="img-fluid" src="/assets/band.jpg" alt=""/>
       </div>
-    </form>
+    </div>
+
+    <div class="pt-md-5">
+      <h2 class="sr-only">Rechercher des ressources</h2>
+
+      <form [formGroup]="searchForm" (ngSubmit)="search()">
+        <label class="sr-only" for="query">Rechercher</label>
+        <div class="input-group">
+          <input id="query"
+                 class="form-control form-control-lg"
+                 placeholder="Exemples : pisum sativum, rosa"
+                 formControlName="search"
+                 [ngbTypeahead]="suggesterTypeahead"
+                 [focusFirst]="false">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary">Recherche</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
   <div class="col-md-4 col-lg-3 order-md-first mt-5 mt-md-0">
     <h2 class="sr-only">Piliers</h2>
-    <rare-pillars></rare-pillars>
+    <div class="d-flex justify-content-center">
+      <div>
+        <img src="/assets/logo.png" alt="Logo AgroBRC" class="mb-2 mb-md-4"/>
+        <rare-pillars></rare-pillars>
+      </div>
+    </div>
   </div>
 </div>
