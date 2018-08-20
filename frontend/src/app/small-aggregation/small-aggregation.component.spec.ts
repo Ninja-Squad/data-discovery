@@ -226,4 +226,15 @@ describe('SmallAggregationComponent', () => {
     // and all this shouldn't emit any event
     expect(eventEmitted).toBe(false);
   });
+
+  it('should be disabled if only one bucket', () => {
+    const tester = new SmallAggregationComponentTester();
+
+    // given an aggregation
+    tester.componentInstance.aggregation = toAggregation('coo', ['Italy']);
+    tester.detectChanges();
+
+    expect(tester.componentInstance.aggregationForm.disabled).toBe(true);
+    expect(tester.firstCheckbox.nativeElement.disabled).toBe(true);
+  });
 });
