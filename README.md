@@ -39,7 +39,7 @@ You need to install:
 Then in the `frontend` directory, run `yarn` to download the dependencies.
 Then run `yarn start` to start the app, using the proxy conf to reroute calls to `/api` to the backend.
 
-The application will be available on http://localhost:4200
+The application will be available on http://localhost:4200/rare
 
 ## Build
 
@@ -51,7 +51,7 @@ This will build a standalone jar at `backend/build/libs/rare.jar`, that you can 
 
     java -jar backend/build/libs/rare.jar
 
-And the full app runs on http://localhost:8080
+And the full app runs on http://localhost:8080/rare
 
 
 ## CI

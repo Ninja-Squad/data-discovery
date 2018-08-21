@@ -12,6 +12,6 @@ export class PillarService {
   constructor(private http: HttpClient) { }
 
   list(): Observable<Array<PillarModel>> {
-    return this.http.get<Array<PillarModel>>('/api/pillars');
+    return this.http.get<Array<PillarModel>>('api/pillars');
   }
 }

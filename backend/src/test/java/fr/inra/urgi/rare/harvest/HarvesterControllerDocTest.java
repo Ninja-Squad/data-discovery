@@ -1,15 +1,14 @@
 package fr.inra.urgi.rare.harvest;
 
+import static fr.inra.urgi.rare.doc.DocUtils.docGet;
+import static fr.inra.urgi.rare.doc.DocUtils.docPost;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -63,7 +62,7 @@ class HarvesterControllerDocTest {
 
     @Test
     public void shouldHarvest() throws Exception {
-        mockMvc.perform(post("/api/harvests")
+        mockMvc.perform(docPost("/api/harvests")
                             .header("Authorization", basicAuth(USER, PASSWORD)))
                .andExpect(status().isCreated())
                .andExpect(header().string(HttpHeaders.LOCATION, CoreMatchers.containsString("/api/harvests")))
@@ -89,7 +88,7 @@ class HarvesterControllerDocTest {
 
         when(mockHarvestResultDao.findById(harvestResult.getId())).thenReturn(Optional.of(harvestResult));
 
-        mockMvc.perform(get("/api/harvests/{id}", harvestResult.getId())
+        mockMvc.perform(docGet("/api/harvests/{id}", harvestResult.getId())
                             .header("Authorization", basicAuth(USER, PASSWORD)))
                .andExpect(status().isOk())
                .andDo(document("harvests/get",
@@ -124,7 +123,7 @@ class HarvesterControllerDocTest {
         when(mockHarvestResultDao.list(pageRequest))
             .thenReturn(new PageImpl<>(Arrays.asList(harvestResult), pageRequest, 1));
 
-        mockMvc.perform(get("/api/harvests")
+        mockMvc.perform(docGet("/api/harvests")
                             .header("Authorization", basicAuth(USER, PASSWORD)))
                .andExpect(status().isOk())
                .andDo(document("harvests/list",
@@ -152,7 +151,7 @@ class HarvesterControllerDocTest {
         when(mockHarvestResultDao.list(pageRequest))
             .thenReturn(new PageImpl<>(Arrays.asList(harvestResult), pageRequest, HarvesterController.PAGE_SIZE + 1));
 
-        mockMvc.perform(get("/api/harvests")
+        mockMvc.perform(docGet("/api/harvests")
                             .header("Authorization", basicAuth(USER, PASSWORD))
                             .param("page", "1"))
                .andExpect(status().isOk())

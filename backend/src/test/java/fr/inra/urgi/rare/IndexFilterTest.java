@@ -46,6 +46,7 @@ class IndexFilterTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
+        "/api/search",
         "/index.html",
         "/script.js",
         "/style.css",
@@ -59,5 +60,13 @@ class IndexFilterTest {
     })
     void shouldNotForwardToIndexWhenStaticResource(String url) throws Exception {
         mockMvc.perform(get(url)).andExpect(forwardedUrl(null));
+    }
+
+    @Test
+    void shouldCorrectlyHandleContextPath() throws Exception {
+        mockMvc.perform(get("/rare/api/search").contextPath("/rare"))
+               .andExpect(forwardedUrl(null));
+        mockMvc.perform(get("/rare/search?query=vitis").contextPath("/rare"))
+               .andExpect(forwardedUrl("/index.html"));
     }
 }

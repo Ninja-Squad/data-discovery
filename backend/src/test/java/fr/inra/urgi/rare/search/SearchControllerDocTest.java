@@ -1,8 +1,8 @@
 package fr.inra.urgi.rare.search;
 
+import static fr.inra.urgi.rare.doc.DocUtils.docGet;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
@@ -127,7 +127,7 @@ class SearchControllerDocTest {
         when(mockGeneticResourceDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, 2));
 
-        mockMvc.perform(get("/api/genetic-resources").param("query", query))
+        mockMvc.perform(docGet("/api/genetic-resources").param("query", query))
                .andExpect(status().isOk())
                .andDo(document("search/fulltext",
                                requestParameters(QUERY_PARAM),
@@ -151,7 +151,7 @@ class SearchControllerDocTest {
         when(mockGeneticResourceDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, SearchController.PAGE_SIZE * page + 2));
 
-        mockMvc.perform(get("/api/genetic-resources")
+        mockMvc.perform(docGet("/api/genetic-resources")
                             .param("query", query)
                             .param("page", Integer.toString(page)))
                .andExpect(status().isOk())
@@ -167,7 +167,7 @@ class SearchControllerDocTest {
         when(mockGeneticResourceDao.search(query, false, true, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(highlightedSyrah, highlightedDorato), pageRequest, 2));
 
-        mockMvc.perform(get("/api/genetic-resources")
+        mockMvc.perform(docGet("/api/genetic-resources")
                             .param("query", query)
                             .param("highlight", "true"))
                .andExpect(status().isOk())
@@ -204,7 +204,7 @@ class SearchControllerDocTest {
                 )
             ));
 
-        mockMvc.perform(get("/api/genetic-resources")
+        mockMvc.perform(docGet("/api/genetic-resources")
                             .param("query", query)
                             .param("page", Integer.toString(page))
                             .param("aggregate", "true"))
@@ -244,7 +244,7 @@ class SearchControllerDocTest {
         when(mockGeneticResourceDao.search(query, false, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
-        mockMvc.perform(get("/api/genetic-resources")
+        mockMvc.perform(docGet("/api/genetic-resources")
                             .param("query", query)
                             .param(RareAggregation.DOMAIN.getName(), "Plantae")
                             .param(RareAggregation.COUNTRY_OF_ORIGIN.getName(), "France", "Italy"))

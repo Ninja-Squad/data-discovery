@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @WebFilter("/*")
 public class IndexFilter implements Filter {
+
     @Override
     public void doFilter(ServletRequest req,
                          ServletResponse response,
@@ -38,7 +39,9 @@ public class IndexFilter implements Filter {
             return false;
         }
 
-        String uri = request.getRequestURI();
+        String fullUri = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        String uri = fullUri.substring(contextPath.length());
 
         return !(uri.startsWith("/api")
             || uri.endsWith(".js")

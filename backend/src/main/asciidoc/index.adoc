@@ -11,8 +11,8 @@ The request and response bodies are always JSON. The examples showed here are pr
 to read, but they're not in reality. If you're using the services with the command-line, using HTTPie instead
 of curl allows automatically pretty-printing the returned JSON.
 
-All examples here use HTTP, and use `localhost` as the server, and 8080 as port. To use the
-actual deployed web services, you must of course use the actual protocol, host name and port.
+All examples here use HTTP, and use `localhost` as the server, 8080 as port and `/rare` as the context path.
+To use the actual deployed web services, you must of course use the actual protocol, host name, port and context path.
 
 Some headers are also removed from the snippets here, to improve readability.
 

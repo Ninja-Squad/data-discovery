@@ -29,7 +29,7 @@ describe('PillarService', () => {
       }
     ] as Array<PillarModel>;
 
-    http.expectOne('/api/pillars').flush(expectedResults);
+    http.expectOne('api/pillars').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
 
     http.verify();

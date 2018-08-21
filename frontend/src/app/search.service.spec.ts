@@ -28,7 +28,7 @@ describe('SearchService', () => {
     const resource = toGeneticResource('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('/api/genetic-resources?query=Bacteria&page=1&highlight=true').flush(expectedResults);
+    http.expectOne('api/genetic-resources?query=Bacteria&page=1&highlight=true').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -41,7 +41,7 @@ describe('SearchService', () => {
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&aggregate=true').flush(expectedResults);
+    http.expectOne('api/genetic-resources?query=Bacteria&page=0&highlight=true&aggregate=true').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -55,7 +55,7 @@ describe('SearchService', () => {
     const resource = toGeneticResource('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/genetic-resources?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
@@ -71,7 +71,7 @@ describe('SearchService', () => {
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('/api/genetic-resources?query=Bacteria&page=0&highlight=true&aggregate=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/genetic-resources?query=Bacteria&page=0&highlight=true&aggregate=true&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
@@ -98,7 +98,7 @@ describe('SearchService', () => {
     tick(300); // should finally trigger a search for 'vit'
 
     const vitResult = ['vitis', 'vitis vinifera'];
-    http.expectOne('/api/genetic-resources-suggestions?query=vit').flush(vitResult);
+    http.expectOne('api/genetic-resources-suggestions?query=vit').flush(vitResult);
 
     entered.next(' viti ');
     tick(100);
@@ -117,7 +117,7 @@ describe('SearchService', () => {
     tick(300); // should trigger a second search
 
     const vitisVResult = ['vitis vinifera'];
-    http.expectOne('/api/genetic-resources-suggestions?query=vitis%20v').flush(vitisVResult);
+    http.expectOne('api/genetic-resources-suggestions?query=vitis%20v').flush(vitisVResult);
 
     expect(results).toEqual([[], vitResult, vitisVResult]);
 

@@ -33,7 +33,7 @@ export class SearchService {
     if (aggregationCriteria) {
       aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
     }
-    return this.http.get<AggregatedPage<GeneticResourceModel>>('/api/genetic-resources', {
+    return this.http.get<AggregatedPage<GeneticResourceModel>>('api/genetic-resources', {
       params
     });
   }
@@ -65,7 +65,7 @@ export class SearchService {
   }
 
   private suggest(query: string): Observable<Array<string>> {
-    return this.http.get<Array<string>>('/api/genetic-resources-suggestions', {
+    return this.http.get<Array<string>>('api/genetic-resources-suggestions', {
       params: { query }
     });
   }
