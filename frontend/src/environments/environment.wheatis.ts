@@ -2,7 +2,7 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { RareModule } from '../app/rare/rare.module';
+import { WheatisModule } from '../app/wheatis/wheatis.module';
 
 export const environment = {
   production: false,
@@ -10,18 +10,16 @@ export const environment = {
     { label: 'INRA', url: 'http://www.inra.fr/' },
     { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
   ],
-  resourceModule: RareModule,
+  resourceModule: WheatisModule,
   /**
    * Map containing the list of the aggregations and their displayed name.
-   * Should be kept in sync with the `RareAggregation` enum of the backend.
+   * Should be kept in sync with the `WheatisAggregation` enum of the backend.
    */
   aggregationNames: {
-    coo: 'Pays d\'origine',
-    coc: 'Pays de collecte',
-    domain: 'Domaine',
-    material: 'Matériel',
-    taxon: 'Taxon',
-    biotope: 'Biotope',
+    entry: 'Type d\'entrée',
+    db: 'Base de données',
+    node: 'Noeud',
+    species: 'Espèce'
   }
 };
 

@@ -6,6 +6,8 @@
     <ng-container *ngIf="resultLimited">(limités à {{ geneticResources.maxResults | number }})</ng-container>
   </div>
   <div class="mb-4" *ngFor="let geneticResource of geneticResources.content">
+    <!-- the following component will not be the same depending on the environment.resourceModule value -->
+    <!-- for example, if the module is `RareModule` it will be a `RareGeneticResourceComponent` -->
     <rare-genetic-resource [geneticResource]="geneticResource"></rare-genetic-resource>
   </div>
 </div>

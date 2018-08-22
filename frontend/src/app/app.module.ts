@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { GeneticResourcesComponent } from './genetic-resources/genetic-resources.component';
-import { GeneticResourceComponent } from './genetic-resource/genetic-resource.component';
 import { AggregationsComponent } from './aggregations/aggregations.component';
 import { SmallAggregationComponent } from './small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from './large-aggregation/large-aggregation.component';
@@ -23,6 +22,7 @@ import { DocumentCountComponent } from './document-count/document-count.componen
 import { ErrorComponent } from './error/error.component';
 import { ErrorInterceptorService } from './error-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
+import { environment } from '../environments/environment';
 
 registerLocaleData(localeFr);
 
@@ -32,7 +32,6 @@ registerLocaleData(localeFr);
     HomeComponent,
     SearchComponent,
     GeneticResourcesComponent,
-    GeneticResourceComponent,
     AggregationsComponent,
     SmallAggregationComponent,
     LargeAggregationComponent,
@@ -52,7 +51,11 @@ registerLocaleData(localeFr);
     HttpClientModule,
     NgbPaginationModule,
     NgbTypeaheadModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    // the appropriate resource module depending on the `resourceModule` configured in the environment
+    // each of the possible modules contains a component with a selector `rare-genetic-resource`
+    // able to display the genetic resource of the application
+    environment.resourceModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' },

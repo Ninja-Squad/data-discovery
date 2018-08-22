@@ -7,8 +7,9 @@ import { LOCALE_ID } from '@angular/core';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { GeneticResourcesComponent } from './genetic-resources.component';
-import { GeneticResourceComponent } from '../genetic-resource/genetic-resource.component';
-import { toGeneticResource, toSinglePage } from '../models/test-model-generators';
+import { RareGeneticResourceComponent } from '../rare/rare-genetic-resource/rare-genetic-resource.component';
+import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
+import { toRareGeneticResource, toSinglePage } from '../models/test-model-generators';
 import { GeneticResourceModel } from '../models/genetic-resource.model';
 
 describe('GeneticResourcesComponent', () => {
@@ -19,7 +20,7 @@ describe('GeneticResourcesComponent', () => {
     }
 
     get results() {
-      return this.debugElement.queryAll(By.directive(GeneticResourceComponent));
+      return this.debugElement.queryAll(By.directive(RareGeneticResourceComponent));
     }
 
     get noResults() {
@@ -35,7 +36,7 @@ describe('GeneticResourcesComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [GeneticResourcesComponent, GeneticResourceComponent],
+      declarations: [GeneticResourcesComponent, RareGeneticResourceComponent, TruncatableDescriptionComponent],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' }
       ]
@@ -63,8 +64,8 @@ describe('GeneticResourcesComponent', () => {
     const component = tester.componentInstance;
 
     // given two results
-    const bacteria1 = toGeneticResource('Bacteria1');
-    const bacteria2 = toGeneticResource('Bacteria2');
+    const bacteria1 = toRareGeneticResource('Bacteria1');
+    const bacteria2 = toRareGeneticResource('Bacteria2');
     component.geneticResources = toSinglePage([bacteria1, bacteria2]);
     tester.detectChanges();
 
@@ -72,9 +73,9 @@ describe('GeneticResourcesComponent', () => {
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(2);
 
-    const result1 = tester.results[0].componentInstance as GeneticResourceComponent;
+    const result1 = tester.results[0].componentInstance as RareGeneticResourceComponent;
     expect(result1.geneticResource).toBe(bacteria1);
-    const result2 = tester.results[1].componentInstance as GeneticResourceComponent;
+    const result2 = tester.results[1].componentInstance as RareGeneticResourceComponent;
     expect(result2.geneticResource).toBe(bacteria2);
 
     expect(tester.resume).toContainText('Résultats 1 à 2 sur 2');
@@ -88,7 +89,7 @@ describe('GeneticResourcesComponent', () => {
     // given results
     const content: Array<GeneticResourceModel> = [];
     for (let i = 0; i < 20; i++) {
-      content.push(toGeneticResource(`Bacteria ${i}`));
+      content.push(toRareGeneticResource(`Bacteria ${i}`));
     }
 
     // in page 200 on a limited number of pages

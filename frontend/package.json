@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build --prod --no-progress",
+    "start": "ng serve --configuration=rare",
+    "start:rare": "ng serve --configuration=rare",
+    "start:wheatis": "ng serve --configuration=wheatis",
+    "build": "ng build --configuration=rare-production --no-progress",
+    "build:rare": "ng build --configuration=rare-production --no-progress",
+    "build:wheatis": "ng build --configuration=wheatis-production --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
     "lint": "ng lint",
     "e2e": "ng e2e"

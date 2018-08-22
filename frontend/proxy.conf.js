@@ -2,7 +2,9 @@ const PROXY_CONFIG = [
   {
     context: [
       "/rare/api",
-      "/rare/actuator"
+      "/rare/actuator",
+      "/wheatis/api",
+      "/wheatis/actuator"
     ],
     target: "http://localhost:8080",
     secure: false

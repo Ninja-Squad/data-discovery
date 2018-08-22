@@ -11,15 +11,16 @@ import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
 import { GeneticResourcesComponent } from '../genetic-resources/genetic-resources.component';
-import { GeneticResourceComponent } from '../genetic-resource/genetic-resource.component';
+import { RareGeneticResourceComponent } from '../rare/rare-genetic-resource/rare-genetic-resource.component';
 import { SearchService } from '../search.service';
 import { GeneticResourceModel } from '../models/genetic-resource.model';
-import { toAggregation, toGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
+import { toAggregation, toRareGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
+import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -61,12 +62,13 @@ describe('SearchComponent', () => {
     declarations: [
       SearchComponent,
       GeneticResourcesComponent,
-      GeneticResourceComponent,
+      RareGeneticResourceComponent,
       AggregationsComponent,
       SmallAggregationComponent,
       LargeAggregationComponent,
       AggregationNamePipe,
-      DocumentCountComponent
+      DocumentCountComponent,
+      TruncatableDescriptionComponent
     ]
   }));
 
@@ -305,7 +307,7 @@ describe('SearchComponent', () => {
     expect(tester.results).toBeNull();
 
     // when it has results
-    const resource = toGeneticResource('Bacteria');
+    const resource = toRareGeneticResource('Bacteria');
     component.results = toSecondPage([resource]);
     tester.detectChanges();
 
@@ -330,7 +332,7 @@ describe('SearchComponent', () => {
     // when it has results
     const content: Array<GeneticResourceModel> = [];
     for (let i = 0; i < 20; i++) {
-      content.push(toGeneticResource(`Bacteria ${i}`));
+      content.push(toRareGeneticResource(`Bacteria ${i}`));
     }
 
     // in page 200 on a limited number of pages
@@ -371,7 +373,7 @@ describe('SearchComponent', () => {
     // given a component with a single page result
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
-    component.results = toSinglePage([toGeneticResource('Bacteria')]);
+    component.results = toSinglePage([toRareGeneticResource('Bacteria')]);
     tester.detectChanges();
 
     // then it should display results even if empty
@@ -383,7 +385,7 @@ describe('SearchComponent', () => {
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
     component.results = toSinglePage(
-      [toGeneticResource('Bacteria')],
+      [toRareGeneticResource('Bacteria')],
       [toAggregation('coo', ['France', 'Italy'])]
     );
     tester.detectChanges();
@@ -397,7 +399,7 @@ describe('SearchComponent', () => {
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
     component.results = toSinglePage(
-      [toGeneticResource('Bacteria')],
+      [toRareGeneticResource('Bacteria')],
       [toAggregation('coo', ['France', 'Italy'])]
     );
     tester.detectChanges();

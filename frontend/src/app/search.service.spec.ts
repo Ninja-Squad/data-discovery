@@ -2,7 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
 
-import { toAggregation, toAggregationCriterion, toGeneticResource, toSinglePage } from './models/test-model-generators';
+import { toAggregation, toAggregationCriterion, toRareGeneticResource, toSinglePage } from './models/test-model-generators';
 import { SearchService } from './search.service';
 import { AggregatedPage } from './models/page';
 import { GeneticResourceModel } from './models/genetic-resource.model';
@@ -25,7 +25,7 @@ describe('SearchService', () => {
     service.search('Bacteria', false, [], 2)
       .subscribe(results => actualResults = results);
 
-    const resource = toGeneticResource('Bacteria');
+    const resource = toRareGeneticResource('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
     http.expectOne('api/genetic-resources?query=Bacteria&page=1&highlight=true').flush(expectedResults);
@@ -37,7 +37,7 @@ describe('SearchService', () => {
     service.search('Bacteria', true, [], 1)
       .subscribe(results => actualResults = results);
 
-    const resource = toGeneticResource('Bacteria');
+    const resource = toRareGeneticResource('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
@@ -52,7 +52,7 @@ describe('SearchService', () => {
     service.search('Bacteria', false, [cooCriteria, domainCriteria], 1)
       .subscribe(results => actualResults = results);
 
-    const resource = toGeneticResource('Bacteria');
+    const resource = toRareGeneticResource('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
     http.expectOne('api/genetic-resources?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
@@ -67,7 +67,7 @@ describe('SearchService', () => {
     service.search('Bacteria', true, [cooCriteria, domainCriteria], 1)
       .subscribe(results => actualResults = results);
 
-    const resource = toGeneticResource('Bacteria');
+    const resource = toRareGeneticResource('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 

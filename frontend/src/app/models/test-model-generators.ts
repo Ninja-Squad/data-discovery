@@ -1,6 +1,7 @@
 import { AggregatedPage, Aggregation, Bucket } from './page';
-import { GeneticResourceModel } from './genetic-resource.model';
 import { AggregationCriterion } from './aggregation-criterion';
+import { RareGeneticResourceModel } from '../rare/rare-genetic-resource.model';
+import { WheatisGeneticResourceModel } from '../wheatis/wheatis-genetic-resource.model';
 
 export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
   return {
@@ -43,7 +44,7 @@ export function toAggregationCriterion(name: string, values: Array<string>): Agg
   };
 }
 
-export function toGeneticResource(name: string): GeneticResourceModel {
+export function toRareGeneticResource(name: string): RareGeneticResourceModel {
   return {
     identifier: name,
     name,
@@ -69,5 +70,18 @@ export function toGeneticResource(name: string): GeneticResourceModel {
       lat: 45.7542224,
       lon: 4.8298569
     }
+  };
+}
+
+export function toWheatisGeneticResource(name: string): WheatisGeneticResourceModel {
+  return {
+    identifier: name,
+    name,
+    url: 'http://brc4env.fr',
+    description: 'A description of the genetic geneticResource',
+    databaseName: 'BRC4Env',
+    node: 'Node',
+    species: [`${name} species`],
+    entryType: 'Specimen'
   };
 }

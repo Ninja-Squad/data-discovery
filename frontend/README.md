@@ -1,27 +1,44 @@
 # RareFrontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `yarn start` or `yarn start:rare` for a dev server. 
+Navigate to `http://localhost:4200/rare`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+To start another app, like WheatIS, you can run `yarn start:wheatis`, and go to `http://localhost:4200/wheatis`. 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `yarn build` or `yarn build:rare` for a production build of the RARe project. 
+The build artifacts will be stored in the `dist/` directory. 
+
+Use the `yarn build:wheatis` flag for a production build of WheatIS.
 
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+# Add another application
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Each application (like RARe or WheatIS) works in the same way.
+Everything is shared between apps, 
+except a dedicated module (like `RareModule` and `WheatisModule`)
+that contains the component able to display the resource,
+and a TypeScript interface describing the resource.  
 
-## Further help
+Each application also has a few configuration files
+for the the builds, proxy, etc.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To add a new application, you'll need to:
+
+- create a new module
+- create an interface extending `GeneticResourceModel` and representing the resource (see `RareGeneticResourceModel`)
+- create a component to display the resource (see `RareGeneticResourceComponent`)
+- create environment files for dev and production (see `environment.rare.ts` and `environment.rare.prod.ts`),
+containing the module created, the links of the navbar, the aggregation names, etc. 
+- add targets to use these files in `angular.json` (see the targets `rare` and `rare-production`)
+- add a proxy configuration for the context (see `proxy.conf.js`)
+- add scripts to serve and build the application (see `package.json`)
+- update the Gradle build (see `build.gradle.kts`)

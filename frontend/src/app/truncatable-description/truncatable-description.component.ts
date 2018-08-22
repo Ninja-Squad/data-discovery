@@ -1,19 +1,18 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-
-import { GeneticResourceModel } from '../models/genetic-resource.model';
 import { HighlightService } from '../highlight.service';
 
 @Component({
-  selector: 'rare-genetic-resource',
-  templateUrl: './genetic-resource.component.html',
-  styleUrls: ['./genetic-resource.component.scss'],
+  selector: 'rare-truncatable-description',
+  templateUrl: './truncatable-description.component.html',
+  styleUrls: ['./truncatable-description.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GeneticResourceComponent implements OnInit {
+export class TruncatableDescriptionComponent implements OnInit {
+
+  @Input() description: string;
 
   descriptionCollapsed = true;
 
-  @Input() geneticResource: GeneticResourceModel;
   truncatedDescription: string;
 
   constructor(private highlightService: HighlightService) { }
@@ -23,6 +22,7 @@ export class GeneticResourceComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.truncatedDescription = this.highlightService.truncate(this.geneticResource.description, 256);
+    this.truncatedDescription = this.highlightService.truncate(this.description, 256);
   }
+
 }

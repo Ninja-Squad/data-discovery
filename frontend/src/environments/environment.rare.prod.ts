@@ -5,7 +5,7 @@
 import { RareModule } from '../app/rare/rare.module';
 
 export const environment = {
-  production: false,
+  production: true,
   links: [
     { label: 'INRA', url: 'http://www.inra.fr/' },
     { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
