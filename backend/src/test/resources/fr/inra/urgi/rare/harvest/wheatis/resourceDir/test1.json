@@ -1,0 +1,29 @@
+[
+    {
+        "entryType": "Genome annotation",
+        "databaseName": "GnpIS",
+        "description": "Start = 103412796 , End = 103413479 , Strand = 1 , Source = PlantGDB , Seq_id = chr01 , Name = 295788975 , Id = 23169722 , Type = AcDs",
+        "url": "https://urgi.versailles.inra.fr/jbrowse/gmod_jbrowse/?data=myData%2FAmaizing%2FPublic&loc=chr01:103412796..103413479&tracks=Ac_Ds_%5BBrutnell_and_Vollbrecht_via_PlantGDB%5D",
+        "species": "Zea mays L.",
+        "node": "URGI",
+        "name": "chr01:103412796..103413479"
+    },
+    {
+        "entryType": "Genome annotation",
+        "databaseName": "GnpIS",
+        "description": "Start = 103412796 , End = 103413479 , Strand = 1 , Source = PlantGDB , Seq_id = chr01 , Name = 295788975 , Id = 23172179 , Type = AcDs",
+        "url": "https://urgi.versailles.inra.fr/jbrowse/gmod_jbrowse/?data=myData%2FAmaizing%2FPublic&loc=chr01:103412796..103413479&tracks=Ac_Ds_%5BBrutnell_and_Vollbrecht_via_PlantGDB%5D",
+        "species": "Zea mays L.",
+        "node": "URGI",
+        "name": "chr01:103412796..103413480"
+    },
+    {
+        "entryType": "Genome annotation",
+        "databaseName": "GnpIS",
+        "description": "Start = 104609140 , End = 104609827 , Strand = 1 , Source = PlantGDB , Seq_id = chr01 , Name = 54292138 , Id = 23169832 , Type = AcDs",
+        "url": "https://urgi.versailles.inra.fr/jbrowse/gmod_jbrowse/?data=myData%2FAmaizing%2FPublic&loc=chr01:104609140..104609827&tracks=Ac_Ds_%5BBrutnell_and_Vollbrecht_via_PlantGDB%5D",
+        "species": "Zea mays L.",
+        "node": "URGI",
+        "name": "chr01:104609140..104609827"
+    }
+]

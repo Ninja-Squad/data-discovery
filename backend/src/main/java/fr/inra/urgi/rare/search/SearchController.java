@@ -3,10 +3,10 @@ package fr.inra.urgi.rare.search;
 import java.util.List;
 import java.util.Optional;
 
+import fr.inra.urgi.rare.dao.AggregationAnalyzer;
+import fr.inra.urgi.rare.dao.AppAggregation;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.dao.SearchRefinements;
-import fr.inra.urgi.rare.dao.rare.RareAggregation;
-import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.dto.AggregatedPageDTO;
 import fr.inra.urgi.rare.dto.PageDTO;
@@ -32,10 +32,13 @@ public class SearchController {
      */
     public static final int MAX_RESULTS = PageDTO.MAX_RESULTS;
 
-    private GeneticResourceDao<?, ?> geneticResourceDao;
+    private final GeneticResourceDao<?, ?> geneticResourceDao;
+    private final AggregationAnalyzer aggregationAnalyzer;
 
-    public SearchController(RareGeneticResourceDao geneticResourceDao) {
+    public SearchController(GeneticResourceDao<?, ?> geneticResourceDao,
+                            AggregationAnalyzer aggregationAnalyzer) {
         this.geneticResourceDao = geneticResourceDao;
+        this.aggregationAnalyzer = aggregationAnalyzer;
     }
 
     /**
@@ -49,7 +52,7 @@ public class SearchController {
      * of the other parameters are the names of the agregations, and the values are one of the values for that
      * aggregation.
      *
-     * @see RareAggregation
+     * @see AppAggregation
      */
     @GetMapping
     public AggregatedPageDTO<? extends GeneticResource> search(@RequestParam("query") String query,
@@ -64,16 +67,16 @@ public class SearchController {
                                                                     highlight.orElse(false),
                                                                     createRefinementsFromParameters(parameters),
                                                                     PageRequest.of(page.orElse(0), PAGE_SIZE)),
-                                          geneticResourceDao.getAggregationComparator());
+                                          aggregationAnalyzer);
 
     }
 
     private SearchRefinements createRefinementsFromParameters(MultiValueMap<String, String> parameters) {
         SearchRefinements.Builder builder = SearchRefinements.builder();
-        for (RareAggregation rareAggregation : RareAggregation.values()) {
-            List<String> parameterValues = parameters.get(rareAggregation.getName());
+        for (AppAggregation appAggregation : aggregationAnalyzer.getAggregations()) {
+            List<String> parameterValues = parameters.get(appAggregation.getName());
             if (parameterValues != null && !parameterValues.isEmpty()) {
-                builder.withTerm(rareAggregation, parameterValues);
+                builder.withTerm(appAggregation, parameterValues);
             }
         }
 

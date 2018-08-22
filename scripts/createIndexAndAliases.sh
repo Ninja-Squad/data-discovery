@@ -10,3 +10,12 @@ curl -X PUT "localhost:9200/rare-resource-physical-index" -H 'Content-Type: appl
     }
 }
 '
+
+curl -X PUT "localhost:9200/wheatis-resource-physical-index" -H 'Content-Type: application/json' -d'
+{
+    "aliases" : {
+        "wheatis-resource-index" : {},
+        "wheatis-resource-harvest-index" : {}
+    }
+}
+'

@@ -1,13 +1,13 @@
 package fr.inra.urgi.rare.dto;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import fr.inra.urgi.rare.dao.AggregationAnalyzer;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
@@ -28,22 +28,22 @@ public final class AggregatedPageDTO<T> {
         this.aggregations = aggregations;
     }
 
-    public static <T> AggregatedPageDTO<T> fromPage(AggregatedPage<T> page, Comparator<Terms> aggregationComparator) {
+    public static <T> AggregatedPageDTO<T> fromPage(AggregatedPage<T> page, AggregationAnalyzer aggregationAnalyzer) {
         return new AggregatedPageDTO<>(
             PageDTO.fromPage(page),
-            toAggregationDTOs(page.getAggregations(), aggregationComparator));
+            toAggregationDTOs(page.getAggregations(), aggregationAnalyzer));
     }
 
     public static <T, R> AggregatedPageDTO<R> fromPage(AggregatedPage<T> page,
-                                                       Comparator<Terms> aggregationComparator,
+                                                       AggregationAnalyzer aggregationAnalyzer,
                                                        Function<T, R> mapper) {
         return new AggregatedPageDTO<>(
             PageDTO.fromPage(page, mapper),
-            toAggregationDTOs(page.getAggregations(), aggregationComparator));
+            toAggregationDTOs(page.getAggregations(), aggregationAnalyzer));
     }
 
     private static List<AggregationDTO> toAggregationDTOs(Aggregations aggregations,
-                                                          Comparator<Terms> aggregationComparator) {
+                                                          AggregationAnalyzer aggregationAnalyzer) {
         if (aggregations == null) {
             return Collections.emptyList();
         }
@@ -51,8 +51,8 @@ public final class AggregatedPageDTO<T> {
                            .stream()
                            .filter(aggregation -> aggregation instanceof Terms)
                            .map(Terms.class::cast)
-                           .sorted(aggregationComparator)
-                           .map(AggregationDTO::new)
+                           .sorted(aggregationAnalyzer.comparator())
+                           .map(terms -> new AggregationDTO(terms, aggregationAnalyzer))
                            .collect(Collectors.toList());
     }
 

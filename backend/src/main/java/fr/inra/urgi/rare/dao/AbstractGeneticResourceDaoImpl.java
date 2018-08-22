@@ -1,5 +1,7 @@
 package fr.inra.urgi.rare.dao;
 
+import static fr.inra.urgi.rare.dao.GeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME;
+import static fr.inra.urgi.rare.dao.GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.util.Collection;
@@ -10,7 +12,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import fr.inra.urgi.rare.dao.rare.RareAggregation;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
@@ -18,10 +19,13 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
@@ -40,7 +44,7 @@ import org.springframework.data.elasticsearch.core.query.SourceFilter;
  * @author JB Nizet
  */
 public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, I extends IndexedGeneticResource<R>>
-    implements GeneticResourceDao<R, I> {
+    implements GeneticResourceDaoCustom<R, I> {
 
     /**
      * The name of the completion suggestion
@@ -58,10 +62,10 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
     private int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
     protected final ElasticsearchTemplate elasticsearchTemplate;
-    private final AbstractGeneticResourceHighlightMapper<R, I> geneticResourceHighlightMapper;
+    private final AbstractGeneticResourceHighlightMapper<R> geneticResourceHighlightMapper;
 
     public AbstractGeneticResourceDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
-                                          AbstractGeneticResourceHighlightMapper<R, I> geneticResourceHighlightMapper) {
+                                          AbstractGeneticResourceHighlightMapper<R> geneticResourceHighlightMapper) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.geneticResourceHighlightMapper = geneticResourceHighlightMapper;
     }
@@ -80,7 +84,7 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
         // refinements (i.e. the aggregation/facet criteria).
         // See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
         BoolQueryBuilder refinementQuery = boolQuery();
-        for (RareAggregation term : refinements.getTerms()) {
+        for (AppAggregation term : refinements.getTerms()) {
             refinementQuery.must(createRefinementQuery(refinements, term));
         }
 
@@ -136,7 +140,7 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
      *     </li>
      * </ul>
      */
-    private QueryBuilder createRefinementQuery(SearchRefinements refinements, RareAggregation term) {
+    private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
         TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
         if (acceptedValues.contains(RareGeneticResource.NULL_VALUE)) {
@@ -195,7 +199,9 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
 
         // keep max 10 suggestions, in the original order, but only keep those which are equal one of the remaining
         // suggestions
-        return suggestions.stream().filter(remainingSuggestions::contains).limit(MAX_RETURNED_SUGGESTION_COUNT).collect(Collectors.toList());
+        return suggestions.stream()
+                          .filter(remainingSuggestions::contains).limit(MAX_RETURNED_SUGGESTION_COUNT)
+                          .collect(Collectors.toList());
     }
 
     @Override
@@ -208,6 +214,31 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
     @Override
     public void putMapping() {
         elasticsearchTemplate.putMapping(getIndexedGeneticResourceClass());
+    }
+
+    @Override
+    public Terms findPillars() {
+        PillarAggregationDescriptor descriptor = getPillarAggregationDescriptor();
+        String pillarAggregationName = "pillar";
+        TermsAggregationBuilder pillar =
+            AggregationBuilders.terms(pillarAggregationName).field(descriptor.getPillarNameProperty()).size(100);
+        TermsAggregationBuilder databaseSource =
+            AggregationBuilders.terms(DATABASE_SOURCE_AGGREGATION_NAME).field(descriptor.getDatabaseSourceProperty()).size(100);
+
+        if (descriptor.getPortalUrlProperty() != null) {
+            TermsAggregationBuilder portalURL =
+                AggregationBuilders.terms(PORTAL_URL_AGGREGATION_NAME).field(descriptor.getPortalUrlProperty()).size(2);
+            databaseSource.subAggregation(portalURL);
+        }
+        pillar.subAggregation(databaseSource);
+
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
+            .withQuery(new MatchAllQueryBuilder())
+            .addAggregation(pillar)
+            .withPageable(NoPage.INSTANCE);
+
+        AggregatedPage<R> geneticResources = elasticsearchTemplate.queryForPage(builder.build(), getGeneticResourceClass());
+        return geneticResources.getAggregations().get(pillarAggregationName);
     }
 
     private IndexQuery createIndexQuery(I entity) {
@@ -238,6 +269,10 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
      */
     protected abstract List<AppAggregation> getAppAggregations();
 
+    /**
+     * Gets the descriptor allowing to create the pillars aggregation
+     */
+    protected abstract PillarAggregationDescriptor getPillarAggregationDescriptor();
 
     /**
      * A Pageable implementation allowing to avoid loading any page (i.e. with a size equal to 0), because we
@@ -247,7 +282,7 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
      * We would normally use a {@link org.springframework.data.domain.PageRequest} as an implementation of
      * {@link Pageable}, but PageRequest considers 0 as an invalid size. Hence this implementation.
      */
-    protected static final class NoPage implements Pageable {
+    private static final class NoPage implements Pageable {
 
         public static final NoPage INSTANCE = new NoPage();
 

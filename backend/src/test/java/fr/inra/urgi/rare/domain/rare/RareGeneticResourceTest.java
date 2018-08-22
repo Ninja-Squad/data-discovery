@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * Unit test to check that a GeneticResource can correctly be marshalled/unmarshaleld to/from JSON
+ * Unit test to check that a RareGeneticResource can correctly be marshalled/unmarshaleld to/from JSON
  * @author JB Nizet
  */
 @JsonTest

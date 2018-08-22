@@ -13,15 +13,16 @@ import java.util.List;
 import fr.inra.urgi.rare.config.SecurityConfig;
 import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.dao.rare.RareAggregation;
+import fr.inra.urgi.rare.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
 import org.elasticsearch.search.aggregations.Aggregations;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
@@ -40,13 +41,11 @@ class SearchControllerTest {
     @MockBean
     private RareGeneticResourceDao mockGeneticResourceDao;
 
+    @SpyBean
+    private RareAggregationAnalyzer aggregationAnalyzer;
+
     @Autowired
     private MockMvc mockMvc;
-
-    @BeforeEach
-    public void prepare() {
-        when(mockGeneticResourceDao.getAggregationComparator()).thenReturn(RareAggregation.TERMS_COMPARATOR);
-    }
 
     @Test
     void shouldSearch() throws Exception {

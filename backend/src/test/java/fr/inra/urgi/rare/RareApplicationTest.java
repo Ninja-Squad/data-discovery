@@ -14,9 +14,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@TestPropertySource("/test.properties")
+@TestPropertySource("/test-rare.properties")
 @ActiveProfiles(AppProfile.RARE)
-public class ApplicationTest {
+public class RareApplicationTest {
     @Test
     public void shouldLoadContext() {}
 }

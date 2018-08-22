@@ -2,7 +2,6 @@ package fr.inra.urgi.rare.dao.rare;
 
 import fr.inra.urgi.rare.dao.AbstractGeneticResourceHighlightMapper;
 import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
-import fr.inra.urgi.rare.domain.rare.RareIndexedGeneticResource;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
 
@@ -13,7 +12,7 @@ import org.springframework.data.elasticsearch.core.SearchResultMapper;
  * @author JB Nizet
  */
 public class RareGeneticResourceHighlightMapper
-    extends AbstractGeneticResourceHighlightMapper<RareGeneticResource, RareIndexedGeneticResource> {
+    extends AbstractGeneticResourceHighlightMapper<RareGeneticResource> {
 
     public RareGeneticResourceHighlightMapper(EntityMapper entityMapper) {
         super(entityMapper);

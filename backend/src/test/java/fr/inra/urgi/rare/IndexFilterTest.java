@@ -5,6 +5,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
 import fr.inra.urgi.rare.config.SecurityConfig;
+import fr.inra.urgi.rare.dao.AggregationAnalyzer;
 import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.search.SearchController;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ import org.springframework.test.web.servlet.MockMvc;
 class IndexFilterTest {
     @MockBean
     private RareGeneticResourceDao mockGeneticResourceDao;
+
+    @MockBean
+    private AggregationAnalyzer mockAggregationAnalyzer;
 
     @Autowired
     private MockMvc mockMvc;

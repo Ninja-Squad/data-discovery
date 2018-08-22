@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import fr.inra.urgi.rare.dao.AggregationAnalyzer;
 import fr.inra.urgi.rare.dao.rare.RareAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
@@ -32,9 +33,9 @@ public final class AggregationDTO {
      */
     private final List<BucketDTO> buckets;
 
-    public AggregationDTO(Terms aggregation) {
+    public AggregationDTO(Terms aggregation, AggregationAnalyzer aggregationAnalyzer) {
         this.name = aggregation.getName();
-        this.type = RareAggregation.fromName(aggregation.getName()).getType();
+        this.type = aggregationAnalyzer.getAggregationType(aggregation);
         this.buckets = Collections.unmodifiableList(
             aggregation.getBuckets().stream().map(BucketDTO::new).collect(Collectors.toList())
         );

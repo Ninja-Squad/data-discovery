@@ -37,7 +37,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/test.properties")
+@TestPropertySource("/test-rare.properties")
 @Import(ElasticSearchConfig.class)
 @JsonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

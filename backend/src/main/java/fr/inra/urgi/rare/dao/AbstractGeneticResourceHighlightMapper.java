@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
-import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -20,7 +19,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
  * A base class for highlight mappers. There is one subclass for each app (RARe, WheatIS, etc.)
  * @author JB Nizet
  */
-public abstract class AbstractGeneticResourceHighlightMapper<R extends GeneticResource, I extends IndexedGeneticResource<R>>
+public abstract class AbstractGeneticResourceHighlightMapper<R extends GeneticResource>
     implements SearchResultMapper {
 
     private DefaultResultMapper defaultResultMapper;

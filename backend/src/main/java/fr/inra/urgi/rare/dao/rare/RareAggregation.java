@@ -3,11 +3,9 @@ package fr.inra.urgi.rare.dao.rare;
 import static fr.inra.urgi.rare.dao.AppAggregation.Type.LARGE;
 import static fr.inra.urgi.rare.dao.AppAggregation.Type.SMALL;
 
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rare.dao.AppAggregation;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
 /**
  * Enum listing the terms aggregations used by RARe, and their corresponding name and field.
@@ -29,23 +27,23 @@ public enum RareAggregation implements AppAggregation {
     private final String field;
     private final Type type;
 
-    public static final Comparator<Terms> TERMS_COMPARATOR =
-        Comparator.comparing(terms -> RareAggregation.fromName(terms.getName()));
-
     RareAggregation(String name, String field, Type type) {
         this.name = name;
         this.field = field;
         this.type = type;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getField() {
         return field;
     }
 
+    @Override
     public Type getType() {
         return type;
     }

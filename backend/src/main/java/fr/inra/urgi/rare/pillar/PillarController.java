@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
-import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,7 @@ public class PillarController {
 
     private final GeneticResourceDao<?, ?> geneticResourceDao;
 
-    public PillarController(RareGeneticResourceDao geneticResourceDao) {
+    public PillarController(GeneticResourceDao<?, ?> geneticResourceDao) {
         this.geneticResourceDao = geneticResourceDao;
     }
 
@@ -50,16 +49,21 @@ public class PillarController {
 
     private DatabaseSourceDTO toDatabaseSourceDTO(Bucket bucket) {
         String name = bucket.getKeyAsString();
+        return new DatabaseSourceDTO(name, getPortalUrl(bucket), bucket.getDocCount());
+    }
+
+    private String getPortalUrl(Bucket bucket) {
         Terms portalURLAggregation =
             bucket.getAggregations().get(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME);
 
-        List<? extends Bucket> buckets = portalURLAggregation.getBuckets();
+        if (portalURLAggregation != null) {
+            List<? extends Bucket> buckets = portalURLAggregation.getBuckets();
 
-        // there should be 0 bucket (if the database source has no portal URL), or 1 if it has one.
-        // if there are more, we only take the first one, which has the most documents: it probably means
-        // that the other buckets have a wrong URL
-        String url = buckets.size() > 0 ? buckets.get(0).getKeyAsString() : null;
-
-        return new DatabaseSourceDTO(name, url, bucket.getDocCount());
+            // there should be 0 bucket (if the database source has no portal URL), or 1 if it has one.
+            // if there are more, we only take the first one, which has the most documents: it probably means
+            // that the other buckets have a wrong URL
+            return buckets.size() > 0 ? buckets.get(0).getKeyAsString() : null;
+        }
+        return null;
     }
 }

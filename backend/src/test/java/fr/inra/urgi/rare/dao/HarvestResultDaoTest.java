@@ -27,7 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * @author JB Nizet
  */
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/test.properties")
+@TestPropertySource("/test-rare.properties")
 @Import(ElasticSearchConfig.class)
 @JsonTest
 class HarvestResultDaoTest {

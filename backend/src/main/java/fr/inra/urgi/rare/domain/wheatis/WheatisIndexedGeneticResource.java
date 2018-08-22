@@ -1,4 +1,4 @@
-package fr.inra.urgi.rare.domain.rare;
+package fr.inra.urgi.rare.domain.wheatis;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,15 +12,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
- * A class containing all the fields of a GeneticResource, and additional fields used uniquely for indexing
- * and which thus make it possible or easier to implement completion suggestions.
- *
- * This document is used by the harvesting process. Its index is in fact an alias which typically refers to the same
- * physical index as the alias used by {@link RareGeneticResource}, except when we want to harvest to a new index
- * (in order to delete obsolete documents, or to accomodate with incompatible schema changes). In that case, once the
- * harvest process is finished, the alias of {@link RareGeneticResource} can be modified to refer to the new physical
- * index, in order to start searching in the newly harvested documents.
- *
+ * The indexed genetic resource for the WheatIS application.
  * @author JB Nizet
  */
 @Document(
@@ -28,39 +20,32 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
     type = "#{@rareProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )
-@Mapping(mappingPath = "fr/inra/urgi/rare/domain/rare/RareGeneticResource.mapping.json")
-public final class RareIndexedGeneticResource implements IndexedGeneticResource<RareGeneticResource> {
+@Mapping(mappingPath = "fr/inra/urgi/rare/domain/wheatis/WheatisGeneticResource.mapping.json")
+public final class WheatisIndexedGeneticResource implements IndexedGeneticResource<WheatisGeneticResource> {
     @JsonUnwrapped
-    private final RareGeneticResource geneticResource;
+    private final WheatisGeneticResource geneticResource;
 
     /**
      * The list of completion suggestions that are valid for this genetic resource.
      */
     private final List<String> suggestions;
 
-    public RareIndexedGeneticResource(RareGeneticResource geneticResource) {
+    public WheatisIndexedGeneticResource(WheatisGeneticResource geneticResource) {
         this.geneticResource = geneticResource;
 
         List<String> list = new ArrayList<>();
-        addIfNotBlank(list, geneticResource.getName());
-        addIfNotBlank(list, geneticResource.getPillarName());
-        addIfNotBlank(list, geneticResource.getDatabaseSource());
-        addIfNotBlank(list, geneticResource.getDomain());
-        addAllIfNotBlank(list, geneticResource.getTaxon());
-        addAllIfNotBlank(list, geneticResource.getFamily());
-        addAllIfNotBlank(list, geneticResource.getGenus());
+        addIfNotBlank(list, geneticResource.getId());
+        addIfNotBlank(list, geneticResource.getEntryType());
+        addIfNotBlank(list, geneticResource.getDatabaseName());
+        addIfNotBlank(list, geneticResource.getNode());
         addAllIfNotBlank(list, geneticResource.getSpecies());
-        addAllIfNotBlank(list, geneticResource.getMaterialType());
-        addAllIfNotBlank(list, geneticResource.getBiotopeType());
-        addIfNotBlank(list, geneticResource.getCountryOfOrigin());
-        addIfNotBlank(list, geneticResource.getCountryOfCollect());
         IndexedGeneticResource.extractTokensOutOfDescription(geneticResource.getDescription()).forEach(list::add);
 
         this.suggestions = Collections.unmodifiableList(list);
     }
 
     @Override
-    public RareGeneticResource getGeneticResource() {
+    public WheatisGeneticResource getGeneticResource() {
         return geneticResource;
     }
 
@@ -77,7 +62,7 @@ public final class RareIndexedGeneticResource implements IndexedGeneticResource<
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        RareIndexedGeneticResource that = (RareIndexedGeneticResource) o;
+        WheatisIndexedGeneticResource that = (WheatisIndexedGeneticResource) o;
         return Objects.equals(geneticResource, that.geneticResource) &&
             Objects.equals(suggestions, that.suggestions);
     }
@@ -89,7 +74,7 @@ public final class RareIndexedGeneticResource implements IndexedGeneticResource<
 
     @Override
     public String toString() {
-        return "RareIndexedGeneticResource{" +
+        return "WheatisIndexedGeneticResource{" +
             "geneticResource=" + geneticResource +
             ", suggestions=" + suggestions +
             '}';

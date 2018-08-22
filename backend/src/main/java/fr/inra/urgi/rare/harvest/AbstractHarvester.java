@@ -17,7 +17,6 @@ import fr.inra.urgi.rare.config.RareProperties;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
-import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.rare.harvest.HarvestedFile.HarvestedFileBuilder;
 
@@ -87,7 +86,7 @@ public abstract class AbstractHarvester<R extends GeneticResource, I extends Ind
 
     /**
      * Harvests the given harvested stream, i.e. parses the stream as a JSON array, and parses each
-     * element of the array as a {@link RareGeneticResource}. This method creates and records all the successes
+     * element of the array as a {@link GeneticResource}. This method creates and records all the successes
      * and errors in a new {@link HarvestedFile} of the given result builder.
      */
     public void harvest(HarvestedStream harvestedStream, HarvestResultBuilder resultBuilder) {

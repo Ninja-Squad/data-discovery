@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.dao.HarvestResultDao;
-import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.dto.PageDTO;
 import fr.inra.urgi.rare.exception.NotFoundException;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
@@ -37,7 +36,7 @@ public class HarvesterController {
 
     public HarvesterController(AsyncHarvester asyncHarvester,
                                HarvestResultDao harvestResultDao,
-                               RareGeneticResourceDao geneticResourceDao) {
+                               GeneticResourceDao<?, ?> geneticResourceDao) {
         this.asyncHarvester = asyncHarvester;
         this.harvestResultDao = harvestResultDao;
         this.geneticResourceDao = geneticResourceDao;

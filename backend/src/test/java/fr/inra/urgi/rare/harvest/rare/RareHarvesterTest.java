@@ -31,7 +31,6 @@ import fr.inra.urgi.rare.harvest.HarvestResult;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.rare.harvest.HarvestedFile;
 import fr.inra.urgi.rare.harvest.HarvestedStream;
-import fr.inra.urgi.rare.harvest.AbstractHarvester;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -49,7 +48,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * Unit tests for {@link AbstractHarvester}
+ * Unit tests for {@link RareHarvester}
  * @author JB Nizet
  */
 @TestInstance(Lifecycle.PER_CLASS)
@@ -78,7 +77,7 @@ class RareHarvesterTest {
         Files.createDirectory(resourceDir);
 
         for (String fileName : Arrays.asList("test1.json", "test2.json")) {
-            Files.copy(RareHarvesterTest.class.getResourceAsStream("resourcedir/" + fileName), resourceDir.resolve(fileName));
+            Files.copy(RareHarvesterTest.class.getResourceAsStream("resourceDir/" + fileName), resourceDir.resolve(fileName));
         }
 
         RareProperties rareProperties = new RareProperties();
