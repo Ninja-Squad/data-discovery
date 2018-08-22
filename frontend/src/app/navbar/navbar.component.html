@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">RARe</a>
+    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="navbar" class="collapse navbar-collapse" [class.collapse]="navbarCollapsed">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" *ngFor="let link of links">
+          <a class="nav-link" [href]="link.url">{{ link.label }}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  links: [
+    { label: 'INRA', url: 'http://www.inra.fr/' },
+    { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+  ]
 };
 
 /*

@@ -22,6 +22,7 @@ import { AggregationNamePipe } from './aggregation-name.pipe';
 import { DocumentCountComponent } from './document-count/document-count.component';
 import { ErrorComponent } from './error/error.component';
 import { ErrorInterceptorService } from './error-interceptor.service';
+import { NavbarComponent } from './navbar/navbar.component';
 
 registerLocaleData(localeFr);
 
@@ -38,7 +39,8 @@ registerLocaleData(localeFr);
     PillarsComponent,
     AggregationNamePipe,
     DocumentCountComponent,
-    ErrorComponent
+    ErrorComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserAnimationsModule,
