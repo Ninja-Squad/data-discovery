@@ -17,9 +17,9 @@ import fr.inra.urgi.rare.config.RareProperties;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
+import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.rare.harvest.HarvestedFile.HarvestedFileBuilder;
-import org.springframework.stereotype.Component;
 
 /**
  * A harvester, which can load all the JSON files located in the Rare resource directory, and then, for each of these
@@ -33,18 +33,17 @@ import org.springframework.stereotype.Component;
  *
  * @author JB Nizet
  */
-@Component
-public class Harvester {
+public abstract class AbstractHarvester<R extends GeneticResource, I extends IndexedGeneticResource<R>> {
 
     private static final int BATCH_SIZE = 100;
 
     private final Path resourceDir;
     private final ObjectMapper objectMapper;
-    private final GeneticResourceDao geneticResourceDao;
+    private final GeneticResourceDao<R, I> geneticResourceDao;
 
-    public Harvester(RareProperties rareProperties,
-                     ObjectMapper objectMapper,
-                     GeneticResourceDao geneticResourceDao) {
+    public AbstractHarvester(RareProperties rareProperties,
+                             ObjectMapper objectMapper,
+                             GeneticResourceDao<R, I> geneticResourceDao) {
         this.resourceDir = rareProperties.getResourceDir();
         this.objectMapper = objectMapper;
         this.geneticResourceDao = geneticResourceDao;
@@ -88,14 +87,14 @@ public class Harvester {
 
     /**
      * Harvests the given harvested stream, i.e. parses the stream as a JSON array, and parses each
-     * element of the array as a {@link GeneticResource}. This method creates and records all the successes
+     * element of the array as a {@link RareGeneticResource}. This method creates and records all the successes
      * and errors in a new {@link HarvestedFile} of the given result builder.
      */
     public void harvest(HarvestedStream harvestedStream, HarvestResultBuilder resultBuilder) {
         HarvestedFileBuilder fileBuilder = HarvestedFile.builder(harvestedStream.getFileName());
         int index = 0;
 
-        List<IndexedGeneticResource> batch = new ArrayList<>(BATCH_SIZE);
+        List<I> batch = new ArrayList<>(BATCH_SIZE);
 
         try (BufferedInputStream bis = new BufferedInputStream(harvestedStream.getInputStream());
              JsonParser parser = objectMapper.getFactory().createParser(bis)) {
@@ -119,8 +118,8 @@ public class Harvester {
                     try {
                         // necessary to avoid failing in the middle of an object
                         TreeNode treeNode = objectMapper.readTree(parser);
-                        GeneticResource geneticResource = objectMapper.treeToValue(treeNode, GeneticResource.class);
-                        batch.add(new IndexedGeneticResource(geneticResource));
+                        R geneticResource = objectMapper.treeToValue(treeNode, getGeneticResourceClass());
+                        batch.add(toIndexedGeneticResource(geneticResource));
                         if (batch.size() == BATCH_SIZE) {
                             geneticResourceDao.saveAll(batch);
                             fileBuilder.addSuccesses(batch.size());
@@ -152,4 +151,7 @@ public class Harvester {
 
         resultBuilder.withFile(fileBuilder.build());
     }
+
+    protected abstract Class<R> getGeneticResourceClass();
+    protected abstract I toIndexedGeneticResource(R geneticResource);
 }

@@ -11,11 +11,12 @@ import java.util.Collections;
 import java.util.List;
 
 import fr.inra.urgi.rare.config.SecurityConfig;
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
-import fr.inra.urgi.rare.dao.RareAggregation;
 import fr.inra.urgi.rare.dao.SearchRefinements;
-import fr.inra.urgi.rare.domain.GeneticResource;
+import fr.inra.urgi.rare.dao.rare.RareAggregation;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
+import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +38,23 @@ import org.springframework.test.web.servlet.ResultActions;
 class SearchControllerTest {
 
     @MockBean
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeEach
+    public void prepare() {
+        when(mockGeneticResourceDao.getAggregationComparator()).thenReturn(RareAggregation.TERMS_COMPARATOR);
+    }
+
     @Test
     void shouldSearch() throws Exception {
-        GeneticResource resource = GeneticResource.builder()
-            .withId("CFBP 8402")
-            .withName("CFBP 8402")
-            .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
-            .build();
+        RareGeneticResource resource = RareGeneticResource.builder()
+                                                          .withId("CFBP 8402")
+                                                          .withName("CFBP 8402")
+                                                          .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
+                                                          .build();
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
@@ -67,11 +73,11 @@ class SearchControllerTest {
 
     @Test
     void shouldSearchAndAggregate() throws Exception {
-        GeneticResource resource = GeneticResource.builder()
-            .withId("CFBP 8402")
-            .withName("CFBP 8402")
-            .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
-            .build();
+        RareGeneticResource resource = RareGeneticResource.builder()
+                                                          .withId("CFBP 8402")
+                                                          .withName("CFBP 8402")
+                                                          .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
+                                                          .build();
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";

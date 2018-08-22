@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.doc.DocumentationConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 class SuggestionControllerDocTest {
     @MockBean
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     private MockMvc mockMvc;

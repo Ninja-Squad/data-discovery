@@ -13,12 +13,12 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
-import fr.inra.urgi.rare.dao.RareAggregation;
 import fr.inra.urgi.rare.dao.SearchRefinements;
+import fr.inra.urgi.rare.dao.rare.RareAggregation;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.doc.DocumentationConfig;
-import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.Location;
+import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,66 +57,68 @@ class SearchControllerDocTest {
             .description("If true, aggregations are computed and returned.");
 
     @MockBean
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     private MockMvc mockMvc;
 
-    private GeneticResource syrah;
-    private GeneticResource dorato;
+    private RareGeneticResource syrah;
+    private RareGeneticResource dorato;
 
-    private GeneticResource highlightedSyrah;
-    private GeneticResource highlightedDorato;
+    private RareGeneticResource highlightedSyrah;
+    private RareGeneticResource highlightedDorato;
 
     @BeforeEach
     void prepare() {
         syrah =
-            GeneticResource.builder()
-                           .withPillarName("Plant")
-                           .withDatabaseSource("Florilège")
-                           .withPortalURL("http://florilege.arcad-project.org/fr/collections")
-                           .withId("doi:10.15454/1.4921785297227607E12")
-                           .withName("Syrah")
-                           .withDescription(
+            RareGeneticResource.builder()
+                               .withPillarName("Plant")
+                               .withDatabaseSource("Florilège")
+                               .withPortalURL("http://florilege.arcad-project.org/fr/collections")
+                               .withId("doi:10.15454/1.4921785297227607E12")
+                               .withName("Syrah")
+                               .withDescription(
                                "Syrah is a Vitis vinifera subsp vinifera cv. Syrah accession (number: 150Mtp0, doi:10.15454/1.4921785297227607E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel. This accession has phenotyping data: Doligez_et_al_2013 - Study of the genetic determinism of berry weight and seed traits in a grapevine progeny.")
-                           .withDataURL(
+                               .withDataURL(
                                "https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==")
-                           .withDomain("Plantae")
-                           .withTaxon(Collections.singletonList("Vitis vinifera"))
-                           .withFamily(Collections.singletonList("Vitaceae"))
-                           .withGenus(Collections.singletonList("Vitis"))
-                           .withSpecies(Collections.singletonList("Vitis vinifera"))
-                           .build();
+                               .withDomain("Plantae")
+                               .withTaxon(Collections.singletonList("Vitis vinifera"))
+                               .withFamily(Collections.singletonList("Vitaceae"))
+                               .withGenus(Collections.singletonList("Vitis"))
+                               .withSpecies(Collections.singletonList("Vitis vinifera"))
+                               .build();
 
         dorato =
-            GeneticResource.builder()
-                           .withPillarName("Plant")
-                           .withDatabaseSource("Florilège")
-                           .withPortalURL("http://florilege.arcad-project.org/fr/collections")
-                           .withId("doi:10.15454/1.492178535151698E12")
-                           .withName("Grecanico dorato")
-                           .withDescription(
+            RareGeneticResource.builder()
+                               .withPillarName("Plant")
+                               .withDatabaseSource("Florilège")
+                               .withPortalURL("http://florilege.arcad-project.org/fr/collections")
+                               .withId("doi:10.15454/1.492178535151698E12")
+                               .withName("Grecanico dorato")
+                               .withDescription(
                                "Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: 1310Mtp1, doi:10.15454/1.492178535151698E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel")
-                           .withDataURL(
+                               .withDataURL(
                                "https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
-                           .withDomain("Plantae")
-                           .withTaxon(Collections.singletonList("Vitis vinifera"))
-                           .withFamily(Collections.singletonList("Vitaceae"))
-                           .withGenus(Collections.singletonList("Vitis"))
-                           .withSpecies(Collections.singletonList("Vitis vinifera"))
-                           .withCountryOfCollect("Italy")
-                           .withLocationOfCollect(new Location(37.5, 15.099722))
-                           .build();
+                               .withDomain("Plantae")
+                               .withTaxon(Collections.singletonList("Vitis vinifera"))
+                               .withFamily(Collections.singletonList("Vitaceae"))
+                               .withGenus(Collections.singletonList("Vitis"))
+                               .withSpecies(Collections.singletonList("Vitis vinifera"))
+                               .withCountryOfCollect("Italy")
+                               .withLocationOfCollect(new Location(37.5, 15.099722))
+                               .build();
 
         highlightedSyrah =
-            GeneticResource.builder(syrah)
-                           .withDescription(syrah.getDescription().replace("Vitis", "<em>Vitis</em>"))
-                           .build();
+            RareGeneticResource.builder(syrah)
+                               .withDescription(syrah.getDescription().replace("Vitis", "<em>Vitis</em>"))
+                               .build();
 
         highlightedDorato =
-            GeneticResource.builder(dorato)
-                           .withDescription(dorato.getDescription().replace("Vitis", "<em>Vitis</em>"))
-                           .build();
+            RareGeneticResource.builder(dorato)
+                               .withDescription(dorato.getDescription().replace("Vitis", "<em>Vitis</em>"))
+                               .build();
+
+        when(mockGeneticResourceDao.getAggregationComparator()).thenReturn(RareAggregation.TERMS_COMPARATOR);
     }
 
     @Test

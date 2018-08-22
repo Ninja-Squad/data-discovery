@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import fr.inra.urgi.rare.config.SecurityConfig;
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.dao.HarvestResultDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ class HarvesterControllerSecurityTest {
     private HarvestResultDao mockHarvestResultDao;
 
     @MockBean
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     private MockMvc mockMvc;

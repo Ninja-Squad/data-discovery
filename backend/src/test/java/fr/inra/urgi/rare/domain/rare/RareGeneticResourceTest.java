@@ -1,4 +1,4 @@
-package fr.inra.urgi.rare.domain;
+package fr.inra.urgi.rare.domain.rare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.inra.urgi.rare.config.Harvest;
 import fr.inra.urgi.rare.config.HarvestConfig;
+import fr.inra.urgi.rare.domain.Location;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @JsonTest
 @Import(HarvestConfig.class)
 @ExtendWith(SpringExtension.class)
-class GeneticResourceTest {
+class RareGeneticResourceTest {
 
     @Autowired
     @Harvest
@@ -31,36 +32,36 @@ class GeneticResourceTest {
 
     @Test
     void shouldMarshallAndUnMarshall() throws IOException {
-        GeneticResource geneticResource =
-            GeneticResource.builder()
-                           .withId("doi:10.15454/1.492178535151698E12")
-                           .withName("Grecanico dorato")
-                           .withDescription("Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: "
+        RareGeneticResource geneticResource =
+            RareGeneticResource.builder()
+                               .withId("doi:10.15454/1.492178535151698E12")
+                               .withName("Grecanico dorato")
+                               .withDescription("Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: "
                                 + "1310Mtp1, doi:10.15454/1.492178535151698E12) maintained by the GRAPEVINE (managed by INRA) and held "
                                 + "by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar "
                                 + "traditionnel")
-                           .withPillarName("Plant")
-                           .withDatabaseSource("Florilège")
-                           .withPortalURL("http://florilege.arcad-project.org/fr/collections")
-                           .withDataURL("https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
-                           .withDomain("Plantae")
-                           .withTaxon(Collections.singletonList("Vitis vinifera"))
-                           .withFamily(Collections.singletonList("Vitaceae"))
-                           .withGenus(Collections.singletonList("Vitis"))
-                           .withSpecies(Collections.singletonList("Vitis vinifera"))
-                           .withMaterialType(Collections.singletonList("testMaterialType"))
-                           .withBiotopeType(Collections.singletonList("testBiotopeType"))
-                           .withCountryOfOrigin("France")
-                           .withLocationOfOrigin(new Location(0.1,0.2))
-                           .withCountryOfCollect("Italy")
-                           .withLocationOfCollect(new Location(37.5,15.099722))
-                           .build();
+                               .withPillarName("Plant")
+                               .withDatabaseSource("Florilège")
+                               .withPortalURL("http://florilege.arcad-project.org/fr/collections")
+                               .withDataURL("https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
+                               .withDomain("Plantae")
+                               .withTaxon(Collections.singletonList("Vitis vinifera"))
+                               .withFamily(Collections.singletonList("Vitaceae"))
+                               .withGenus(Collections.singletonList("Vitis"))
+                               .withSpecies(Collections.singletonList("Vitis vinifera"))
+                               .withMaterialType(Collections.singletonList("testMaterialType"))
+                               .withBiotopeType(Collections.singletonList("testBiotopeType"))
+                               .withCountryOfOrigin("France")
+                               .withLocationOfOrigin(new Location(0.1, 0.2))
+                               .withCountryOfCollect("Italy")
+                               .withLocationOfCollect(new Location(37.5,15.099722))
+                               .build();
 
         String json = objectMapper.writer()
                                   .withFeatures(SerializationFeature.INDENT_OUTPUT)
                                   .writeValueAsString(geneticResource);
 
-        GeneticResource unmarshalled = objectMapper.readValue(json, GeneticResource.class);
+        RareGeneticResource unmarshalled = objectMapper.readValue(json, RareGeneticResource.class);
 
         assertThat(unmarshalled).isEqualTo(geneticResource);
     }
@@ -88,7 +89,7 @@ class GeneticResourceTest {
             "    \"locationOfCollect\": null\n" +
             "}";
 
-        GeneticResource geneticResource = objectMapper.readValue(json, GeneticResource.class);
+        RareGeneticResource geneticResource = objectMapper.readValue(json, RareGeneticResource.class);
 
         assertThat(geneticResource.getTaxon()).containsExactly("Vitis vinifera");
         assertThat(geneticResource.getFamily()).containsExactly("Vitaceae");

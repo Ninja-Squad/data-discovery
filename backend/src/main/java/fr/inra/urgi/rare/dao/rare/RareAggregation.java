@@ -1,9 +1,13 @@
-package fr.inra.urgi.rare.dao;
+package fr.inra.urgi.rare.dao.rare;
 
-import static fr.inra.urgi.rare.dao.RareAggregation.Type.LARGE;
-import static fr.inra.urgi.rare.dao.RareAggregation.Type.SMALL;
+import static fr.inra.urgi.rare.dao.AppAggregation.Type.LARGE;
+import static fr.inra.urgi.rare.dao.AppAggregation.Type.SMALL;
 
+import java.util.Comparator;
 import java.util.stream.Stream;
+
+import fr.inra.urgi.rare.dao.AppAggregation;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
 /**
  * Enum listing the terms aggregations used by RARe, and their corresponding name and field.
@@ -13,7 +17,7 @@ import java.util.stream.Stream;
  *
  * @author JB Nizet
  */
-public enum RareAggregation {
+public enum RareAggregation implements AppAggregation {
     DOMAIN("domain", "domain.keyword", SMALL),
     TAXON("taxon", "taxon.keyword", LARGE),
     MATERIAL("material", "materialType.keyword", SMALL),
@@ -24,6 +28,9 @@ public enum RareAggregation {
     private final String name;
     private final String field;
     private final Type type;
+
+    public static final Comparator<Terms> TERMS_COMPARATOR =
+        Comparator.comparing(terms -> RareAggregation.fromName(terms.getName()));
 
     RareAggregation(String name, String field, Type type) {
         this.name = name;
@@ -48,25 +55,5 @@ public enum RareAggregation {
                      .filter(ra -> ra.getName().equals(name))
                      .findAny()
                      .orElseThrow(() -> new IllegalArgumentException("Unknown RareAggregation name: " + name));
-    }
-
-    /**
-     * The type of an aggregation. On the server, it's used to know what is the maximum number of buckets to
-     * retrieve. On the client, it's used to know if the aggregation must be displayed using a list of checkbowes to
-     * choose from, or using a typeahead which will allow adding choices among the potentially large number of results
-     */
-    public enum Type {
-        SMALL(100),
-        LARGE(2000);
-
-        private final int maxBuckets;
-
-        Type(int maxBuckets) {
-            this.maxBuckets = maxBuckets;
-        }
-
-        public int getMaxBuckets() {
-            return maxBuckets;
-        }
     }
 }

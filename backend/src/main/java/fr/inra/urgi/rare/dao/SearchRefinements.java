@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import fr.inra.urgi.rare.dao.rare.RareAggregation;
+
 /**
  * The refinements, based on aggregated values, to be added to a search
  * @author JB Nizet

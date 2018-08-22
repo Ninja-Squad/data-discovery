@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/pillars")
 public class PillarController {
 
-    private final GeneticResourceDao geneticResourceDao;
+    private final GeneticResourceDao<?, ?> geneticResourceDao;
 
-    public PillarController(GeneticResourceDao geneticResourceDao) {
+    public PillarController(RareGeneticResourceDao geneticResourceDao) {
         this.geneticResourceDao = geneticResourceDao;
     }
 

@@ -9,21 +9,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import fr.inra.urgi.rare.dao.rare.RareAggregation;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.domain.IndexedGeneticResource;
+import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
@@ -31,7 +29,6 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
@@ -39,10 +36,11 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SourceFilter;
 
 /**
- * Implementation of {@link GeneticResourceDaoCustom}
+ * Base class for implementations of {@link GeneticResourceDao}
  * @author JB Nizet
  */
-public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
+public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, I extends IndexedGeneticResource<R>>
+    implements GeneticResourceDao<R, I> {
 
     /**
      * The name of the completion suggestion
@@ -55,49 +53,28 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     private static final String SUGGESTIONS_FIELD = "suggestions";
 
     /**
-     * Contains the fields searchable on a {@link GeneticResource}.
-     * This is basically all fields at the exception of a few ones like `identifier`,
-     * and the ones containing a URL or a numeric value.
-     */
-    private static final Set<String> SEARCHABLE_FIELDS = Collections.unmodifiableSet(Stream.of(
-        "name",
-        "description",
-        "pillarName",
-        "databaseSource",
-        "domain",
-        "taxon",
-        "family",
-        "genus",
-        "species",
-        "materialType",
-        "biotopeType",
-        "countryOfOrigin",
-        "countryOfCollect"
-    ).collect(Collectors.toSet()));
-
-    /**
      * The max number of suggestions returned to the caller
      */
     private int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
-    private final ElasticsearchTemplate elasticsearchTemplate;
-    private final GeneticResourceHighlightMapper geneticResourceHighlightMapper;
+    protected final ElasticsearchTemplate elasticsearchTemplate;
+    private final AbstractGeneticResourceHighlightMapper<R, I> geneticResourceHighlightMapper;
 
-    public GeneticResourceDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
-                                  EntityMapper entityMapper) {
+    public AbstractGeneticResourceDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
+                                          AbstractGeneticResourceHighlightMapper<R, I> geneticResourceHighlightMapper) {
         this.elasticsearchTemplate = elasticsearchTemplate;
-        this.geneticResourceHighlightMapper = new GeneticResourceHighlightMapper(entityMapper);
+        this.geneticResourceHighlightMapper = geneticResourceHighlightMapper;
     }
 
     @Override
-    public AggregatedPage<GeneticResource> search(String query,
-                                                  boolean aggregate,
-                                                  boolean highlight,
-                                                  SearchRefinements refinements,
-                                                  Pageable page) {
+    public AggregatedPage<R> search(String query,
+                                    boolean aggregate,
+                                    boolean highlight,
+                                    SearchRefinements refinements,
+                                    Pageable page) {
 
         // this full text query is executed, and its results are used to compute aggregations
-        MultiMatchQueryBuilder fullTextQuery = multiMatchQuery(query, SEARCHABLE_FIELDS.toArray(new String[0]));
+        MultiMatchQueryBuilder fullTextQuery = multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
 
         // this post filter query is applied, after the aggregation have been computed, to apply the
         // refinements (i.e. the aggregation/facet criteria).
@@ -118,18 +95,18 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
             .withPageable(page);
 
         if (aggregate) {
-            Stream.of(RareAggregation.values()).forEach(rareAggregation ->
-                builder.addAggregation(AggregationBuilders.terms(rareAggregation.getName())
-                                                          .field(rareAggregation.getField())
+            getAppAggregations().forEach(appAggregation ->
+                builder.addAggregation(AggregationBuilders.terms(appAggregation.getName())
+                                                          .field(appAggregation.getField())
                                                           .missing(GeneticResource.NULL_VALUE)
-                                                          .size(rareAggregation.getType().getMaxBuckets())));
+                                                          .size(appAggregation.getType().getMaxBuckets())));
         }
 
         if (highlight) {
             builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0));
         }
 
-        return elasticsearchTemplate.queryForPage(builder.build(), GeneticResource.class, geneticResourceHighlightMapper);
+        return elasticsearchTemplate.queryForPage(builder.build(), getGeneticResourceClass(), geneticResourceHighlightMapper);
     }
 
     /**
@@ -162,7 +139,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     private QueryBuilder createRefinementQuery(SearchRefinements refinements, RareAggregation term) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
         TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
-        if (acceptedValues.contains(GeneticResource.NULL_VALUE)) {
+        if (acceptedValues.contains(RareGeneticResource.NULL_VALUE)) {
             return boolQuery()
                 .should(termsQuery)
                 .should(boolQuery().mustNot(existsQuery(term.getField())));
@@ -180,11 +157,11 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
                 SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
                                .text(term)
                                .size(MAX_RETURNED_SUGGESTION_COUNT * 2) // because we deduplicate case-differing
-                                                                        // suggestions after
+                               // suggestions after
                                .skipDuplicates(true));
 
         Client client = elasticsearchTemplate.getClient();
-        String index = elasticsearchTemplate.getPersistentEntityFor(GeneticResource.class).getIndexName();
+        String index = elasticsearchTemplate.getPersistentEntityFor(RareGeneticResource.class).getIndexName();
 
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch(index);
         SearchResponse response =
@@ -222,45 +199,45 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
     }
 
     @Override
-    public void saveAll(Collection<IndexedGeneticResource> indexedGeneticResources) {
+    public void saveAll(Collection<I> indexedGeneticResources) {
         List<IndexQuery> queries = indexedGeneticResources.stream().map(this::createIndexQuery).collect(Collectors.toList());
         elasticsearchTemplate.bulkIndex(queries);
-        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(GeneticResource.class).getIndexName());
-    }
-
-    @Override
-    public Terms findPillars() {
-        String pillarAggregationName = "pillar";
-        TermsAggregationBuilder pillar =
-            AggregationBuilders.terms(pillarAggregationName).field("pillarName.keyword").size(100);
-        TermsAggregationBuilder databaseSource =
-            AggregationBuilders.terms(DATABASE_SOURCE_AGGREGATION_NAME).field("databaseSource.keyword").size(100);
-        TermsAggregationBuilder portalURL =
-            AggregationBuilders.terms(PORTAL_URL_AGGREGATION_NAME).field("portalURL.keyword").size(2);
-        databaseSource.subAggregation(portalURL);
-        pillar.subAggregation(databaseSource);
-
-        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
-            .withQuery(new MatchAllQueryBuilder())
-            .addAggregation(pillar)
-            .withPageable(NoPage.INSTANCE);
-
-        AggregatedPage<GeneticResource> geneticResources = elasticsearchTemplate.queryForPage(builder.build(),
-                                                                                              GeneticResource.class);
-        return geneticResources.getAggregations().get(pillarAggregationName);
+        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(getGeneticResourceClass()).getIndexName());
     }
 
     @Override
     public void putMapping() {
-        elasticsearchTemplate.putMapping(IndexedGeneticResource.class);
+        elasticsearchTemplate.putMapping(getIndexedGeneticResourceClass());
     }
 
-    private IndexQuery createIndexQuery(IndexedGeneticResource entity) {
+    private IndexQuery createIndexQuery(I entity) {
         IndexQuery query = new IndexQuery();
         query.setObject(entity);
         query.setId(entity.getGeneticResource().getId());
         return query;
     }
+
+    /**
+     * Returns the specific {@link GeneticResource} class of this DAO
+     */
+    protected abstract Class<R> getGeneticResourceClass();
+
+    /**
+     * Returns the specific {@link IndexedGeneticResource} class of this DAO
+     */
+    protected abstract Class<I> getIndexedGeneticResourceClass();
+
+    /**
+     * Returns the list of fields of the specific {@link GeneticResource} subclass on which the full text query must be
+     * applied.
+     */
+    protected abstract Set<String> getSearchableFields();
+
+    /**
+     * Returns the ordered list of {@link AppAggregation} to apply
+     */
+    protected abstract List<AppAggregation> getAppAggregations();
+
 
     /**
      * A Pageable implementation allowing to avoid loading any page (i.e. with a size equal to 0), because we
@@ -270,7 +247,7 @@ public class GeneticResourceDaoImpl implements GeneticResourceDaoCustom {
      * We would normally use a {@link org.springframework.data.domain.PageRequest} as an implementation of
      * {@link Pageable}, but PageRequest considers 0 as an invalid size. Hence this implementation.
      */
-    private static final class NoPage implements Pageable {
+    protected static final class NoPage implements Pageable {
 
         public static final NoPage INSTANCE = new NoPage();
 

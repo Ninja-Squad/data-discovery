@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
 
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.dao.HarvestResultDao;
 import fr.inra.urgi.rare.doc.DocumentationConfig;
 import org.hamcrest.CoreMatchers;
@@ -55,7 +55,7 @@ class HarvesterControllerDocTest {
     private HarvestResultDao mockHarvestResultDao;
 
     @MockBean
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     private MockMvc mockMvc;

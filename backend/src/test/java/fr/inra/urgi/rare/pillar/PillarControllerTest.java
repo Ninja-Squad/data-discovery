@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import fr.inra.urgi.rare.config.SecurityConfig;
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.search.MockBucket;
 import fr.inra.urgi.rare.search.MockTermsAggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class PillarControllerTest {
 
     @MockBean
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,14 +43,14 @@ class PillarControllerTest {
     void shouldListPillars() throws Exception {
         Terms pillarTerms = new MockTermsAggregation("pillar", Arrays.asList(
             new MockBucket("Plant", 999, new Aggregations(Arrays.asList( // wrong approximate count
-                new MockTermsAggregation(GeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME, Arrays.asList(
+                new MockTermsAggregation(RareGeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME, Arrays.asList(
                     new MockBucket("Florilège", 800, new Aggregations(Arrays.asList(
-                        new MockTermsAggregation(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME, Collections.singletonList(
+                        new MockTermsAggregation(RareGeneticResourceDao.PORTAL_URL_AGGREGATION_NAME, Collections.singletonList(
                             new MockBucket("http://florilege.arcad-project.org/fr/collections", 800)
                         ))
                     ))),
                     new MockBucket("CNRGV", 200, new Aggregations(Arrays.asList(
-                        new MockTermsAggregation(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME, Arrays.asList(
+                        new MockTermsAggregation(RareGeneticResourceDao.PORTAL_URL_AGGREGATION_NAME, Arrays.asList(
                             new MockBucket("https://cnrgv.toulouse.inra.fr/library/genomic_resource/ Aha-B-H25", 799),
                             new MockBucket("https://cnrgv.toulouse.inra.fr/library/genomic_resource/ Aha-B-H26", 1) // 2 URLS instead of 1
                         ))
@@ -58,9 +58,9 @@ class PillarControllerTest {
                 ))
             ))),
             new MockBucket("Forest", 500, new Aggregations(Arrays.asList(
-                new MockTermsAggregation(GeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME, Arrays.asList(
+                new MockTermsAggregation(RareGeneticResourceDao.DATABASE_SOURCE_AGGREGATION_NAME, Arrays.asList(
                     new MockBucket("GnpIS", 500, new Aggregations(Arrays.asList(
-                        new MockTermsAggregation(GeneticResourceDao.PORTAL_URL_AGGREGATION_NAME, Collections.emptyList()) // no URL
+                        new MockTermsAggregation(RareGeneticResourceDao.PORTAL_URL_AGGREGATION_NAME, Collections.emptyList())// no URL
                     )))
                 ))
             )))

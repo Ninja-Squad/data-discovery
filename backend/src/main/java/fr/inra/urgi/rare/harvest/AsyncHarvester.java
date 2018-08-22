@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AsyncHarvester {
 
-    private final Harvester harvester;
+    private final AbstractHarvester<?, ?> harvester;
     private final HarvestResultDao harvestResultDao;
 
-    public AsyncHarvester(Harvester harvester, HarvestResultDao harvestResultDao) {
+    public AsyncHarvester(AbstractHarvester harvester, HarvestResultDao harvestResultDao) {
         this.harvester = harvester;
         this.harvestResultDao = harvestResultDao;
     }

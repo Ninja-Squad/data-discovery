@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AsyncHarvesterTest {
 
     @Mock
-    private Harvester mockHarvester;
+    private AbstractHarvester mockHarvester;
 
     @Mock
     private HarvestResultDao mockHarvestResultDao;

@@ -1,4 +1,4 @@
-package fr.inra.urgi.rare.harvest;
+package fr.inra.urgi.rare.harvest.rare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -24,10 +24,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rare.config.Harvest;
 import fr.inra.urgi.rare.config.HarvestConfig;
 import fr.inra.urgi.rare.config.RareProperties;
-import fr.inra.urgi.rare.dao.GeneticResourceDao;
-import fr.inra.urgi.rare.domain.GeneticResource;
-import fr.inra.urgi.rare.domain.IndexedGeneticResource;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
+import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
+import fr.inra.urgi.rare.domain.rare.RareIndexedGeneticResource;
+import fr.inra.urgi.rare.harvest.HarvestResult;
 import fr.inra.urgi.rare.harvest.HarvestResult.HarvestResultBuilder;
+import fr.inra.urgi.rare.harvest.HarvestedFile;
+import fr.inra.urgi.rare.harvest.HarvestedStream;
+import fr.inra.urgi.rare.harvest.AbstractHarvester;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,26 +49,26 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * Unit tests for {@link Harvester}
+ * Unit tests for {@link AbstractHarvester}
  * @author JB Nizet
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith({MockitoExtension.class, TempDirectory.class, SpringExtension.class})
 @JsonTest
 @Import(HarvestConfig.class)
-class HarvesterTest {
+class RareHarvesterTest {
 
     @Mock
-    private GeneticResourceDao mockGeneticResourceDao;
+    private RareGeneticResourceDao mockGeneticResourceDao;
 
     @Autowired
     @Harvest
     private ObjectMapper objectMapper;
 
     @Captor
-    private ArgumentCaptor<Collection<IndexedGeneticResource>> indexedResourcesCaptor;
+    private ArgumentCaptor<Collection<RareIndexedGeneticResource>> indexedResourcesCaptor;
 
-    private Harvester harvester;
+    private RareHarvester harvester;
 
     private Path resourceDir;
 
@@ -74,12 +78,12 @@ class HarvesterTest {
         Files.createDirectory(resourceDir);
 
         for (String fileName : Arrays.asList("test1.json", "test2.json")) {
-            Files.copy(HarvesterTest.class.getResourceAsStream("resourcedir/" + fileName), resourceDir.resolve(fileName));
+            Files.copy(RareHarvesterTest.class.getResourceAsStream("resourcedir/" + fileName), resourceDir.resolve(fileName));
         }
 
         RareProperties rareProperties = new RareProperties();
         rareProperties.setResourceDir(resourceDir);
-        harvester = new Harvester(rareProperties, objectMapper, mockGeneticResourceDao);
+        harvester = new RareHarvester(rareProperties, objectMapper, mockGeneticResourceDao);
     }
 
     @Test
@@ -90,8 +94,8 @@ class HarvesterTest {
         assertThat(jsonFiles).hasSize(2);
         assertThat(jsonFiles).extracting(HarvestedStream::getFileName).containsExactly("test1.json", "test2.json");
 
-        List<GeneticResource> geneticResources =
-            objectMapper.readValue(jsonFiles.get(1).getInputStream(), new TypeReference<List<GeneticResource>>() {});
+        List<RareGeneticResource> geneticResources =
+            objectMapper.readValue(jsonFiles.get(1).getInputStream(), new TypeReference<List<RareGeneticResource>>() {});
         assertThat(geneticResources).hasSize(1);
 
         assertThat(resultBuilder.build().getGlobalErrors()).isEmpty();
@@ -152,7 +156,7 @@ class HarvesterTest {
         assertThat(file2.getErrors()).hasSize(0);
 
         verify(mockGeneticResourceDao, times(2)).saveAll(indexedResourcesCaptor.capture());
-        List<Collection<IndexedGeneticResource>> batches = indexedResourcesCaptor.getAllValues();
+        List<Collection<RareIndexedGeneticResource>> batches = indexedResourcesCaptor.getAllValues();
         assertThat(batches.get(0)).extracting(r -> r.getGeneticResource().getName()).containsExactly("Syrah", "Bermestia bianca");
         assertThat(batches.get(1)).extracting(r -> r.getGeneticResource().getName()).containsExactly("CLIB 197");
     }
@@ -206,9 +210,9 @@ class HarvesterTest {
 
     @Test
     public void shouldSplitInBatches() throws JsonProcessingException {
-        List<GeneticResource> geneticResources = new ArrayList<>();
+        List<RareGeneticResource> geneticResources = new ArrayList<>();
         for (int i = 0; i < 250; i++) {
-            geneticResources.add(GeneticResource.builder().withId("id-" + i).build());
+            geneticResources.add(RareGeneticResource.builder().withId("id-" + i).build());
         }
         byte[] jsonArray = objectMapper.writeValueAsBytes(geneticResources);
 

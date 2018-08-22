@@ -1,12 +1,12 @@
 package fr.inra.urgi.rare.search;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
-import fr.inra.urgi.rare.dao.RareAggregation;
 import fr.inra.urgi.rare.dao.SearchRefinements;
+import fr.inra.urgi.rare.dao.rare.RareAggregation;
+import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
 import fr.inra.urgi.rare.dto.AggregatedPageDTO;
 import fr.inra.urgi.rare.dto.PageDTO;
@@ -32,9 +32,9 @@ public class SearchController {
      */
     public static final int MAX_RESULTS = PageDTO.MAX_RESULTS;
 
-    private GeneticResourceDao geneticResourceDao;
+    private GeneticResourceDao<?, ?> geneticResourceDao;
 
-    public SearchController(GeneticResourceDao geneticResourceDao) {
+    public SearchController(RareGeneticResourceDao geneticResourceDao) {
         this.geneticResourceDao = geneticResourceDao;
     }
 
@@ -49,14 +49,14 @@ public class SearchController {
      * of the other parameters are the names of the agregations, and the values are one of the values for that
      * aggregation.
      *
-     * @see fr.inra.urgi.rare.dao.RareAggregation
+     * @see RareAggregation
      */
     @GetMapping
-    public AggregatedPageDTO<GeneticResource> search(@RequestParam("query") String query,
-                                                     @RequestParam("aggregate") Optional<Boolean> aggregate,
-                                                     @RequestParam("highlight") Optional<Boolean> highlight,
-                                                     @RequestParam("page") Optional<Integer> page,
-                                                     @RequestParam MultiValueMap<String, String> parameters) {
+    public AggregatedPageDTO<? extends GeneticResource> search(@RequestParam("query") String query,
+                                                               @RequestParam("aggregate") Optional<Boolean> aggregate,
+                                                               @RequestParam("highlight") Optional<Boolean> highlight,
+                                                               @RequestParam("page") Optional<Integer> page,
+                                                               @RequestParam MultiValueMap<String, String> parameters) {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(geneticResourceDao.search(query,
@@ -64,7 +64,7 @@ public class SearchController {
                                                                     highlight.orElse(false),
                                                                     createRefinementsFromParameters(parameters),
                                                                     PageRequest.of(page.orElse(0), PAGE_SIZE)),
-                                          Comparator.comparing(dto -> RareAggregation.fromName(dto.getName())));
+                                          geneticResourceDao.getAggregationComparator());
 
     }
 

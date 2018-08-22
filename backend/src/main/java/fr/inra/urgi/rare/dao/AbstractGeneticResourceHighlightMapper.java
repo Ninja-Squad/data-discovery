@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.inra.urgi.rare.domain.GeneticResource;
+import fr.inra.urgi.rare.domain.IndexedGeneticResource;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -16,32 +17,31 @@ import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 
 /**
- * A special {@link SearchResultMapper}, only usable for {@link GeneticResource}, which delegates to the
- * default mapper, but then replaces the description in the mapped genetic resources by the highlighted description
- * if it's found in the search response.
+ * A base class for highlight mappers. There is one subclass for each app (RARe, WheatIS, etc.)
  * @author JB Nizet
  */
-public class GeneticResourceHighlightMapper implements SearchResultMapper {
+public abstract class AbstractGeneticResourceHighlightMapper<R extends GeneticResource, I extends IndexedGeneticResource<R>>
+    implements SearchResultMapper {
 
     private DefaultResultMapper defaultResultMapper;
 
-    public GeneticResourceHighlightMapper(EntityMapper entityMapper) {
+    public AbstractGeneticResourceHighlightMapper(EntityMapper entityMapper) {
         this.defaultResultMapper = new DefaultResultMapper(entityMapper);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
-        if (clazz != GeneticResource.class) {
-            throw new IllegalArgumentException("The only supported class is " + GeneticResource.class);
+        if (clazz != getGeneticResourceClass()) {
+            throw new IllegalArgumentException("The only supported class is " + getGeneticResourceClass());
         }
 
-        AggregatedPage<GeneticResource> page = defaultResultMapper.mapResults(response, GeneticResource.class, pageable);
+        AggregatedPage<R> page = defaultResultMapper.mapResults(response, getGeneticResourceClass(), pageable);
 
-        List<GeneticResource> newContent = new ArrayList<>(page.getContent());
+        List<R> newContent = new ArrayList<>(page.getContent());
 
         for (int i = 0; i < page.getContent().size(); i++) {
-            GeneticResource geneticResource = page.getContent().get(i);
+            R geneticResource = page.getContent().get(i);
             SearchHit hit = response.getHits().getAt(i);
             Map<String, HighlightField> highlightFields = hit.getHighlightFields();
 
@@ -57,9 +57,7 @@ public class GeneticResourceHighlightMapper implements SearchResultMapper {
             }
 
             if (hightlightFound) {
-                GeneticResource newGeneticResource = GeneticResource.builder(geneticResource)
-                    .withDescription(newDescription)
-                    .build();
+                R newGeneticResource = clone(geneticResource, newDescription);
                 newContent.set(i, newGeneticResource);
             }
         }
@@ -70,4 +68,8 @@ public class GeneticResourceHighlightMapper implements SearchResultMapper {
                                                             page.getAggregations(),
                                                             page.getScrollId());
     }
+
+    protected abstract Class<R> getGeneticResourceClass();
+    protected abstract R clone(R original, String newDescription);
 }
+

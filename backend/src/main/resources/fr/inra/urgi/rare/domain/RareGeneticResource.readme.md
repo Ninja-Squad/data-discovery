@@ -1,4 +1,4 @@
-# Mapping of genetic resources
+# Mapping of RARe genetic resources
 
 All properties use the default analyzer except for `name`, `description` and `databaseSource`, because
 they're supposed to contain small English or Latin terms, or country names, without any stopword or punctuation.

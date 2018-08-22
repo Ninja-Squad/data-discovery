@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import fr.inra.urgi.rare.dao.RareAggregation;
+import fr.inra.urgi.rare.dao.rare.RareAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
 /**
