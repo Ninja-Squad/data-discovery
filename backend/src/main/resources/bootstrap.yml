@@ -4,3 +4,7 @@ spring:
   cloud:
     config:
       uri: ${SPRING_CONFIG_URI:http://localhost:8888}
+  profiles:
+    # This default profile is replaced at gradle build time by the app passed using -Papp=wheatis for example
+    # Leave this line exactly as it is
+    active: rare-app

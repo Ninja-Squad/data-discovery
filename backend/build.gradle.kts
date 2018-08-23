@@ -40,6 +40,22 @@ tasks {
         options.compilerArgs.add("-parameters")
     }
 
+    getByName<Copy>("processResources") {
+        val app: String by project.extra
+        inputs.property("app", app)
+
+        filesMatching("bootstrap.yml") {
+            filter {
+                if (it.trim().startsWith("active:")) {
+                    it.replace("rare", app)
+                }
+                else {
+                    it
+                }
+            }
+        }
+    }
+
     // this task is always out-of-date because it generates a properties file with the build time inside
     // so the bootJar task is also always out of date, too, since it depends on it
     // but it's better to do that than using the bootInfo() method of the springBoot closure, because that
@@ -50,7 +66,8 @@ tasks {
     }
 
     val bootJar by getting(BootJar::class) {
-        archiveName = "rare.jar"
+        val app: String by project.extra
+        archiveName = "$app.jar"
         dependsOn(":frontend:assemble")
         dependsOn(buildInfo)
 

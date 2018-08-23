@@ -1,3 +1,5 @@
+import com.moowork.gradle.node.yarn.YarnTask
+
 plugins {
   base
   id("com.moowork.node") version "1.2.0"
@@ -28,7 +30,11 @@ tasks {
     outputs.dir("node_modules")
   }
 
-  val yarn_build by getting {
+  val yarn_build by creating(YarnTask::class) {
+    val app: String by project.extra
+    inputs.property("app", app)
+
+    args = listOf("build:${app}")
     dependsOn(yarn_install)
     inputs.dir("src")
     outputs.dir("dist")
@@ -52,7 +58,7 @@ tasks {
   }
 
   val clean by getting {
-    dependsOn("cleanYarn_run_build")
+    dependsOn("cleanYarn_build")
     dependsOn("cleanYarn_run_test")
   }
 }
