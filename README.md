@@ -153,9 +153,13 @@ curl -X PUT "localhost:9200/rare-resource-physical-index" -H 'Content-Type: appl
         "rare-resource-index" : {},
         "rare-resource-harvest-index" : {}
     }
+    "settings": ...
 }
 '
 ```
+
+**NOTE**: Every time a physical index is created, the settings must be specified, the same ay as in the 
+`createIndexAndAliases.sh` script. The exact content of the settings is omitted here for brevity and readability.
 
 #### Deleting with no downtime
 
@@ -174,7 +178,9 @@ Here are curl commands illustrating the above scenario:
 ```
 # create a new physical index
 curl -X PUT "localhost:9200/rare-resource-new-physical-index" -H 'Content-Type: application/json' -d'
-{}
+{
+  "settings": ...
+}
 '
 
 # delete the `rare-resource-harvest-index` alias, and recreate it so that it refers to `rare-resource-new-physical-index`
@@ -224,7 +230,9 @@ Here are curl commands illustrating the above scenario:
 ```
 # create a new physical index
 curl -X PUT "localhost:9200/rare-resource-new-physical-index" -H 'Content-Type: application/json' -d'
-{}
+{
+  "settings": ...
+}
 '
 
 # delete the `rare-resource-harvest-index` and the `rare-resource-index` aliases, and recreate them both so that they refer to `rare-resource-new-physical-index`
@@ -264,7 +272,9 @@ Here are curl commands illustrating the above scenario:
 ```
 # create a new physical index
 curl -X PUT "localhost:9200/rare-resource-new-physical-index" -H 'Content-Type: application/json' -d'
-{}
+{
+  "settings": ...
+}
 '
 
 # delete the `rare-resource-harvest-index` alias, and recreate it so that it refers to `rare-resource-new-physical-index`

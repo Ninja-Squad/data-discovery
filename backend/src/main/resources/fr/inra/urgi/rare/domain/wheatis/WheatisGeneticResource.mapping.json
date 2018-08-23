@@ -62,7 +62,8 @@
             }
         },
         "suggestions": {
-            "type" : "completion"
+            "type" : "completion",
+            "analyzer": "custom_suggestion_analyzer"
         }
     }
 }

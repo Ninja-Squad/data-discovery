@@ -10,6 +10,7 @@ import java.util.function.BiConsumer;
 import fr.inra.urgi.rare.config.AppProfile;
 import fr.inra.urgi.rare.config.ElasticSearchConfig;
 import fr.inra.urgi.rare.dao.GeneticResourceDao;
+import fr.inra.urgi.rare.dao.GeneticResourceIndexSettings;
 import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.dao.rare.RareGeneticResourceDao;
 import fr.inra.urgi.rare.domain.GeneticResource;
@@ -62,7 +63,7 @@ class WheatisGeneticResourceDaoTest {
         ElasticsearchPersistentEntity geneticResourceEntity = elasticsearchTemplate.getPersistentEntityFor(
             WheatisGeneticResource.class);
         elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
-        elasticsearchTemplate.createIndex(PHYSICAL_INDEX);
+        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, GeneticResourceIndexSettings.createSettings());
         elasticsearchTemplate.addAlias(
             new AliasBuilder().withAliasName(indexedGeneticResourceEntity.getIndexName())
                               .withIndexName(PHYSICAL_INDEX)

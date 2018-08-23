@@ -148,7 +148,8 @@
             "type": "geo_point"
         },
         "suggestions": {
-            "type" : "completion"
+            "type" : "completion",
+            "analyzer": "custom_suggestion_analyzer"
         }
     }
 }

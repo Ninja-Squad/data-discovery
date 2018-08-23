@@ -11,6 +11,7 @@ import java.util.function.BiConsumer;
 
 import fr.inra.urgi.rare.config.AppProfile;
 import fr.inra.urgi.rare.config.ElasticSearchConfig;
+import fr.inra.urgi.rare.dao.GeneticResourceIndexSettings;
 import fr.inra.urgi.rare.dao.SearchRefinements;
 import fr.inra.urgi.rare.domain.Location;
 import fr.inra.urgi.rare.domain.rare.RareGeneticResource;
@@ -61,7 +62,7 @@ class RareGeneticResourceDaoTest {
         ElasticsearchPersistentEntity geneticResourceEntity = elasticsearchTemplate.getPersistentEntityFor(
             RareGeneticResource.class);
         elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
-        elasticsearchTemplate.createIndex(PHYSICAL_INDEX);
+        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, GeneticResourceIndexSettings.createSettings());
         elasticsearchTemplate.addAlias(
             new AliasBuilder().withAliasName(indexedGeneticResourceEntity.getIndexName())
                               .withIndexName(PHYSICAL_INDEX)
