@@ -2,7 +2,7 @@
   <div class="card-body">
 
     <!-- title -->
-    <h3 class="card-title">{{ aggregation.name | aggregationName }}</h3>
+    <h3 class="card-title" [class.text-muted]="aggregationForm.disabled">{{ aggregation.name | aggregationName }}</h3>
 
     <!-- values -->
     <form [formGroup]="aggregationForm">

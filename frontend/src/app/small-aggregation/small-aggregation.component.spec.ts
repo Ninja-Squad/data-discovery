@@ -236,5 +236,7 @@ describe('SmallAggregationComponent', () => {
 
     expect(tester.componentInstance.aggregationForm.disabled).toBe(true);
     expect(tester.firstCheckbox.nativeElement.disabled).toBe(true);
+
+    expect(tester.title.nativeElement.classList).toContain('text-muted');
   });
 });
