@@ -44,9 +44,7 @@ registerLocaleData(localeFr);
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
-    RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'disabled'
-    }),
+    RouterModule.forRoot(routes),
     ReactiveFormsModule,
     HttpClientModule,
     NgbPaginationModule,
