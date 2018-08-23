@@ -6,10 +6,14 @@ import { RareModule } from '../app/rare/rare.module';
 
 export const environment = {
   production: false,
-  links: [
-    { label: 'INRA', url: 'http://www.inra.fr/' },
-    { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
-  ],
+  title: 'RARe - Ressources Agronomiques pour la Recherche',
+  navbar: {
+    title: 'RARe',
+    links: [
+      { label: 'INRA', url: 'http://www.inra.fr/' },
+      { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+    ]
+  },
   resourceModule: RareModule,
   /**
    * Map containing the list of the aggregations and their displayed name.
@@ -21,7 +25,7 @@ export const environment = {
     domain: 'Domaine',
     material: 'Matériel',
     taxon: 'Taxon',
-    biotope: 'Biotope',
+    biotope: 'Biotope'
   }
 };
 

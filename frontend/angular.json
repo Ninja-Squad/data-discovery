@@ -19,7 +19,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
+              { "glob": "**/*", "input": "src/assets/rare", "output": "/assets" },
               "src/assets"
             ],
             "styles": [
@@ -78,7 +78,11 @@
                   "with": "src/environments/environment.wheatis.ts"
                 }
               ],
-              "baseHref": "/wheatis/"
+              "baseHref": "/wheatis/",
+              "assets": [
+                { "glob": "*", "input": "src/assets/wheatis", "output": "/assets" },
+                "src/assets"
+              ]
             },
             "wheatis-production": {
               "fileReplacements": [
@@ -96,7 +100,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "baseHref": "/wheatis/"
+              "baseHref": "/wheatis/",
+              "assets": [
+                { "glob": "*", "input": "src/assets/wheatis", "output": "/assets" },
+                "src/assets"
+              ]
             }
           }
         },
@@ -111,13 +119,13 @@
               "browserTarget": "rare-frontend:build:production"
             },
             "rare": {
-              "browserTarget": "rare-frontend:build:rare",
+              "browserTarget": "rare-frontend:build:rare"
             },
             "rare-production": {
               "browserTarget": "rare-frontend:build:rare-production"
             },
             "wheatis": {
-              "browserTarget": "rare-frontend:build:wheatis",
+              "browserTarget": "rare-frontend:build:wheatis"
             },
             "wheatis-production": {
               "browserTarget": "rare-frontend:build:wheatis-production"
@@ -142,7 +150,7 @@
             ],
             "scripts": [],
             "assets": [
-              "src/favicon.ico",
+              { "glob": "*", "input": "src/assets/rare", "output": "/assets" },
               "src/assets"
             ]
           }

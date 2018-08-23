@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { WheatisGeneticResourceComponent } from './wheatis-genetic-resource/wheatis-genetic-resource.component';
 import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
+import { WheatisGeneticResourceComponent } from './wheatis-genetic-resource/wheatis-genetic-resource.component';
+import { WheatisHeaderComponent } from './wheatis-header/wheatis-header.component';
 
 @NgModule({
   imports: [
@@ -10,10 +11,12 @@ import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
     UrgiCommonModule
   ],
   declarations: [
-    WheatisGeneticResourceComponent
+    WheatisGeneticResourceComponent,
+    WheatisHeaderComponent
   ],
   exports: [
-    WheatisGeneticResourceComponent
+    WheatisGeneticResourceComponent,
+    WheatisHeaderComponent
   ]
 })
 export class WheatisModule {}

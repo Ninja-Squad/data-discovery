@@ -36,9 +36,11 @@ To add a new application, you'll need to:
 - create a new module
 - create an interface extending `GeneticResourceModel` and representing the resource (see `RareGeneticResourceModel`)
 - create a component to display the resource (see `RareGeneticResourceComponent`)
+- create a component to display the header (see `RareHeaderComponent`)
 - create environment files for dev and production (see `environment.rare.ts` and `environment.rare.prod.ts`),
 containing the module created, the links of the navbar, the aggregation names, etc. 
 - add targets to use these files in `angular.json` (see the targets `rare` and `rare-production`)
 - add a proxy configuration for the context (see `proxy.conf.js`)
 - add scripts to serve and build the application (see `package.json`)
+- add the assets for the application (logo, band, favicon... see `src/assets/rare` and `angular.json`)
 - update the Gradle build (see `build.gradle.kts`)

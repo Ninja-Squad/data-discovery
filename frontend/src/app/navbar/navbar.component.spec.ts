@@ -23,6 +23,10 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   get firstLink() {
     return this.element('li').element('a');
   }
+
+  get title() {
+    return this.element('a');
+  }
 }
 
 describe('NavbarComponent', () => {
@@ -45,16 +49,21 @@ describe('NavbarComponent', () => {
     expect(tester.navBar.classes).not.toContain('collapse');
   });
 
-  it('should display links', () => {
+  it('should display title and links', () => {
     const tester = new NavbarComponentTester();
     const component = tester.componentInstance;
 
-    component.links = [
-      { label: 'INRA', url: 'http://www.inra.fr/' },
-      { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
-    ];
+    component.navbar = {
+      title: 'RARe',
+      links: [
+        { label: 'INRA', url: 'http://www.inra.fr/' },
+        { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+      ]
+    };
 
     tester.detectChanges();
+
+    expect(tester.title.textContent).toBe('RARe');
 
     expect(tester.links.length).toBe(2);
 

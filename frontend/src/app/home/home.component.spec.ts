@@ -11,6 +11,7 @@ import { HomeComponent } from './home.component';
 import { SearchService } from '../search.service';
 import { PillarsComponent } from '../pillars/pillars.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
+import { RareHeaderComponent } from '../rare/rare-header/rare-header.component';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -39,7 +40,7 @@ describe('HomeComponent', () => {
       NgbTypeaheadModule,
       NgbTooltipModule
     ],
-    declarations: [HomeComponent, PillarsComponent, DocumentCountComponent],
+    declarations: [HomeComponent, PillarsComponent, DocumentCountComponent, RareHeaderComponent],
     providers: [HttpClientTestingModule]
   }));
 

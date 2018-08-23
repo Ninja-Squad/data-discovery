@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class NavbarComponent {
 
   navbarCollapsed = true;
-  links = environment.links;
+  navbar = environment.navbar;
 
   toggleNavbar() {
     this.navbarCollapsed = !this.navbarCollapsed;

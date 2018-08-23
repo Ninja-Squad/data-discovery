@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { RareGeneticResourceComponent } from './rare-genetic-resource/rare-genetic-resource.component';
 import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
+import { RareGeneticResourceComponent } from './rare-genetic-resource/rare-genetic-resource.component';
+import { RareHeaderComponent } from './rare-header/rare-header.component';
 
 @NgModule({
   imports: [
@@ -10,10 +11,12 @@ import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
     UrgiCommonModule
   ],
   declarations: [
-    RareGeneticResourceComponent
+    RareGeneticResourceComponent,
+    RareHeaderComponent
   ],
   exports: [
-    RareGeneticResourceComponent
+    RareGeneticResourceComponent,
+    RareHeaderComponent
   ]
 })
 export class RareModule {}

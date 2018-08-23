@@ -6,10 +6,14 @@ import { WheatisModule } from '../app/wheatis/wheatis.module';
 
 export const environment = {
   production: false,
-  links: [
-    { label: 'INRA', url: 'http://www.inra.fr/' },
-    { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
-  ],
+  title: 'WheatIS - Wheat Information System',
+  navbar: {
+    title: 'WheatIS',
+    links: [
+      { label: 'INRA', url: 'http://www.inra.fr/' },
+      { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+    ]
+  },
   resourceModule: WheatisModule,
   /**
    * Map containing the list of the aggregations and their displayed name.

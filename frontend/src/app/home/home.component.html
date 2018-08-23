@@ -1,18 +1,8 @@
 <div class="row">
   <div class="col-md-8 col-lg-9 order-md-last">
-    <div class="d-flex align-items-start flex-column-reverse flex-xl-row pb-4 pb-md-5">
-      <h1 class="mr-xl-4">
-        RARe<br/>
-        <div class="small">
-          <strong>R</strong>essources
-          <strong>A</strong>gronomiques pour la
-          <strong>Re</strong>cherche</div>
-      </h1>
-      <div class="flex-fill">
-        <img class="img-fluid" src="assets/band.jpg" alt=""/>
-      </div>
-    </div>
-
+    <!-- the header is specific to each application -->
+    <!-- for example, if the application is RARe, the component will be a RareHeaderComponent -->
+    <rare-header></rare-header>
     <div class="pt-md-5">
       <h2 class="sr-only">Rechercher des ressources</h2>
 
@@ -36,7 +26,7 @@
     <h2 class="sr-only">Piliers</h2>
     <div class="d-flex justify-content-center">
       <div>
-        <img src="assets/logo.png" alt="Logo AgroBRC" class="mb-2 mb-md-4"/>
+        <img src="assets/logo.png" alt="Logo" class="mb-2 mb-md-4"/>
         <rare-pillars></rare-pillars>
       </div>
     </div>

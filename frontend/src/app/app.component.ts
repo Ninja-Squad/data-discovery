@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'rare-root',
@@ -6,5 +9,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'rare';
+
+  constructor(title: Title) {
+    title.setTitle(environment.title);
+  }
 }
