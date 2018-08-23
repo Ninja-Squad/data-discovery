@@ -58,10 +58,8 @@ export class SearchComponent implements OnInit {
         // extract parameters
         switchMap(params => {
           const requestedQuery = params.get('query');
-          // if it's a new query, then we also ask for the aggregations
-          const aggregate = requestedQuery !== this.query;
-          if (aggregate) {
-            // and we reset the results and criteria
+          if (this.query !== requestedQuery) {
+            // we reset the results and criteria
             this.results = undefined;
             this.aggregationCriteria = [];
           }
@@ -74,7 +72,7 @@ export class SearchComponent implements OnInit {
           // we consider all parameters as potential aggregations, except `query` and `page`
           this.aggregationCriteria = this.extractCriteriaFromParameters(params);
           // launch the search
-          return this.searchService.search(this.query, aggregate, this.aggregationCriteria, page)
+          return this.searchService.search(this.query, true, this.aggregationCriteria, page)
           // handle a potential error, by returning no result
           // but allow to trigger a new search
             .pipe(

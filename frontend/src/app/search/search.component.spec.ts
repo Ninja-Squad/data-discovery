@@ -122,8 +122,8 @@ describe('SearchComponent', () => {
 
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
-    // the search service called with page 3, no criteria and not asked for aggregations as the query is the same
-    expect(searchService.search).toHaveBeenCalledWith(query, false, [], 3);
+    // the search service called with page 3, no criteria and and asked for aggregations
+    expect(searchService.search).toHaveBeenCalledWith(query, true, [], 3);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
@@ -154,10 +154,10 @@ describe('SearchComponent', () => {
 
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
-    // the search service called with page 1, the criteria and not asked for aggregations as the query is the same
+    // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
     const domainCriteria = { name: 'domain', values: ['Plant'] };
-    expect(searchService.search).toHaveBeenCalledWith(query, false, [domainCriteria, cooCriteria], 3);
+    expect(searchService.search).toHaveBeenCalledWith(query, true, [domainCriteria, cooCriteria], 3);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);

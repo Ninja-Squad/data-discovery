@@ -747,7 +747,7 @@ class RareGeneticResourceDaoTest {
         }
 
         @Test
-        void shouldApplyRefinementsAfterAggregating() {
+        void shouldRestrainAggregationsBasedOnOtherRefinements() {
             SearchRefinements refinements =
                 SearchRefinements.builder()
                                  .withTerm(RareAggregation.DOMAIN, Arrays.asList("Plantae"))
@@ -758,21 +758,16 @@ class RareGeneticResourceDaoTest {
 
             assertThat(result.getContent()).extracting(RareGeneticResource::getId).containsOnly("r1", "r3");
 
-            // aggregations are computed based on the result of the full-text-query, not based on the result
-            // of the refinements
             Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
             assertThat(domain.getBuckets()).hasSize(2);
             assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
             assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L, 1L);
 
-            result = geneticResourceDao.search("Human", true, false, refinements, firstPage);
-
-            assertThat(result.getContent()).extracting(RareGeneticResource::getId).containsOnly("r1");
-
-            domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
-            assertThat(domain.getBuckets()).hasSize(1);
-            assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae");
-            assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            // NULL is not in the aggregation because r2 is not in the result due to the refinement on Plantae
+            Terms countryOfOrigin = result.getAggregations().get(RareAggregation.COUNTRY_OF_ORIGIN.getName());
+            assertThat(countryOfOrigin.getBuckets()).hasSize(1);
+            assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("France");
+            assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L);
         }
     }
 

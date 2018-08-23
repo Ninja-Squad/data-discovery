@@ -24,6 +24,9 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.filter.Filter;
+import org.elasticsearch.search.aggregations.bucket.filter.FilterAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -34,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -99,18 +103,65 @@ public abstract class AbstractGeneticResourceDaoImpl<R extends GeneticResource, 
             .withPageable(page);
 
         if (aggregate) {
-            getAppAggregations().forEach(appAggregation ->
-                builder.addAggregation(AggregationBuilders.terms(appAggregation.getName())
-                                                          .field(appAggregation.getField())
-                                                          .missing(GeneticResource.NULL_VALUE)
-                                                          .size(appAggregation.getType().getMaxBuckets())));
+            getAppAggregations().forEach(appAggregation -> {
+                FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements);
+                builder.addAggregation(filterAggregation);
+            });
         }
 
         if (highlight) {
             builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0));
         }
 
-        return elasticsearchTemplate.queryForPage(builder.build(), getGeneticResourceClass(), geneticResourceHighlightMapper);
+        AggregatedPage<R> result = elasticsearchTemplate.queryForPage(builder.build(),
+                                                                      getGeneticResourceClass(),
+                                                                      geneticResourceHighlightMapper);
+
+        if (aggregate) {
+            // the page contains filter aggregations, each containing a sub terms aggregation.
+            // we actually want the terms aggregation directly in the page
+            result = extractTermsAggregations(result);
+        }
+        return result;
+    }
+
+    private FilterAggregationBuilder createFilterAggregation(AppAggregation appAggregation,
+                                                             SearchRefinements searchRefinements) {
+        return AggregationBuilders.filter(
+            appAggregation.getName(),
+            createQueryForAllRefinementsExcept(searchRefinements, appAggregation)
+        ).subAggregation(
+            AggregationBuilders.terms(appAggregation.getName())
+                               .field(appAggregation.getField())
+                               .missing(GeneticResource.NULL_VALUE)
+                               .size(appAggregation.getType().getMaxBuckets()));
+    }
+
+    private QueryBuilder createQueryForAllRefinementsExcept(SearchRefinements refinements,
+                                                            AppAggregation appAggregation) {
+        BoolQueryBuilder refinementQuery = boolQuery();
+        for (AppAggregation term : refinements.getTerms()) {
+            if (!term.equals(appAggregation)) {
+                refinementQuery.must(createRefinementQuery(refinements, term));
+            }
+        }
+        return refinementQuery;
+    }
+
+    private AggregatedPage<R> extractTermsAggregations(AggregatedPage<R> page) {
+        List<Terms> termsAggregations =
+            page.getAggregations()
+                .asList()
+                .stream()
+                .map(aggregation -> (Terms) ((Filter) aggregation).getAggregations().get(aggregation.getName()))
+                .collect(Collectors.toList());
+
+        return new AggregatedPageImpl<>(page.getContent(),
+                                        page.getPageable(),
+                                        page.getTotalElements(),
+                                        new Aggregations(termsAggregations),
+                                        page.getScrollId(),
+                                        page.getMaxScore());
     }
 
     /**
