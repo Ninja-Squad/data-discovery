@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASEDIR=$(dirname "$0")
-DATADIR="$BASEDIR/../data"
+DATADIR="$BASEDIR/../data/rare"
 
 mkdir -p /tmp/rare/resources
 cp $DATADIR/*.json.gz /tmp/rare/resources

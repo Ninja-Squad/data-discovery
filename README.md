@@ -84,6 +84,13 @@ The directory, by default is `/tmp/rare/resources`. But it's externalized into t
 `rare.resource-dir`, so it can be easily changed by modifying the value of this property (using an 
 environment variable for example).
 
+You can run the script:
+
+    ./scripts/harvestRare.sh
+    
+to trigger a harvest of the resources stored in the Git LFS directory `data/rare`.
+You can of course do the same for WheatIS with `./scripts/harvestWheatis.sh`.
+    
 The files must have the extension `.json`, and must be stored in that directory (not in a sub-directory).
 Once the files are ready and the server is started, the harvest is triggered by sending a POST request
 to the endpoint `/api/harvests`, as described in the API documentation that you can generate using the 
