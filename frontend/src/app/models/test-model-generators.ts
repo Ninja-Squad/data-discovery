@@ -81,7 +81,7 @@ export function toWheatisGeneticResource(name: string): WheatisGeneticResourceMo
     description: 'A description of the genetic geneticResource',
     databaseName: 'BRC4Env',
     node: 'Node',
-    species: [`${name} species`],
+    species: [`${name} species`, `${name} species2`],
     entryType: 'Specimen'
   };
 }

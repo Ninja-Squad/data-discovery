@@ -6,7 +6,10 @@
     <small> - {{ geneticResource.databaseName }}</small>
   </h3>
   <div>
-    <span class="type">{{ geneticResource.entryType }}</span>
+    <span class="type mr-4">{{ geneticResource.entryType }}</span>
+    <span class="species mr-4">
+      <span *ngFor="let s of geneticResource.species" class="badge badge-secondary mr-2">{{ s }}</span>
+    </span>
   </div>
   <div>
     <rare-truncatable-description [description]="geneticResource.description"></rare-truncatable-description>
