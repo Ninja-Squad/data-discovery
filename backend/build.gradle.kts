@@ -41,13 +41,12 @@ tasks {
     }
 
     getByName<Copy>("processResources") {
-        val app: String by project.extra
-        inputs.property("app", app)
+        inputs.property("app", project.app)
 
         filesMatching("bootstrap.yml") {
             filter {
                 if (it.trim().startsWith("active:")) {
-                    it.replace("rare", app)
+                    it.replace("rare", project.app)
                 }
                 else {
                     it
@@ -66,8 +65,7 @@ tasks {
     }
 
     val bootJar by getting(BootJar::class) {
-        val app: String by project.extra
-        archiveName = "$app.jar"
+        archiveName = "${project.app}.jar"
         dependsOn(":frontend:assemble")
         dependsOn(buildInfo)
 

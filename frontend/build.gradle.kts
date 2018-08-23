@@ -31,10 +31,9 @@ tasks {
   }
 
   val yarn_build by creating(YarnTask::class) {
-    val app: String by project.extra
-    inputs.property("app", app)
+    inputs.property("app", project.app)
 
-    args = listOf("build:${app}")
+    args = listOf("build:${project.app}")
     dependsOn(yarn_install)
     inputs.dir("src")
     outputs.dir("dist")
