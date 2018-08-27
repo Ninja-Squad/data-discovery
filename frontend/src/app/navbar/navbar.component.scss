@@ -1,11 +1,13 @@
-@import 'src/variables.scss';
+@import 'theme';
 
-.navbar-dark .navbar-nav .nav-link, .navbar-dark .navbar-brand {
-  color: $nav-item-color;
-  height: $navbar-height;
+.navbar {
+  background-color: $theme-navbar-bg-color;
 }
-
-.navbar-nav .nav-item:hover .nav-link, .navbar-brand:hover {
-  color: $nav-item-hover-color;
-  background-color: $bg-hover;
+.navbar .navbar-nav .nav-link, .navbar .navbar-brand {
+  color: $theme-navbar-color;
+  height: $theme-navbar-height;
+  &:hover {
+    color: $theme-navbar-hover-color;
+    background-color: $theme-navbar-hover-bg-color;
+  }
 }

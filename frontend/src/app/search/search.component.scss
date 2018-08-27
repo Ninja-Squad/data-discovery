@@ -1,6 +1,4 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import "theme";
 
 @include media-breakpoint-down(sm) {
   .filters {
@@ -8,3 +6,4 @@
     overflow-y: hidden;
   }
 }
+

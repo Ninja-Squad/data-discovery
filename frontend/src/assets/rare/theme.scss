@@ -1,22 +1,34 @@
+// non-public variables used in this theme only
+$_theme-black: #222222;
+$_theme-red: #C44859;
+
+$component-active-bg: $_theme-red;
+
+// override default link colors
+$link-color: #a43544;
+$link-hover-color: $_theme-black;
+
+// override default shadows behavior
+$enable-shadows: true;
+
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
-// override default link colors
-$link-color: #a43544;
-$link-hover-color: #222222;
+// public custom variables used in this theme, and in component styles
 
-// custom background
-$bg: #222222;
-// custom background on hover
-$bg-hover: #C44859;
 // custom button
-$btn-color: white;
-$btn-bg-color: $bg;
-$btn-border-color: $bg;
+$theme-btn-color: $white;
+$theme-btn-bg-color: $_theme-black;
+$theme-btn-border-color: $_theme-black;
+$theme-btn-hover-color: $white;
+$theme-btn-hover-bg-color: $_theme-red;
+$theme-btn-hover-border-color: $_theme-red;
 
-// custom variables for the navbar theme
-// navbar height, entry color and color on hover
-$navbar-height: 4rem;
-$nav-item-color: white;
-$nav-item-hover-color: white;
+// custom navbar
+$theme-navbar-height: 4rem;
+$theme-navbar-color: $white;
+$theme-navbar-bg-color: $_theme-black;
+$theme-navbar-hover-color: $white;
+$theme-navbar-hover-bg-color: $_theme-red;
+

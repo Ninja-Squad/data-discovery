@@ -1,7 +1,7 @@
 $fa-font-path: '~font-awesome/fonts';
 
 @import '~font-awesome/scss/font-awesome';
-@import 'variables';
+@import 'theme';
 @import 'custom-bootstrap';
 
 .highlight em {
@@ -15,19 +15,13 @@ $fa-font-path: '~font-awesome/fonts';
   }
 }
 
-// background color of navbar
-.bg-black {
-  background-color: $bg;
-}
-
-// button
 .btn-outline-secondary {
-  color: $btn-color;
-  background-color: $btn-bg-color;
-  border-color: $btn-border-color;
-}
-
-.btn-outline-secondary:hover {
-  background-color: $bg-hover;
-  border-color: $bg-hover;
+  color: $theme-btn-color;
+  background-color: $theme-btn-bg-color;
+  border-color: $theme-btn-border-color;
+  &:hover {
+    color: $theme-btn-hover-color;
+    background-color: $theme-btn-hover-bg-color;
+    border-color: $theme-btn-hover-border-color;
+  }
 }
