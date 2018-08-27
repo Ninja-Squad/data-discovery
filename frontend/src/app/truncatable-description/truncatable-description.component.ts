@@ -22,7 +22,7 @@ export class TruncatableDescriptionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.truncatedDescription = this.highlightService.truncate(this.description, 256);
+    this.truncatedDescription = this.highlightService.truncate(this.description, 256, 100);
   }
 
 }
