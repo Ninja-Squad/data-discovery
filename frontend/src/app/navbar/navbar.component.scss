@@ -1,0 +1,11 @@
+@import 'src/variables.scss';
+
+.navbar-dark .navbar-nav .nav-link, .navbar-dark .navbar-brand {
+  color: $nav-item-color;
+  height: $navbar-height;
+}
+
+.navbar-nav .nav-item:hover .nav-link, .navbar-brand:hover {
+  color: $nav-item-hover-color;
+  background-color: $bg-hover;
+}

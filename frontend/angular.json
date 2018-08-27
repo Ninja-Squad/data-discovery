@@ -22,6 +22,11 @@
               { "glob": "**/*", "input": "src/assets/rare", "output": "/assets" },
               "src/assets"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets/rare/"
+              ]
+            },
             "styles": [
               "src/styles.scss"
             ],
@@ -79,6 +84,11 @@
                 }
               ],
               "baseHref": "/wheatis/",
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/assets/wheatis/"
+                ]
+              },
               "assets": [
                 { "glob": "*", "input": "src/assets/wheatis", "output": "/assets" },
                 "src/assets"
@@ -101,6 +111,11 @@
               "vendorChunk": false,
               "buildOptimizer": true,
               "baseHref": "/wheatis/",
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/assets/wheatis/"
+                ]
+              },
               "assets": [
                 { "glob": "*", "input": "src/assets/wheatis", "output": "/assets" },
                 "src/assets"
@@ -145,6 +160,11 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets/rare/"
+              ]
+            },
             "styles": [
               "src/styles.scss"
             ],

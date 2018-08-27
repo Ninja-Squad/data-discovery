@@ -14,3 +14,20 @@ $fa-font-path: '~font-awesome/fonts';
     color: $white !important;
   }
 }
+
+// background color of navbar
+.bg-black {
+  background-color: $bg;
+}
+
+// button
+.btn-outline-secondary {
+  color: $btn-color;
+  background-color: $btn-bg-color;
+  border-color: $btn-border-color;
+}
+
+.btn-outline-secondary:hover {
+  background-color: $bg-hover;
+  border-color: $bg-hover;
+}

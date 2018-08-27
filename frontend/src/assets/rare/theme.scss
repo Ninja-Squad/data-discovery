@@ -1,0 +1,22 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+// override default link colors
+$link-color: #a43544;
+$link-hover-color: #222222;
+
+// custom background
+$bg: #222222;
+// custom background on hover
+$bg-hover: #C44859;
+// custom button
+$btn-color: white;
+$btn-bg-color: $bg;
+$btn-border-color: $bg;
+
+// custom variables for the navbar theme
+// navbar height, entry color and color on hover
+$navbar-height: 4rem;
+$nav-item-color: white;
+$nav-item-hover-color: white;
