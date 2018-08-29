@@ -49,8 +49,8 @@ deploy-to-vm:
  script:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-   - "scp ./backend/build/libs/rare.jar root@10.0.0.132:/tmp/ "
-   - "ssh root@10.0.0.132 'java -jar /tmp/rare.jar &'"
+   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@10.0.0.132:/tmp/ "
+   - "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'java -jar /tmp/rare.jar &'"
    - "sleep 10"
    - "curl -XDELETE 10.0.0.132:9200/*"
    - "./scripts/createIndexAndAliases.sh 10.0.0.132"
