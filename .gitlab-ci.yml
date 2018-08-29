@@ -42,6 +42,7 @@ test:
    policy: pull
    paths:
      - build
+     - backend/build/libs/*.jar
      - .gradle
 
 deploy-to-vm:
@@ -55,5 +56,5 @@ deploy-to-vm:
    - "curl -XDELETE 10.0.0.132:9200/*"
    - "./scripts/createIndexAndAliases.sh 10.0.0.132"
    - "./scripts/harvestRare.sh 10.0.0.132"
-   - "echo Deploy and index done. Application should be available at: http://10.0.0.132:8080/rare <a href='http://10.0.0.132:8080/rare' >RARe app</a>."
+   - "echo \"Deploy and index done. Application should be available at: http://10.0.0.132:8080/rare <a href='http://10.0.0.132:8080/rare' >RARe app</a>.\""
 
