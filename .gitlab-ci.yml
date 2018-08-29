@@ -3,6 +3,10 @@
 # Node, NPM and Yarn are installed by Gradle
 image: ninjasquad/docker-rare
 
+stages:
+ - test
+ - deploy
+
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -39,3 +43,15 @@ test:
    paths:
      - build
      - .gradle
+
+deploy-to-vm:
+ stage: deploy
+ script:
+   - "scp ./backend/build/libs/rare.jar root@10.0.0.132:/tmp/ "
+   - "ssh root@10.0.0.132 'java -jar /tmp/rare.jar &'"
+   - "sleep 10"
+   - "curl -XDELETE 10.0.0.132:9200/*"
+   - "./scripts/createIndexAndAliases.sh 10.0.0.132"
+   - "./scripts/harvestRare.sh 10.0.0.132"
+   - "echo Deploy and index done. Application should be available at: http://10.0.0.132:8080/rare <a href='http://10.0.0.132:8080/rare' >RARe app</a>."
+
