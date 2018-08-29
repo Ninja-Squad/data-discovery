@@ -65,7 +65,7 @@ deploy-to-vm:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
    - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@10.0.0.132:/opt/rare/ "
-   - "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'service rare restart"
+   - "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'service rare restart'"
    #- "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'java -jar /tmp/rare.jar &'"
    - "sleep 10"
    - apt update && apt install -y curl
