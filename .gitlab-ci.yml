@@ -68,7 +68,7 @@ deploy-to-vm:
    - "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'service rare restart'"
    #- "sleep 10"
    - apt-get update && apt-get install -y curl
-   - "curl -XDELETE 10.0.0.132:9200/*"
+   - "curl -s -XDELETE 10.0.0.132:9200/* ; echo"
    - "./scripts/createIndexAndAliases.sh 10.0.0.132"
    - "./scripts/harvestRare.sh 10.0.0.132"
    - "echo \"Deploy and index done. Application should be available at: http://10.0.0.132:8080/rare <a href='http://10.0.0.132:8080/rare' >RARe app</a>.\""
