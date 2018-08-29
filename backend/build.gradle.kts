@@ -75,6 +75,7 @@ tasks {
         into("BOOT-INF/classes/META-INF") {
             from(buildInfo.destinationDir)
         }
+        launchScript()
     }
 
     val test by getting(Test::class) {
