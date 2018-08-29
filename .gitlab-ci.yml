@@ -38,6 +38,10 @@ test:
      command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
  script: 
    - ./gradlew build
+ artifacts:
+   paths:
+     - backend/build/libs/*.jar
+   expire_in: 5 mins
  cache:
    key: "$CI_COMMIT_REF_NAME"
    policy: pull
@@ -48,13 +52,15 @@ test:
 
 deploy-to-vm:
  stage: deploy
- cache:
-   key: "$CI_COMMIT_REF_NAME"
-   policy: pull
-   paths:
-     - build
-     - backend/build/libs/*.jar
-     - .gradle
+# dependencies: 
+#   - test
+# cache:
+#   key: "$CI_COMMIT_REF_NAME"
+#   policy: pull
+#   paths:
+#     - build
+#     - backend/build/libs/*.jar
+#     - .gradle
  script:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
