@@ -36,7 +36,17 @@ test:
      # cluster.name=es-rare
      # the cluster name used in tests
      command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
- script: ./gradlew build
+ script: 
+   - ./gradlew build
+   - eval $(ssh-agent -s)
+   - ssh-add <(echo "$SSH_PRIVATE_KEY")
+   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@10.0.0.132:/tmp/ "
+   - "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'java -jar /tmp/rare.jar &'"
+   - "sleep 10"
+   - "curl -XDELETE 10.0.0.132:9200/*"
+   - "./scripts/createIndexAndAliases.sh 10.0.0.132"
+   - "./scripts/harvestRare.sh 10.0.0.132"
+   - "echo \"Deploy and index done. Application should be available at: http://10.0.0.132:8080/rare <a href='http://10.0.0.132:8080/rare' >RARe app</a>.\""
  cache:
    key: "$CI_COMMIT_REF_NAME"
    policy: pull
@@ -47,6 +57,13 @@ test:
 
 deploy-to-vm:
  stage: deploy
+ cache:
+   key: "$CI_COMMIT_REF_NAME"
+   policy: pull
+   paths:
+     - build
+     - backend/build/libs/*.jar
+     - .gradle
  script:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
