@@ -47,6 +47,7 @@ test:
 deploy-to-vm:
  stage: deploy
  script:
+   - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
    - "scp ./backend/build/libs/rare.jar root@10.0.0.132:/tmp/ "
    - "ssh root@10.0.0.132 'java -jar /tmp/rare.jar &'"
