@@ -1,3 +1,4 @@
+---
 stages:
  - test
  - build
@@ -7,7 +8,7 @@ stages:
 # It contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
 image: ninjasquad/docker-rare
- 
+
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -22,111 +23,124 @@ test-backend:
  stage: test
  # the backend tests need an elasticsearch instance
  services:
-   # even if that would be ideal
-   # we can't just launch the service with just elasticsearch:6.3.1
-   # because we need to pass some variables, but they are passed to _all_ containers
-   # so they fail the start of other docker images like ninjasquad/docker-rare
-   # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
-     alias: elasticsearch
-     # discovery.type=single-node
-     # single-node is necessary to start in development mode
-     # so there will be no bootstrap checks that would fail on CI
-     # especially the error regarding
-     # `max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]`
-     # cluster.name=es-rare
-     # the cluster name used in tests
-     command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
- script: 
-   - ./gradlew :backend:test
+  # even if that would be ideal
+  # we can't just launch the service with just elasticsearch:6.3.1
+  # because we need to pass some variables, but they are passed to _all_
+  # containers so they fail the start of other docker images like
+  # ninjasquad/docker-rare the only solution is to override the entrypoint of
+  # the service and pass the arguments manually
+  - name: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
+    alias: elasticsearch
+    # discovery.type=single-node
+    # single-node is necessary to start in development mode
+    # so there will be no bootstrap checks that would fail on CI
+    # especially the error regarding
+    # `max virtual memory areas vm.max_map_count [65530] is too low, increase to
+    # at least [262144]`
+    # cluster.name=es-rare the cluster name used in tests
+    command: [
+     "bin/elasticsearch",
+     "-Ediscovery.type=single-node",
+     "-Ecluster.name=es-rare"
+    ]
+ script:
+  - ./gradlew :backend:test
  cache:
-   key: "${CI_COMMIT_REF_NAME}"
-   # policy: pull
-   paths:
-     - build
-     - buildSrc
-     - .gradle
+  key: "${CI_COMMIT_REF_NAME}"
+  # policy: pull
+  paths:
+   - build
+   - buildSrc
+   - .gradle
 
 test-frontend:
  stage: test
- script: 
-   - ./gradlew :frontend:test
+ script:
+  - ./gradlew :frontend:test
  cache:
-   key: "${CI_COMMIT_REF_NAME}"
-   # policy: pull
-   paths:
-     - build
-     - buildSrc
-     - .gradle
-     - frontend/.gradle/
-     - frontend/node_modules/
+  key: "${CI_COMMIT_REF_NAME}"
+  # policy: pull
+  paths:
+   - build
+   - buildSrc
+   - .gradle
+   - frontend/.gradle/
+   - frontend/node_modules/
 
-.build-app: &build_app # Hidden job which serves as a template for 2 following jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
-  stage: build
-  script: 
-    # Tests already executed at previous stage, skipping them now
-    - ./gradlew assemble -x test -Papp=${APP_NAME}
-  artifacts:
-    paths:
-      - backend/build/libs/${APP_NAME}.jar
-    expire_in: 5 mins # atm, only keep for deploy stage
-  cache:
-    key: "${CI_COMMIT_REF_NAME}"
-    policy: pull
-    paths:
-      - build
-      - buildSrc
-      - .gradle
-      - frontend/.gradle/
-      - frontend/node_modules/
+.build-app: &build_app
+ # Hidden job which serves as a template for 2 following
+ # jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
+ stage: build
+ script:
+  # Tests already executed at previous stage, skipping them now
+  - ./gradlew assemble -x test -Papp=${APP_NAME}
+ artifacts:
+  paths:
+   - backend/build/libs/${APP_NAME}.jar
+  expire_in: 5 mins  # atm, only keep for deploy stage
+ cache:
+  key: "${CI_COMMIT_REF_NAME}"
+  policy: pull
+  paths:
+   - build
+   - buildSrc
+   - .gradle
+   - frontend/.gradle/
+   - frontend/node_modules/
 
 build-rare:
-  variables:
-    APP_NAME: ${RARE_APP_NAME}
-  <<: *build_app           # Merge the contents of the 'build_app' alias
+ variables:
+  APP_NAME: ${RARE_APP_NAME}
+ <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-wheatis:
-  variables:
-    APP_NAME: ${WHEATIS_APP_NAME}
-  <<: *build_app           # Merge the contents of the 'build_app' alias
+ variables:
+  APP_NAME: ${WHEATIS_APP_NAME}
+ <<: *build_app           # Merge the contents of the 'build_app' alias
 
-.deploy-to-vm: &deploy_to_vm # Hidden job which serves as template for 2 executed jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
+.deploy-to-vm: &deploy_to_vm
+ # Hidden job which serves as template for 2 executed jobs below.
+ # See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: deploy
- before_script: 
-   # SSH initialization
-   - eval $(ssh-agent -s)
-   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
-   - ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'echo "Successfully connected on $(hostname)"'
-   # Installing missing dependencies
-   - "apt-get update -qq && apt-get install -qy curl"
+ before_script:
+  # SSH initialization
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "${SSH_PRIVATE_KEY}")
+  - ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'echo "Successfully connected on $(hostname)"'
+  # Installing missing dependencies
+  - "apt-get update -qq && apt-get install -qy curl"
  script:
-   # Copy jar and data (cleaning them before) to the server
-   - "scp ./backend/build/libs/${APP_NAME}.jar root@${BETA_SERVER_IP}:/opt/${APP_NAME}/"
-   - "ssh root@${BETA_SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
-   - "scp ./data/${APP_NAME}/*gz root@${BETA_SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
-   - "ssh root@${BETA_SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
-   # Restarting service with the updated jar and the according Spring profiles enabled
-   # below label should be remove before merge!
-   - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
-   - "sleep 10"
-   # Deleting old indexes and data before reindexing from scratch
-   # Should better handle those index switches by using the strategy proposed in the README
-   - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
-   # - "while true ; do curl -s ${BETA_SERVER_IP}:8080/${APP_NAME}/actuator/health" # should find a better way to wait for embeded tomcat startup
-   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
-   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
-   - eval $(ssh-agent -k)
+  # Copy jar and data (cleaning them before) to the server
+  - "scp ./backend/build/libs/${APP_NAME}.jar root@${BETA_SERVER_IP}:/opt/${APP_NAME}/"
+  - "ssh root@${BETA_SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
+  - "scp ./data/${APP_NAME}/*gz root@${BETA_SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
+  - "ssh root@${BETA_SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
+  # Restarting service with the updated jar and the according Spring profiles enabled
+  # below label should be remove before merge!
+  - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
+  - "sleep 10"
+  # Deleting old indexes and data before reindexing from scratch
+  # Should better handle those index switches by using the strategy proposed
+  # in the README file
+  - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
+  # - "while true ; do curl -s ${BETA_SERVER_IP}:8080/${APP_NAME}/actuator/health" 
+  # should find a better way to wait for embeded tomcat startup
+  - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
+  - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
+  - eval $(ssh-agent -k)
  after_script: 
-   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME} \""
- environment: # take care that some variables cannot be expanded according to where they are defined.
-              # Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
-   name: ${ENV}-${APP_NAME}
-   # DO NOT specify environment's url here if it is already defined in the Environments
-   # settings, it would cause the build not being visible in the Deployments view 
-   # because of a known bug: https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
+  - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME} \""
+ environment:
+  # take care that some variables cannot be expanded according to where they are
+  # defined. Info:
+  # https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
+  name: ${ENV}-${APP_NAME}
+  # DO NOT specify environment's url here if it is already defined in the
+  # Environments settings, it would cause the build not being visible in the
+  # Deployments view because of a known bug:
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
 
 deploy-rare-to-beta-vm:
- # stage: deploy
  variables:
   ENV: beta
   APP_NAME: rare
@@ -134,7 +148,6 @@ deploy-rare-to-beta-vm:
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
 
 deploy-wheatis-to-beta-vm:
- # stage: deploy
  variables:
   ENV: beta
   APP_NAME: wheatis
