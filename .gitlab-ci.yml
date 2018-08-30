@@ -13,7 +13,10 @@ cache:
  # policy: pull
  paths:
    - build
+   - buildSrc
    - .gradle
+   - frontend/.gradle/
+   - frontend/node_modules/
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
