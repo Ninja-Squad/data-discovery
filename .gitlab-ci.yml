@@ -102,6 +102,7 @@ build-wheatis:
  # Hidden job which serves as template for 2 executed jobs below.
  # See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: deploy
+ retry: 2
  before_script:
   # SSH initialization
   - eval $(ssh-agent -s)
