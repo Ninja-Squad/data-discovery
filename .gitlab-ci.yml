@@ -108,6 +108,7 @@ build-wheatis:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
   - ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'echo "Successfully connected on $(hostname)"'
+  - ssh root@${BETA_SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
   # Installing missing dependencies
   - "apt-get update -qq && apt-get install -qy curl"
  script:
@@ -125,7 +126,6 @@ build-wheatis:
   # Should better handle those index switches by using the strategy proposed
   # in the README file
   - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
-  # should find a better way to wait for embeded tomcat startup
   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
   - eval $(ssh-agent -k)
@@ -154,3 +154,6 @@ deploy-wheatis-to-beta-vm:
   APP_NAME: wheatis
   APP_PORT: ${BETA_WHEATIS_PORT}
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
+
+# Should find a way to authorize such pipeline once at a time in order to avoid
+# multiple restart of services, elasticsearch cluster or reindexing
