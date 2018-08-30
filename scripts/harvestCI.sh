@@ -18,4 +18,4 @@ INDEX_DATA_DIR="/tmp/$APP_NAME-$ENV/resources"
 echo "Creating directory: $INDEX_DATA_DIR" && mkdir -p $INDEX_DATA_DIR
 cp $DATADIR/*.json.gz $INDEX_DATA_DIR && \
 gzip -d -f $INDEX_DATA_DIR/*.json.gz && \
-curl -f -i -X POST -u rare:f01a7031fc17 http://${APP_HOST}:8080/$APP_NAME/api/harvests
+curl -f -i -X POST -u rare:f01a7031fc17 http://${APP_HOST}:$APP_PORT/$APP_NAME/api/harvests
