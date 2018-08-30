@@ -72,7 +72,7 @@ deploy-to-vm-beta:
    # copying data files for later indexing
    - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'rm -r /tmp/rare/resources ; mkdir -p /tmp/rare/resources'"
    - "scp -o StrictHostKeyChecking=no ./data/rare/*gz root@${BETA_SERVER}:/tmp/rare/resources/"
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'gunzip /tmp/rare/resources/*.gz"
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'gunzip -rv /tmp/rare/resources'"
    # below label should be remove before merge!
    - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'service rare restart --spring.profiles.active=beta,rare-app --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
    - "sleep 10"
