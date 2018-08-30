@@ -4,16 +4,18 @@
 image: ninjasquad/docker-rare
  
 stages:
+ - init
  - test
  - build
  - deploy
 
 cache:
  key: "$CI_COMMIT_REF_NAME"
- policy: pull
+ # policy: pull
  paths:
    - build
    - .gradle
+
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -24,6 +26,10 @@ variables:
 
 before_script:
  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+init:
+  stage: init
+  script: echo "Starting data-discovery pipeline.
 
 test-backend:
  stage: test
