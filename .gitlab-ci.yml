@@ -87,9 +87,9 @@ build:
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
    - "scp -o StrictHostKeyChecking=no ./backend/build/libs/$APP_NAME.jar root@${BETA_SERVER_IP}:/opt/$APP_NAME/"
    # copying data files for later indexing
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'rm -r /tmp/$APP_NAME/resources ; mkdir -p /tmp/$APP_NAME/resources'"
-   - "scp -o StrictHostKeyChecking=no ./data/$APP_NAME/*gz root@${BETA_SERVER_IP}:/tmp/$APP_NAME/resources/"
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} \"gunzip -rv /tmp/$APP_NAME/resources\""
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} \"rm -rf /tmp/$APP_NAME-$ENV/resources ; mkdir -p /tmp/$APP_NAME-$ENV/resources\""
+   - "scp -o StrictHostKeyChecking=no ./data/$APP_NAME/*gz root@${BETA_SERVER_IP}:/tmp/$APP_NAME-$ENV/resources/"
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} \"gunzip -rv /tmp/$APP_NAME-$ENV/resources\""
    # below label should be remove before merge!
    - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} \"service $APP_NAME restart --spring.profiles.active=$ENV,$APP_NAME-app --spring.cloud.config.label='chore(_)test-custom-config'\""
    - "sleep 10"
