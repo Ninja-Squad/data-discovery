@@ -86,11 +86,11 @@ build-rare:
     APP_NAME: $RARE_APP_NAME
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
-build-wheatis:
-  stage: build
-  variables:
-    APP_NAME: $WHEATIS_APP_NAME
-  <<: *build_app           # Merge the contents of the 'build_app' alias
+# build-wheatis:
+#   stage: build
+#   variables:
+#     APP_NAME: $WHEATIS_APP_NAME
+#   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 .deploy-to-vm: &deploy_to_vm # hidedn job which serves as template for 2 executed jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: deploy
@@ -124,13 +124,13 @@ deploy-to-vm-beta-rare:
    name: beta-rare
    url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
 
-deploy-to-vm-beta-wheatis:
- stage: deploy
- variables:
-  ENV: beta
-  APP_NAME: wheatis
-  APP_PORT: $BETA_WHEATIS_PORT
- <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- environment: # take care that some variables cannot be expanded according to where they are defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
-   name: beta-wheatis
-   url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
+# deploy-to-vm-beta-wheatis:
+#  stage: deploy
+#  variables:
+#   ENV: beta
+#   APP_NAME: wheatis
+#   APP_PORT: $BETA_WHEATIS_PORT
+#  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
+#  environment: # take care that some variables cannot be expanded according to where they are defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
+#    name: beta-wheatis
+#    url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
