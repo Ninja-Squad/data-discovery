@@ -112,7 +112,7 @@ build-wheatis:
    - "./scripts/harvestCI.sh ${BETA_SERVER_IP} $APP_PORT $APP_NAME $ENV; echo"
    - eval $(ssh-agent -k)
    - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:$APP_PORT/$APP_NAME \""
- environment:
+ environment: # take care that some variables cannot be expanded according to where they are defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
    name: $ENV-$APP_NAME
    url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
 
@@ -120,7 +120,7 @@ deploy-to-vm-beta-rare:
  stage: deploy
  variables:
   ENV: beta
-  APP_NAME: $RARE_APP_NAME
+  APP_NAME: rare
   APP_PORT: $BETA_RARE_PORT
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
 
@@ -128,6 +128,6 @@ deploy-to-vm-beta-wheatis:
  stage: deploy
  variables:
   ENV: beta
-  APP_NAME: $WHEATIS_APP_NAME
+  APP_NAME: wheatis
   APP_PORT: $BETA_WHEATIS_PORT
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
