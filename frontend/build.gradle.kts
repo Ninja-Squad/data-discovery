@@ -11,11 +11,11 @@ node {
   version = "8.11.3"
   npmVersion = "6.2.0"
   yarnVersion = "1.7.0"
-  if (isCi) {
+  //if (isCi) {
     // we specify a custom installation directory because of permission issues on Docker
-    workDir = file("/tmp/node")
-    yarnWorkDir = file("/tmp/yarn")
-  }
+    //workDir = file("/tmp/node")
+    //yarnWorkDir = file("/tmp/yarn")
+  //}
   download = true
 }
 
