@@ -61,14 +61,14 @@ test-frontend:
      - frontend/.gradle/
      - frontend/node_modules/
 
-build: 
+.build-app: &build_app
   stage: build
   script: 
     # tests already executed at previous stage, skipping them now
-    - ./gradlew assemble -x test
+    - ./gradlew assemble -x test -Papp=$APP_NAME-app
   artifacts:
     paths:
-      - backend/build/libs/*.jar
+      - backend/build/libs/$APP_NAME.jar
     expire_in: 5 mins # atm, only keep for deploy stage
   cache:
     key: "$CI_COMMIT_REF_NAME"
@@ -79,6 +79,18 @@ build:
       - .gradle
       - frontend/.gradle/
       - frontend/node_modules/
+
+build-rare:
+  stage: build
+  variables:
+    APP_NAME: $RARE_APP_NAME
+  <<: *build_app           # Merge the contents of the 'build_app' alias
+
+build-wheatis:
+  stage: build
+  variables:
+    APP_NAME: $WHEATIS_APP_NAME
+  <<: *build_app           # Merge the contents of the 'build_app' alias
 
 .deploy-to-vm: &deploy_to_vm # hidedn job which serves as template for 2 executed jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: deploy
@@ -95,9 +107,9 @@ build:
    - "sleep 10"
    - "apt-get update -qq && apt-get install -qqy curl"
    - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/* ; echo"
-#   - "while true ; do curl -s ${BETA_SERVER_IP}:8080/$APP_NAME/actuator/health"
-   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} $APP_NAME $ENV; echo"
-   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} $BETA_RARE_PORT $APP_NAME $ENV; echo"
+#   - "while true ; do curl -s ${BETA_SERVER_IP}:8080/$APP_NAME/actuator/health" # should find a better way to wait for embeded tomcat startup
+   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} $APP_NAME $ENV ; sleep 2 ; echo"
+   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} $APP_PORT $APP_NAME $ENV; echo"
    - eval $(ssh-agent -k)
    - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:$APP_PORT/$APP_NAME \""
  environment:
