@@ -115,8 +115,8 @@ build-wheatis:
    # - "while true ; do curl -s ${BETA_SERVER_IP}:8080/${APP_NAME}/actuator/health" # should find a better way to wait for embeded tomcat startup
    - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
    - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
- after_script: 
    - eval $(ssh-agent -k)
+ after_script: 
    - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME} \""
  environment: # take care that some variables cannot be expanded according to where they are defined.
               # Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
