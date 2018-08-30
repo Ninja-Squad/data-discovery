@@ -5,6 +5,7 @@ image: ninjasquad/docker-rare
  
 stages:
  - test
+ - build
  - deploy
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
@@ -13,11 +14,12 @@ stages:
 # isolated from any previous builds.
 variables:
  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+ BETA_SERVER: 10.0.0.132
 
 before_script:
  - export GRADLE_USER_HOME=`pwd`/.gradle
 
-test:
+test-backend:
  stage: test
  # the backend tests need an elasticsearch instance
  services:
@@ -37,39 +39,48 @@ test:
      # the cluster name used in tests
      command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
  script: 
-   - ./gradlew build
- artifacts:
-   paths:
-     - backend/build/libs/*.jar
-   expire_in: 5 mins
+   - ./gradlew :backend:test
  cache:
    key: "$CI_COMMIT_REF_NAME"
    policy: pull
    paths:
      - build
-     - backend/build/libs/*.jar
      - .gradle
 
-deploy-to-vm:
+test-frontend:
+ stage: test
+ script: 
+   - ./gradlew :frontend:test
+ cache:
+   key: "$CI_COMMIT_REF_NAME"
+   policy: pull
+   paths:
+     - build
+     - .gradle
+
+build: 
+  stage: build
+  script: 
+    # tests already executed at previous stage, skipping them now
+    - ./gradlew assemble -x test
+  artifacts:
+    paths:
+      - backend/build/libs/*.jar
+    expire_in: 5 mins # atm, only keep for deploy stage
+
+
+deploy-to-vm-beta:
  stage: deploy
-# dependencies: 
-#   - test
-# cache:
-#   key: "$CI_COMMIT_REF_NAME"
-#   policy: pull
-#   paths:
-#     - build
-#     - backend/build/libs/*.jar
-#     - .gradle
  script:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@10.0.0.132:/opt/rare/ "
-   - "ssh -o StrictHostKeyChecking=no root@10.0.0.132 'service rare restart'"
-   #- "sleep 10"
-   - apt-get update && apt-get install -y curl
-   - "curl -s -XDELETE 10.0.0.132:9200/* ; echo"
-   - "./scripts/createIndexAndAliases.sh 10.0.0.132"
-   - "./scripts/harvestRare.sh 10.0.0.132"
-   - "echo \"Deploy and index done. Application should be available at: http://10.0.0.132:8080/rare <a href='http://10.0.0.132:8080/rare' >RARe app</a>.\""
+   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@${BETA_SERVER}:/opt/rare/ "
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'service rare restart --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
+   - "sleep 10"
+   - "apt-get update && apt-get install -y curl"
+   - "curl -s -XDELETE ${BETA_SERVER}:9200/* ; echo"
+#   - "while true ; do curl -s ${BETA_SERVER}:8080/rare/actuator/health"
+   - "./scripts/createIndexAndAliases.sh ${BETA_SERVER}"
+   - "./scripts/harvestRare.sh ${BETA_SERVER}"
+   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER}:8080/rare <a href='http://${BETA_SERVER}:8080/rare' >RARe app</a>.\""
 
