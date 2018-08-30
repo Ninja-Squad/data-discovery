@@ -121,15 +121,14 @@ build-wheatis:
   # below label should be remove before merge!
   - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
   # Waiting embedded tomcat starts...
-  - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -fs -u ${USER}:{PASSWORD} ${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
-  # Deleting old indexes and data before reindexing from scratch
+  - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
+  # Deleting old indexes before reindexing from scratch
   # Should better handle those index switches by using the strategy proposed
   # in the README file
   - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
   - eval $(ssh-agent -k)
- after_script: 
   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME} \""
  environment:
   # take care that some variables cannot be expanded according to where they are
