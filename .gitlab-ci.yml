@@ -29,7 +29,8 @@ before_script:
 
 init:
   stage: init
-  script: echo "Starting data-discovery pipeline.
+  script: 
+    - "echo Starting data-discovery pipeline."
 
 test-backend:
  stage: test
