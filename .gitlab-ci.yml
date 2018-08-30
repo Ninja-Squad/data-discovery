@@ -61,7 +61,7 @@ test-frontend:
      - frontend/.gradle/
      - frontend/node_modules/
 
-.build-app: &build_app
+.build-app: &build_app # hidden job which serves as a template for 2 following jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
   stage: build
   script: 
     # tests already executed at previous stage, skipping them now
@@ -81,16 +81,16 @@ test-frontend:
       - frontend/node_modules/
 
 build-rare:
-  stage: build
+  # stage: build
   variables:
     APP_NAME: $RARE_APP_NAME
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
-# build-wheatis:
-#   stage: build
-#   variables:
-#     APP_NAME: $WHEATIS_APP_NAME
-#   <<: *build_app           # Merge the contents of the 'build_app' alias
+build-wheatis:
+  # stage: build
+  variables:
+    APP_NAME: $WHEATIS_APP_NAME
+  <<: *build_app           # Merge the contents of the 'build_app' alias
 
 .deploy-to-vm: &deploy_to_vm # hidedn job which serves as template for 2 executed jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: deploy
@@ -116,7 +116,7 @@ build-rare:
    name: $ENV-$APP_NAME
 
 deploy-to-vm-beta-rare:
- stage: deploy
+ # stage: deploy
  variables:
   ENV: beta
   APP_NAME: rare
@@ -126,7 +126,7 @@ deploy-to-vm-beta-rare:
  #   name: beta-rare
 
 deploy-to-vm-beta-wheatis:
- stage: deploy
+ # stage: deploy
  variables:
   ENV: beta
   APP_NAME: wheatis
