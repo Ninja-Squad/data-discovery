@@ -1,13 +1,13 @@
-# Image source available on https://github.com/Ninja-Squad/docker-rare
-# It contains a JDK 8 and a Chrome browser
-# Node, NPM and Yarn are installed by Gradle
-image: ninjasquad/docker-rare
- 
 stages:
  - test
  - build
  - deploy
 
+# Image source available on https://github.com/Ninja-Squad/docker-rare
+# It contains a JDK 8 and a Chrome browser
+# Node, NPM and Yarn are installed by Gradle
+image: ninjasquad/docker-rare
+ 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -122,7 +122,7 @@ deploy-to-vm-beta-rare:
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
  environment: # take care that some variables cannot be expanded according to where they are defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
    name: beta-rare
-   url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
+   # url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
 
 # deploy-to-vm-beta-wheatis:
 #  stage: deploy
