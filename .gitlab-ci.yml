@@ -100,3 +100,6 @@ deploy-to-vm-beta:
    - "./scripts/harvestRare.sh ${BETA_SERVER_IP} ; echo"
    - eval $(ssh-agent -k)
    - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:8080/rare \""
+ environment:
+   name: beta
+   url: http://10.0.0.132:8080/rare
