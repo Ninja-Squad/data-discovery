@@ -121,7 +121,9 @@ build-wheatis:
   # below label should be remove before merge!
   - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
   # Waiting embedded tomcat starts...
-  - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
+  # Should find a better way than a shitty sleep...
+  - sleep 10
+  # - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
   # Deleting old indexes before reindexing from scratch
   # Should better handle those index switches by using the strategy proposed
   # in the README file
