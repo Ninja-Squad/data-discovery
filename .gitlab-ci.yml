@@ -8,6 +8,12 @@ stages:
  - build
  - deploy
 
+cache:
+ key: "$CI_COMMIT_REF_NAME"
+ policy: pull
+ paths:
+   - build
+   - .gradle
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -40,23 +46,11 @@ test-backend:
      command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
  script: 
    - ./gradlew :backend:test
- cache:
-   key: "$CI_COMMIT_REF_NAME"
-   policy: pull
-   paths:
-     - build
-     - .gradle
 
 test-frontend:
  stage: test
  script: 
    - ./gradlew :frontend:test
- cache:
-   key: "$CI_COMMIT_REF_NAME"
-   policy: pull
-   paths:
-     - build
-     - .gradle
 
 build: 
   stage: build
@@ -68,19 +62,19 @@ build:
       - backend/build/libs/*.jar
     expire_in: 5 mins # atm, only keep for deploy stage
 
-
 deploy-to-vm-beta:
  stage: deploy
  script:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
    - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@${BETA_SERVER}:/opt/rare/ "
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'service rare restart --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
+   # below label should be remove before merge!
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER} 'service rare restart --spring.profiles.active=beta,rare-app --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
    - "sleep 10"
    - "apt-get update && apt-get install -y curl"
    - "curl -s -XDELETE ${BETA_SERVER}:9200/* ; echo"
 #   - "while true ; do curl -s ${BETA_SERVER}:8080/rare/actuator/health"
-   - "./scripts/createIndexAndAliases.sh ${BETA_SERVER}"
-   - "./scripts/harvestRare.sh ${BETA_SERVER}"
-   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER}:8080/rare <a href='http://${BETA_SERVER}:8080/rare' >RARe app</a>.\""
+   - "./scripts/createIndexAndAliases.sh ${BETA_SERVER} ; echo"
+   - "./scripts/harvestRare.sh ${BETA_SERVER} ; echo"
+   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER}:8080/rare \""
 
