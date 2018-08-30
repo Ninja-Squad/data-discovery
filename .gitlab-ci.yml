@@ -52,7 +52,7 @@ test-frontend:
  stage: test
  script: 
    - ./gradlew :frontend:test
-  cache:
+ cache:
    key: "$CI_COMMIT_REF_NAME"
    # policy: pull
    paths:
@@ -71,15 +71,15 @@ build:
     paths:
       - backend/build/libs/*.jar
     expire_in: 5 mins # atm, only keep for deploy stage
- cache:
-   key: "$CI_COMMIT_REF_NAME"
-   policy: pull
-   paths:
-     - build
-     - buildSrc
-     - .gradle
-     - frontend/.gradle/
-     - frontend/node_modules/
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - buildSrc
+      - .gradle
+      - frontend/.gradle/
+      - frontend/node_modules/
 
 deploy-to-vm-beta:
  stage: deploy
@@ -100,4 +100,3 @@ deploy-to-vm-beta:
    - "./scripts/createIndexAndAliases.sh ${BETA_SERVER} ; echo"
    - "./scripts/harvestRare.sh ${BETA_SERVER} ; echo"
    - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER}:8080/rare \""
-
