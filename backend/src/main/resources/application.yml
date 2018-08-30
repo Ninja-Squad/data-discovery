@@ -31,7 +31,16 @@ server:
 
 ---
 spring:
+  profiles: beta
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
   profiles: rare-app
+  cloud.config.name: rare
 
 rare:
   elasticsearch-prefix: 'rare-'
@@ -44,6 +53,7 @@ server:
 ---
 spring:
   profiles: wheatis-app
+  cloud.config.name: wheatis
 
 rare:
   elasticsearch-prefix: 'wheatis-'
