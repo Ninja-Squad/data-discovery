@@ -113,27 +113,21 @@ build-wheatis:
    - eval $(ssh-agent -k)
    - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:$APP_PORT/$APP_NAME \""
  environment:
-   name: beta-rare
+   name: $ENV-$APP_NAME
    url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
 
 deploy-to-vm-beta-rare:
  stage: deploy
  variables:
-  APP_NAME: $RARE_APP_NAME
   ENV: beta
+  APP_NAME: $RARE_APP_NAME
   APP_PORT: $BETA_RARE_PORT
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- environment:
-   name: beta-rare
-   url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
 
 deploy-to-vm-beta-wheatis:
  stage: deploy
  variables:
-  APP_NAME: $WHEATIS_APP_NAME
   ENV: beta
+  APP_NAME: $WHEATIS_APP_NAME
   APP_PORT: $BETA_WHEATIS_PORT
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- environment:
-   name: beta-wheatis
-   url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
