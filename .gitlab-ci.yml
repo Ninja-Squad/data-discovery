@@ -8,16 +8,6 @@ stages:
  - build
  - deploy
 
-cache:
- key: "$CI_COMMIT_REF_NAME"
- # policy: pull
- paths:
-   - build
-   - buildSrc
-   - .gradle
-   - frontend/.gradle/
-   - frontend/node_modules/
-
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -50,11 +40,27 @@ test-backend:
      command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
  script: 
    - ./gradlew :backend:test
+ cache:
+   key: "$CI_COMMIT_REF_NAME"
+   # policy: pull
+   paths:
+     - build
+     - buildSrc
+     - .gradle
 
 test-frontend:
  stage: test
  script: 
    - ./gradlew :frontend:test
+  cache:
+   key: "$CI_COMMIT_REF_NAME"
+   # policy: pull
+   paths:
+     - build
+     - buildSrc
+     - .gradle
+     - frontend/.gradle/
+     - frontend/node_modules/
 
 build: 
   stage: build
@@ -65,6 +71,15 @@ build:
     paths:
       - backend/build/libs/*.jar
     expire_in: 5 mins # atm, only keep for deploy stage
+ cache:
+   key: "$CI_COMMIT_REF_NAME"
+   policy: pull
+   paths:
+     - build
+     - buildSrc
+     - .gradle
+     - frontend/.gradle/
+     - frontend/node_modules/
 
 deploy-to-vm-beta:
  stage: deploy
