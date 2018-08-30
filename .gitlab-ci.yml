@@ -13,7 +13,7 @@ stages:
 # runtime for each build is more reliable since the runtime is completely
 # isolated from any previous builds.
 variables:
- # GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+ GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
  - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -80,26 +80,58 @@ build:
       - frontend/.gradle/
       - frontend/node_modules/
 
-deploy-to-vm-beta:
+deploy-to-vm-beta-rare:
  stage: deploy
+ variables:
+  APP_NAME: $RARE_APP_NAME
+  ENV: beta
+  APP_PORT: $BETA_RARE_PORT
  script:
    - eval $(ssh-agent -s)
    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/rare.jar root@${BETA_SERVER_IP}:/opt/rare/"
+   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/$APP_NAME.jar root@${BETA_SERVER_IP}:/opt/$APP_NAME/"
    # copying data files for later indexing
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'rm -r /tmp/rare/resources ; mkdir -p /tmp/rare/resources'"
-   - "scp -o StrictHostKeyChecking=no ./data/rare/*gz root@${BETA_SERVER_IP}:/tmp/rare/resources/"
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'gunzip -rv /tmp/rare/resources'"
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'rm -r /tmp/$APP_NAME/resources ; mkdir -p /tmp/$APP_NAME/resources'"
+   - "scp -o StrictHostKeyChecking=no ./data/$APP_NAME/*gz root@${BETA_SERVER_IP}:/tmp/$APP_NAME/resources/"
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'gunzip -rv /tmp/$APP_NAME/resources'"
    # below label should be remove before merge!
-   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'service rare restart --spring.profiles.active=beta,rare-app --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'service $APP_NAME restart --spring.profiles.active=$ENV,$APP_NAME-app --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
    - "sleep 10"
    - "apt-get update -qq && apt-get install -qqy curl"
    - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/* ; echo"
-#   - "while true ; do curl -s ${BETA_SERVER_IP}:8080/rare/actuator/health"
-   - "./scripts/createIndexAndAliases.sh ${BETA_SERVER_IP} ; echo"
-   - "./scripts/harvestRare.sh ${BETA_SERVER_IP} ; echo"
+#   - "while true ; do curl -s ${BETA_SERVER_IP}:8080/$APP_NAME/actuator/health"
+   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} $APP_NAME $ENV; echo"
+   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} $BETA_RARE_PORT $APP_NAME $ENV; echo"
    - eval $(ssh-agent -k)
-   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:8080/rare \""
+   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:$APP_PORT/$APP_NAME \""
  environment:
-   name: beta
-   url: http://10.0.0.132:8080/rare
+   name: beta-rare
+   url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
+
+deploy-to-vm-beta-wheatis:
+ stage: deploy
+ variables:
+  APP_NAME: $WHEATIS_APP_NAME
+  ENV: beta
+  APP_PORT: $BETA_WHEATIS_PORT
+ script:
+   - eval $(ssh-agent -s)
+   - ssh-add <(echo "$SSH_PRIVATE_KEY")
+   - "scp -o StrictHostKeyChecking=no ./backend/build/libs/$APP_NAME.jar root@${BETA_SERVER_IP}:/opt/$APP_NAME/"
+   # copying data files for later indexing
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'rm -r /tmp/$APP_NAME/resources ; mkdir -p /tmp/$APP_NAME/resources'"
+   - "scp -o StrictHostKeyChecking=no ./data/$APP_NAME/*gz root@${BETA_SERVER_IP}:/tmp/$APP_NAME/resources/"
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'gunzip -rv /tmp/$APP_NAME/resources'"
+   # below label should be remove before merge!
+   - "ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'service $APP_NAME restart --spring.profiles.active=$ENV,$APP_NAME-app --spring.cloud.config.label=\"chore(_)test-custom-config\"'"
+   - "sleep 10"
+   - "apt-get update -qq && apt-get install -qqy curl"
+   - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/* ; echo"
+#   - "while true ; do curl -s ${BETA_SERVER_IP}:$APP_PORT/$APP_NAME/actuator/health"
+   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} $APP_NAME $ENV; echo"
+   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} $BETA_WHEATIS_PORT $APP_NAME $ENV; echo"
+   - eval $(ssh-agent -k)
+   - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:$APP_PORT/$APP_NAME \""
+ environment:
+   name: beta-wheatis
+   url: http://$BETA_SERVER_IP:$APP_PORT/$APP_NAME
