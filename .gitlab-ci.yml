@@ -113,13 +113,13 @@ build-wheatis:
   - "apt-get update -qq && apt-get install -qy curl"
  script:
   # Copy jar and data (cleaning them before) to the server
-  - "scp ./backend/build/libs/${APP_NAME}.jar root@${BETA_SERVER_IP}:/opt/${APP_NAME}/"
+  - "scp ./backend/build/libs/${APP_NAME}.jar root@${BETA_SERVER_IP}:/opt/${APP_NAME}/${APP_NAME}-${ENV}.jar"
   - "ssh root@${BETA_SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
   - "scp ./data/${APP_NAME}/*gz root@${BETA_SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
   - "ssh root@${BETA_SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
   # Restarting service with the updated jar and the according Spring profiles enabled
   # below label should be remove before merge!
-  - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
+  - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME}-${ENV} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
   # Waiting embedded tomcat starts...
   # Should find a better way than a shitty sleep...
   - sleep 10
@@ -148,6 +148,21 @@ deploy-rare-to-beta-vm:
   APP_NAME: rare
   APP_PORT: ${BETA_RARE_PORT}
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
+ only: 
+  refs:
+   - chore/config-gitlab-cd
+
+deploy-rare-to-prod-vm:
+ variables:
+  ENV: prod
+  APP_NAME: rare
+  # APP_PORT: ${PROD_RARE_PORT}
+  APP_PORT: 8079 # TODO use a variable defined in Gitlab CI: PROD_RARE_PORT
+ <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
+ only: 
+  # refs:
+   - master
+ when: manual 
 
 deploy-wheatis-to-beta-vm:
  variables:
@@ -155,6 +170,21 @@ deploy-wheatis-to-beta-vm:
   APP_NAME: wheatis
   APP_PORT: ${BETA_WHEATIS_PORT}
  <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
+ only: 
+  refs:
+   - chore/config-gitlab-cd
+
+deploy-wheatis-to-prod-vm:
+ variables:
+  ENV: prod
+  APP_NAME: wheatis
+  # APP_PORT: ${PROD_WHEATIS_PORT}
+  APP_PORT: 8078 # TODO use a variable defined in Gitlab CI: PROD_WHEATIS_PORT
+ <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
+ only: 
+  # refs:
+   - master
+ when: manual 
 
 # Should find a way to authorize such pipeline once at a time in order to avoid
 # multiple restart of services, elasticsearch cluster or reindexing
