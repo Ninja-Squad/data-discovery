@@ -20,7 +20,7 @@ echo "Creating directory: $INDEX_DATA_DIR" && mkdir -p $INDEX_DATA_DIR
 {
 	cp $DATADIR/*.json.gz $INDEX_DATA_DIR && \
 	gzip -d -f $INDEX_DATA_DIR/*.json.gz && \
-	curl -f -i -X POST -u rare:f01a7031fc17 \
+	curl -f -i -X POST -u ${APP_NAME}:f01a7031fc17 \
 	"http://${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}/api/harvests"
 } || {
 	code=$?
