@@ -31,7 +31,7 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "baseHref": "/rare/"
+            "baseHref": ""
           },
           "configurations": {
             "production": {
@@ -83,7 +83,7 @@
                   "with": "src/environments/environment.wheatis.ts"
                 }
               ],
-              "baseHref": "/wheatis/",
+              "baseHref": "",
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/wheatis/"
@@ -110,7 +110,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "baseHref": "/wheatis/",
+              "baseHref": "",
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/wheatis/"
