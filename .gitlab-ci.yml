@@ -131,7 +131,7 @@ build-wheatis:
   - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
   - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
   - eval $(ssh-agent -k)
-  - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME} \""
+  - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
  environment:
   # take care that some variables cannot be expanded according to where they are
   # defined. Info:
