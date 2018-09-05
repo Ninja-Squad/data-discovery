@@ -6,7 +6,6 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
     }
 }
