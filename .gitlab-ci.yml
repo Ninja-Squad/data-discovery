@@ -43,6 +43,9 @@ test-backend:
      "-Ediscovery.type=single-node",
      "-Ecluster.name=es-rare"
     ]
+ artifacts:
+  reports:
+    junit:
  script:
   - ./gradlew :backend:test
  cache:
