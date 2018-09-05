@@ -119,7 +119,7 @@ build-wheatis:
   - "ssh root@${BETA_SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
   # Restarting service with the updated jar and the according Spring profiles enabled
   # below label should be remove before merge!
-  - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME}-${ENV} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
+  - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME}-${ENV} restart\""
   # Waiting embedded tomcat starts...
   # Should find a better way than a shitty sleep...
   - sleep 10
