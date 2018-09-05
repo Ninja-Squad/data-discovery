@@ -37,34 +37,34 @@ logging.level:
 
 ---
 spring:
-  profiles: beta
-
----
-spring:
-  profiles: dev
-
----
-spring:
   profiles: rare-app
   cloud.config.name: rare
+  security.user:
+      name: rare
+      password: f01a7031fc17
 
 rare:
-  elasticsearch-prefix: 'rare-'
-  resource-dir: /tmp/rare/resources
+  elasticsearch-prefix: 'rare-dev-'
+  resource-dir: /tmp/rare-dev/resources
 
 server:
+  port: 8080
   servlet:
-    context-path: /rare
+    context-path: /rare-dev
 
 ---
 spring:
   profiles: wheatis-app
   cloud.config.name: wheatis
+  security.user:
+      name: wheatis
+      password: f01a7031fc17
 
 rare:
-  elasticsearch-prefix: 'wheatis-'
-  resource-dir: /tmp/wheatis/resources
+  elasticsearch-prefix: 'wheatis-dev-'
+  resource-dir: /tmp/wheatis-dev/resources
 
 server:
+  port: 8081
   servlet:
-    context-path: /wheatis
+    context-path: /wheatis-dev
