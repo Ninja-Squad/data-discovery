@@ -80,7 +80,7 @@ test-frontend:
  artifacts:
   paths:
    - backend/build/libs/${APP_NAME}.jar
-  expire_in: 5 mins  # atm, only keep for deploy stage
+  expire_in: 1 week
  cache:
   key: "${CI_COMMIT_REF_NAME}"
   policy: pull
