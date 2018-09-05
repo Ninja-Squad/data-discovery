@@ -39,19 +39,27 @@ You need to install:
 Then in the `frontend` directory, run `yarn` to download the dependencies.
 Then run `yarn start` to start the app, using the proxy conf to reroute calls to `/api` to the backend.
 
-The application will be available on http://localhost:4200/rare
+The application will be available on:
+- http://localhost:4200/rare-dev for RARe (runs with: `yarn start:rare` or simply `yarn start`)
+- http://localhost:4200/wheatis-dev for WheatIS (runs with: `yarn start:wheatis`)
 
 ## Build
 
 To build the app, just run:
 
     ./gradlew assemble
+or 
+    ./gradlew assemble -Papp=wheatis
 
-This will build a standalone jar at `backend/build/libs/rare.jar`, that you can run with:
+This will build a standalone jar at `backend/build/libs/rare.jar` or  `backend/build/libs/wheatis.jar`, that you can run with:
 
     java -jar backend/build/libs/rare.jar
+    java -jar backend/build/libs/wheatis.jar
 
-And the full app runs on http://localhost:8080/rare
+And the full app run on:
+
+- http://localhost:8080/rare-dev
+- http://localhost:8081/wheatis-dev
 
 
 ## CI
@@ -80,16 +88,20 @@ To create the index and its aliases execute the script
 
     ./scripts/createIndexAndAliases.sh
 
-The directory, by default is `/tmp/rare/resources`. But it's externalized into the Spring Boot property
-`rare.resource-dir`, so it can be easily changed by modifying the value of this property (using an 
+The directory, by default is `/tmp/rare-dev/resources` and `/tmp/wheatis-dev/resources`. But it's externalized into the 
+Spring Boot property `rare.resource-dir`, so it can be easily changed by modifying the value of this property (using an 
 environment variable for example).
 
-You can run the script:
+You can run the scripts:
 
     ./scripts/harvestRare.sh
+    ./scripts/harvestWheatis.sh
     
-to trigger a harvest of the resources stored in the Git LFS directory `data/rare`.
-You can of course do the same for WheatIS with `./scripts/harvestWheatis.sh`.
+to trigger a harvest of the resources stored in the Git LFS directories `data/rare` and `data/wheatis`.
+
+Since the harvest process is handle by a webservice which runs inside the Spring Boot application, you 
+need to start `rare.jar` or `wheatis.jar` before (see [Build](#build) section)
+{: .alert .alert-warning}
     
 The files must have the extension `.json`, and must be stored in that directory (not in a sub-directory).
 Once the files are ready and the server is started, the harvest is triggered by sending a POST request
@@ -108,19 +120,23 @@ The application uses two physical indices:
  * one to store physical resources. This one must be created explicitly before using the application. If not,
  requests to the web services will return errors.
 
+Each index and alias below refers to `rare` application in `dev` environment, the equivalent shall be created for `wheatis` 
+app in `dev` environment as same as in `beta` or `prod` environments. For brevity, only `rare-dev` is explained here.
+{: .alert .alert-info}
+
 The application doesn't use the physical resources index directly. Instead, it uses two aliases, that must be created 
 before using the application:
 
- * `rare-resource-index` is the alias used by the application to search for genetic resources
- * `rare-resource-harvest-index` is the alias used by the application to store genetic resources when the harvest is triggered.
+ * `rare-dev-resource-index` is the alias used by the application to search for genetic resources
+ * `rare-dev-resource-harvest-index` is the alias used by the application to store genetic resources when the harvest is triggered.
  
 In normal operations, these two aliases should refer to the same physical resource index. The script
-`createIndexAndAliases.sh` creates a physical index (named `rare-resource-physical-index`) and creates these two aliases 
+`createIndexAndAliases.sh` creates a physical index (named `rare-dev-resource-physical-index`) and creates these two aliases 
 referring to this physical index.
 
 Once the index and the aliases have been created, a harvest can be triggered. The first operation that a harvest
-does is to create or update (put) the mapping for the genetic resource entity into the index aliased by `rare-resource-harvest-index`. 
-Then it parses the JSON files and stores them into this same index. Since the `rare-resource-index` alias 
+does is to create or update (put) the mapping for the genetic resource entity into the index aliased by `rare-dev-resource-harvest-index`. 
+Then it parses the JSON files and stores them into this same index. Since the `rare-dev-resource-index` alias 
 normally refers to the same physical index, searches will find the resources stored by the harvester.
 
 ### Why two aliases
@@ -151,14 +167,14 @@ very long time.
 Here are curl commands illustrating the above scenario:
 ```
 # delete the physical index and its aliases
-curl -X DELETE "localhost:9200/rare-resource-physical-index"
+curl -X DELETE "localhost:9200/rare-dev-resource-physical-index"
 
 # recreate the physical index and its aliases
-curl -X PUT "localhost:9200/rare-resource-physical-index" -H 'Content-Type: application/json' -d'
+curl -X PUT "localhost:9200/rare-dev-resource-physical-index" -H 'Content-Type: application/json' -d'
 {
     "aliases" : {
-        "rare-resource-index" : {},
-        "rare-resource-harvest-index" : {}
+        "rare-dev-resource-index" : {},
+        "rare-dev-resource-harvest-index" : {}
     }
     "settings": ...
 }
@@ -167,35 +183,36 @@ curl -X PUT "localhost:9200/rare-resource-physical-index" -H 'Content-Type: appl
 
 **NOTE**: Every time a physical index is created, the settings must be specified, the same ay as in the 
 `createIndexAndAliases.sh` script. The exact content of the settings is omitted here for brevity and readability.
+{: .alert .alert-info}
 
 #### Deleting with no downtime
 
 If you don't want any downtime, you can instead use the following procedure:
 
- - create a new physical index (let's name it `rare-resource-new-physical-index`);
- - delete the `rare-resource-harvest-index` alias, and recreate it so that it refers to `rare-resource-new-physical-index`;
- - trigger a harvest. During the harvest, the `rare-resource-index` alias, used by the search,
+ - create a new physical index (let's name it `rare-dev-resource-new-physical-index`);
+ - delete the `rare-dev-resource-harvest-index` alias, and recreate it so that it refers to `rare-dev-resource-new-physical-index`;
+ - trigger a harvest. During the harvest, the `rare-dev-resource-index` alias, used by the search,
    still refers to the old physical index, and it thus still works flawlessly;
- - once the harvest is finished, delete the `rare-resource-index` alias, and recreate it so that it refers to 
-   `rare-resource-new-physical-index`. All the search operations will now use the new index, containing up-to-date
+ - once the harvest is finished, delete the `rare-dev-resource-index` alias, and recreate it so that it refers to 
+   `rare-dev-resource-new-physical-index`. All the search operations will now use the new index, containing up-to-date
    documents;
  - delete the old physical index.
  
 Here are curl commands illustrating the above scenario:
 ```
 # create a new physical index
-curl -X PUT "localhost:9200/rare-resource-new-physical-index" -H 'Content-Type: application/json' -d'
+curl -X PUT "localhost:9200/rare-dev-resource-new-physical-index" -H 'Content-Type: application/json' -d'
 {
   "settings": ...
 }
 '
 
-# delete the `rare-resource-harvest-index` alias, and recreate it so that it refers to `rare-resource-new-physical-index`
+# delete the `rare-dev-resource-harvest-index` alias, and recreate it so that it refers to `rare-dev-resource-new-physical-index`
 curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 {
     "actions" : [
-        { "remove" : { "index" : "rare-resource-physical-index", "alias" : "rare-resource-harvest-index" } },
-        { "add" : { "index" : "rare-resource-new-physical-index", "alias" : "rare-resource-harvest-index" } }
+        { "remove" : { "index" : "rare-dev-resource-physical-index", "alias" : "rare-dev-resource-harvest-index" } },
+        { "add" : { "index" : "rare-dev-resource-new-physical-index", "alias" : "rare-dev-resource-harvest-index" } }
     ]
 }
 '
@@ -204,14 +221,14 @@ curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 {
     "actions" : [
-        { "remove" : { "index" : "rare-resource-physical-index", "alias" : "rare-resource-index" } },
-        { "add" : { "index" : "rare-resource-new-physical-index", "alias" : "rare-resource-index" } }
+        { "remove" : { "index" : "rare-dev-resource-physical-index", "alias" : "rare-dev-resource-index" } },
+        { "add" : { "index" : "rare-dev-resource-new-physical-index", "alias" : "rare-dev-resource-index" } }
     ]
 }
 '
 
 # delete the old physical index
-curl -X DELETE "localhost:9200/rare-resource-physical-index"
+curl -X DELETE "localhost:9200/rare-dev-resource-physical-index"
 ```
  
 ### Mapping migration
@@ -223,9 +240,9 @@ of the application must be redeployed.
 
 This is the easiest and safest procedure, that I would recommend:
 
- - create a new physical index (let's name it `rare-resource-new-physical-index`);
- - delete the `rare-resource-harvest-index` and the `rare-resource-index` aliases, and recreate them both so that they refer to 
-   `rare-resource-new-physical-index`;
+ - create a new physical index (let's name it `rare-dev-resource-new-physical-index`);
+ - delete the `rare-dev-resource-harvest-index` and the `rare-dev-resource-index` aliases, and recreate them both so that they refer to 
+   `rare-dev-resource-new-physical-index`;
  - stop the existing application, deploy and start the new one;
  - trigger a harvest;
  - once everything is running fine, remove the old physical index.
@@ -236,37 +253,37 @@ application can be restarted.
 Here are curl commands illustrating the above scenario:
 ```
 # create a new physical index
-curl -X PUT "localhost:9200/rare-resource-new-physical-index" -H 'Content-Type: application/json' -d'
+curl -X PUT "localhost:9200/rare-dev-resource-new-physical-index" -H 'Content-Type: application/json' -d'
 {
   "settings": ...
 }
 '
 
-# delete the `rare-resource-harvest-index` and the `rare-resource-index` aliases, and recreate them both so that they refer to `rare-resource-new-physical-index`
+# delete the `rare-dev-resource-harvest-index` and the `rare-dev-resource-index` aliases, and recreate them both so that they refer to `rare-dev-resource-new-physical-index`
 curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 {
     "actions" : [
-        { "remove" : { "index" : "rare-resource-physical-index", "alias" : "resource-harvest-index" } },
-        { "add" : { "index" : "rare-resource-new-physical-index", "alias" : "resource-harvest-index" } },
-        { "remove" : { "index" : "rare-resource-physical-index", "alias" : "rare-resource-index" } },
-        { "add" : { "index" : "rare-resource-new-physical-index", "alias" : "rare-resource-index" } }
+        { "remove" : { "index" : "rare-dev-resource-physical-index", "alias" : "resource-harvest-index" } },
+        { "add" : { "index" : "rare-dev-resource-new-physical-index", "alias" : "resource-harvest-index" } },
+        { "remove" : { "index" : "rare-dev-resource-physical-index", "alias" : "rare-dev-resource-index" } },
+        { "add" : { "index" : "rare-dev-resource-new-physical-index", "alias" : "rare-dev-resource-index" } }
     ]
 }
 '
 
 # once everything is running fine, remove the old physical index.
-curl -X DELETE "localhost:9200/rare-resource-physical-index"
+curl -X DELETE "localhost:9200/rare-dev-resource-physical-index"
 ```
 
 #### Upgrading with a very short downtime (or no downtime at all)
 
  - create a new physical index (let's name it `resource-new-physical-index`);
- - delete the `rare-resource-harvest-index` alias, and recreate it so that it refers to `rare-resource-new-physical-index`;
+ - delete the `rare-dev-resource-harvest-index` alias, and recreate it so that it refers to `rare-dev-resource-new-physical-index`;
  - start the new application, on another machine, or on a different port, so that the new application code can be
    used to trigger a harvest with the new schema, while the old application is still running and exposed to the users
  - trigger the harvest on the **new** application
- - once the harvest is finished, delete the `rare-resource-index` alias, and recreate it so that it refers to 
-   `rare-resource-new-physical-index`;
+ - once the harvest is finished, delete the `rare-dev-resource-index` alias, and recreate it so that it refers to 
+   `rare-dev-resource-new-physical-index`;
  - expose the new application to the users instead of the old one
  - stop the old application
  
@@ -278,18 +295,18 @@ configuration to route to the new application once the harvest is done, for exam
 Here are curl commands illustrating the above scenario:
 ```
 # create a new physical index
-curl -X PUT "localhost:9200/rare-resource-new-physical-index" -H 'Content-Type: application/json' -d'
+curl -X PUT "localhost:9200/rare-dev-resource-new-physical-index" -H 'Content-Type: application/json' -d'
 {
   "settings": ...
 }
 '
 
-# delete the `rare-resource-harvest-index` alias, and recreate it so that it refers to `rare-resource-new-physical-index`
+# delete the `rare-dev-resource-harvest-index` alias, and recreate it so that it refers to `rare-dev-resource-new-physical-index`
 curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 {
     "actions" : [
-        { "remove" : { "index" : "rare-resource-physical-index", "alias" : "rare-resource-harvest-index" } },
-        { "add" : { "index" : "rare-resource-new-physical-index", "alias" : "rare-resource-harvest-index" } }
+        { "remove" : { "index" : "rare-dev-resource-physical-index", "alias" : "rare-dev-resource-harvest-index" } },
+        { "add" : { "index" : "rare-dev-resource-new-physical-index", "alias" : "rare-dev-resource-harvest-index" } }
     ]
 }
 '
@@ -298,8 +315,8 @@ curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
 {
     "actions" : [
-        { "remove" : { "index" : "rare-resource-physical-index", "alias" : "rare-resource-index" } },
-        { "add" : { "index" : "rare-resource-new-physical-index", "alias" : "rare-resource-index" } }
+        { "remove" : { "index" : "rare-dev-resource-physical-index", "alias" : "rare-dev-resource-index" } },
+        { "add" : { "index" : "rare-dev-resource-new-physical-index", "alias" : "rare-dev-resource-index" } }
     ]
 }
 '
@@ -350,8 +367,8 @@ Adding this property has the following consequences:
 Since the active Spring profile is different, all the properties specific to this profile
 are applies. In particular:
  
- - the context path of the application is `/wheatis` instead of `/rare`; 
+ - the context path of the application is `/wheatis-dev` instead of `/rare-dev`; 
  - the resource directory where the JSON files to harvest are looked up is different;
  - the Elasticsearch prefix used for the index aliases is different.
 
-See the `application.yml` file for details.
+See the `backend/src/main/resources/application.yml` file for details.
