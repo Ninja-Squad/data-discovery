@@ -154,6 +154,7 @@ deploy-rare-to-beta-vm:
  only: 
   refs:
    - chore/config-gitlab-cd
+ when: manual
 
 deploy-rare-to-prod-vm:
  variables:
@@ -165,7 +166,7 @@ deploy-rare-to-prod-vm:
  only: 
   # refs:
    - master
- when: manual 
+ when: manual
 
 deploy-wheatis-to-beta-vm:
  variables:
@@ -176,6 +177,7 @@ deploy-wheatis-to-beta-vm:
  only: 
   refs:
    - chore/config-gitlab-cd
+ when: manual
 
 deploy-wheatis-to-prod-vm:
  variables:
@@ -187,7 +189,7 @@ deploy-wheatis-to-prod-vm:
  only: 
   # refs:
    - master
- when: manual 
+ when: manual
 
 # Should find a way to authorize such pipeline once at a time in order to avoid
 # multiple restart of services, elasticsearch cluster or reindexing
