@@ -191,6 +191,7 @@ deploy-rare-to-beta:
  except:
   - master
  when: manual
+ allow_failure: false # mandatory to block the execution of the pipeline
 
 deploy-rare-to-staging:
  stage: staging
@@ -206,6 +207,7 @@ deploy-rare-to-prod:
  only:
   - master
  when: manual
+ allow_failure: false
 
 deploy-wheatis-to-beta:
  stage: staging
@@ -216,6 +218,7 @@ deploy-wheatis-to-beta:
  except:
   - master
  when: manual
+ allow_failure: false
 
 deploy-wheatis-to-staging:
  stage: staging
@@ -231,6 +234,7 @@ deploy-wheatis-to-prod:
  only:
   - master
  when: manual
+ allow_failure: false
  
 .data-integration: &data-integration
  retry: 1
