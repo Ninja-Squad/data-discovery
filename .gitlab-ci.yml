@@ -47,7 +47,7 @@ test-backend:
     ]
  artifacts:
   reports:
-    junit:
+   junit: ./backend/build/test-results/test/TEST-*.xml
  script:
   - ./gradlew :backend:test
  cache:
