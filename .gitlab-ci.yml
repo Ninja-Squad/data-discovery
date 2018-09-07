@@ -2,7 +2,10 @@
 stages:
  - test
  - build
- - deploy
+ - staging
+ - data-integration-staging
+ - production
+ - data-integration-production
 
 # Image source available on https://github.com/Ninja-Squad/docker-rare
 # It contains a JDK 8 and a Chrome browser
@@ -23,12 +26,11 @@ test-backend:
  stage: test
  # the backend tests need an elasticsearch instance
  services:
-  # even if that would be ideal
-  # we can't just launch the service with just elasticsearch:6.3.1
-  # because we need to pass some variables, but they are passed to _all_
-  # containers so they fail the start of other docker images like
-  # ninjasquad/docker-rare the only solution is to override the entrypoint of
-  # the service and pass the arguments manually
+  # even if that would be ideal we can't just launch the service with just
+  # elasticsearch:6.3.1 because we need to pass some variables, but they are
+  # passed to _all_ containers so they fail the start of other docker images 
+  # like ninjasquad/docker-rare the only solution is to override the entrypoint
+  # of the service and pass the arguments manually
   - name: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     alias: elasticsearch
     # discovery.type=single-node
@@ -43,6 +45,9 @@ test-backend:
      "-Ediscovery.type=single-node",
      "-Ecluster.name=es-rare"
     ]
+ artifacts:
+  reports:
+    junit:
  script:
   - ./gradlew :backend:test
  cache:
@@ -77,7 +82,7 @@ test-frontend:
  artifacts:
   paths:
    - backend/build/libs/${APP_NAME}.jar
-  expire_in: 5 mins  # atm, only keep for deploy stage
+  expire_in: 1 week
  cache:
   key: "${CI_COMMIT_REF_NAME}"
   policy: pull
@@ -98,93 +103,196 @@ build-wheatis:
   APP_NAME: ${WHEATIS_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
-.deploy-to-vm: &deploy_to_vm
- # Hidden job which serves as template for 2 executed jobs below.
- # See https://docs.gitlab.com/ee/ci/yaml/#anchors
- stage: deploy
- retry: 2
+.ssh-initialization-before-script: &ssh-initialization-before-script
  before_script:
   # SSH initialization
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
-  - ssh -o StrictHostKeyChecking=no root@${BETA_SERVER_IP} 'echo "Successfully connected on $(hostname)"'
-  - ssh root@${BETA_SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
+  - ssh -o StrictHostKeyChecking=no root@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
+  - ssh root@${SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
   # Installing missing dependencies
   - "apt-get update -qq && apt-get install -qy curl"
+
+.deploy-to-vm: &deploy_to_vm
+ # Hidden job which serves as template for 2 executed jobs below.
+ # See https://docs.gitlab.com/ee/ci/yaml/#anchors
+ retry: 2
+ <<: *ssh-initialization-before-script
  script:
   # Copy jar and data (cleaning them before) to the server
-  - "scp ./backend/build/libs/${APP_NAME}.jar root@${BETA_SERVER_IP}:/opt/${APP_NAME}/${APP_NAME}-${ENV}.jar"
-  - "ssh root@${BETA_SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
-  - "scp ./data/${APP_NAME}/*gz root@${BETA_SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
-  - "ssh root@${BETA_SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
+  - "scp ./backend/build/libs/${APP_NAME}.jar root@${SERVER_IP}:/opt/${APP_NAME}/${APP_NAME}-${ENV}.jar"
+  - "ssh root@${SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
+  - "scp ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
+  - "ssh root@${SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
   # Restarting service with the updated jar and the according Spring profiles enabled
-  # below label should be remove before merge!
-  - "ssh root@${BETA_SERVER_IP} \"service ${APP_NAME}-${ENV} restart --spring.profiles.active=${ENV},${APP_NAME}-app --spring.cloud.config.label='chore(_)test-custom-config'\""
+  - "ssh root@${SERVER_IP} \"service ${APP_NAME}-${ENV} restart\""
   # Waiting embedded tomcat starts...
   # Should find a better way than a shitty sleep...
-  - sleep 10
-  # - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
+  - eval $(ssh-agent -k)
+  - "echo \"Deploy and index done. Application should be available at: http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
+
+.variables-rare-beta: &variables-rare-beta
+ variables:
+  ENV: beta
+  APP_NAME: rare
+  APP_PORT: ${BETA_RARE_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-rare-staging: &variables-rare-staging
+ variables:
+  ENV: staging
+  APP_NAME: rare
+  APP_PORT: ${STAGING_RARE_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-rare-prod: &variables-rare-prod
+ variables:
+  ENV: prod
+  APP_NAME: rare
+  APP_PORT: ${PROD_RARE_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-wheatis-beta: &variables-wheatis-beta
+ variables:
+  ENV: beta
+  APP_NAME: wheatis
+  APP_PORT: ${BETA_WHEATIS_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-wheatis-staging: &variables-wheatis-staging
+ variables:
+  ENV: staging
+  APP_NAME: wheatis
+  APP_PORT: ${STAGING_WHEATIS_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-wheatis-prod: &variables-wheatis-prod
+ variables:
+  ENV: prod
+  APP_NAME: wheatis
+  APP_PORT: ${PROD_WHEATIS_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+deploy-rare-to-beta:
+ stage: staging
+ <<: *variables-rare-beta
+ <<: *deploy_to_vm
+ only: 
+  - branches
+ except:
+  - master
+ when: manual
+ allow_failure: false # mandatory to block the execution of the pipeline
+
+deploy-rare-to-staging:
+ stage: staging
+ <<: *variables-rare-staging
+ <<: *deploy_to_vm
+ only:
+  - master
+
+deploy-rare-to-prod:
+ stage: production
+ <<: *variables-rare-prod
+ <<: *deploy_to_vm
+ only:
+  - master
+ when: manual
+ allow_failure: false
+
+deploy-wheatis-to-beta:
+ stage: staging
+ <<: *variables-wheatis-beta
+ <<: *deploy_to_vm
+ only:
+  - branches
+ except:
+  - master
+ when: manual
+ allow_failure: false
+
+deploy-wheatis-to-staging:
+ stage: staging
+ <<: *variables-wheatis-staging
+ <<: *deploy_to_vm
+ only:
+  - master
+
+deploy-wheatis-to-prod:
+ stage: production
+ <<: *variables-wheatis-prod
+ <<: *deploy_to_vm
+ only:
+  - master
+ when: manual
+ allow_failure: false
+ 
+.data-integration: &data-integration
+ retry: 1
+ <<: *ssh-initialization-before-script
+ script:
+  - sleep 5
+  # - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
   # Deleting old indexes before reindexing from scratch
+  - "curl -s -XDELETE ${SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
   # Should better handle those index switches by using the strategy proposed
   # in the README file
-  - "curl -s -XDELETE ${BETA_SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
-  - "./scripts/createIndexAndAliases4CI.sh ${BETA_SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
-  - "./scripts/harvestCI.sh ${BETA_SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
-  - eval $(ssh-agent -k)
-  - "echo \"Deploy and index done. Application should be available at: http://${BETA_SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
+  - "./scripts/createIndexAndAliases4CI.sh ${SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
+  - "./scripts/harvestCI.sh ${SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
  environment:
   # take care that some variables cannot be expanded according to where they are
-  # defined. Info:
-  # https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
+  # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
   name: ${ENV}-${APP_NAME}
   # DO NOT specify environment's url here if it is already defined in the
   # Environments settings, it would cause the build not being visible in the
   # Deployments view because of a known bug:
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
 
-deploy-rare-to-beta-vm:
- variables:
-  ENV: beta
-  APP_NAME: rare
-  APP_PORT: ${BETA_RARE_PORT}
- <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- only: 
-  refs:
-   - chore/config-gitlab-cd
+data-integration-rare-beta:
+ stage: data-integration-staging
+ <<: *variables-rare-beta
+ <<: *data-integration
+ only:
+  - branches
+ except:
+  - master
 
-deploy-rare-to-prod-vm:
- variables:
-  ENV: prod
-  APP_NAME: rare
-  # APP_PORT: ${PROD_RARE_PORT}
-  APP_PORT: 8079 # TODO use a variable defined in Gitlab CI: PROD_RARE_PORT
- <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- only: 
-  # refs:
-   - master
- when: manual 
+data-integration-rare-staging:
+ stage: data-integration-staging
+ <<: *variables-rare-staging
+ <<: *data-integration
+ only:
+  - master
 
-deploy-wheatis-to-beta-vm:
- variables:
-  ENV: beta
-  APP_NAME: wheatis
-  APP_PORT: ${BETA_WHEATIS_PORT}
- <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- only: 
-  refs:
-   - chore/config-gitlab-cd
+data-integration-rare-prod:
+ stage: data-integration-production
+ <<: *variables-rare-prod
+ <<: *data-integration
+ only:
+  - master
 
-deploy-wheatis-to-prod-vm:
- variables:
-  ENV: prod
-  APP_NAME: wheatis
-  # APP_PORT: ${PROD_WHEATIS_PORT}
-  APP_PORT: 8078 # TODO use a variable defined in Gitlab CI: PROD_WHEATIS_PORT
- <<: *deploy_to_vm           # Merge the contents of the 'deploy_to_vm' alias
- only: 
-  # refs:
-   - master
- when: manual 
+data-integration-wheatis-beta:
+ stage: data-integration-staging
+ <<: *variables-wheatis-beta
+ <<: *data-integration
+ only:
+  - branches
+ except:
+  - master
+
+data-integration-wheatis-staging:
+ stage: data-integration-staging
+ <<: *variables-wheatis-staging
+ <<: *data-integration
+ only:
+  - master
+
+data-integration-wheatis-prod:
+ stage: data-integration-production
+ <<: *variables-wheatis-prod
+ <<: *data-integration
+ only:
+  - master
 
 # Should find a way to authorize such pipeline once at a time in order to avoid
 # multiple restart of services, elasticsearch cluster or reindexing
