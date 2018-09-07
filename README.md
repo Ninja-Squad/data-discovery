@@ -344,6 +344,11 @@ For a dynamic reload without restarting the application,
 see http://cloud.spring.io/spring-cloud-static/Finchley.SR1/single/spring-cloud.html#refresh-scope
 to check what has to be changed.
 
+In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project 
+and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar.
+More info on how pass a parameter to a Spring Boot app: 
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config
+
 ## Building other apps
 
 By default, the built application is RARe. But this project actually allows building other
