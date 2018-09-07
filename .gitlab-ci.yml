@@ -130,15 +130,6 @@ build-wheatis:
   # Should find a better way than a shitty sleep...
   - eval $(ssh-agent -k)
   - "echo \"Deploy and index done. Application should be available at: http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
- # environment:
-  # take care that some variables cannot be expanded according to where they are
-  # defined. Info:
-  # https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
-  # name: ${ENV}-${APP_NAME}
-  # DO NOT specify environment's url here if it is already defined in the
-  # Environments settings, it would cause the build not being visible in the
-  # Deployments view because of a known bug:
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
 
 .variables-rare-beta: &variables-rare-beta
  variables:
@@ -192,9 +183,6 @@ deploy-rare-to-beta:
   - master
  when: manual
  allow_failure: false # mandatory to block the execution of the pipeline
- environment:
-  name: ${ENV}-${APP_NAME}
-  # url: http://10.0.0.132:8081/rare-beta
 
 deploy-rare-to-staging:
  stage: staging
@@ -202,9 +190,6 @@ deploy-rare-to-staging:
  <<: *deploy_to_vm
  only:
   - master
- environment:
-  name: ${ENV}-${APP_NAME}
-  url: http://10.0.0.132:8082/rare-staging
 
 deploy-rare-to-prod:
  stage: production
@@ -214,9 +199,6 @@ deploy-rare-to-prod:
   - master
  when: manual
  allow_failure: false
- environment:
-  name: ${ENV}-${APP_NAME}
-  url: http://10.0.0.132:8083/rare-prod
 
 deploy-wheatis-to-beta:
  stage: staging
@@ -228,9 +210,6 @@ deploy-wheatis-to-beta:
   - master
  when: manual
  allow_failure: false
- environment:
-  name: ${ENV}-${APP_NAME}
-  # url: http://10.0.0.132:8091/wheatis-beta
 
 deploy-wheatis-to-staging:
  stage: staging
@@ -238,9 +217,6 @@ deploy-wheatis-to-staging:
  <<: *deploy_to_vm
  only:
   - master
- environment:
-  name: ${ENV}-${APP_NAME}
-  url: http://10.0.0.132:8092/wheatis-staging
 
 deploy-wheatis-to-prod:
  stage: production
@@ -250,9 +226,6 @@ deploy-wheatis-to-prod:
   - master
  when: manual
  allow_failure: false
- environment:
-  name: ${ENV}-${APP_NAME}
-  url: http://10.0.0.132:8093/wheatis-prod
  
 .data-integration: &data-integration
  retry: 1
@@ -267,7 +240,13 @@ deploy-wheatis-to-prod:
   - "./scripts/createIndexAndAliases4CI.sh ${SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
   - "./scripts/harvestCI.sh ${SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
  environment:
+  # take care that some variables cannot be expanded according to where they are
+  # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
   name: ${ENV}-${APP_NAME}
+  # DO NOT specify environment's url here if it is already defined in the
+  # Environments settings, it would cause the build not being visible in the
+  # Deployments view because of a known bug:
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
 
 data-integration-rare-beta:
  stage: data-integration-staging
