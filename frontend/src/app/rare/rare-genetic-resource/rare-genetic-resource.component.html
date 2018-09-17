@@ -1,13 +1,13 @@
 <div>
   <h3>
-    <a class="main-link name" [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL">
+    <a class="main-link name" [href]="geneticResource.dataURL ? geneticResource.dataURL : geneticResource.portalURL" target="blank_">
       {{ geneticResource.name }}
     </a>
     <small> - {{ geneticResource.pillarName }}</small>
   </h3>
   <div>
     <span class="mr-4">
-      <a class="datasource-link" [href]="geneticResource.portalURL">{{ geneticResource.databaseSource }}</a>
+      <a class="datasource-link" [href]="geneticResource.portalURL" target="blank_">{{ geneticResource.databaseSource }}</a>
     </span>
     <span class="taxon mr-4">
       <span *ngFor="let taxon of geneticResource.taxon" class="badge badge-secondary mr-2">{{ taxon }}</span>

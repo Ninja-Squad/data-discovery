@@ -6,6 +6,6 @@
   </ng-container>
 </ng-template>
 <!-- name, with a link if necessary, followed by the count -->
-<a *ngIf="url" [href]="url">{{ name }}</a>
+<a *ngIf="url" [href]="url" target="blank_">{{ name }}</a>
 <span *ngIf="!url">{{ name }}</span>
 <small class="ml-1" [class.text-muted]="muted" [ngbTooltip]="tooltipContent" placement="top" container="body">[{{ count | number }}]</small>
