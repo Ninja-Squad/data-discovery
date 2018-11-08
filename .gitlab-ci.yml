@@ -54,7 +54,9 @@ test:
      - frontend/node_modules/
  artifacts:
   reports:
-   junit: ./backend/build/test-results/test/TEST-*.xml
+   junit: 
+    - ./backend/build/test-results/test/TEST-*.xml
+    - ./frontend/karma-junit-tests-report/TEST-*.xml
 
 
 
