@@ -106,7 +106,7 @@ test:
  stage: build
  script:
   # Tests already executed at previous stage, skipping them now
-  - ./gradlew assemble -x test -Papp=${APP_NAME}
+  - ./gradlew assemble -Papp=${APP_NAME}
  artifacts:
   paths:
    - backend/build/libs/${APP_NAME}.jar
