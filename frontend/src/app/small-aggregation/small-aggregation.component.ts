@@ -6,7 +6,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { NULL_VALUE } from '../models/genetic-resource.model';
 
 @Component({
-  selector: 'rare-small-aggregation',
+  selector: 'dd-small-aggregation',
   templateUrl: './small-aggregation.component.html',
   styleUrls: ['./small-aggregation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

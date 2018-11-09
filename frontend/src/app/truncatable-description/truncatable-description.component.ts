@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { HighlightService } from '../highlight.service';
 
 @Component({
-  selector: 'rare-truncatable-description',
+  selector: 'dd-truncatable-description',
   templateUrl: './truncatable-description.component.html',
   styleUrls: ['./truncatable-description.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

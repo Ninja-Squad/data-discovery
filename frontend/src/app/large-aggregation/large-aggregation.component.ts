@@ -13,7 +13,7 @@ export type BucketOrRefine = Bucket | 'REFINE';
 const maxResultsDisplayed = 8;
 
 @Component({
-  selector: 'rare-large-aggregation',
+  selector: 'dd-large-aggregation',
   templateUrl: './large-aggregation.component.html',
   styleUrls: ['./large-aggregation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

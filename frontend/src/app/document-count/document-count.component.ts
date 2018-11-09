@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'rare-document-count',
+  selector: 'dd-document-count',
   templateUrl: './document-count.component.html',
   styleUrls: ['./document-count.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

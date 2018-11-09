@@ -5,7 +5,7 @@ import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
 
 @Component({
-  selector: 'rare-pillars',
+  selector: 'dd-pillars',
   templateUrl: './pillars.component.html',
   styleUrls: ['./pillars.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

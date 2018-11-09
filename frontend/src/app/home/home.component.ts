@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { SearchService } from '../search.service';
 
 @Component({
-  selector: 'rare-home',
+  selector: 'dd-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

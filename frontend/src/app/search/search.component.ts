@@ -11,7 +11,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'rare-search',
+  selector: 'dd-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
   animations: [

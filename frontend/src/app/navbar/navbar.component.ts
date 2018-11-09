@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'rare-navbar',
+  selector: 'dd-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })

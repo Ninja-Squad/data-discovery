@@ -78,8 +78,7 @@ describe('SmallAggregationComponent', () => {
 
   it('should extract keys from selected values', () => {
     // given a few selected values among a bucket
-    const values: { [key: string]: boolean | null } =
-      {
+    const values: { [key: string]: boolean | null } = {
         'France': true,
         'England': false,
         'Italy': true,

@@ -39,9 +39,9 @@ export class ErrorInterceptorService implements HttpInterceptor {
       return {
         status: errorResponse.status,
         message: errorResponse.message
-      }
+      };
     }
-  };
+  }
 
   getErrors(): Observable<HttpError> {
     return this.errorSubject.asObservable();

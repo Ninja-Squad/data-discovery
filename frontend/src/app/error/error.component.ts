@@ -8,7 +8,7 @@ import { filter, map } from 'rxjs/operators';
  * Component which displays the errors emitted by the error-interceptor service, until the user navigates elsewhere
  */
 @Component({
-  selector: 'rare-error',
+  selector: 'dd-error',
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss']
 })

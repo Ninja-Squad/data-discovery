@@ -2,16 +2,16 @@
   <div *ngFor="let aggregation of aggregations">
     <!-- we display checkboxes if there are only a few options -->
     <ng-template #smallAggregation>
-      <rare-small-aggregation [aggregation]="aggregation"
+      <dd-small-aggregation [aggregation]="aggregation"
                               [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-                              (aggregationChange)="onAggregationChange($event)"></rare-small-aggregation>
+                              (aggregationChange)="onAggregationChange($event)"></dd-small-aggregation>
     </ng-template>
     <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
-    <rare-large-aggregation
+    <dd-large-aggregation
       *ngIf="aggregation.type === 'LARGE' && aggregation.buckets.length >= 10; else smallAggregation"
       [aggregation]="aggregation"
       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-      (aggregationChange)="onAggregationChange($event)"></rare-large-aggregation>
+      (aggregationChange)="onAggregationChange($event)"></dd-large-aggregation>
   </div>
 </div>

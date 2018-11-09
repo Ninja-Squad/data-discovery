@@ -4,7 +4,7 @@ import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 
 @Component({
-  selector: 'rare-aggregations',
+  selector: 'dd-aggregations',
   templateUrl: './aggregations.component.html',
   styleUrls: ['./aggregations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

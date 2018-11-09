@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
 
 @Component({
-  selector: 'rare-root',
+  selector: 'dd-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

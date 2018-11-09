@@ -33,8 +33,7 @@ export class HighlightService {
 
     if (!boundaries || boundaries.startIndex === 0 || boundaries.endIndex <= maxLength) {
       return this.simpleTruncate(span, maxLength);
-    }
-    else {
+    } else {
       return this.innerTruncate(span, maxLength, contextLength);
     }
   }
@@ -60,11 +59,11 @@ export class HighlightService {
     return span.innerHTML;
   }
 
-  private innerTruncate(span: HTMLElement, maxLength: number, contextLength: number): string {
+  private innerTruncate(span: HTMLElement, maxLength: number, requestedContextLength: number): string {
     // we know that the first highlighted node (i.e. <em> element) is after maxLength
     // and that the first child node of the span is thus a text node, and the second child node of the span
     // is the first highlighted node, since the span is normalized
-
+    let contextLength = requestedContextLength;
     const totalLength = span.textContent.length;
     const firstTextNode = span.childNodes[0];
     const firstHighlightedNode = span.childNodes[1];
@@ -79,17 +78,21 @@ export class HighlightService {
     }
 
     // split the remaining context length in half, unless there is not enough space at the end
-    const trailingLength = Math.min(remainingContextLength / 2, totalLength - (firstTextNode.textContent.length + firstHighlightedNode.textContent.length));
+    const trailingLength = Math.min(
+      remainingContextLength / 2,
+      totalLength - (firstTextNode.textContent.length + firstHighlightedNode.textContent.length));
     const beginningLength = remainingContextLength - trailingLength;
 
     // we will generate a new span and append the various elements.
     const resultSpan = document.createElement('span');
 
-    resultSpan.appendChild(document.createTextNode(firstTextNode.textContent.substring(0, Math.max(0, maxLength - contextLength))));
+    resultSpan.appendChild(document.createTextNode(firstTextNode.textContent.substring(0, Math.max(
+      0, maxLength - contextLength))));
     const ellipsesElement = document.createElement('i');
     ellipsesElement.appendChild(document.createTextNode(' [...] '));
     resultSpan.appendChild(ellipsesElement);
-    resultSpan.appendChild(document.createTextNode(firstTextNode.textContent.substring(firstTextNode.textContent.length - beginningLength)));
+    resultSpan.appendChild(document.createTextNode(firstTextNode.textContent.substring(
+      firstTextNode.textContent.length - beginningLength)));
 
     let length = beginningLength;
     for (let i = 1; i < span.childNodes.length && length < contextLength; i++) {
@@ -114,8 +117,7 @@ export class HighlightService {
       const childNode = span.childNodes[i];
       if (childNode instanceof HTMLElement) {
         return { startIndex: index, endIndex: index + childNode.textContent.length };
-      }
-      else {
+      } else {
         index += childNode.textContent.length;
       }
     }

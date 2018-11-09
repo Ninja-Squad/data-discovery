@@ -51,7 +51,7 @@ registerLocaleData(localeFr);
     NgbTypeaheadModule,
     NgbTooltipModule,
     // the appropriate resource module depending on the `resourceModule` configured in the environment
-    // each of the possible modules contains a component with a selector `rare-genetic-resource`
+    // each of the possible modules contains a component with a selector `dd-genetic-resource`
     // able to display the genetic resource of the application
     environment.resourceModule
   ],

@@ -4,13 +4,13 @@
         "directive-selector": [
             true,
             "attribute",
-            "rare",
+            "dd",
             "camelCase"
         ],
         "component-selector": [
             true,
             "element",
-            "rare",
+            "dd",
             "kebab-case"
         ]
     }
