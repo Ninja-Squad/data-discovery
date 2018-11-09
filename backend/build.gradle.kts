@@ -14,9 +14,9 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "2.0.5.RELEASE"
-    id("com.gorylenko.gradle-git-properties") version "1.4.21"
-    id("org.asciidoctor.convert") version "1.5.3"
+    id("org.springframework.boot") version "2.1.0.RELEASE"
+    id("com.gorylenko.gradle-git-properties") version "1.5.2"
+    id("org.asciidoctor.convert") version "1.5.9.2"
     id("io.spring.dependency-management") version "1.0.6.RELEASE"
 }
 
@@ -27,7 +27,6 @@ java {
 
 repositories {
     mavenCentral()
-    maven("https://repo.spring.io/libs-milestone")
 }
 
 val snippetsDir = file("build/generated-snippets")
@@ -112,8 +111,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
-    implementation("org.springframework.data:spring-data-commons:2.1.0.RC1")
-    implementation("org.springframework.data:spring-data-elasticsearch:3.1.0.RC1")
+    implementation("org.springframework.data:spring-data-commons")
+    implementation("org.springframework.data:spring-data-elasticsearch")
     implementation("org.elasticsearch:elasticsearch:6.3.1")
     implementation("org.elasticsearch.client:transport:6.3.1")
     implementation("org.elasticsearch.plugin:transport-netty4-client:6.3.1")
@@ -124,8 +123,8 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("org.mockito:mockito-junit-jupiter:2.19.1")
-    testImplementation("org.junit-pioneer:junit-pioneer:0.1.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:2.23.0")
+    testImplementation("org.junit-pioneer:junit-pioneer:0.3.0")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
