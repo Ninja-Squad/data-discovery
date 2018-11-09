@@ -2,6 +2,19 @@
 /build/
 !gradle/wrapper/gradle-wrapper.jar
 
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
 ### STS ###
 .apt_generated
 .classpath

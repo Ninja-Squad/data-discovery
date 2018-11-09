@@ -41,7 +41,7 @@ test:
      # `max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]`
      # cluster.name=es-rare
      # the cluster name used in tests
-     command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-rare"]
+     command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-data-discovery"]
  script: ./gradlew test --parallel
  cache:
    key: "$CI_COMMIT_REF_NAME"

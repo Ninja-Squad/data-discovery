@@ -12,7 +12,7 @@ You need to install:
 - a recent enough JDK8
 
 The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9300`,
-in a cluster named `es-rare`.
+in a cluster named `es-data-discovery`.
 To have such an instance, simply run:
 
     docker-compose up
@@ -81,7 +81,7 @@ You can approximate what runs on CI by executing:
 
 ## Harvest
 
-Harvesting (i.e. importing genetic resources stored in JSON files into ElasticSearch) consists in
+Harvesting (i.e. importing documents stored in JSON files into ElasticSearch) consists in
 creating the necessary index and aliases, and then placing the JSON files into a directory where the server can find them.
 
 To create the index and its aliases execute the script 
@@ -127,15 +127,15 @@ app in `dev` environment as same as in `beta` or `prod` environments. For brevit
 The application doesn't use the physical resources index directly. Instead, it uses two aliases, that must be created 
 before using the application:
 
- * `rare-dev-resource-index` is the alias used by the application to search for genetic resources
- * `rare-dev-resource-harvest-index` is the alias used by the application to store genetic resources when the harvest is triggered.
+ * `rare-dev-resource-index` is the alias used by the application to search for documents
+ * `rare-dev-resource-harvest-index` is the alias used by the application to store documents when the harvest is triggered.
  
 In normal operations, these two aliases should refer to the same physical resource index. The script
 `createIndexAndAliases.sh` creates a physical index (named `rare-dev-resource-physical-index`) and creates these two aliases 
 referring to this physical index.
 
 Once the index and the aliases have been created, a harvest can be triggered. The first operation that a harvest
-does is to create or update (put) the mapping for the genetic resource entity into the index aliased by `rare-dev-resource-harvest-index`. 
+does is to create or update (put) the mapping for the document entity into the index aliased by `rare-dev-resource-harvest-index`. 
 Then it parses the JSON files and stores them into this same index. Since the `rare-dev-resource-index` alias 
 normally refers to the same physical index, searches will find the resources stored by the harvester.
 

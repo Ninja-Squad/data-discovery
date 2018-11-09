@@ -1,2 +1,2 @@
-rootProject.name = "rare"
+rootProject.name = "data-discovery"
 include("backend", "frontend")

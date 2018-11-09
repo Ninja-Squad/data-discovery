@@ -7,7 +7,7 @@ spring:
   data:
     elasticsearch:
         cluster:
-          name: es-rare
+          name: es-data-discovery
         host: 127.0.0.1
         port: 9300
 
@@ -43,7 +43,7 @@ spring:
       name: rare
       password: f01a7031fc17
 
-rare:
+data-discovery:
   elasticsearch-prefix: 'rare-dev-'
   resource-dir: /tmp/rare-dev/resources
 
@@ -60,7 +60,7 @@ spring:
       name: wheatis
       password: f01a7031fc17
 
-rare:
+data-discovery:
   elasticsearch-prefix: 'wheatis-dev-'
   resource-dir: /tmp/wheatis-dev/resources
 

@@ -14,7 +14,7 @@ EXP_PARAMS=3
 }
 
 # NOTE: If the settings are changed here, they must also be changed the same way in
-# backend/src/test/resources/fr/inra/urgi/rare/dao/settings.json for the unit tests
+# backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings.json for the unit tests
 
 curl -si -X PUT "${ES_HOST}:9200/${APP_NAME}-${ENV}-resource-physical-index"\
  -H 'Content-Type: application/json' -d"
