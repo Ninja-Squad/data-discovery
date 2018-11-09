@@ -3,17 +3,17 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "rare-frontend": {
+    "data-discovery-frontend": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "rare",
+      "prefix": "dd",
       "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/rare-frontend",
+            "outputPath": "dist/data-discovery-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -127,31 +127,31 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rare-frontend:build",
+            "browserTarget": "data-discovery-frontend:build",
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "production": {
-              "browserTarget": "rare-frontend:build:production"
+              "browserTarget": "data-discovery-frontend:build:production"
             },
             "rare": {
-              "browserTarget": "rare-frontend:build:rare"
+              "browserTarget": "data-discovery-frontend:build:rare"
             },
             "rare-production": {
-              "browserTarget": "rare-frontend:build:rare-production"
+              "browserTarget": "data-discovery-frontend:build:rare-production"
             },
             "wheatis": {
-              "browserTarget": "rare-frontend:build:wheatis"
+              "browserTarget": "data-discovery-frontend:build:wheatis"
             },
             "wheatis-production": {
-              "browserTarget": "rare-frontend:build:wheatis-production"
+              "browserTarget": "data-discovery-frontend:build:wheatis-production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "rare-frontend:build"
+            "browserTarget": "data-discovery-frontend:build"
           }
         },
         "test": {
@@ -190,7 +190,7 @@
         }
       }
     },
-    "rare-frontend-e2e": {
+    "data-discovery-frontend-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -198,11 +198,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "rare-frontend:serve"
+            "devServerTarget": "data-discovery-frontend:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "rare-frontend:serve:rare-production"
+              "devServerTarget": "data-discovery-frontend:serve:rare-production"
             }
           }
         },
@@ -223,5 +223,5 @@
       "styleext": "scss"
     }
   },
-  "defaultProject": "rare-frontend"
+  "defaultProject": "data-discovery-frontend"
 }

@@ -71,7 +71,7 @@ tasks {
         dependsOn(buildInfo)
 
         into("BOOT-INF/classes/static") {
-            from("${project(":frontend").projectDir}/dist/rare-frontend")
+            from("${project(":frontend").projectDir}/dist/data-discovery-frontend")
         }
         into("BOOT-INF/classes/META-INF") {
             from(buildInfo.destinationDir)
