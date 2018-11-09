@@ -56,7 +56,7 @@ describe('DocumentCountComponent', () => {
     expect(tester.count).toHaveText('[1\u00a0298]');
   });
 
-  it('should display a link if it is possible and a count', () => {
+  it('should display a link that opens in a new tab if it is possible and a count', () => {
     // given a component with a name, a url and a count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
@@ -70,6 +70,7 @@ describe('DocumentCountComponent', () => {
     // then we should have the name in a link and the count properly formatted
     expect(tester.link).toHaveText('Florilège');
     expect(tester.link.attr('href')).toBe('http://florilege.arcad-project.org/fr/collections');
+    expect(tester.link.attr('target')).toBe('_blank');
     expect(tester.count).toHaveText('[1\u00a0298]');
   });
 

@@ -69,8 +69,10 @@ describe('RareDocumentComponent', () => {
     expect(tester.title).toContainText(resource.pillarName);
     expect(tester.link).toContainText(resource.name);
     expect(tester.link.attr('href')).toBe(resource.dataURL);
+    expect(tester.link.attr('target')).toBe('_blank');
     expect(tester.datasourceLink).toContainText(resource.databaseSource);
     expect(tester.datasourceLink.attr('href')).toBe(resource.portalURL);
+    expect(tester.datasourceLink.attr('target')).toBe('_blank');
     resource.taxon.forEach(text => expect(tester.taxon).toContainText(text));
     expect(tester.type).toContainText(resource.materialType[0]);
     expect(tester.description).toContainText(resource.description);

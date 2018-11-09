@@ -49,7 +49,7 @@ describe('NavbarComponent', () => {
     expect(tester.navBar.classes).not.toContain('collapse');
   });
 
-  it('should display title and links', () => {
+  it('should display title and links that open in new tabs', () => {
     const tester = new NavbarComponentTester();
     const component = tester.componentInstance;
 
@@ -69,5 +69,6 @@ describe('NavbarComponent', () => {
 
     expect(tester.firstLink.textContent).toBe('INRA');
     expect(tester.firstLink.attr('href')).toBe('http://www.inra.fr/');
+    expect(tester.firstLink.attr('target')).toBe('_blank');
   });
 });

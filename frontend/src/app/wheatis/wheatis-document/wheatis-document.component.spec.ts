@@ -65,6 +65,7 @@ describe('WheatisDocumentComponent', () => {
     expect(tester.title).toContainText(resource.databaseName);
     expect(tester.link).toContainText(resource.name);
     expect(tester.link.attr('href')).toBe(resource.url);
+    expect(tester.link.attr('target')).toBe('_blank');
     expect(tester.type).toContainText(resource.entryType);
     resource.species.forEach(text => expect(tester.species).toContainText(text));
     expect(tester.description).toContainText(resource.description);
