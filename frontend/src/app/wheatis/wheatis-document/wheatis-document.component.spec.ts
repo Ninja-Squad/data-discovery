@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { speculoosMatchers, ComponentTester } from 'ngx-speculoos';
 
-import { WheatisGeneticResourceComponent } from './wheatis-genetic-resource.component';
-import { toWheatisGeneticResource } from '../../models/test-model-generators';
+import { WheatisDocumentComponent } from './wheatis-document.component';
+import { toWheatisDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
-describe('WheatisGeneticResourceComponent', () => {
+describe('WheatisDocumentComponent', () => {
 
-  class WheatisGeneticResourceComponentTester extends ComponentTester<WheatisGeneticResourceComponent> {
+  class WheatisDocumentComponentTester extends ComponentTester<WheatisDocumentComponent> {
     constructor() {
-      super(WheatisGeneticResourceComponent);
+      super(WheatisDocumentComponent);
     }
 
     get title() {
@@ -46,18 +46,18 @@ describe('WheatisGeneticResourceComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [WheatisGeneticResourceComponent, TruncatableDescriptionComponent]
+    declarations: [WheatisDocumentComponent, TruncatableDescriptionComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
-    const tester = new WheatisGeneticResourceComponentTester();
+    const tester = new WheatisDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toWheatisGeneticResource('Bacteria');
-    component.geneticResource = resource;
+    const resource = toWheatisDocument('Bacteria');
+    component.document = resource;
     tester.detectChanges();
 
     // then we should display it

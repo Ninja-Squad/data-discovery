@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
-import { WheatisGeneticResourceComponent } from './wheatis-genetic-resource/wheatis-genetic-resource.component';
+import { WheatisDocumentComponent } from './wheatis-document/wheatis-document.component';
 import { WheatisHeaderComponent } from './wheatis-header/wheatis-header.component';
 
 @NgModule({
@@ -11,11 +11,11 @@ import { WheatisHeaderComponent } from './wheatis-header/wheatis-header.componen
     UrgiCommonModule
   ],
   declarations: [
-    WheatisGeneticResourceComponent,
+    WheatisDocumentComponent,
     WheatisHeaderComponent
   ],
   exports: [
-    WheatisGeneticResourceComponent,
+    WheatisDocumentComponent,
     WheatisHeaderComponent
   ]
 })

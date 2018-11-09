@@ -1,14 +1,14 @@
 <!-- if there are results to display -->
-<div *ngIf="geneticResources.content.length; else noResults">
+<div *ngIf="documents.content.length; else noResults">
   <div id="resume" class="text-muted small mb-3">
     Résultats {{ firstResultIndex | number }} à {{ lastResultIndex | number }}
-    sur {{ geneticResources.totalElements | number }}
-    <ng-container *ngIf="resultLimited">(limités à {{ geneticResources.maxResults | number }})</ng-container>
+    sur {{ documents.totalElements | number }}
+    <ng-container *ngIf="resultLimited">(limités à {{ documents.maxResults | number }})</ng-container>
   </div>
-  <div class="mb-4" *ngFor="let geneticResource of geneticResources.content">
+  <div class="mb-4" *ngFor="let document of documents.content">
     <!-- the following component will not be the same depending on the environment.resourceModule value -->
-    <!-- for example, if the module is `RareModule` it will be a `RareGeneticResourceComponent` -->
-    <dd-genetic-resource [geneticResource]="geneticResource"></dd-genetic-resource>
+    <!-- for example, if the module is `RareModule` it will be a `RareDocumentComponent` -->
+    <dd-document [document]="document"></dd-document>
   </div>
 </div>
 <!-- else we display a simple message -->

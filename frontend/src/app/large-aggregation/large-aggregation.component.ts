@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { NULL_VALUE } from '../models/genetic-resource.model';
+import { NULL_VALUE } from '../models/document.model';
 
 import { Aggregation, Bucket } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';

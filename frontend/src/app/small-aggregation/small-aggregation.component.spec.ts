@@ -8,7 +8,7 @@ import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
-import { NULL_VALUE } from '../models/genetic-resource.model';
+import { NULL_VALUE } from '../models/document.model';
 
 describe('SmallAggregationComponent', () => {
 

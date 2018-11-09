@@ -1,7 +1,7 @@
 import { AggregatedPage, Aggregation, Bucket } from './page';
 import { AggregationCriterion } from './aggregation-criterion';
-import { RareGeneticResourceModel } from '../rare/rare-genetic-resource.model';
-import { WheatisGeneticResourceModel } from '../wheatis/wheatis-genetic-resource.model';
+import { RareDocumentModel } from '../rare/rare-document.model';
+import { WheatisDocumentModel } from '../wheatis/wheatis-document.model';
 
 export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
   return {
@@ -44,11 +44,11 @@ export function toAggregationCriterion(name: string, values: Array<string>): Agg
   };
 }
 
-export function toRareGeneticResource(name: string): RareGeneticResourceModel {
+export function toRareDocument(name: string): RareDocumentModel {
   return {
     identifier: name,
     name,
-    description: 'A description of the genetic geneticResource',
+    description: 'A description of the genetic resource document',
     pillarName: 'Plant',
     databaseSource: 'BRC4Env',
     portalURL: 'http://brc4env.fr',
@@ -73,12 +73,12 @@ export function toRareGeneticResource(name: string): RareGeneticResourceModel {
   };
 }
 
-export function toWheatisGeneticResource(name: string): WheatisGeneticResourceModel {
+export function toWheatisDocument(name: string): WheatisDocumentModel {
   return {
     identifier: name,
     name,
     url: 'http://brc4env.fr',
-    description: 'A description of the genetic geneticResource',
+    description: 'A description of the genetic document',
     databaseName: 'BRC4Env',
     node: 'Node',
     species: [`${name} species`, `${name} species2`],

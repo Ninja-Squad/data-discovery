@@ -5,7 +5,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
 import { SearchService } from '../search.service';
-import { GeneticResourceModel } from '../models/genetic-resource.model';
+import { DocumentModel } from '../models/document.model';
 import { Aggregation, Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -38,7 +38,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class SearchComponent implements OnInit {
   query = '';
   searchForm: FormGroup;
-  results: Page<GeneticResourceModel>;
+  results: Page<DocumentModel>;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
   aggregations: Array<Aggregation> = [];
   // array of all the selected criteria

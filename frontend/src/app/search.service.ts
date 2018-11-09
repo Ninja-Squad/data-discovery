@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
-import { GeneticResourceModel } from './models/genetic-resource.model';
+import { DocumentModel } from './models/document.model';
 import { AggregatedPage } from './models/page';
 import { AggregationCriterion } from './models/aggregation-criterion';
 
@@ -15,12 +15,12 @@ export class SearchService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Searches genetic resources for the given query (full-text search), and retrieves the given page (starting at 1)
+   * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)
    */
   search(query: string,
          aggregate: boolean,
          aggregationCriteria: Array<AggregationCriterion>,
-         pageAsNumber: number): Observable<AggregatedPage<GeneticResourceModel>> {
+         pageAsNumber: number): Observable<AggregatedPage<DocumentModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = (pageAsNumber - 1).toString();
     // we built the search parameters
@@ -33,7 +33,7 @@ export class SearchService {
     if (aggregationCriteria) {
       aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
     }
-    return this.http.get<AggregatedPage<GeneticResourceModel>>('api/genetic-resources', {
+    return this.http.get<AggregatedPage<DocumentModel>>('api/genetic-resources', {
       params
     });
   }

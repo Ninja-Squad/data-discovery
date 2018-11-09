@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
-import { RareGeneticResourceComponent } from './rare-genetic-resource/rare-genetic-resource.component';
+import { RareDocumentComponent } from './rare-document/rare-document.component';
 import { RareHeaderComponent } from './rare-header/rare-header.component';
 
 @NgModule({
@@ -11,11 +11,11 @@ import { RareHeaderComponent } from './rare-header/rare-header.component';
     UrgiCommonModule
   ],
   declarations: [
-    RareGeneticResourceComponent,
+    RareDocumentComponent,
     RareHeaderComponent
   ],
   exports: [
-    RareGeneticResourceComponent,
+    RareDocumentComponent,
     RareHeaderComponent
   ]
 })

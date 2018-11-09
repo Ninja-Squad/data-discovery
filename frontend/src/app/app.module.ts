@@ -12,7 +12,7 @@ import { routes } from './app.routes';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
-import { GeneticResourcesComponent } from './genetic-resources/genetic-resources.component';
+import { DocumentsComponent } from './documents/documents.component';
 import { AggregationsComponent } from './aggregations/aggregations.component';
 import { SmallAggregationComponent } from './small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from './large-aggregation/large-aggregation.component';
@@ -31,7 +31,7 @@ registerLocaleData(localeFr);
     AppComponent,
     HomeComponent,
     SearchComponent,
-    GeneticResourcesComponent,
+    DocumentsComponent,
     AggregationsComponent,
     SmallAggregationComponent,
     LargeAggregationComponent,
@@ -51,14 +51,15 @@ registerLocaleData(localeFr);
     NgbTypeaheadModule,
     NgbTooltipModule,
     // the appropriate resource module depending on the `resourceModule` configured in the environment
-    // each of the possible modules contains a component with a selector `dd-genetic-resource`
+    // each of the possible modules contains a component with a selector `dd-document`
     // able to display the genetic resource of the application
     environment.resourceModule
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'fr-FR' },
-    { provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true }
+    {provide: LOCALE_ID, useValue: 'fr-FR'},
+    {provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

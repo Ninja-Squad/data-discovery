@@ -11,7 +11,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { Bucket } from '../models/page';
-import { NULL_VALUE } from '../models/genetic-resource.model';
+import { NULL_VALUE } from '../models/document.model';
 
 describe('LargeAggregationComponent', () => {
 

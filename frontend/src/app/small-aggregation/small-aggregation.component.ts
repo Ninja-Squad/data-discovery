@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { NULL_VALUE } from '../models/genetic-resource.model';
+import { NULL_VALUE } from '../models/document.model';
 
 @Component({
   selector: 'dd-small-aggregation',

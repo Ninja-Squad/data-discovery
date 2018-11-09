@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
-import { RareGeneticResourceComponent } from './rare-genetic-resource.component';
-import { toRareGeneticResource } from '../../models/test-model-generators';
+import { RareDocumentComponent } from './rare-document.component';
+import { toRareDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
-describe('RareGeneticResourceComponent', () => {
+describe('RareDocumentComponent', () => {
 
-  class RareGeneticResourceComponentTester extends ComponentTester<RareGeneticResourceComponent> {
+  class RareDocumentComponentTester extends ComponentTester<RareDocumentComponent> {
     constructor() {
-      super(RareGeneticResourceComponent);
+      super(RareDocumentComponent);
     }
 
     get title() {
@@ -50,18 +50,18 @@ describe('RareGeneticResourceComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [RareGeneticResourceComponent, TruncatableDescriptionComponent]
+    declarations: [RareDocumentComponent, TruncatableDescriptionComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
-    const tester = new RareGeneticResourceComponentTester();
+    const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toRareGeneticResource('Bacteria');
-    component.geneticResource = resource;
+    const resource = toRareDocument('Bacteria');
+    component.document = resource;
     tester.detectChanges();
 
     // then we should display it
@@ -80,13 +80,13 @@ describe('RareGeneticResourceComponent', () => {
   });
 
   it('should have a link to portal if data url is null or empty', () => {
-    const tester = new RareGeneticResourceComponentTester();
+    const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource with no data url
-    const resource = toRareGeneticResource('Bacteria');
+    const resource = toRareDocument('Bacteria');
     resource.dataURL = null;
-    component.geneticResource = resource;
+    component.document = resource;
     tester.detectChanges();
 
     // then we should link to portal url
@@ -94,13 +94,13 @@ describe('RareGeneticResourceComponent', () => {
   });
 
   it('should display several types properly', () => {
-    const tester = new RareGeneticResourceComponentTester();
+    const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource with several types
-    const resource = toRareGeneticResource('Bacteria');
+    const resource = toRareDocument('Bacteria');
     resource.materialType = ['type1', 'type2'];
-    component.geneticResource = resource;
+    component.document = resource;
     tester.detectChanges();
 
     // then we should them

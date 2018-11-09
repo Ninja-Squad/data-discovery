@@ -1,11 +1,11 @@
-import { GeneticResourceModel } from '../models/genetic-resource.model';
+import { DocumentModel } from '../models/document.model';
 
 export interface Location {
   lat: number;
   lon: number;
 }
 
-export interface RareGeneticResourceModel extends GeneticResourceModel {
+export interface RareDocumentModel extends DocumentModel {
   pillarName: string;
   databaseSource: string;
   portalURL: string;

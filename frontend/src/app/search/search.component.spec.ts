@@ -10,11 +10,11 @@ import { of } from 'rxjs';
 import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
-import { GeneticResourcesComponent } from '../genetic-resources/genetic-resources.component';
-import { RareGeneticResourceComponent } from '../rare/rare-genetic-resource/rare-genetic-resource.component';
+import { DocumentsComponent } from '../documents/documents.component';
+import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
 import { SearchService } from '../search.service';
-import { GeneticResourceModel } from '../models/genetic-resource.model';
-import { toAggregation, toRareGeneticResource, toSecondPage, toSinglePage } from '../models/test-model-generators';
+import { DocumentModel } from '../models/document.model';
+import { toAggregation, toRareDocument, toSecondPage, toSinglePage } from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
@@ -36,7 +36,7 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
   }
 
   get results() {
-    return this.debugElement.query(By.directive(GeneticResourcesComponent));
+    return this.debugElement.query(By.directive(DocumentsComponent));
   }
 
   get pagination() {
@@ -61,8 +61,8 @@ describe('SearchComponent', () => {
     ],
     declarations: [
       SearchComponent,
-      GeneticResourcesComponent,
-      RareGeneticResourceComponent,
+      DocumentsComponent,
+      RareDocumentComponent,
       AggregationsComponent,
       SmallAggregationComponent,
       LargeAggregationComponent,
@@ -307,14 +307,14 @@ describe('SearchComponent', () => {
     expect(tester.results).toBeNull();
 
     // when it has results
-    const resource = toRareGeneticResource('Bacteria');
+    const resource = toRareDocument('Bacteria');
     component.results = toSecondPage([resource]);
     tester.detectChanges();
 
     // then it should display them
     expect(tester.results).not.toBeNull();
-    const componentInstance = tester.results.componentInstance as GeneticResourcesComponent;
-    expect(componentInstance.geneticResources).toEqual(component.results);
+    const componentInstance = tester.results.componentInstance as DocumentsComponent;
+    expect(componentInstance.documents).toEqual(component.results);
 
     // and a pagination with one page
     expect(tester.pagination).not.toBeNull();
@@ -330,9 +330,9 @@ describe('SearchComponent', () => {
     tester.detectChanges();
 
     // when it has results
-    const content: Array<GeneticResourceModel> = [];
+    const content: Array<DocumentModel> = [];
     for (let i = 0; i < 20; i++) {
-      content.push(toRareGeneticResource(`Bacteria ${i}`));
+      content.push(toRareDocument(`Bacteria ${i}`));
     }
 
     // in page 200 on a limited number of pages
@@ -373,7 +373,7 @@ describe('SearchComponent', () => {
     // given a component with a single page result
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
-    component.results = toSinglePage([toRareGeneticResource('Bacteria')]);
+    component.results = toSinglePage([toRareDocument('Bacteria')]);
     tester.detectChanges();
 
     // then it should display results even if empty
@@ -385,7 +385,7 @@ describe('SearchComponent', () => {
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
     component.results = toSinglePage(
-      [toRareGeneticResource('Bacteria')],
+      [toRareDocument('Bacteria')],
       [toAggregation('coo', ['France', 'Italy'])]
     );
     tester.detectChanges();
@@ -399,7 +399,7 @@ describe('SearchComponent', () => {
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
     component.results = toSinglePage(
-      [toRareGeneticResource('Bacteria')],
+      [toRareDocument('Bacteria')],
       [toAggregation('coo', ['France', 'Italy'])]
     );
     tester.detectChanges();
