@@ -11,9 +11,9 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author JB Nizet
  */
 @NoRepositoryBean
-public interface DocumentDao<R extends Document, I extends IndexedDocument<R>>
-    extends ElasticsearchRepository<R, String>,
-        DocumentDaoCustom<R, I> {
+public interface DocumentDao<D extends Document, I extends IndexedDocument<D>>
+    extends ElasticsearchRepository<D, String>,
+        DocumentDaoCustom<D, I> {
 
     String DATABASE_SOURCE_AGGREGATION_NAME = "databaseSource";
     String PORTAL_URL_AGGREGATION_NAME = "portalURL";

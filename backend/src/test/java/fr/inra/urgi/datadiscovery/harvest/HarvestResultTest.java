@@ -1,5 +1,7 @@
 package fr.inra.urgi.datadiscovery.harvest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.time.Instant;
 
@@ -9,8 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  * Unit test checking that a HarvestResult can be marshalled/unmarchalled to/from JSON

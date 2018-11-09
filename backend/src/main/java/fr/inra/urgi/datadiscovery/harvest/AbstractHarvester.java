@@ -32,17 +32,17 @@ import fr.inra.urgi.datadiscovery.harvest.HarvestedFile.HarvestedFileBuilder;
  *
  * @author JB Nizet
  */
-public abstract class AbstractHarvester<R extends Document, I extends IndexedDocument<R>> {
+public abstract class AbstractHarvester<D extends Document, I extends IndexedDocument<D>> {
 
     private static final int BATCH_SIZE = 100;
 
     private final Path resourceDir;
     private final ObjectMapper objectMapper;
-    private final DocumentDao<R, I> documentDao;
+    private final DocumentDao<D, I> documentDao;
 
     public AbstractHarvester(DataDiscoveryProperties dataDiscoveryProperties,
-							 ObjectMapper objectMapper,
-							 DocumentDao<R, I> documentDao) {
+                                  ObjectMapper objectMapper,
+                                  DocumentDao<D, I> documentDao) {
         this.resourceDir = dataDiscoveryProperties.getResourceDir();
         this.objectMapper = objectMapper;
         this.documentDao = documentDao;
@@ -117,7 +117,7 @@ public abstract class AbstractHarvester<R extends Document, I extends IndexedDoc
                     try {
                         // necessary to avoid failing in the middle of an object
                         TreeNode treeNode = objectMapper.readTree(parser);
-                        R document = objectMapper.treeToValue(treeNode, getDocumentClass());
+                        D document = objectMapper.treeToValue(treeNode, getDocumentClass());
                         batch.add(toIndexedDocument(document));
                         if (batch.size() == BATCH_SIZE) {
                             documentDao.saveAll(batch);
@@ -151,6 +151,6 @@ public abstract class AbstractHarvester<R extends Document, I extends IndexedDoc
         resultBuilder.withFile(fileBuilder.build());
     }
 
-    protected abstract Class<R> getDocumentClass();
-    protected abstract I toIndexedDocument(R document);
+    protected abstract Class<D> getDocumentClass();
+    protected abstract I toIndexedDocument(D document);
 }

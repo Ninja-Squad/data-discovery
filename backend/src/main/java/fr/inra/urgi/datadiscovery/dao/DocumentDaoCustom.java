@@ -13,14 +13,14 @@ import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
  * Base custom interface for document DAOs
  * @author JB Nizet
  */
-public interface DocumentDaoCustom<R extends Document, I extends IndexedDocument<R>> {
+public interface DocumentDaoCustom<D extends Document, I extends IndexedDocument<D>> {
     /**
      * Searches for the given text anywhere (except typically in the identifier, the URL and numeric fields) in the
      * documents, and returns the requested page (results are sorted by score, in descending order).
      * @param aggregate if true, terms aggregations are requested and present in the returned value. Otherwise,
      * the returned aggregated page has no aggregation.
      */
-    AggregatedPage<R> search(String query,
+    AggregatedPage<D> search(String query,
                              boolean aggregate,
                              boolean highlight,
                              SearchRefinements refinements,

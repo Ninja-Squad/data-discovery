@@ -20,11 +20,11 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
  * and which thus make it possible or easier to implement completion suggestions.
  * @author JB Nizet
  */
-public interface IndexedDocument<R extends Document> {
+public interface IndexedDocument<D extends Document> {
     /**
      * Returns the wrapped document
      */
-    R getDocument();
+    D getDocument();
 
     /**
      * Returns the list of suggestions to index for completion

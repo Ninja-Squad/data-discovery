@@ -49,8 +49,8 @@ import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
  * Base class for implementations of {@link DocumentDao}
  * @author JB Nizet
  */
-public abstract class AbstractDocumentDaoImpl<R extends Document, I extends IndexedDocument<R>>
-    implements DocumentDaoCustom<R, I> {
+public abstract class AbstractDocumentDaoImpl<D extends Document, I extends IndexedDocument<D>>
+    implements DocumentDaoCustom<D, I> {
 
     /**
      * The name of the completion suggestion
@@ -68,16 +68,16 @@ public abstract class AbstractDocumentDaoImpl<R extends Document, I extends Inde
     private int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
     protected final ElasticsearchTemplate elasticsearchTemplate;
-    private final AbstractDocumentHighlightMapper<R> documentHighlightMapper;
+    private final AbstractDocumentHighlightMapper<D> documentHighlightMapper;
 
     public AbstractDocumentDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
-                                   AbstractDocumentHighlightMapper<R> documentHighlightMapper) {
+                                   AbstractDocumentHighlightMapper<D> documentHighlightMapper) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.documentHighlightMapper = documentHighlightMapper;
     }
 
     @Override
-    public AggregatedPage<R> search(String query,
+    public AggregatedPage<D> search(String query,
                                     boolean aggregate,
                                     boolean highlight,
                                     SearchRefinements refinements,
@@ -115,7 +115,7 @@ public abstract class AbstractDocumentDaoImpl<R extends Document, I extends Inde
             builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0));
         }
 
-        AggregatedPage<R> result = elasticsearchTemplate.queryForPage(builder.build(),
+        AggregatedPage<D> result = elasticsearchTemplate.queryForPage(builder.build(),
                                                                       getDocumentClass(),
                 documentHighlightMapper);
 
@@ -150,7 +150,7 @@ public abstract class AbstractDocumentDaoImpl<R extends Document, I extends Inde
         return refinementQuery;
     }
 
-    private AggregatedPage<R> extractTermsAggregations(AggregatedPage<R> page) {
+    private AggregatedPage<D> extractTermsAggregations(AggregatedPage<D> page) {
         List<Terms> termsAggregations =
             page.getAggregations()
                 .asList()
@@ -290,7 +290,7 @@ public abstract class AbstractDocumentDaoImpl<R extends Document, I extends Inde
             .addAggregation(pillar)
             .withPageable(NoPage.INSTANCE);
 
-        AggregatedPage<R> documents = elasticsearchTemplate.queryForPage(builder.build(), getDocumentClass());
+        AggregatedPage<D> documents = elasticsearchTemplate.queryForPage(builder.build(), getDocumentClass());
         return documents.getAggregations().get(pillarAggregationName);
     }
 
@@ -304,7 +304,7 @@ public abstract class AbstractDocumentDaoImpl<R extends Document, I extends Inde
     /**
      * Returns the specific {@link Document} class of this DAO
      */
-    protected abstract Class<R> getDocumentClass();
+    protected abstract Class<D> getDocumentClass();
 
     /**
      * Returns the specific {@link IndexedDocument} class of this DAO

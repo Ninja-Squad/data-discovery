@@ -19,7 +19,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
  * A base class for highlight mappers. There is one subclass for each app (RARe, WheatIS, etc.)
  * @author JB Nizet
  */
-public abstract class AbstractDocumentHighlightMapper<R extends Document>
+public abstract class AbstractDocumentHighlightMapper<D extends Document>
     implements SearchResultMapper {
 
     private DefaultResultMapper defaultResultMapper;
@@ -35,12 +35,12 @@ public abstract class AbstractDocumentHighlightMapper<R extends Document>
             throw new IllegalArgumentException("The only supported class is " + getDocumentClass());
         }
 
-        AggregatedPage<R> page = defaultResultMapper.mapResults(response, getDocumentClass(), pageable);
+        AggregatedPage<D> page = defaultResultMapper.mapResults(response, getDocumentClass(), pageable);
 
-        List<R> newContent = new ArrayList<>(page.getContent());
+        List<D> newContent = new ArrayList<>(page.getContent());
 
         for (int i = 0; i < page.getContent().size(); i++) {
-            R document = page.getContent().get(i);
+            D document = page.getContent().get(i);
             SearchHit hit = response.getHits().getAt(i);
             Map<String, HighlightField> highlightFields = hit.getHighlightFields();
 
@@ -56,7 +56,7 @@ public abstract class AbstractDocumentHighlightMapper<R extends Document>
             }
 
             if (hightlightFound) {
-                R newDocument = clone(document, newDescription);
+                D newDocument = clone(document, newDescription);
                 newContent.set(i, newDocument);
             }
         }
@@ -68,7 +68,7 @@ public abstract class AbstractDocumentHighlightMapper<R extends Document>
                                                             page.getScrollId());
     }
 
-    protected abstract Class<R> getDocumentClass();
-    protected abstract R clone(R original, String newDescription);
+    protected abstract Class<D> getDocumentClass();
+    protected abstract D clone(D original, String newDescription);
 }
 
