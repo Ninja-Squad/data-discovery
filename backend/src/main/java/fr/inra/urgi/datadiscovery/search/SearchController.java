@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * A REST controller for the search API
  */
 @RestController
-@RequestMapping("/api/genetic-resources")
+@RequestMapping("/api/documents")
 public class SearchController {
 
     public static final int PAGE_SIZE = 20;

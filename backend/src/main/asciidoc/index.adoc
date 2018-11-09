@@ -5,7 +5,7 @@
 
 == Introduction
 
-This document describes the URLs, parameters, request and response bodies of the various web services of RARe.
+This document describes the URLs, parameters, request and response bodies of the various web services of data-discovery (RARe or WheatIS apps).
 
 The request and response bodies are always JSON. The examples showed here are pretty-printed to make them easier
 to read, but they're not in reality. If you're using the services with the command-line, using HTTPie instead
@@ -21,7 +21,7 @@ Some headers are also removed from the snippets here, to improve readability.
 === Trigger a harvest
 
 Harvesting, i.e. importing resources from JSON files into Elasticsearch, is simply done by copying the JSON
-files to the configured `rare.resource-dir` directory, and then sending a POST request, without any body,
+files to the configured `data-discovery.resource-dir` directory, and then sending a POST request, without any body,
 to trigger the harvest.
 
 Harvested resources which already exist are updated (they are identified by their `identifier` property).
@@ -110,11 +110,11 @@ include::{snippets}/harvests/list2/curl-request.adoc[]
 .HTTPie
 include::{snippets}/harvests/list2/httpie-request.adoc[]
 
-== Genetic Resources (aka Search)
+== Documents (aka Search)
 
 === Full text search
 
-The genetic resources endpoint is used to search for genetic resources.
+The documents endpoint is used to search documents.
 The simplest way to use this service is to provide a query, that will be used to do a full-text search in the
 various properties (except identifiers, numeric fields and URLs) of all the genetic resources.
 
@@ -139,7 +139,7 @@ include::{snippets}/search/fulltext/response-fields.adoc[]
 === Pagination
 
 As you can see, you actually get back a page of results. The above example shows a search that would find only 2
-matching genetic resources. In reality, most searches will find much more matching resources than that, and you might thus want to navigate to a different page.
+matching documents. In reality, most searches will find much more matching documents than that, and you might thus want to navigate to a different page.
 
 Suppose the previous search gets back a page where `totalPages` is 254.
 You can request any page between 0 and 253 included by passing the page number as an additional request parameter.
@@ -163,7 +163,7 @@ include::{snippets}/search/page/http-response.adoc[]
 === Highlighting
 
 By passing an additional `highlight=true` request parameter, you can ask the search results to be highlighted.
-To be accurate, only the description of the returned genetic resources will be highlighted, by surrounding the matching
+To be accurate, only the description of the returned documents will be highlighted, by surrounding the matching
 words between `<em></em>` HTML tags.
 
 .Request
@@ -183,7 +183,7 @@ include::{snippets}/search/highlight/http-response.adoc[]
 
 === Aggregations
 
-In addition to the page of genetic resources, the service can also aggregate the search results.
+In addition to the page of documents, the service can also aggregate the search results.
 To request the aggregations, you must pass an additional `aggregate=true` request parameter.
 The set of properties used to compute aggregations is hard-coded on the server, and is thus always the same:
 `domain`, `biotopeType`, `materialType`, `countryOfOrigin` and `taxon`.
@@ -243,7 +243,7 @@ include::{snippets}/search/filter/httpie-request.adoc[]
 
 === List pillars
 
-The pillars service is used to list pillars, their database sources, and the number of genetic resources existing for each of them in the database.
+The pillars service is used to list pillars, their database sources, and the number of documents existing for each of them in the database.
 
 .Request
 include::{snippets}/pillars/list/http-request.adoc[]
