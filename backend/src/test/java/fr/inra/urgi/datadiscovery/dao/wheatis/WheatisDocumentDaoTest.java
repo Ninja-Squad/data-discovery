@@ -347,7 +347,7 @@ class WheatisDocumentDaoTest {
         WheatisDocument resource1 =
             WheatisDocument.builder()
                                   .withId("r1")
-                                  .withDescription("Here comes the sun, tadadada. It's alright.")
+                                  .withDescription("Here comes the sun, <p>tadadada</p>. It's alright.")
                                   .build();
 
 
@@ -368,8 +368,9 @@ class WheatisDocumentDaoTest {
                                                                                   firstPage);
 
         assertThat(result.getContent())
-            .extracting(WheatisDocument::getDescription)
-            .containsOnly("Here <em>comes</em> the <em>sun</em>, tadadada. It's alright.", "Imagine all the people");
+            .extracting(WheatisGeneticResource::getDescription)
+            .containsOnly("Here <em>comes</em> the <em>sun</em>, &lt;p&gt;tadadada&lt;&#x2F;p&gt;. It&#x27;s alright.",
+                          "Imagine all the people");
     }
 
     @Nested

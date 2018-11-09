@@ -592,7 +592,7 @@ class RareDocumentDaoTest {
         RareDocument resource1 =
             RareDocument.builder()
                                .withId("r1")
-                               .withDescription("Here comes the sun, tadadada. It's alright.")
+                               .withDescription("Here comes the sun, <p>tadadada</p>. It's alright.")
                                .build();
 
 
@@ -613,8 +613,9 @@ class RareDocumentDaoTest {
                                                                                firstPage);
 
         assertThat(result.getContent())
-            .extracting(RareDocument::getDescription)
-            .containsOnly("Here <em>comes</em> the <em>sun</em>, tadadada. It's alright.", "Imagine all the people");
+            .extracting(RareGeneticResource::getDescription)
+            .containsOnly("Here <em>comes</em> the <em>sun</em>, &lt;p&gt;tadadada&lt;&#x2F;p&gt;. It&#x27;s alright.",
+                          "Imagine all the people");
     }
 
     @Nested

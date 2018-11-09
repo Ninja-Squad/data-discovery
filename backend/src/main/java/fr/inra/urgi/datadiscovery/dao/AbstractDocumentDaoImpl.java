@@ -112,7 +112,8 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
         }
 
         if (highlight) {
-            builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0));
+            builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0))
+                   .withHighlightBuilder(new HighlightBuilder().encoder("html"));
         }
 
         AggregatedPage<D> result = elasticsearchTemplate.queryForPage(builder.build(),
