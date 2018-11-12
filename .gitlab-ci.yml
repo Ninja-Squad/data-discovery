@@ -169,7 +169,6 @@ deploy-rare-to-beta:
   - branches
  except:
   - master
- when: manual
  allow_failure: false # mandatory to block the execution of the pipeline
 
 deploy-rare-to-staging:
@@ -196,7 +195,6 @@ deploy-wheatis-to-beta:
   - branches
  except:
   - master
- when: manual
  allow_failure: false
 
 deploy-wheatis-to-staging:
@@ -258,6 +256,7 @@ data-integration-rare-prod:
  <<: *data-integration
  only:
   - master
+ when: manual
 
 data-integration-wheatis-beta:
  stage: data-integration-staging
@@ -281,6 +280,7 @@ data-integration-wheatis-prod:
  <<: *data-integration
  only:
   - master
+ when: manual
 
 # Should find a way to authorize such pipeline once at a time in order to avoid
 # multiple restart of services, elasticsearch cluster or reindexing
