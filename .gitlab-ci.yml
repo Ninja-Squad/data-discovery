@@ -256,7 +256,6 @@ data-integration-rare-prod:
  <<: *data-integration
  only:
   - master
- when: manual
 
 data-integration-wheatis-beta:
  stage: data-integration-staging
@@ -280,7 +279,6 @@ data-integration-wheatis-prod:
  <<: *data-integration
  only:
   - master
- when: manual
 
 # Should find a way to authorize such pipeline once at a time in order to avoid
 # multiple restart of services, elasticsearch cluster or reindexing
