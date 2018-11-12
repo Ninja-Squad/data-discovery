@@ -368,7 +368,7 @@ class WheatisDocumentDaoTest {
                                                                                   firstPage);
 
         assertThat(result.getContent())
-            .extracting(WheatisGeneticResource::getDescription)
+            .extracting(WheatisDocument::getDescription)
             .containsOnly("Here <em>comes</em> the <em>sun</em>, &lt;p&gt;tadadada&lt;&#x2F;p&gt;. It&#x27;s alright.",
                           "Imagine all the people");
     }

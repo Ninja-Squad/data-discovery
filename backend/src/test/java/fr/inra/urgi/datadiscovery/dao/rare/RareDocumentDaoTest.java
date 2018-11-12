@@ -613,7 +613,7 @@ class RareDocumentDaoTest {
                                                                                firstPage);
 
         assertThat(result.getContent())
-            .extracting(RareGeneticResource::getDescription)
+            .extracting(RareDocument::getDescription)
             .containsOnly("Here <em>comes</em> the <em>sun</em>, &lt;p&gt;tadadada&lt;&#x2F;p&gt;. It&#x27;s alright.",
                           "Imagine all the people");
     }
