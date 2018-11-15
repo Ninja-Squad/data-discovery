@@ -8,3 +8,6 @@ sh $BASEDIR/createIndexAndAliases4CI.sh localhost rare dev
 
 # WheatIS index/alias
 sh $BASEDIR/createIndexAndAliases4CI.sh localhost wheatis dev
+
+# GnpIS index/alias
+sh $BASEDIR/createIndexAndAliases4CI.sh localhost gnpis dev

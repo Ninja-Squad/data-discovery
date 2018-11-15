@@ -14,6 +14,14 @@ const PROXY_CONFIG = [
     ],
     target: "http://localhost:8081",
     secure: false
+  },
+  {
+    context: [
+      "/gnpis-dev/api",
+      "/gnpis-dev/actuator"
+    ],
+    target: "http://localhost:8082",
+    secure: false
   }
 ];
 

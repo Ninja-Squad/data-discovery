@@ -142,6 +142,58 @@
                   "maximumError": "1mb"
                 }
               ]
+            },
+            "gnpis": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.gnpis.ts"
+                }
+              ],
+              "baseHref": "/gnpis-dev/",
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/assets/gnpis/"
+                ]
+              },
+              "assets": [
+                { "glob": "*", "input": "src/assets/gnpis", "output": "/assets" },
+                "src/assets"
+              ]
+            },
+            "gnpis-production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.gnpis.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "baseHref": "./",
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/assets/gnpis/"
+                ]
+              },
+              "assets": [
+                { "glob": "*", "input": "src/assets/gnpis", "output": "/assets" },
+                "src/assets"
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
@@ -166,6 +218,12 @@
             },
             "wheatis-production": {
               "browserTarget": "data-discovery-frontend:build:wheatis-production"
+            },
+            "gnpis": {
+              "browserTarget": "data-discovery-frontend:build:gnpis"
+            },
+            "gnpis-production": {
+              "browserTarget": "data-discovery-frontend:build:gnpis-production"
             }
           }
         },

@@ -18,7 +18,9 @@ image: urgi/docker-browsers:latest
 # isolated from any previous builds.
 variables:
  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+
 
 test:
  stage: test
@@ -49,7 +51,7 @@ test:
      - frontend/node_modules/
  artifacts:
   reports:
-   junit:
+   junit: 
     - ./backend/build/test-results/test/TEST-*.xml
     - ./frontend/karma-junit-tests-report/TEST*.xml
 
@@ -155,7 +157,7 @@ deploy-rare-to-beta:
  stage: staging
  <<: *variables-rare-beta
  <<: *deploy_to_vm
- only:
+ only: 
   - branches
  except:
   - master
@@ -202,7 +204,7 @@ deploy-wheatis-to-prod:
   - master
  when: manual
  allow_failure: false
-
+ 
 .data-integration: &data-integration
  retry: 1
  <<: *ssh-initialization-before-script
