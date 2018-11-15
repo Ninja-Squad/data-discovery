@@ -68,3 +68,20 @@ server:
   port: 8081
   servlet:
     context-path: /wheatis-dev
+
+---
+spring:
+  profiles: gnpis-app
+  cloud.config.name: gnpis
+  security.user:
+      name: gnpis
+      password: f01a7031fc17
+
+data-discovery:
+  elasticsearch-prefix: 'gnpis-dev-'
+  resource-dir: /tmp/gnpis-dev/resources
+
+server:
+  port: 8081
+  servlet:
+    context-path: /gnpis-dev

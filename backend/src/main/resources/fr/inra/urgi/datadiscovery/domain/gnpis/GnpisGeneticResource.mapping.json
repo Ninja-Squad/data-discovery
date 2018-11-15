@@ -1,0 +1,69 @@
+{
+    "properties": {
+        "name": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "description": {
+            "analyzer": "english",
+            "type": "text"
+        },
+        "entryType": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "databaseName": {
+            "type": "text",
+            "analyzer": "french",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "url": {
+            "type": "text",
+            "index": false,
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "species": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "node": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "suggestions": {
+            "type" : "completion",
+            "analyzer": "custom_suggestion_analyzer"
+        }
+    }
+}
