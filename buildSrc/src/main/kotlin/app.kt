@@ -8,6 +8,6 @@ val Project.app: String
         ?.let { it as String }
         ?.also {
             require(it in acceptableValues) {
-                "Invalid value for property app. Valid values are $acceptableValues."
+                "Invalid value for property app. Valid values are $acceptableValues. The current value is : $it"
             }
         } ?: "rare"
