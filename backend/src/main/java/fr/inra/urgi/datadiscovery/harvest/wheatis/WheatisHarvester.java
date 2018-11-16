@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @author JB Nizet
  */
 @Component
-@Profile(AppProfile.WHEATIS)
+@Profile({AppProfile.WHEATIS, AppProfile.GNPIS})
 public class WheatisHarvester extends AbstractHarvester<WheatisDocument, WheatisIndexedDocument> {
 
     public WheatisHarvester(DataDiscoveryProperties dataDiscoveryProperties,
