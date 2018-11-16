@@ -10,7 +10,7 @@ stages:
 # Image source available on https://github.com/Ninja-Squad/docker-rare
 # It contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
-image: ninjasquad/docker-rare
+image: urgi/docker-rare:latest
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
