@@ -4,8 +4,6 @@ This readme will be useful :
 * If we want to create a new instance/portal/app.
 * Or if anyone wanted to go back and edit what have been added/edited again.
 
-> For the sake of simplicity, I kept cloning from WheatIS (for now :P)
-
 ## Modifications
 
 * Edited `./.gitlab-ci.yml` file in the root directory.
@@ -18,28 +16,14 @@ This readme will be useful :
 
 ### `backend` folder
 
-* Create a folder called `gnpis` in `./backend/src/main/resources/fr/inra/urgi/datadiscovery/domain`, create a JSON file called `GnpisGeneticResource.mapping.json` in it then fill the JSON file with the desired mapping.
-
 * Add this line in `backend/src/main/java/fr/inra/urgi/datadiscovery/config/AppProfile.java`
 
       public static final String GNPIS = "gnpis-app";
 
-* In `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao`, create a gnpis directory along with this Java files in it:
-  - `GnpisAggregation.java`
-  - `GnpisAggregationAnalyzer.java`
-  - `GnpisDocumentDao.java`
-  - `GnpisDocumentDaoCustom.java`
-  - `GnpisDocumentDaoImpl.java`
-  - `GnpisDocumentHighlightMapper.java`
-
-* In `./backend/src/main/java/fr/inra/urgi/datadiscovery/domain`, create a gnpis directory along with this this Java files in it:
-  - `GnpisDocument.java`
-  - `GnpisIndexedDocument.java`
-
-* In `./backend/src/main/java/fr/inra/urgi/datadiscovery/harvest`, create a gnpis directory along with this Java file in it:
-  - `GnpisDocument.java`
-
-Then edit the Java files to be adequate with what we desire (e.g replace `WheatIS` with `GnpIS` etc).
+* Added `GNPIS` profil in :
+      - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisAggregationAnalyzer.java`
+      - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisDocumentDao.java`
+      - `./backend/src/main/java/fr/inra/urgi/datadiscovery/harvest/wheatis/WheatisHarvester.java`
 
 * Add this code to `./backend/src/main/resources/application.yml` (**Specifying a new port for `gnpis-app`**)
 
@@ -100,14 +84,14 @@ And edit them as desired.
   - `environment.gnpis.prod.ts`
   - `environment.gnpis.ts`
 
-* Add the `gnpis` configuration in `./frontend/angular.json` file:
+* Add the `gnpis` configuration in `./frontend/angular.json` file
 
 * Edit `./frontend/package.json` by adding:
 
       "start:gnpis": "ng serve --configuration=gnpis",
       "build:gnpis": "ng build --configuration=gnpis-production --no-progress",
 
-* Edit `./frontend/package.json` by adding:
+* Edit `./frontend/proxy.conf.js` by adding:
 
       {
         context: [
@@ -175,16 +159,9 @@ Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob
 ├── [M] .gitlab-ci.yml
 ├── backend > [D] build
 ├── backend > src > main > java > ... > config > [M] AppProfile.java
-│                                     > dao > [C] gnpis > [C] GnpisAggregation.java
-│                                     > dao > [C] gnpis > [C] GnpisAggregationAnalyzer.java
-│                                     > dao > [C] gnpis > [C] GnpisAggregationAnalyzer.java
-│                                     > dao > [C] gnpis > [C] GnpisDocumentDao.java
-│                                     > dao > [C] gnpis > [C] GnpisDocumentDaoCustom.java
-│                                     > dao > [C] gnpis > [C] GnpisDocumentDaoImpl.java
-│                                     > dao > [C] gnpis > [C] GnpisDocumentHighlightMapper.java
-│                                     > domain > [C] gnpis > [C] GnpisDocument.java
-│                                     > domain > [C] gnpis > [C] GnpisIndexedDocument.java
-│                                     > harvest > [C] gnpis > [C] GnpisHarvester.java
+│                                     > dao > wheatis > [M] WheatisAggregationAnalyzer.java
+│                                     > dao > wheatis > [M] WheatisDocumentDao.java
+│                                     > harvest > wheatis > [M] WheatisHarvester.java
 ├── backend > src > main > resources > [M] application.yml
 ├── backend > src > main > resources > ... > domain > [C] gnpis > [C] GnpisGeneticResource.mapping.json
 │   
