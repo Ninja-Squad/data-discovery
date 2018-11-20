@@ -59,7 +59,7 @@ This will build a standalone jar at `backend/build/libs/rare.jar` or  `backend/b
 And the full app run on:
 
 - http://localhost:8080/rare-dev
-- http://localhost:8081/wheatis-dev
+- http://localhost:8090/wheatis-dev
 
 
 ## CI

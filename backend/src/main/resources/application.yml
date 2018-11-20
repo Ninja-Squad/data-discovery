@@ -65,7 +65,7 @@ data-discovery:
   resource-dir: /tmp/wheatis-dev/resources
 
 server:
-  port: 8081
+  port: 8090
   servlet:
     context-path: /wheatis-dev
 
@@ -82,6 +82,6 @@ data-discovery:
   resource-dir: /tmp/gnpis-dev/resources
 
 server:
-  port: 8082
+  port: 8070
   servlet:
     context-path: /gnpis-dev

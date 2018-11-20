@@ -40,7 +40,7 @@ This readme will be useful :
         resource-dir: /tmp/gnpis-dev/resources
 
       server:
-        port: 8082
+        port: 8070
         servlet:
           context-path: /gnpis-dev
 
@@ -98,7 +98,7 @@ And edit them as desired.
           "/gnpis-dev/api",
           "/gnpis-dev/actuator"
         ],
-        target: "http://localhost:8082",
+        target: "http://localhost:8070",
         secure: false
       }
 
@@ -116,7 +116,7 @@ And edit them as desired.
       # delegates to parameterized script
       BASEDIR=$(dirname "$0")
 
-      sh $BASEDIR/harvestCI.sh localhost 8082 gnpis dev
+      sh $BASEDIR/harvestCI.sh localhost 8070 gnpis dev
 
 ### Testing
 
@@ -143,7 +143,7 @@ In my case I kept getting `Permission denied` errors, the problem solved by dele
         ./scripts/createIndexAndAliases.sh
         ./scripts/harvestGnpis.sh
 
-5. App is running at : http://localhost:8082/gnpis-dev/
+5. App is running at : http://localhost:8070/gnpis-dev/
 
 Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob/master/README.md) for more details.
 
