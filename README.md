@@ -575,3 +575,12 @@ Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob
 ├── scripts > [M] createIndexAndAliases.sh
 └── scripts > [C] harvestGnpis.sh
 ```
+
+##### Example of the ports used according to the applications and the environment:
+
+|         | RARE | WheatIS | GnpIS  |
+|:-------:|:----:|:-------:|:------:|
+| dev     | 8080 |   8090  |  8070  |
+| beta    | 8081 |   8091  |  8071  |
+| staging | 8082 |   8092  |  8072  |
+| prod    | 8083 |   8093  |  8073  |
