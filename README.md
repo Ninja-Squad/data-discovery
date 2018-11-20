@@ -578,7 +578,7 @@ Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob
 
 ##### Example of the ports used according to the applications and the environment:
 
-|         | RARE | WheatIS | GnpIS  |
+|         | RARe | WheatIS | GnpIS  |
 |:-------:|:----:|:-------:|:------:|
 | dev     | 8080 |   8090  |  8070  |
 | beta    | 8081 |   8091  |  8071  |
