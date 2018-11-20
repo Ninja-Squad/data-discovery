@@ -98,8 +98,6 @@ build-wheatis:
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
   - ssh -o StrictHostKeyChecking=no root@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
   - ssh root@${SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
-  # Installing missing dependencies
-  - "apt-get update -qq && apt-get install -qy curl"
 
 .deploy-to-vm: &deploy_to_vm
  # Hidden job which serves as template for 2 executed jobs below.
