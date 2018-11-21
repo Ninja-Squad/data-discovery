@@ -10,7 +10,7 @@
     "build:rare": "ng build --configuration=rare-production --no-progress",
     "build:wheatis": "ng build --configuration=wheatis-production --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
-    "test-all-browsers": "ng test --code-coverage --no-progress --no-watch -c allBrowsers",
+    "testall": "ng test --code-coverage --no-progress --no-watch -c allBrowsers",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

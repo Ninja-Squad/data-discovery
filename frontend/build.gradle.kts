@@ -44,8 +44,17 @@ tasks {
     outputs.dir("coverage")
   }
 
+  val yarn_run_testall by getting {
+    inputs.dir("src")
+    outputs.dir("coverage")
+  }
+
   val test by creating {
     dependsOn(yarn_run_test)
+  }
+
+  val testall by creating {
+    dependsOn(yarn_run_testall)
   }
 
   val check by getting {
