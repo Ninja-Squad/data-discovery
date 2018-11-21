@@ -148,7 +148,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "data-discovery-frontend:build",
+            "browserTarget": "data-discovery-frontend:build:rare",
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
@@ -223,6 +223,9 @@
             "devServerTarget": "data-discovery-frontend:serve"
           },
           "configurations": {
+            "served": {
+              "devServerTarget": ""
+            },
             "production": {
               "devServerTarget": "data-discovery-frontend:serve:rare-production"
             }
