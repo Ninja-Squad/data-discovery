@@ -53,8 +53,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "800kb",
+                  "maximumError": "1mb"
                 }
               ]
             },
@@ -86,8 +86,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "800kb",
+                  "maximumError": "1mb"
                 }
               ]
             },
@@ -138,8 +138,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "800kb",
+                  "maximumError": "1mb"
                 }
               ]
             }
@@ -178,6 +178,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "browsers": "ChromeHeadlessNoSandbox",
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
@@ -195,6 +196,11 @@
               { "glob": "*", "input": "src/assets/rare", "output": "/assets" },
               "src/assets"
             ]
+          },
+          "configurations": {
+            "allBrowsers": {
+              "browsers": "ChromeHeadlessNoSandbox,FirefoxHeadless"
+            }
           }
         },
         "lint": {
