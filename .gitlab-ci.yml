@@ -42,7 +42,7 @@ test:
      # cluster.name=es-rare
      # the cluster name used in tests
      command: ["bin/elasticsearch", "-Ediscovery.type=single-node", "-Ecluster.name=es-data-discovery"]
- script: ./gradlew --parallel :frontend:testall :backend:test
+ script: ./gradlew --parallel test
  cache:
    key: "$CI_COMMIT_REF_NAME"
    policy: pull

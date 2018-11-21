@@ -50,11 +50,11 @@ tasks {
   }
 
   val test by creating {
-    dependsOn(yarn_run_test)
-  }
-
-  val testall by creating {
-    dependsOn(yarn_run_testall)
+    if (isCi) {
+      dependsOn(yarn_run_testall)
+    } else {
+      dependsOn(yarn_run_test)
+    }
   }
 
   val check by getting {
