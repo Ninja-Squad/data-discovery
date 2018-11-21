@@ -21,7 +21,7 @@ variables:
 
 before_script:
  - export GRADLE_USER_HOME=`pwd`/.gradle
-
+ - export M2_HOME=`pwd`/.m2
 
 test:
  stage: test
@@ -50,7 +50,8 @@ test:
      - build
      - .gradle
      - buildSrc
-     - frontend/.gradle/
+     - .gradle/
+     - .m2/
      - frontend/node_modules/
  artifacts:
   reports:
@@ -78,6 +79,7 @@ test:
    - build
    - buildSrc
    - .gradle
+   - .m2/
    - frontend/.gradle/
    - frontend/node_modules/
 
