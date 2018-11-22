@@ -18,6 +18,7 @@ image: urgi/docker-browsers:latest
 # isolated from any previous builds.
 variables:
  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+ GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
 
 test:
  stage: test
