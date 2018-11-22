@@ -10,7 +10,7 @@ stages:
 # Image source available on https://github.com/Ninja-Squad/docker-rare
 # It contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
-image: urgi/docker-rare:latest
+image: urgi/docker-browsers:latest
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -30,7 +30,7 @@ test:
    # even if that would be ideal
    # we can't just launch the service with just elasticsearch:6.3.1
    # because we need to pass some variables, but they are passed to _all_ containers
-   # so they fail the start of other docker images like ninjasquad/docker-rare
+   # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
    - name: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
      alias: elasticsearch
@@ -61,11 +61,10 @@ test:
 
 
 .build-app: &build_app
- # Hidden job which serves as a template for 2 following
+ # Hidden job which serves as a template for following
  # jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: build
  script:
-  # Tests already executed at previous stage, skipping them now
   - ./gradlew assemble -Papp=${APP_NAME}
  artifacts:
   paths:
@@ -100,7 +99,7 @@ build-wheatis:
   - ssh root@${SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
 
 .deploy-to-vm: &deploy_to_vm
- # Hidden job which serves as template for 2 executed jobs below.
+ # Hidden job which serves as template for executed jobs below.
  # See https://docs.gitlab.com/ee/ci/yaml/#anchors
  retry: 2
  <<: *ssh-initialization-before-script
