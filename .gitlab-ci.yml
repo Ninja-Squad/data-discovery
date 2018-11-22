@@ -45,7 +45,7 @@ test:
  script: ./gradlew --parallel test
  cache:
    key: "$CI_COMMIT_REF_NAME"
-   policy: pull
+   policy: pull-push
    paths:
      - build
      - .gradle
@@ -54,7 +54,7 @@ test:
      - frontend/node_modules/
  artifacts:
   reports:
-   junit: 
+   junit:
     - ./backend/build/test-results/test/TEST-*.xml
     - ./frontend/karma-junit-tests-report/TEST*.xml
 
@@ -72,7 +72,7 @@ test:
   expire_in: 1 week
  cache:
   key: "${CI_COMMIT_REF_NAME}"
-  policy: pull
+  policy: pull-push
   paths:
    - build
    - buildSrc
@@ -162,7 +162,7 @@ deploy-rare-to-beta:
  stage: staging
  <<: *variables-rare-beta
  <<: *deploy_to_vm
- only: 
+ only:
   - branches
  except:
   - master
@@ -209,7 +209,7 @@ deploy-wheatis-to-prod:
   - master
  when: manual
  allow_failure: false
- 
+
 .data-integration: &data-integration
  retry: 1
  <<: *ssh-initialization-before-script
