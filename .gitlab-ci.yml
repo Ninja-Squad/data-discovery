@@ -19,10 +19,6 @@ image: urgi/docker-browsers:latest
 variables:
  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-before_script:
- - export GRADLE_USER_HOME=`pwd`/.gradle
-
-
 test:
  stage: test
  # the backend tests need an elasticsearch instance
@@ -47,9 +43,7 @@ test:
    key: "$CI_COMMIT_REF_NAME"
    policy: pull-push
    paths:
-     - build
      - .gradle
-     - buildSrc
      - frontend/.gradle/
      - frontend/node_modules/
  artifacts:
@@ -74,8 +68,6 @@ test:
   key: "${CI_COMMIT_REF_NAME}"
   policy: pull-push
   paths:
-   - build
-   - buildSrc
    - .gradle
    - frontend/.gradle/
    - frontend/node_modules/
