@@ -44,14 +44,9 @@ tasks {
     outputs.dir("coverage")
   }
 
-  val yarn_run_testall by getting {
-    inputs.dir("src")
-    outputs.dir("coverage")
-  }
-
   val test by creating {
     if (isCi) {
-      dependsOn(yarn_run_testall)
+      dependsOn("yarn_run_test-multi-browsers")
     } else {
       dependsOn(yarn_run_test)
     }

@@ -198,7 +198,7 @@
             ]
           },
           "configurations": {
-            "allBrowsers": {
+            "test-multi-browsers": {
               "browsers": "ChromeHeadlessNoSandbox,FirefoxHeadless"
             }
           }
