@@ -1,13 +1,26 @@
 <nav class="navbar navbar-expand-md navbar-dark py-0">
   <div class="container px-0">
-    <a class="navbar-brand d-flex align-items-center mr-0 px-2" routerLink="/">{{ navbar.title }}</a>
+    <a class="navbar-brand d-flex align-items-center mr-0 px-2" routerLink="/">
+      <img src="assets/logo.png" alt="Logo" title="{{ navbar.title }}" height="60px"/>
+    </a>
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
     </button>
     <div id="navbar" class="collapse navbar-collapse" [class.collapse]="navbarCollapsed">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let link of navbar.links">
-          <a class="nav-link d-flex align-items-center" [href]="link.url" target="_blank">{{ link.label }}</a>
+          <div *ngIf="!link.subMenu" >
+            <a class="nav-link d-flex align-items-center" [href]="link.url" target="_blank">{{ link.label }}</a>
+          </div>
+          <div *ngIf="link.subMenu" class="dropdown-container">
+            <!-- Dropdown -->
+            <a class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown" [href]="link.url" role="button" aria-haspopup="true" aria-expanded="false" target="_blank">{{ link.label }}</a>
+            <div class="dropdown-menu">
+              <div *ngFor="let subItem of link.subMenu">
+                <a class="dropdown-item" href="{{ subItem.url }}">{{ subItem.label }}</a>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
