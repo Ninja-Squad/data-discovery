@@ -1,5 +1,6 @@
 package fr.inra.urgi.datadiscovery.harvest;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,9 @@ public final class HarvestResult {
     private final Instant endInstant;
 
     @Field(type = FieldType.Keyword , index = false)
+    private final Duration duration;
+
+    @Field(type = FieldType.Keyword , index = false)
     private final List<String> globalErrors;
 
     @Field(type = FieldType.Object , index = false)
@@ -42,6 +46,7 @@ public final class HarvestResult {
         this(builder.id,
              builder.startInstant,
              builder.endInstant,
+             builder.duration,
              builder.globalErrors,
              builder.files);
     }
@@ -50,11 +55,13 @@ public final class HarvestResult {
     public HarvestResult(String id,
                          Instant startInstant,
                          Instant endInstant,
+                         Duration duration,
                          List<String> globalErrors,
                          List<HarvestedFile> files) {
         this.id = id;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
+        this.duration = duration;
         this.globalErrors = nullSafeUnmodifiableCopy(globalErrors);
         this.files = nullSafeUnmodifiableCopy(files);
     }
@@ -70,6 +77,8 @@ public final class HarvestResult {
     public Instant getEndInstant() {
         return endInstant;
     }
+
+    public Duration getDuration() { return  duration; }
 
     public List<HarvestedFile> getFiles() {
         return files;
@@ -122,6 +131,7 @@ public final class HarvestResult {
         private final String id;
         private Instant startInstant;
         private Instant endInstant;
+        private Duration duration;
         private final List<HarvestedFile> files = new ArrayList<>();
         private final List<String> globalErrors = new ArrayList<>();
 
@@ -168,6 +178,7 @@ public final class HarvestResult {
          */
         public HarvestResult end() {
             this.endInstant = Instant.now();
+            this.duration = Duration.between(startInstant, endInstant);
             return new HarvestResult(this);
         }
     }
