@@ -11,6 +11,7 @@ import fr.inra.urgi.datadiscovery.harvest.HarvestedFile.HarvestedFileBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
@@ -25,16 +26,16 @@ public final class HarvestResult {
     @Id
     private final String id;
 
-    @Field(index = false)
+    @Field(type = FieldType.Date , index = false)
     private final Instant startInstant;
 
-    @Field(index = false)
+    @Field(type = FieldType.Date , index = false)
     private final Instant endInstant;
 
-    @Field(index = false)
+    @Field(type = FieldType.Keyword , index = false)
     private final List<String> globalErrors;
 
-    @Field(index = false)
+    @Field(type = FieldType.Object , index = false)
     private final List<HarvestedFile> files;
 
     private HarvestResult(HarvestResultBuilder builder) {
