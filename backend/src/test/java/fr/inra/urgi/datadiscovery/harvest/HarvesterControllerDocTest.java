@@ -143,7 +143,8 @@ class HarvesterControllerDocTest {
                                    fieldWithPath("content[].id").description("The unique ID of the harvest"),
                                    fieldWithPath("content[].url").description("The URL of the harvest, that you can use to get the details of that harvest"),
                                    fieldWithPath("content[].startInstant").description("The instant when the harvest job started"),
-                                   fieldWithPath("content[].endInstant").description("The instant when the harvest job finished. Null if it's not finished yet"))));
+                                   fieldWithPath("content[].endInstant").description("The instant when the harvest job finished. Null if it's not finished yet"),
+                                   fieldWithPath("content[].duration").description("The duration of the job when finished, in the ISO-8601 representation. Null if it's not finished yet"))));
     }
 
     @Test

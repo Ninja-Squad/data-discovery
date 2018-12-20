@@ -67,7 +67,8 @@ public class HarvesterController {
             result -> new LightHarvestResultDTO(result.getId(),
                                                 toDetail(result.getId()).toString(),
                                                 result.getStartInstant(),
-                                                result.getEndInstant())
+                                                result.getEndInstant(),
+                                                result.getDuration())
         );
     }
 

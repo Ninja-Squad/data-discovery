@@ -1,5 +1,6 @@
 package fr.inra.urgi.datadiscovery.harvest;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -12,12 +13,14 @@ public final class LightHarvestResultDTO {
     private final String url;
     private final Instant startInstant;
     private final Instant endInstant;
+    private final Duration duration;
 
-    public LightHarvestResultDTO(String id, String url, Instant startInstant, Instant endInstant) {
+    public LightHarvestResultDTO(String id, String url, Instant startInstant, Instant endInstant, Duration duration) {
         this.id = id;
         this.url = url;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
+        this.duration = duration;
     }
 
     public String getId() {
@@ -35,6 +38,8 @@ public final class LightHarvestResultDTO {
     public Instant getEndInstant() {
         return endInstant;
     }
+
+    public Duration getDuration() { return duration; }
 
     @Override
     public boolean equals(Object o) {
@@ -54,7 +59,7 @@ public final class LightHarvestResultDTO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, url, startInstant, endInstant);
+        return Objects.hash(id, url, startInstant, endInstant, duration);
     }
 
     @Override
@@ -64,6 +69,8 @@ public final class LightHarvestResultDTO {
             ", url='" + url + '\'' +
             ", startInstant=" + startInstant +
             ", endInstant=" + endInstant +
+            ", duration=" + duration +
             '}';
     }
+
 }
