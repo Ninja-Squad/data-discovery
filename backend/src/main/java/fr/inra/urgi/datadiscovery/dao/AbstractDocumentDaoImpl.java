@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -382,5 +385,13 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
         public boolean hasPrevious() {
             return false;
         }
+    }
+
+    @Override
+    public BulkResponse bulkIndexRequest(List<IndexRequest> batchRequest) {
+        Client client = elasticsearchTemplate.getClient();
+        BulkRequestBuilder bulkRequest  = client.prepareBulk();
+        batchRequest.stream().forEach(r-> bulkRequest.add(r));
+        return bulkRequest.get();
     }
 }
