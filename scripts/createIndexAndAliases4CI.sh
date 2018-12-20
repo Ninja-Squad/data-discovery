@@ -24,6 +24,9 @@ curl -si -X PUT "${ES_HOST}:9200/${APP_NAME}-${ENV}-resource-physical-index"\
         \"${APP_NAME}-${ENV}-resource-harvest-index\" : {}
     },
     \"settings\": {
+        \"number_of_replicas\": 0,
+        \"number_of_shards\": 5,
+        \"refresh_interval\": \"30s\",
         \"analysis\": {
             \"analyzer\": {
                 \"custom_suggestion_analyzer\": {
