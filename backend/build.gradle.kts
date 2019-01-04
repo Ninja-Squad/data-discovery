@@ -14,7 +14,7 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "2.1.0.RELEASE"
+    id("org.springframework.boot") version "2.1.1.RELEASE"
     id("com.gorylenko.gradle-git-properties") version "1.5.2"
     id("org.asciidoctor.convert") version "1.5.9.2"
     id("io.spring.dependency-management") version "1.0.6.RELEASE"
@@ -113,9 +113,9 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.data:spring-data-commons")
     implementation("org.springframework.data:spring-data-elasticsearch")
-    implementation("org.elasticsearch:elasticsearch:6.3.1")
-    implementation("org.elasticsearch.client:transport:6.3.1")
-    implementation("org.elasticsearch.plugin:transport-netty4-client:6.3.1")
+    implementation("org.elasticsearch:elasticsearch")
+    implementation("org.elasticsearch.client:transport")
+    implementation("org.elasticsearch.plugin:transport-netty4-client")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")
