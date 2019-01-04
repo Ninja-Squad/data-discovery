@@ -4,10 +4,9 @@ export const environment = {
   production: true,
   title: 'RARe - Ressources Agronomiques pour la Recherche',
   navbar: {
-    title: 'RARe',
+    title: 'RARe Search',
     links: [
-      { label: 'INRA', url: 'http://www.inra.fr/' },
-      { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+      { label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }
     ]
   },
   resourceModule: RareModule,
