@@ -6,7 +6,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { routes } from './app.routes';
 import { AppComponent } from './app.component';
@@ -50,6 +50,7 @@ registerLocaleData(localeFr);
     NgbPaginationModule,
     NgbTypeaheadModule,
     NgbTooltipModule,
+    NgbModule,
     // the appropriate resource module depending on the `resourceModule` configured in the environment
     // each of the possible modules contains a component with a selector `dd-document`
     // able to display the genetic resource of the application

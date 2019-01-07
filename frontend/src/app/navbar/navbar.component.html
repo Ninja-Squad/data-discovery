@@ -12,12 +12,14 @@
           <div *ngIf="!link.subMenu" >
             <a class="nav-link d-flex align-items-center" [href]="link.url" target="_blank">{{ link.label }}</a>
           </div>
-          <div *ngIf="link.subMenu" class="dropdown-container">
+          <div *ngIf="link.subMenu">
             <!-- Dropdown -->
-            <a class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown" [href]="link.url" role="button" aria-haspopup="true" aria-expanded="false" target="_blank">{{ link.label }}</a>
-            <div class="dropdown-menu">
-              <div *ngFor="let subItem of link.subMenu">
-                <a class="dropdown-item" href="{{ subItem.url }}">{{ subItem.label }}</a>
+            <div ngbDropdown class="d-inline-block">
+              <a ngbDropdownToggle class="nav-link d-flex align-items-center" [href]="link.url">{{ link.label }}</a>
+              <div ngbDropdownMenu>
+                <div *ngFor="let subItem of link.subMenu">
+                  <a class="dropdown-item" href="{{ subItem.url }}" target="_blank">{{ subItem.label }}</a>
+                </div>
               </div>
             </div>
           </div>

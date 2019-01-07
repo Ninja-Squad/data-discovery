@@ -21,6 +21,6 @@
   }
 }
 
-.dropdown-container {
-  position: relative;
+.navbar-nav li:hover > div.dropdown-menu {
+  display: block;
 }
