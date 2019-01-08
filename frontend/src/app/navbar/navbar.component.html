@@ -14,9 +14,9 @@
           </div>
           <div *ngIf="link.subMenu">
             <!-- Dropdown -->
-            <div ngbDropdown class="d-inline-block">
+            <div ngbDropdown class="d-inline-block dropdown">
               <a ngbDropdownToggle class="nav-link d-flex align-items-center" [href]="link.url">{{ link.label }}</a>
-              <div ngbDropdownMenu>
+              <div ngbDropdownMenu class="dropdown-menu">
                 <div *ngFor="let subItem of link.subMenu">
                   <a class="dropdown-item" href="{{ subItem.url }}" target="_blank">{{ subItem.label }}</a>
                 </div>

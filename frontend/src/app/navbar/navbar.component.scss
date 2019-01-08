@@ -21,6 +21,10 @@
   }
 }
 
-.navbar-nav li:hover > div.dropdown-menu {
+.dropdown:hover>.dropdown-menu {
   display: block;
+}
+
+.dropdown-menu{
+  margin-top: initial;
 }
