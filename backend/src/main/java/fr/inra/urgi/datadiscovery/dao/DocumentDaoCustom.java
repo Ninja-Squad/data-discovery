@@ -5,8 +5,6 @@ import java.util.List;
 
 import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
@@ -59,11 +57,4 @@ public interface DocumentDaoCustom<D extends Document, I extends IndexedDocument
      * Puts the mapping for the alias of the {@link IndexedDocument} document
      */
     void putMapping();
-
-    /**
-     * Index all given {@link IndexRequest} into Elasticsearch.
-     *
-     * @return the {@link BulkResponse} resulting from the bulk index requests.
-     */
-    BulkResponse bulkIndexRequest(List<IndexRequest> batchRequest);
 }

@@ -20,7 +20,6 @@ import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisIndexedDocument;
 import fr.inra.urgi.datadiscovery.harvest.HarvestResult;
 import fr.inra.urgi.datadiscovery.harvest.HarvestedFile;
 import fr.inra.urgi.datadiscovery.harvest.HarvestedStream;
-import org.elasticsearch.action.index.IndexRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -36,7 +35,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for {@link WheatisHarvester}
@@ -55,7 +55,7 @@ class WheatisHarvesterTest {
     private ObjectMapper objectMapper;
 
     @Captor
-    private ArgumentCaptor<List<IndexRequest>> indexRequestCaptor;
+    private ArgumentCaptor<Collection<WheatisIndexedDocument>> indexedResourcesCaptor;
 
     private WheatisHarvester harvester;
 
@@ -114,12 +114,12 @@ class WheatisHarvesterTest {
         assertThat(file2.getErrorCount()).isEqualTo(0);
         assertThat(file2.getErrors()).hasSize(0);
 
-        verify(mockDocumentDao, times(2)).bulkIndexRequest(indexRequestCaptor.capture());
-        List<List<IndexRequest>> batches = indexRequestCaptor.getAllValues();
-        assertThat(batches.get(0).stream().map(r -> r.sourceAsMap().get("name"))).containsExactly(
-                    "chr01:103412796..103413479",
-                    "chr01:103412796..103413480",
-                    "chr01:104609140..104609827");
-        assertThat(batches.get(1).stream().map(r -> r.sourceAsMap().get("name"))).containsExactly("14_mtDNA");
+        verify(mockDocumentDao, times(2)).saveAll(indexedResourcesCaptor.capture());
+        List<Collection<WheatisIndexedDocument>> batches = indexedResourcesCaptor.getAllValues();
+        assertThat(batches.get(0)).extracting(r -> r.getDocument().getId())
+                                  .containsExactly("chr01:103412796..103413479",
+                                                   "chr01:103412796..103413480",
+                                                   "chr01:104609140..104609827");
+        assertThat(batches.get(1)).extracting(r -> r.getDocument().getId()).containsExactly("14_mtDNA");
     }
 }

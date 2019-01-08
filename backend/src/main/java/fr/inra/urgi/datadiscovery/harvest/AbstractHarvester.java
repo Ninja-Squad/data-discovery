@@ -5,13 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,10 +19,6 @@ import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
 import fr.inra.urgi.datadiscovery.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.datadiscovery.harvest.HarvestedFile.HarvestedFileBuilder;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.common.xcontent.XContentType;
 
 /**
  * A harvester, which can load all the JSON files located in the resource directory, and then, for each of these
@@ -40,10 +34,9 @@ import org.elasticsearch.common.xcontent.XContentType;
  */
 public abstract class AbstractHarvester<D extends Document, I extends IndexedDocument<D>> {
 
-    private static final int BATCH_SIZE = 10000;
+    private static final int BATCH_SIZE = 100;
 
     private final Path resourceDir;
-    private final DataDiscoveryProperties dataDiscoveryProperties;
     private final ObjectMapper objectMapper;
     private final DocumentDao<D, I> documentDao;
 
@@ -53,7 +46,6 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
         this.resourceDir = dataDiscoveryProperties.getResourceDir();
         this.objectMapper = objectMapper;
         this.documentDao = documentDao;
-        this.dataDiscoveryProperties = dataDiscoveryProperties;
     }
 
     /**
@@ -100,9 +92,8 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
     public void harvest(HarvestedStream harvestedStream, HarvestResultBuilder resultBuilder) {
         HarvestedFileBuilder fileBuilder = HarvestedFile.builder(harvestedStream.getFileName());
         int index = 0;
-        String indexName = dataDiscoveryProperties.getElasticsearchPrefix() + "resource-physical-index";
-        String type = dataDiscoveryProperties.getElasticsearchPrefix() + "resource";
-        List<IndexRequest> batchRequest = new ArrayList<>(BATCH_SIZE);
+
+        List<I> batch = new ArrayList<>(BATCH_SIZE);
 
         try (BufferedInputStream bis = new BufferedInputStream(harvestedStream.getInputStream());
              JsonParser parser = objectMapper.getFactory().createParser(bis)) {
@@ -127,32 +118,26 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
                         // necessary to avoid failing in the middle of an object
                         TreeNode treeNode = objectMapper.readTree(parser);
                         D document = objectMapper.treeToValue(treeNode, getDocumentClass());
-                        // keep serialization to spot errors in source doc, since it seems to not have much impact on performances
-                        String jsonDocument = treeNode.toString();
-                        IndexRequest req = new IndexRequest()
-                                .index(indexName)
-                                .type(type)
-                                .source(jsonDocument, XContentType.JSON);
-                        batchRequest.add(req);
-
-                        if (batchRequest.size() == BATCH_SIZE) {
-                            BulkResponse bulkItemResponses = documentDao.bulkIndexRequest(batchRequest);
-                            handleBulkResponse(fileBuilder, index, batchRequest, parser, bulkItemResponses);
-                            batchRequest = new ArrayList<>(BATCH_SIZE);
+                        batch.add(toIndexedDocument(document));
+                        if (batch.size() == BATCH_SIZE) {
+                            documentDao.saveAll(batch);
+                            fileBuilder.addSuccesses(batch.size());
+                            batch = new ArrayList<>(BATCH_SIZE);
                         }
                     }
-                    catch (JsonProcessingException e) {
+                    catch (IOException e) {
                         fileBuilder.addError(index,
                                              "Error while parsing object: " + e,
                                              parser.getCurrentLocation().getLineNr(),
                                              parser.getCurrentLocation().getColumnNr());
                     }
+
                     index++;
                 }
 
-                if (!batchRequest.isEmpty()) {
-                    BulkResponse bulkItemResponses = documentDao.bulkIndexRequest(batchRequest);
-                    handleBulkResponse(fileBuilder, index, batchRequest, parser, bulkItemResponses);
+                if (!batch.isEmpty()) {
+                    documentDao.saveAll(batch);
+                    fileBuilder.addSuccesses(batch.size());
                 }
             }
         }
@@ -164,20 +149,6 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
         }
 
         resultBuilder.withFile(fileBuilder.build());
-    }
-
-    private void handleBulkResponse(HarvestedFileBuilder fileBuilder, int index, List<IndexRequest> batchRequest, JsonParser parser, BulkResponse bulkItemResponses) {
-        if (bulkItemResponses != null && bulkItemResponses.hasFailures()) {
-            Iterator<BulkItemResponse> iterator = bulkItemResponses.iterator();
-            while (iterator.hasNext()) {
-                String failure = iterator.next().getFailureMessage();
-                fileBuilder.addError(index,
-                        "Error while parsing object: " + failure,
-                        parser.getCurrentLocation().getLineNr(),
-                        parser.getCurrentLocation().getColumnNr());
-            }
-        }
-        fileBuilder.addSuccesses(batchRequest.size());
     }
 
     protected abstract Class<D> getDocumentClass();
