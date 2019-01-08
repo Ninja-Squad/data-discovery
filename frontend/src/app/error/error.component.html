@@ -5,11 +5,11 @@
     </div>
     <div>
       <p>
-        Une erreur inattendue s'est produite.<br/>
-        Tentez de rafraichir la page, ou réessayez plus tard.<br/>
+        Unexpected error occurred.<br/>
+        Try to refresh the page, or retry later.<br/>
       </p>
       <small *ngIf="error.status" id="error-status">
-        Statut: {{ error.status }}
+        Status: {{ error.status }}
       </small>
       <small *ngIf="error.message" id="error-message">
         Message: {{ error.message }}

@@ -290,7 +290,7 @@ describe('LargeAggregationComponent', () => {
 
     // results should appear
     expect(tester.results.length).toBe(9);
-    expect(tester.results[tester.results.length - 1].textContent).toContain(`D'autres résultats existent`);
+    expect(tester.results[tester.results.length - 1].textContent).toContain(`Other results are available`);
 
     // when the result is selected
     tester.results[tester.results.length - 1].click();

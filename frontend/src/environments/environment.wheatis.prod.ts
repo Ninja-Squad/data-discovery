@@ -6,8 +6,10 @@ export const environment = {
   navbar: {
     title: 'WheatIS',
     links: [
-      { label: 'INRA', url: 'http://www.inra.fr/' },
-      { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+      //{ label: 'INRA', url: 'http://www.inra.fr/' },
+      { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' },
+      { label: 'WheatIS', url: 'http://wheatis.org/' },
+      { label: 'Wheat Initiative', url: 'http://www.wheatinitiative.org/' }
     ]
   },
   resourceModule: WheatisModule,
@@ -16,9 +18,9 @@ export const environment = {
    * Should be kept in sync with the `WheatisAggregation` enum of the backend.
    */
   aggregationNames: {
-    entry: 'Type d\'entrée',
-    db: 'Base de données',
-    node: 'Noeud',
-    species: 'Espèce'
+    entry: 'Data type',
+    db: 'Database',
+    node: 'Node',
+    species: 'Species'
   }
 };

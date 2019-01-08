@@ -1,8 +1,8 @@
 <!-- tooltip precising what is the number displayed -->
 <ng-template #tooltipContent>
   <ng-container [ngPlural]="count">
-    <ng-template ngPluralCase="=1">Un seul document correspond à <em>{{ name }}</em></ng-template>
-    <ng-template ngPluralCase="other">{{ count | number }} documents correspondent à <em>{{ name }}</em></ng-template>
+    <ng-template ngPluralCase="=1">Only one documents matches <em>{{ name }}</em></ng-template>
+    <ng-template ngPluralCase="other">{{ count | number }} documents match <em>{{ name }}</em></ng-template>
   </ng-container>
 </ng-template>
 <!-- name, with a link if necessary, followed by the count -->

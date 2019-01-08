@@ -1,22 +1,22 @@
-<h1 class="sr-only">Résultats de la recherche</h1>
+<h1 class="sr-only">Search results</h1>
 
 <div class="row">
   <div class="col-12 col-md-4 col-lg-3 text-center mb-2 mt-2 mb-md-0 mt-md-0">
     <!--<a routerLink="/"><img src="assets/logo.png" alt="Logo"/></a>-->
   </div>
   <div class="col-12 col-md-8 col-lg-9 d-flex align-items-center">
-    <h2 class="sr-only">Nouvelle recherche</h2>
+    <h2 class="sr-only">New search</h2>
     <form class="flex-fill" [formGroup]="searchForm" (ngSubmit)="newSearch()">
-      <label class="sr-only" for="query">Rechercher</label>
+      <label class="sr-only" for="query">Search</label>
       <div class="input-group">
         <input id="query"
                class="form-control"
-               placeholder="Exemples : pisum sativum, rosa"
+               placeholder="Examples: yield, fhb"
                formControlName="search"
                [ngbTypeahead]="suggesterTypeahead"
                [focusFirst]="false">
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary">Recherche</button>
+          <button class="btn btn-outline-secondary">Search</button>
         </div>
       </div>
     </form>
@@ -25,13 +25,13 @@
 
 <div class="mt-3 mb-3 d-md-none">
   <button class="btn btn-outline-secondary" (click)="toggleFilters()">
-    <i class="fa fa-sliders" aria-hidden="true"></i>&ngsp;Filtres&ngsp;
+    <i class="fa fa-sliders" aria-hidden="true"></i>&ngsp;Filters&ngsp;
     <i class="fa" [class.fa-caret-up]="filters === 'show'" [class.fa-caret-down]="filters === 'hide'" aria-hidden="true"></i>
   </button>
 </div>
 <div class="row mt-sm-2 mt-md-5">
   <div class="col-12 col-md-4 col-lg-3 filters" [@showHide]="filters">
-    <h2 class="sr-only">Filtres</h2>
+    <h2 class="sr-only">Filters</h2>
     <dd-aggregations *ngIf="aggregations"
                        [aggregations]="aggregations"
                        [selectedCriteria]="aggregationCriteria"
@@ -39,13 +39,13 @@
     </dd-aggregations>
   </div>
   <div class="col-12 col-md-8 col-lg-9">
-    <h2 class="sr-only">Résultats</h2>
+    <h2 class="sr-only">Results</h2>
     <div *ngIf="results">
       <dd-documents [documents]="results"></dd-documents>
     </div>
 
     <div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">
-      <h2 class="sr-only">Pagination</h2>
+      <h2 class="sr-only">Paging</h2>
       <!-- we add 1 to the page because ngb-pagination is 1 based -->
       <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
                       [collectionSize]="collectionSize()"

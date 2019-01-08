@@ -43,7 +43,7 @@ describe('TruncatableDescriptionComponent', () => {
 
     // then we should truncate it
     expect(tester.fullDescriptionButton).not.toBeNull();
-    const linkContent = '... (Voir tout)';
+    const linkContent = '... (Expand)';
     expect(tester.fullDescriptionButton).toContainText(linkContent);
     expect(tester.description.textContent.length).toBeLessThanOrEqual(256 + linkContent.length);
     expect(tester.description.textContent.length).toBeGreaterThanOrEqual(252 + linkContent.length);
@@ -55,7 +55,7 @@ describe('TruncatableDescriptionComponent', () => {
     expect(tester.fullDescription).not.toBeNull();
     expect(tester.fullDescription).toContainText(component.description);
     expect(tester.shortDescriptionButton).not.toBeNull();
-    expect(tester.shortDescriptionButton).toContainText('Réduire');
+    expect(tester.shortDescriptionButton).toContainText('Hide');
     expect(tester.description).toBeNull();
     expect(tester.fullDescriptionButton).toBeNull();
   });

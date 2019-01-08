@@ -89,7 +89,7 @@ describe('DocumentCountComponent', () => {
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('1\u00a0298 documents correspondent à Florilège');
+    expect(tester.tooltip.textContent).toBe('1\u00a0298 documents match Florilège');
 
     // and hide it when leaving
     tester.count.dispatchEventOfType('mouseleave');
@@ -104,6 +104,6 @@ describe('DocumentCountComponent', () => {
 
     // then we should have the tooltip displayed with special text for one document
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Un seul document correspond à Florilège');
+    expect(tester.tooltip.textContent).toBe('Only one documents matches Florilège');
   });
 });

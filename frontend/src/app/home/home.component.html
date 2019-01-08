@@ -4,26 +4,26 @@
     <!-- for example, if the application is RARe, the component will be a RareHeaderComponent -->
     <dd-header></dd-header>
     <div class="pt-md-5">
-      <h2 class="sr-only">Rechercher des ressources</h2>
+      <h2 class="sr-only">Search for resources</h2>
 
       <form [formGroup]="searchForm" (ngSubmit)="search()">
-        <label class="sr-only" for="query">Rechercher</label>
+        <label class="sr-only" for="query">Search</label>
         <div class="input-group">
           <input id="query"
                  class="form-control form-control-lg"
-                 placeholder="Exemples : pisum sativum, rosa"
+                 placeholder="Examples: yield, fhb"
                  formControlName="search"
                  [ngbTypeahead]="suggesterTypeahead"
                  [focusFirst]="false">
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary">Recherche</button>
+            <button class="btn btn-outline-secondary">Search</button>
           </div>
         </div>
       </form>
     </div>
   </div>
   <div class="col-md-4 col-lg-3 order-md-first mt-5 mt-md-0">
-    <h2 class="sr-only">Piliers</h2>
+    <h2 class="sr-only">Pillars</h2>
     <div class="d-flex justify-content-center">
       <div>
         <!--<img src="assets/logo.png" alt="Logo" class="mb-2 mb-md-4"/>-->

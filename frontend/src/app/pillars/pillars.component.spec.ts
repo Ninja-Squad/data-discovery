@@ -115,6 +115,6 @@ describe('PillarsComponent', () => {
 
     tester.detectChanges();
 
-    expect(tester.noDataAlert).toContainText('Aucune donnée trouvée');
+    expect(tester.noDataAlert).toContainText('No data found');
   });
 });

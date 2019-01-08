@@ -4,7 +4,7 @@
     <small class="ml-1 text-muted">[{{ bucket.documentCount | number }}]</small>
   </ng-container>
   <ng-template #refine>
-    <div class="text-muted small">D'autres résultats existent.<br/>Affinez votre recherche.</div>
+    <div class="text-muted small">Other results are available.<br/>Refine your search.</div>
   </ng-template>
 </ng-template>
 
@@ -15,8 +15,8 @@
     <!-- tooltip precising what is the number displayed -->
     <ng-template #tooltipContent>
       <ng-container [ngPlural]="aggregation.buckets.length">
-        <ng-template ngPluralCase="=1">Un seule valeur possible pour <i>{{ aggregation.name | aggregationName }}</i></ng-template>
-        <ng-template ngPluralCase="other">{{ aggregation.buckets.length | number }} valeurs possibles pour <i>{{ aggregation.name | aggregationName }}</i></ng-template>
+        <ng-template ngPluralCase="=1">Only one possible value for <i>{{ aggregation.name | aggregationName }}</i></ng-template>
+        <ng-template ngPluralCase="other">{{ aggregation.buckets.length | number }} possible values for <i>{{ aggregation.name | aggregationName }}</i></ng-template>
       </ng-container>
     </ng-template>
     <h3 class="card-title">{{ aggregation.name | aggregationName }}

@@ -78,8 +78,8 @@ describe('DocumentsComponent', () => {
     const result2 = tester.results[1].componentInstance as RareDocumentComponent;
     expect(result2.document).toBe(bacteria2);
 
-    expect(tester.resume).toContainText('Résultats 1 à 2 sur 2');
-    expect(tester.resume).not.toContainText('limités');
+    expect(tester.resume).toContainText('Results 1 to 2 from 2');
+    expect(tester.resume).not.toContainText('limited');
   });
 
   it('should display limited results in resume, and format numbers in French', () => {
@@ -103,6 +103,6 @@ describe('DocumentsComponent', () => {
     // then it should display each result
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(20);
-    expect(tester.resume).toContainText('Résultats 4\u00a0001 à 4\u00a0020 sur 12\u00a0000 (limités à 10\u00a0000)');
+    expect(tester.resume).toContainText('Results 4\u00a0001 to 4\u00a0020 from 12\u00a0000 (limited to 10\u00a0000)');
   });
 });

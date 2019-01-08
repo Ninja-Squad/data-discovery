@@ -65,8 +65,8 @@ describe('ErrorComponent', () => {
     });
     tester.detectChanges();
 
-    expect(tester.error).toContainText('Une erreur inattendue');
-    expect(tester.status).toContainText('Statut: 500');
+    expect(tester.error).toContainText('Unexpected error occurred.');
+    expect(tester.status).toContainText('Status: 500');
     expect(tester.message).toContainText('Message: Oulala');
 
     httpErrors.next({
@@ -75,7 +75,7 @@ describe('ErrorComponent', () => {
     });
     tester.detectChanges();
 
-    expect(tester.error).toContainText('Une erreur inattendue');
+    expect(tester.error).toContainText('Unexpected error occurred.');
     expect(tester.status).toBeNull();
     expect(tester.message).toBeNull();
 

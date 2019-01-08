@@ -1,9 +1,9 @@
 <!-- if there are results to display -->
 <div *ngIf="documents.content.length; else noResults">
   <div id="resume" class="text-muted small mb-3">
-    Résultats {{ firstResultIndex | number }} à {{ lastResultIndex | number }}
-    sur {{ documents.totalElements | number }}
-    <ng-container *ngIf="resultLimited">(limités à {{ documents.maxResults | number }})</ng-container>
+    Results {{ firstResultIndex | number }} to {{ lastResultIndex | number }}
+    from {{ documents.totalElements | number }}
+    <ng-container *ngIf="resultLimited">(limited to {{ documents.maxResults | number }})</ng-container>
   </div>
   <div class="mb-4" *ngFor="let document of documents.content">
     <!-- the following component will not be the same depending on the environment.resourceModule value -->
@@ -17,6 +17,6 @@
     <div class="no-result-icon">
       <span class="fa fa-meh-o"></span>
     </div>
-    Pas de résultat.
+    No result.
   </div>
 </ng-template>
