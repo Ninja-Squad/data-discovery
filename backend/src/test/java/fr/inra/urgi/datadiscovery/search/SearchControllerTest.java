@@ -131,7 +131,7 @@ class SearchControllerTest {
                    .andExpect(jsonPath("$.aggregations[0].buckets[0].documentCount").value(123))
                    .andExpect(jsonPath("$.aggregations[0].buckets[1].key").value("Fungi"))
                    .andExpect(jsonPath("$.aggregations[0].buckets[1].documentCount").value(2))
-                   .andExpect(jsonPath("$.aggregations[0].type").value(RareAggregation.Type.SMALL.toString()));
+                   .andExpect(jsonPath("$.aggregations[0].type").value(RareAggregation.Type.LARGE.toString()));
 
         // check that the aggregations are sorted in the order of the enum
         for (int i = 0; i < RareAggregation.values().length; i++) {

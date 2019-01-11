@@ -16,12 +16,12 @@ import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
  * @author JB Nizet
  */
 public enum RareAggregation implements AppAggregation {
-    DOMAIN("domain", "domain.keyword", SMALL),
+    DOMAIN("domain", "domain.keyword", LARGE), // could also use SMALL to display checkboxes instead of a search box
     TAXON("taxon", "taxon.keyword", LARGE),
-    MATERIAL("material", "materialType.keyword", SMALL),
-    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", SMALL),
+    MATERIAL("material", "materialType.keyword", LARGE),
+    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE),
     COUNTRY_OF_COLLECT("coc", "countryOfCollect.keyword", LARGE),
-    BIOTOPE("biotope", "biotopeType.keyword", SMALL);
+    BIOTOPE("biotope", "biotopeType.keyword", LARGE);
 
     private final String name;
     private final String field;
