@@ -66,7 +66,7 @@ class RareHarvesterTest {
     private ObjectMapper objectMapper;
 
     @Captor
-    private ArgumentCaptor<List<IndexRequest>> indexRequestCaptor;
+    private ArgumentCaptor<Collection<RareIndexedDocument>> indexedResourcesCaptor;
 
     private RareHarvester harvester;
 
@@ -155,12 +155,10 @@ class RareHarvesterTest {
         assertThat(file2.getErrorCount()).isEqualTo(0);
         assertThat(file2.getErrors()).hasSize(0);
 
-        verify(mockDocumentDao, times(2)).bulkIndexRequest(indexRequestCaptor.capture());
-        List<List<IndexRequest>> batches = indexRequestCaptor.getAllValues();
-        assertThat(batches.get(0).stream().map(r -> r.sourceAsMap().get("name"))).containsExactly(
-                "Syrah",
-                "Bermestia bianca");
-        assertThat(batches.get(1).stream().map(r -> r.sourceAsMap().get("name"))).containsExactly("CLIB 197");
+        verify(mockDocumentDao, times(2)).saveAll(indexedResourcesCaptor.capture());
+        List<Collection<RareIndexedDocument>> batches = indexedResourcesCaptor.getAllValues();
+        assertThat(batches.get(0)).extracting(r -> r.getDocument().getName()).containsExactly("Syrah", "Bermestia bianca");
+        assertThat(batches.get(1)).extracting(r -> r.getDocument().getName()).containsExactly("CLIB 197");
     }
 
     @Test
@@ -225,11 +223,10 @@ class RareHarvesterTest {
         HarvestResult result = resultBuilder.build();
         assertThat(result.getFiles().get(0).getSuccessCount()).isEqualTo(25000);
 
-//        verify(mockDocumentDao, times(3)).saveAll(indexedResourcesCaptor.capture());
-        verify(mockDocumentDao, times(3)).bulkIndexRequest(indexRequestCaptor.capture());
-        assertThat(indexRequestCaptor.getAllValues().get(0)).hasSize(10000);
-        assertThat(indexRequestCaptor.getAllValues().get(1)).hasSize(10000);
-        assertThat(indexRequestCaptor.getAllValues().get(2)).hasSize(5000);
+        verify(mockDocumentDao, times(3)).saveAll(indexedResourcesCaptor.capture());
+        assertThat(indexedResourcesCaptor.getAllValues().get(0)).hasSize(10000);
+        assertThat(indexedResourcesCaptor.getAllValues().get(1)).hasSize(10000);
+        assertThat(indexedResourcesCaptor.getAllValues().get(2)).hasSize(5000);
     }
 
     private void delete(Path file) {
