@@ -1,9 +1,11 @@
 package fr.inra.urgi.datadiscovery.harvest;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +42,7 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
     private final Path resourceDir;
     private final ObjectMapper objectMapper;
     private final DocumentDao<D, I> documentDao;
+//    private Path tempDir ;
 
     public AbstractHarvester(DataDiscoveryProperties dataDiscoveryProperties,
                                   ObjectMapper objectMapper,
@@ -47,6 +50,12 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
         this.resourceDir = dataDiscoveryProperties.getResourceDir();
         this.objectMapper = objectMapper;
         this.documentDao = documentDao;
+//        try {
+//            tempDir = Files.createTempDirectory(Paths.get("~/bulk_index/"),"indexed_documents_");
+//            System.out.println("Storing files into: " + tempDir.toAbsolutePath().toString());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -64,6 +73,7 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
             return Files.list(this.resourceDir)
                         .filter(path -> path.toString().endsWith(".json"))
                         .sorted() // helps tests, and makes harvesting more stable by harvesting in a well-known order
+//                        .parallel()
                         .map(path -> {
                             try {
                                 return new HarvestedStream(path.getFileName().toString(), Files.newInputStream(path));
@@ -106,6 +116,8 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
                                      parser.getCurrentLocation().getColumnNr());
             }
             else {
+//                String pathname = harvestedStream.getFileName() + ".indexed.json";
+//                File f = new File(tempDir.toAbsolutePath().toString() + "/" + pathname);
                 for (JsonToken jsonToken = parser.nextToken(); jsonToken != JsonToken.END_ARRAY; jsonToken = parser.nextToken()) {
                     if (jsonToken != JsonToken.START_OBJECT) {
                         fileBuilder.addError(index,
@@ -122,6 +134,9 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
                         batch.add(toIndexedDocument(document));
                         if (batch.size() == BATCH_SIZE) {
                             documentDao.saveAll(batch);
+//                            objectMapper
+////                                    .writerWithDefaultPrettyPrinter()
+//                                    .writeValue(f,batch);
                             fileBuilder.addSuccesses(batch.size());
                             batch = new ArrayList<>(BATCH_SIZE);
                         }
