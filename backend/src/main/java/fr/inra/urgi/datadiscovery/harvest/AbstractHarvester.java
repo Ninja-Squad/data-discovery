@@ -19,6 +19,7 @@ import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
 import fr.inra.urgi.datadiscovery.harvest.HarvestResult.HarvestResultBuilder;
 import fr.inra.urgi.datadiscovery.harvest.HarvestedFile.HarvestedFileBuilder;
+import org.springframework.data.elasticsearch.ElasticsearchException;
 
 /**
  * A harvester, which can load all the JSON files located in the resource directory, and then, for each of these
@@ -136,14 +137,17 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
                 }
 
                 if (!batch.isEmpty()) {
+//                    objectMapper
+////                            .writerWithDefaultPrettyPrinter()
+//                            .writeValue(f,batch);
                     documentDao.saveAll(batch);
                     fileBuilder.addSuccesses(batch.size());
                 }
             }
         }
-        catch(IOException e){
+        catch(Exception e){
             fileBuilder.addError(index,
-                                 "IOException while parsing file: " + e,
+                                 "Exception occurred while processing file: " + e,
                                  0,
                                  0);
         }

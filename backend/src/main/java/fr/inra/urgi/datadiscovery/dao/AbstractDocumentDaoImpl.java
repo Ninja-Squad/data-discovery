@@ -1,36 +1,28 @@
 package fr.inra.urgi.datadiscovery.dao;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
 import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
 import org.elasticsearch.search.aggregations.bucket.filter.FilterAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
@@ -38,16 +30,17 @@ import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SourceFilter;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static fr.inra.urgi.datadiscovery.dao.DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME;
 import static fr.inra.urgi.datadiscovery.dao.DocumentDao.PORTAL_URL_AGGREGATION_NAME;
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Base class for implementations of {@link DocumentDao}
- * @author JB Nizet
+ * @author JB Nizet, R. Flores
  */
 public abstract class AbstractDocumentDaoImpl<D extends Document, I extends IndexedDocument<D>>
     implements DocumentDaoCustom<D, I> {
@@ -67,10 +60,12 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
      */
     private int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
-    protected final ElasticsearchTemplate elasticsearchTemplate;
+    protected final ElasticsearchRestTemplate elasticsearchTemplate;
     private final AbstractDocumentHighlightMapper<D> documentHighlightMapper;
 
-    public AbstractDocumentDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public AbstractDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
                                    AbstractDocumentHighlightMapper<D> documentHighlightMapper) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.documentHighlightMapper = documentHighlightMapper;
@@ -218,14 +213,18 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
                                // suggestions after
                                .skipDuplicates(true));
 
-        Client client = elasticsearchTemplate.getClient();
+        RestHighLevelClient client = elasticsearchTemplate.getClient();
         String index = elasticsearchTemplate.getPersistentEntityFor(getDocumentClass()).getIndexName();
-
-        SearchRequestBuilder searchRequestBuilder = client.prepareSearch(index);
-        SearchResponse response =
-            searchRequestBuilder.suggest(suggestion)
-                                .setFetchSource(false) // avoid getting the source documents, which are useless
-                                .get();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().suggest(suggestion);
+        sourceBuilder.fetchSource(false);
+        SearchRequest req = new SearchRequest(new String[]{index}, sourceBuilder);
+        SearchResponse response = null;
+        try {
+            response = client.search(req, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            logger.warn("Could not fetch suggestions for  term: '" + term + "'." + e);
+            return Collections.emptyList();
+        }
 
         Suggest suggest = response.getSuggest();
         if (suggest == null) {

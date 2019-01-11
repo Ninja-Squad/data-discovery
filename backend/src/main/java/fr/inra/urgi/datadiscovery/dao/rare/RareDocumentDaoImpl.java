@@ -12,7 +12,7 @@ import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareIndexedDocument;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 
 /**
@@ -49,7 +49,7 @@ public class RareDocumentDaoImpl
                                         "databaseSource.keyword",
                                         "portalURL.keyword");
 
-    public RareDocumentDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
+    public RareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
                                EntityMapper entityMapper) {
         super(elasticsearchTemplate, new RareDocumentHighlightMapper(entityMapper));
     }

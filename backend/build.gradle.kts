@@ -8,6 +8,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+
     }
 }
 
@@ -27,6 +28,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://repo.spring.io/libs-snapshot")
 }
 
 val snippetsDir = file("build/generated-snippets")
@@ -112,10 +114,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.data:spring-data-commons")
-    implementation("org.springframework.data:spring-data-elasticsearch")
-    implementation("org.elasticsearch:elasticsearch")
-    implementation("org.elasticsearch.client:transport")
-    implementation("org.elasticsearch.plugin:transport-netty4-client")
+    implementation("org.springframework.data:spring-data-elasticsearch:3.2.0.M1") // to replace by GA version in June 2019
+    implementation("org.elasticsearch:elasticsearch:6.5.4")
+    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:6.5.4")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")
@@ -131,3 +132,4 @@ dependencies {
 
     asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.2.RELEASE")
 }
+

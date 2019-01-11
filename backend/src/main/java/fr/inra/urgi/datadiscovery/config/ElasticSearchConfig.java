@@ -1,21 +1,20 @@
 package fr.inra.urgi.datadiscovery.config;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.datadiscovery.dao.DocumentDao;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.apache.http.HttpHost;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
+import org.elasticsearch.client.NodeSelector;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+
+import java.net.UnknownHostException;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackageClasses = DocumentDao.class)
@@ -48,24 +47,28 @@ public class ElasticSearchConfig {
 
     /**
      * Creates an Elasticsearch instance using the configuration provided.
-     * It relies on {@link TransportClient }.
-     * In the future it might be interesting to switch to HighLevelRestClient
-     * when Spring Data Elasticsearch supports it (see https://github.com/spring-projects/spring-data-elasticsearch/pull/216)
+     * It relies on {@link RestHighLevelClient}.
      */
     @Bean
-    public Client client() throws UnknownHostException {
-        Settings settings = Settings.builder()
-                .put("cluster.name", esClusterName)
-                .build();
+    public RestHighLevelClient client() throws UnknownHostException {
         // if we are on CI, we use a hardcoded host, else we use the injected value
         String host = System.getenv("CI") != null ? "elasticsearch" : esHost;
-        return new PreBuiltTransportClient(settings)
-                .addTransportAddress(new TransportAddress(InetAddress.getByName(host), esPort));
+
+        RestHighLevelClient client = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost(host, esPort, HttpHost.DEFAULT_SCHEME_NAME)
+                ).setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
+                        .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultIOReactorConfig(
+                                IOReactorConfig.custom()
+                                        .setIoThreadCount(2)
+                                        .build()))
+        );
+        return client;
     }
 
     @Bean
-    public ElasticsearchTemplate elasticsearchTemplate(Client client, EntityMapper customElasticSearchEntityMapper) {
-        return new ElasticsearchTemplate(client, customElasticSearchEntityMapper);
+    public ElasticsearchRestTemplate elasticsearchTemplate(RestHighLevelClient client, EntityMapper customElasticSearchEntityMapper) {
+        return new ElasticsearchRestTemplate(client, customElasticSearchEntityMapper);
     }
 }
 
