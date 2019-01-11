@@ -110,7 +110,7 @@ class RareDocumentDaoTest {
                                .build();
 
         documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
-
+        documentDao.refresh();
         assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
     }
 
@@ -268,6 +268,7 @@ class RareDocumentDaoTest {
     void shouldNotSuggestOnIdentifier() {
         RareDocument document = RareDocument.builder().withId("foo-bar").build();
         documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("foo")).isEmpty();
     }
@@ -277,6 +278,7 @@ class RareDocumentDaoTest {
         RareDocument document =
             RareDocument.builder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
         documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("foo")).isEmpty();
     }
@@ -286,6 +288,7 @@ class RareDocumentDaoTest {
         RareDocument document =
             RareDocument.builder().withDescription("Hello world").build();
         documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("hel")).containsOnly("Hello");
         assertThat(documentDao.suggest("wor")).containsOnly("world");
@@ -309,6 +312,7 @@ class RareDocumentDaoTest {
                                .build();
 
         documentDao.saveAll(Arrays.asList(new RareIndexedDocument(resource), new RareIndexedDocument(resource2)));
+        documentDao.refresh();
 
         List<String> result = documentDao.suggest("vit");
         assertThat(result).containsOnly("vitis", "vita e bella");
@@ -340,6 +344,7 @@ class RareDocumentDaoTest {
         documentDao.saveAll(Arrays.asList(new RareIndexedDocument(resource),
                                                  new RareIndexedDocument(resource2),
                                                  new RareIndexedDocument(resource3)));
+        documentDao.refresh();
 
         List<String> result = documentDao.suggest("vit");
         assertThat(result).hasSize(2);
@@ -360,6 +365,7 @@ class RareDocumentDaoTest {
         RareDocument document = documentBuilder.build();
 
         documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
+        documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
             documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
@@ -396,6 +402,7 @@ class RareDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new RareIndexedDocument(document1),
                                                  new RareIndexedDocument(document2)));
+        documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
             documentDao.search("foo", true, false, SearchRefinements.EMPTY, firstPage);
@@ -469,6 +476,7 @@ class RareDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new RareIndexedDocument(document1),
                                                  new RareIndexedDocument(document2)));
+        documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
             documentDao.search("vitis", true, false, SearchRefinements.EMPTY, firstPage);
@@ -495,6 +503,7 @@ class RareDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new RareIndexedDocument(document1),
                                                  new RareIndexedDocument(document2)));
+        documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
             documentDao.search("vitis", true, false, SearchRefinements.EMPTY, firstPage);
@@ -548,6 +557,7 @@ class RareDocumentDaoTest {
             new RareIndexedDocument(resource3),
             new RareIndexedDocument(resource4),
             new RareIndexedDocument(resource5)));
+        documentDao.refresh();
 
         Terms pillars = documentDao.findPillars();
 
@@ -605,6 +615,7 @@ class RareDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new RareIndexedDocument(resource1),
                                                  new RareIndexedDocument(resource2)));
+        documentDao.refresh();
 
         AggregatedPage<RareDocument> result = documentDao.search("comes sun",
                                                                                false,
@@ -655,6 +666,7 @@ class RareDocumentDaoTest {
             documentDao.saveAll(Arrays.asList(new RareIndexedDocument(document1),
                                                      new RareIndexedDocument(document2),
                                                      new RareIndexedDocument(document3)));
+            documentDao.refresh();
         }
 
         @Test
@@ -778,6 +790,7 @@ class RareDocumentDaoTest {
         RareDocument document = documentBuilder.build();
 
         documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("FOO")).containsExactly("foo bar baz");
         assertThat(documentDao.suggest("bing")).isEmpty();

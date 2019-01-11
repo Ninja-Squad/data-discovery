@@ -94,6 +94,7 @@ class WheatisDocumentDaoTest {
                                   .build();
 
         documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
     }
@@ -133,6 +134,7 @@ class WheatisDocumentDaoTest {
         WheatisDocument document =
             WheatisDocument.builder().withUrl("foo bar baz").build();
         documentDao.save(document);
+        documentDao.refresh();
 
         assertThat(documentDao.search("bar",
                                              false,
@@ -151,6 +153,7 @@ class WheatisDocumentDaoTest {
         WheatisDocument document =
             WheatisDocument.builder().withDescription("Hello world").build();
         documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("hel")).containsOnly("Hello");
         assertThat(documentDao.suggest("wor")).containsOnly("world");
@@ -181,6 +184,7 @@ class WheatisDocumentDaoTest {
         WheatisDocument document =
             WheatisDocument.builder().withUrl("foo bar baz").build();
         documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("foo")).isEmpty();
     }
@@ -191,6 +195,7 @@ class WheatisDocumentDaoTest {
         WheatisDocument document = documentBuilder.build();
 
         documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
             documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
@@ -223,6 +228,7 @@ class WheatisDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(document1),
                                                  new WheatisIndexedDocument(document2)));
+        documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
             documentDao.search("foo", true, false, SearchRefinements.EMPTY, firstPage);
@@ -269,6 +275,7 @@ class WheatisDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(document1),
                                                  new WheatisIndexedDocument(document2)));
+        documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
             documentDao.search("bar", true, false, SearchRefinements.EMPTY, firstPage);
@@ -311,6 +318,7 @@ class WheatisDocumentDaoTest {
             new WheatisIndexedDocument(resource2),
             new WheatisIndexedDocument(resource3),
             new WheatisIndexedDocument(resource4)));
+        documentDao.refresh();
 
         Terms pillars = documentDao.findPillars();
 
@@ -360,6 +368,7 @@ class WheatisDocumentDaoTest {
 
         documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(resource1),
                                                  new WheatisIndexedDocument(resource2)));
+        documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result = documentDao.search("comes sun",
                                                                                   false,
@@ -406,6 +415,7 @@ class WheatisDocumentDaoTest {
             documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(document1),
                                                      new WheatisIndexedDocument(document2),
                                                      new WheatisIndexedDocument(document3)));
+            documentDao.refresh();
         }
 
         @Test
@@ -455,6 +465,7 @@ class WheatisDocumentDaoTest {
         WheatisDocument document = documentBuilder.build();
 
         documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.refresh();
 
         assertThat(documentDao.suggest("FOO")).containsExactly("foo bar baz");
         assertThat(documentDao.suggest("bing")).isEmpty();

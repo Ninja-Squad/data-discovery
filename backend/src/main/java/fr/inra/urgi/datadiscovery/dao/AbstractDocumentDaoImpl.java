@@ -260,9 +260,10 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
 
     @Override
     public void saveAll(Collection<I> indexedDocuments) {
-        List<IndexQuery> queries = indexedDocuments.stream().map(this::createIndexQuery).collect(Collectors.toList());
+        List<IndexQuery> queries = indexedDocuments.parallelStream().map(this::createIndexQuery).collect(Collectors.toList());
         elasticsearchTemplate.bulkIndex(queries);
-        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(getDocumentClass()).getIndexName());
+        // Refreshing after each request is a very consuming task. Let ES using its own refresh index setting.
+//        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(getDocumentClass()).getIndexName());
     }
 
     @Override

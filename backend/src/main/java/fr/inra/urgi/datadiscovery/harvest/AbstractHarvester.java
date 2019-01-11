@@ -34,7 +34,7 @@ import fr.inra.urgi.datadiscovery.harvest.HarvestedFile.HarvestedFileBuilder;
  */
 public abstract class AbstractHarvester<D extends Document, I extends IndexedDocument<D>> {
 
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 10000;
 
     private final Path resourceDir;
     private final ObjectMapper objectMapper;
