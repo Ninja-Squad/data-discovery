@@ -18,9 +18,7 @@ image: urgi/docker-browsers:latest
 # isolated from any previous builds.
 variables:
  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-
  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
-
 
 test:
  stage: test
@@ -51,11 +49,13 @@ test:
      - frontend/node_modules/
  artifacts:
   reports:
-   junit: 
+   junit:
     - ./backend/build/test-results/test/TEST-*.xml
     - ./frontend/karma-junit-tests-report/TEST*.xml
-
-
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
 
 .build-app: &build_app
  # Hidden job which serves as a template for following
@@ -74,6 +74,10 @@ test:
    - .gradle
    - frontend/.gradle/
    - frontend/node_modules/
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
 
 build-rare:
  variables:
@@ -110,6 +114,10 @@ build-wheatis:
   # Should find a better way than a shitty sleep...
   - eval $(ssh-agent -k)
   - "echo \"Deploy and index done. Application should be available at: http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
 
 .variables-rare-beta: &variables-rare-beta
  variables:
@@ -157,10 +165,12 @@ deploy-rare-to-beta:
  stage: staging
  <<: *variables-rare-beta
  <<: *deploy_to_vm
- only: 
-  - branches
+ only:
+  refs:
+   - branches
  except:
-  - master
+  refs:
+   - master
  allow_failure: false # mandatory to block the execution of the pipeline
 
 deploy-rare-to-staging:
@@ -168,14 +178,16 @@ deploy-rare-to-staging:
  <<: *variables-rare-staging
  <<: *deploy_to_vm
  only:
-  - master
+  refs:
+   - master
 
 deploy-rare-to-prod:
  stage: production
  <<: *variables-rare-prod
  <<: *deploy_to_vm
  only:
-  - master
+  refs:
+   - master
  when: manual
  allow_failure: false
 
@@ -184,9 +196,11 @@ deploy-wheatis-to-beta:
  <<: *variables-wheatis-beta
  <<: *deploy_to_vm
  only:
-  - branches
+  refs:
+   - branches
  except:
-  - master
+  refs:
+   - master
  allow_failure: false
 
 deploy-wheatis-to-staging:
@@ -194,17 +208,19 @@ deploy-wheatis-to-staging:
  <<: *variables-wheatis-staging
  <<: *deploy_to_vm
  only:
-  - master
+  refs:
+   - master
 
 deploy-wheatis-to-prod:
  stage: production
  <<: *variables-wheatis-prod
  <<: *deploy_to_vm
  only:
-  - master
+  refs:
+   - master
  when: manual
  allow_failure: false
- 
+
 .data-integration: &data-integration
  retry: 1
  <<: *ssh-initialization-before-script
@@ -225,52 +241,64 @@ deploy-wheatis-to-prod:
   # Environments settings, it would cause the build not being visible in the
   # Deployments view because of a known bug:
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
+ when: manual
+ only:
+  changes:
+   - data/**/*.json.gz
 
 data-integration-rare-beta:
  stage: data-integration-staging
  <<: *variables-rare-beta
  <<: *data-integration
  only:
-  - branches
+  refs:
+   - branches
  except:
-  - master
+  refs:
+   - master
 
 data-integration-rare-staging:
  stage: data-integration-staging
  <<: *variables-rare-staging
  <<: *data-integration
  only:
-  - master
+  refs:
+   - master
 
 data-integration-rare-prod:
  stage: data-integration-production
  <<: *variables-rare-prod
  <<: *data-integration
  only:
-  - master
+  refs:
+   - master
 
 data-integration-wheatis-beta:
  stage: data-integration-staging
  <<: *variables-wheatis-beta
  <<: *data-integration
  only:
-  - branches
+  refs:
+   - branches
  except:
-  - master
+  refs:
+   - master
 
 data-integration-wheatis-staging:
  stage: data-integration-staging
  <<: *variables-wheatis-staging
  <<: *data-integration
  only:
-  - master
+  refs:
+   - master
 
 data-integration-wheatis-prod:
  stage: data-integration-production
  <<: *variables-wheatis-prod
  <<: *data-integration
  only:
-  - master
+  refs:
+   - master
 
 # Should find a way to authorize such pipeline once at a time in order to avoid
 # multiple restart of services, elasticsearch cluster or reindexing
