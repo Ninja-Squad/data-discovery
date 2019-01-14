@@ -63,7 +63,7 @@ describe('NavbarComponent', () => {
 
     tester.detectChanges();
 
-    //expect(tester.title.textContent).toBe('RARe');
+    expect(tester.title.textContent).toBe('RARe');
 
     expect(tester.links.length).toBe(2);
 
