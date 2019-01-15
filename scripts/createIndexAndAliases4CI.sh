@@ -29,9 +29,13 @@ curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-inde
 }
 "
 
-echo -e "\n\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)"
+MAPPING_PARTIAL_PATH="${APP_NAME}"
+if [ "$APP_NAME" == "gnpis" ]; then
+    MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and GnpISs
+fi
+echo -e "\n\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)"
 curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
  -H 'Content-Type: application/json' -d"
-$(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
+$(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
 "
 echo
