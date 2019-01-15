@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { speculoosMatchers, ComponentTester } from 'ngx-speculoos';
 
-import { GnpisDocumentComponent } from './gnpis-document.component';
-import { toGnpisDocument } from '../../models/test-model-generators';
+import { WheatisGnpisDocumentComponent } from './wheatis-gnpis-document.component';
+import { toWheatisGnpisDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
 describe('GnpisDocumentComponent', () => {
 
-  class GnpisDocumentComponentTester extends ComponentTester<GnpisDocumentComponent> {
+  class GnpisDocumentComponentTester extends ComponentTester<WheatisGnpisDocumentComponent> {
     constructor() {
-      super(GnpisDocumentComponent);
+      super(WheatisGnpisDocumentComponent);
     }
 
     get title() {
@@ -46,7 +46,7 @@ describe('GnpisDocumentComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [GnpisDocumentComponent, TruncatableDescriptionComponent]
+    declarations: [WheatisGnpisDocumentComponent, TruncatableDescriptionComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
@@ -56,7 +56,7 @@ describe('GnpisDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toGnpisDocument('Bacteria');
+    const resource = toWheatisGnpisDocument('Bacteria');
     component.document = resource;
     tester.detectChanges();
 

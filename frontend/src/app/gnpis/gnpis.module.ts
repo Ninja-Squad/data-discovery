@@ -1,21 +1,18 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
-import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
-import { GnpisDocumentComponent } from './gnpis-document/gnpis-document.component';
+import { WheatisGnpisModule } from '../wheatis-gnpis/wheatis-gnpis.module'
+import { WheatisGnpisDocumentComponent } from '../wheatis-gnpis/wheatis-gnpis-document/wheatis-gnpis-document.component';
 import { GnpisHeaderComponent } from './gnpis-header/gnpis-header.component';
 
 @NgModule({
   imports: [
-    CommonModule,
-    UrgiCommonModule
+    WheatisGnpisModule
   ],
   declarations: [
-    GnpisDocumentComponent,
     GnpisHeaderComponent
   ],
   exports: [
-    GnpisDocumentComponent,
+    WheatisGnpisDocumentComponent,
     GnpisHeaderComponent
   ]
 })

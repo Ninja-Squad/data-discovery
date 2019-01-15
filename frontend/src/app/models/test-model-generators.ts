@@ -1,8 +1,7 @@
 import { AggregatedPage, Aggregation, Bucket } from './page';
 import { AggregationCriterion } from './aggregation-criterion';
 import { RareDocumentModel } from '../rare/rare-document.model';
-import { WheatisDocumentModel } from '../wheatis/wheatis-document.model';
-import { GnpisDocumentModel } from '../gnpis/gnpis-document.model';
+import { WheatisGnpisDocumentModel } from '../wheatis-gnpis/wheatis-gnpis-document.model';
 
 export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
   return {
@@ -74,20 +73,7 @@ export function toRareDocument(name: string): RareDocumentModel {
   };
 }
 
-export function toWheatisDocument(name: string): WheatisDocumentModel {
-  return {
-    identifier: name,
-    name,
-    url: 'http://brc4env.fr',
-    description: 'A description of the genetic document',
-    databaseName: 'BRC4Env',
-    node: 'Node',
-    species: [`${name} species`, `${name} species2`],
-    entryType: 'Specimen'
-  };
-}
-
-export function toGnpisDocument(name: string): GnpisDocumentModel {
+export function toWheatisGnpisDocument(name: string): WheatisGnpisDocumentModel {
   return {
     identifier: name,
     name,
