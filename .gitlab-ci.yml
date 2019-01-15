@@ -91,7 +91,7 @@ build-wheatis:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
   - ssh -o StrictHostKeyChecking=no root@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
-  - ssh root@${SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
+  #- ssh root@${SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
 
 .deploy-to-vm: &deploy_to_vm
  # Hidden job which serves as template for executed jobs below.
@@ -212,10 +212,10 @@ deploy-wheatis-to-prod:
   - sleep 5
   # - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
   # Deleting old indexes before reindexing from scratch
-  - "curl -s -XDELETE ${SERVER_IP}:9200/${APP_NAME}-${ENV}-* ; echo"
+  - "curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo"
   # Should better handle those index switches by using the strategy proposed
   # in the README file
-  - "./scripts/createIndexAndAliases4CI.sh ${SERVER_IP} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
+  - "./scripts/createIndexAndAliases4CI.sh ${ES_HOST} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
   - "./scripts/harvestCI.sh ${SERVER_IP} ${APP_PORT} ${APP_NAME} ${ENV} ; echo"
  environment:
   # take care that some variables cannot be expanded according to where they are
