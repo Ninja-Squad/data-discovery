@@ -89,6 +89,11 @@ build-wheatis:
   APP_NAME: ${WHEATIS_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
+build-gnpis:
+ variables:
+  APP_NAME: ${GNPIS_APP_NAME}
+ <<: *build_app           # Merge the contents of the 'build_app' alias
+
 .ssh-initialization-before-script: &ssh-initialization-before-script
  before_script:
   # SSH initialization
@@ -161,6 +166,27 @@ build-wheatis:
   APP_PORT: ${PROD_WHEATIS_PORT}
   SERVER_IP: ${BETA_SERVER_IP}
 
+.variables-gnpis-beta: &variables-gnpis-beta
+ variables:
+  ENV: beta
+  APP_NAME: gnpis
+  APP_PORT: ${BETA_GNPIS_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-gnpis-staging: &variables-gnpis-staging
+ variables:
+  ENV: staging
+  APP_NAME: gnpis
+  APP_PORT: ${STAGING_GNPIS_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
+.variables-gnpis-prod: &variables-gnpis-prod
+ variables:
+  ENV: prod
+  APP_NAME: gnpis
+  APP_PORT: ${PROD_GNPIS_PORT}
+  SERVER_IP: ${BETA_SERVER_IP}
+
 deploy-rare-to-beta:
  stage: staging
  <<: *variables-rare-beta
@@ -214,6 +240,36 @@ deploy-wheatis-to-staging:
 deploy-wheatis-to-prod:
  stage: production
  <<: *variables-wheatis-prod
+ <<: *deploy_to_vm
+ only:
+  refs:
+   - master
+ when: manual
+ allow_failure: false
+
+deploy-gnpis-to-beta:
+ stage: staging
+ <<: *variables-gnpis-beta
+ <<: *deploy_to_vm
+ only:
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ allow_failure: false
+
+deploy-gnpis-to-staging:
+ stage: staging
+ <<: *variables-gnpis-staging
+ <<: *deploy_to_vm
+ only:
+  refs:
+   - master
+
+deploy-gnpis-to-prod:
+ stage: production
+ <<: *variables-gnpis-prod
  <<: *deploy_to_vm
  only:
   refs:
@@ -295,6 +351,33 @@ data-integration-wheatis-staging:
 data-integration-wheatis-prod:
  stage: data-integration-production
  <<: *variables-wheatis-prod
+ <<: *data-integration
+ only:
+  refs:
+   - master
+
+data-integration-gnpis-beta:
+ stage: data-integration-staging
+ <<: *variables-gnpis-beta
+ <<: *data-integration
+ only:
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+
+data-integration-gnpis-staging:
+ stage: data-integration-staging
+ <<: *variables-gnpis-staging
+ <<: *data-integration
+ only:
+  refs:
+   - master
+
+data-integration-gnpis-prod:
+ stage: data-integration-production
+ <<: *variables-gnpis-prod
  <<: *data-integration
  only:
   refs:
