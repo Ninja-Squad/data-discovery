@@ -119,10 +119,6 @@ build-gnpis:
   # Should find a better way than a shitty sleep...
   - eval $(ssh-agent -k)
   - "echo \"Deploy and index done. Application should be available at: http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
- only:
-  changes:
-   - backend/src/**/*
-   - frontend/**/*
 
 .variables-rare-beta: &variables-rare-beta
  variables:
@@ -208,6 +204,9 @@ deploy-rare-to-beta:
  <<: *variables-rare-beta
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - branches
  except:
@@ -220,6 +219,9 @@ deploy-rare-to-staging:
  <<: *variables-rare-staging
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - master
 
@@ -228,6 +230,9 @@ deploy-rare-to-prod:
  <<: *variables-rare-prod
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - master
  when: manual
@@ -238,6 +243,9 @@ deploy-wheatis-to-beta:
  <<: *variables-wheatis-beta
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - branches
  except:
@@ -250,6 +258,9 @@ deploy-wheatis-to-staging:
  <<: *variables-wheatis-staging
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - master
 
@@ -258,6 +269,9 @@ deploy-wheatis-to-prod:
  <<: *variables-wheatis-prod
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - master
  when: manual
@@ -268,6 +282,9 @@ deploy-gnpis-to-beta:
  <<: *variables-gnpis-beta
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - branches
  except:
@@ -280,6 +297,9 @@ deploy-gnpis-to-staging:
  <<: *variables-gnpis-staging
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - master
 
@@ -288,6 +308,9 @@ deploy-gnpis-to-prod:
  <<: *variables-gnpis-prod
  <<: *deploy_to_vm
  only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
   refs:
    - master
  when: manual
