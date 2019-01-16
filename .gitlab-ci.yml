@@ -129,63 +129,79 @@ build-gnpis:
   ENV: beta
   APP_NAME: rare
   APP_PORT: ${BETA_RARE_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_DEV_HOST}
+  ES_PORT: ${ES_DEV_PORT}
 
 .variables-rare-staging: &variables-rare-staging
  variables:
   ENV: staging
   APP_NAME: rare
   APP_PORT: ${STAGING_RARE_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_PROD_HOST}
+  ES_PORT: ${ES_PROD_PORT}
 
 .variables-rare-prod: &variables-rare-prod
  variables:
   ENV: prod
   APP_NAME: rare
   APP_PORT: ${PROD_RARE_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_PROD_HOST}
+  ES_PORT: ${ES_PROD_PORT}
 
 .variables-wheatis-beta: &variables-wheatis-beta
  variables:
   ENV: beta
   APP_NAME: wheatis
   APP_PORT: ${BETA_WHEATIS_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_DEV_HOST}
+  ES_PORT: ${ES_DEV_PORT}
 
 .variables-wheatis-staging: &variables-wheatis-staging
  variables:
   ENV: staging
   APP_NAME: wheatis
   APP_PORT: ${STAGING_WHEATIS_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_PROD_HOST}
+  ES_PORT: ${ES_PROD_PORT}
 
 .variables-wheatis-prod: &variables-wheatis-prod
  variables:
   ENV: prod
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
 
 .variables-gnpis-beta: &variables-gnpis-beta
  variables:
   ENV: beta
   APP_NAME: gnpis
   APP_PORT: ${BETA_GNPIS_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_DEV_HOST}
+  ES_PORT: ${ES_DEV_PORT}
 
 .variables-gnpis-staging: &variables-gnpis-staging
  variables:
   ENV: staging
   APP_NAME: gnpis
   APP_PORT: ${STAGING_GNPIS_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_PROD_HOST}
+  ES_PORT: ${ES_PROD_PORT}
 
 .variables-gnpis-prod: &variables-gnpis-prod
  variables:
   ENV: prod
   APP_NAME: gnpis
   APP_PORT: ${PROD_GNPIS_PORT}
-  SERVER_IP: ${BETA_SERVER_IP}
+  SERVER_IP: ${SERVER_IP}
+  ES_HOST: ${ES_PROD_HOST}
+  ES_PORT: ${ES_PROD_PORT}
 
 deploy-rare-to-beta:
  stage: staging
