@@ -337,15 +337,14 @@ deploy-gnpis-to-prod:
   # Deployments view because of a known bug:
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
  when: manual
- only:
-  changes:
-   - data/**/*.json.gz
 
 data-integration-rare-beta:
  stage: data-integration-staging
  <<: *variables-rare-beta
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - branches
  except:
@@ -357,6 +356,8 @@ data-integration-rare-staging:
  <<: *variables-rare-staging
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - master
 
@@ -365,6 +366,8 @@ data-integration-rare-prod:
  <<: *variables-rare-prod
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - master
 
@@ -373,6 +376,8 @@ data-integration-wheatis-beta:
  <<: *variables-wheatis-beta
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - branches
  except:
@@ -384,6 +389,8 @@ data-integration-wheatis-staging:
  <<: *variables-wheatis-staging
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - master
 
@@ -392,6 +399,8 @@ data-integration-wheatis-prod:
  <<: *variables-wheatis-prod
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - master
 
@@ -400,6 +409,8 @@ data-integration-gnpis-beta:
  <<: *variables-gnpis-beta
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - branches
  except:
@@ -411,6 +422,8 @@ data-integration-gnpis-staging:
  <<: *variables-gnpis-staging
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - master
 
@@ -419,6 +432,8 @@ data-integration-gnpis-prod:
  <<: *variables-gnpis-prod
  <<: *data-integration
  only:
+  changes:
+   - data/**/*.json.gz
   refs:
    - master
 
