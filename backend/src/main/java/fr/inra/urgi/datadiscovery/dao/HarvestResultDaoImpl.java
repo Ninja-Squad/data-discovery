@@ -28,7 +28,7 @@ public class HarvestResultDaoImpl implements HarvestResultDaoCustom {
     public Page<HarvestResult> list(Pageable page) {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
             .withQuery(matchAllQuery())
-            .withSourceFilter(new FetchSourceFilterBuilder().withIncludes("id", "startInstant", "endInstant").build())
+            .withSourceFilter(new FetchSourceFilterBuilder().withIncludes("id", "startInstant", "endInstant", "duration").build())
             .withSort(SortBuilders.fieldSort("startInstant").order(SortOrder.DESC))
             .withPageable(page)
             .build();

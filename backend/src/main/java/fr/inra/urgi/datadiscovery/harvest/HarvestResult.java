@@ -119,6 +119,7 @@ public final class HarvestResult {
             "id='" + id + '\'' +
             ", startInstant=" + startInstant +
             ", endInstant=" + endInstant +
+            ", duration=" + duration +
             ", globalErrors=" + globalErrors +
             ", files=" + files +
             '}';
