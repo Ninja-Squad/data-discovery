@@ -112,7 +112,7 @@ build-gnpis:
   - "scp ./backend/build/libs/${APP_NAME}.jar root@${SERVER_IP}:/opt/${APP_NAME}/${APP_NAME}-${ENV}.jar"
   - "ssh root@${SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
   - "scp ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
-  - "ssh root@${SERVER_IP} \"gunzip -rv /tmp/${APP_NAME}-${ENV}/resources\""
+  - "ssh root@${SERVER_IP} \"gunzip -v /tmp/${APP_NAME}-${ENV}/resources/*.gz\""
   # Restarting service with the updated jar and the according Spring profiles enabled
   - "ssh root@${SERVER_IP} \"service ${APP_NAME}-${ENV} restart\""
   # Waiting embedded tomcat starts...
