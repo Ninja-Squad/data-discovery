@@ -3,4 +3,4 @@
 # delegates to parameterized script
 BASEDIR=$(dirname "$0")
 
-sh $BASEDIR/harvestCI.sh localhost 8080 rare dev
+sh $BASEDIR/harvestCI.sh -host localhost -port 8080 -app rare -env dev -copy

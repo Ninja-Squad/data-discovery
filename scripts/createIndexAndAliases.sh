@@ -4,10 +4,10 @@
 BASEDIR=$(dirname "$0")
 
 # RARe index/alias
-sh $BASEDIR/createIndexAndAliases4CI.sh localhost rare dev
+sh $BASEDIR/createIndexAndAliases4CI.sh -host localhost -app rare -env dev
 
 # WheatIS index/alias
-sh $BASEDIR/createIndexAndAliases4CI.sh localhost wheatis dev
+sh $BASEDIR/createIndexAndAliases4CI.sh -host localhost -app wheatis -env dev
 
 # GnpIS index/alias
-sh $BASEDIR/createIndexAndAliases4CI.sh localhost gnpis dev
+sh $BASEDIR/createIndexAndAliases4CI.sh -host localhost -app gnpis -env dev

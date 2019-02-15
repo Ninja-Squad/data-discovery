@@ -1,7 +1,6 @@
 #!/bin/bash
 # set -x
 
-
 help() {
 	cat <<EOF
 DESCRIPTION: 
@@ -48,20 +47,25 @@ while [ -n "$1" ]; do
 	esac
 done
 
-PARALLEL_FOUND=true
-command -v parallel > /dev/null || PARALLEL_FOUND=false
-
-EXP_PARAMS=4
-[ ! $# -eq $EXP_PARAMS ] && {
-    echo "ERROR: missing $((EXP_PARAMS-$#)) parameter(s)." && help
+if [ -z "$APP_HOST" ] || [ -z "$APP_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" ]; then
+    echo "ERROR: host, port, app and env parameters are mandatory!"
+    echo && help
 	exit 4
-}
+fi
 
 INDEX_DATA_DIR="/tmp/$APP_NAME-$ENV/resources"
+if [ $COPY_FILES -eq 0 ] && [ -z "$(ls -1 $INDEX_DATA_DIR/*.json)" ]; then
+	echo "ERROR: data directory $INDEX_DATA_DIR contains no JSON file..."
+	exit 1
+fi
+
 if [ $COPY_FILES -eq 1 ]; then
     DATADIR="$BASEDIR/../data/$APP_NAME"
 	echo "Creating index directory: $INDEX_DATA_DIR" && mkdir -p $INDEX_DATA_DIR
 	echo "Decompressing data files from $DATADIR into $INDEX_DATA_DIR"
+	
+	PARALLEL_FOUND=true
+	command -v parallel > /dev/null || PARALLEL_FOUND=false
 	if [ "$PARALLEL_FOUND" == "true" ]; then
 		echo "... using GNU parallel"
 		parallel --bar "gzip -d -f -c {} > $INDEX_DATA_DIR/{/.}" ::: $DATADIR/*.json.gz
@@ -70,9 +74,6 @@ if [ $COPY_FILES -eq 1 ]; then
 		cp $DATADIR/*.json.gz $INDEX_DATA_DIR && \
 		gzip -d -f $INDEX_DATA_DIR/*.json.gz
 	fi
-else
-    echo "Decompressing data files from $INDEX_DATA_DIR"
-    gzip -d -f $INDEX_DATA_DIR/*.json.gz
 fi
 
 {

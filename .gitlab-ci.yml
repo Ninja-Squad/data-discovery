@@ -318,8 +318,8 @@ deploy-gnpis-to-prod:
   # - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
   # Clean then copy data to the server
   - "ssh root@${SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
-  - "scp ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
-  - "ssh root@${SERVER_IP} \"gunzip -v /tmp/${APP_NAME}-${ENV}/resources/*.gz\""
+  - "rsync -a --progress ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
+  - "ssh root@${SERVER_IP} \"parallel --bar "gzip -d -f" :::  /tmp/${APP_NAME}-${ENV}/resources/*.gz\""
   # Deleting old indexes before reindexing from scratch
   - "curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo"
   # Should better handle those index switches by using the strategy proposed in the README file
