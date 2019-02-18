@@ -3,4 +3,4 @@
 # delegates to parameterized script
 BASEDIR=$(dirname "$0")
 
-sh $BASEDIR/harvestCI.sh localhost 8070 gnpis dev
+sh $BASEDIR/harvestCI.sh localhost 8280 gnpis dev

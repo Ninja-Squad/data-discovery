@@ -11,8 +11,7 @@ You need to install:
 
 - a recent enough JDK8
 
-The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9300`,
-in a cluster named `es-data-discovery`.
+The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9300`.
 To have such an instance, simply run:
 
     docker-compose up
@@ -59,7 +58,7 @@ This will build a standalone jar at `backend/build/libs/rare.jar` or  `backend/b
 And the full app run on:
 
 - http://localhost:8080/rare-dev
-- http://localhost:8090/wheatis-dev
+- http://localhost:8180/wheatis-dev
 
 
 ## CI
@@ -422,7 +421,7 @@ This readme will be useful :
         resource-dir: /tmp/gnpis-dev/resources
 
       server:
-        port: 8070
+        port: 8280
         servlet:
           context-path: /gnpis-dev
 
@@ -480,7 +479,7 @@ And edit them as desired.
           "/gnpis-dev/api",
           "/gnpis-dev/actuator"
         ],
-        target: "http://localhost:8070",
+        target: "http://localhost:8280",
         secure: false
       }
 
@@ -498,7 +497,7 @@ And edit them as desired.
       # delegates to parameterized script
       BASEDIR=$(dirname "$0")
 
-      sh $BASEDIR/harvestCI.sh localhost 8070 gnpis dev
+      sh $BASEDIR/harvestCI.sh localhost 8280 gnpis dev
 
 ##### Testing
 
@@ -525,7 +524,7 @@ In our case, after launching the test, we kept getting `Permission denied` error
         ./scripts/createIndexAndAliases.sh
         ./scripts/harvestGnpis.sh
 
-5. App is running at : http://localhost:8070/gnpis-dev/
+5. App is running at : http://localhost:8280/gnpis-dev/
 
 Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob/master/README.md) for more details.
 
@@ -576,11 +575,7 @@ Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob
 └── scripts > [C] harvestGnpis.sh
 ```
 
-##### Example of the ports used according to the applications and the environment:
+#### Deployment environments
 
-|         | RARe | WheatIS | GnpIS  |
-|:-------:|:----:|:-------:|:------:|
-| dev     | 8080 |   8090  |  8070  |
-| beta    | 8081 |   8091  |  8071  |
-| staging | 8082 |   8092  |  8072  |
-| prod    | 8083 |   8093  |  8073  |
+Checkout the [README.md](https://forgemia.inra.fr/urgi-is/data-discovery-config/blob/master/README.md) file for the 
+full list of deployment environments for the `data-discovery` webapp (server ports & context paths). 

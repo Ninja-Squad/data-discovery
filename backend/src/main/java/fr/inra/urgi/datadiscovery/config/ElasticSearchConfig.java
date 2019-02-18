@@ -20,9 +20,6 @@ import java.net.UnknownHostException;
 @EnableElasticsearchRepositories(basePackageClasses = DocumentDao.class)
 public class ElasticSearchConfig {
 
-    @Value("${spring.data.elasticsearch.cluster.name}")
-    private String esClusterName;
-
     @Value("${spring.data.elasticsearch.host}")
     private String esHost;
 

@@ -12,7 +12,7 @@ const PROXY_CONFIG = [
       "/wheatis-dev/api",
       "/wheatis-dev/actuator"
     ],
-    target: "http://localhost:8090",
+    target: "http://localhost:8180",
     secure: false
   },
   {
@@ -20,7 +20,7 @@ const PROXY_CONFIG = [
       "/gnpis-dev/api",
       "/gnpis-dev/actuator"
     ],
-    target: "http://localhost:8070",
+    target: "http://localhost:8280",
     secure: false
   }
 ];
