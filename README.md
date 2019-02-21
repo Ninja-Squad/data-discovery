@@ -11,7 +11,7 @@ You need to install:
 
 - a recent enough JDK8
 
-The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9300`.
+The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9200`.
 To have such an instance, simply run:
 
     docker-compose up
