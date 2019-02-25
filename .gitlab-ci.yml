@@ -106,13 +106,12 @@ build-gnpis:
  retry: 2
  <<: *ssh-initialization-before-script
  script:
-  # Copy jar to the server and restart service with the updated jar and the according Spring profiles enabled
-  - "scp ./backend/build/libs/${APP_NAME}.jar root@${SERVER_IP}:/opt/${APP_NAME}/${APP_NAME}-${ENV}.jar"
-  - "ssh root@${SERVER_IP} \"service ${APP_NAME}-${ENV} restart\""
-  # Waiting embedded tomcat starts...
-  # Should find a better way than a shitty sleep...
+  # Copy jar to the server
+  - scp ./backend/build/libs/${APP_NAME}.jar root@${SERVER_IP}:/opt/bootapp/${APP_NAME}-${ENV}.jar
+  # Restarting service with the updated jar and the according Spring profiles enabled
+  - ssh root@${SERVER_IP} "systemctl restart bootapp@${APP_NAME}-${ENV}"
   - eval $(ssh-agent -k)
-  - "echo \"Deploy and index done. Application should be available at: http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV} \""
+  - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV}"
 
 .variables-rare-beta: &variables-rare-beta
  variables:
