@@ -315,15 +315,16 @@ deploy-gnpis-to-prod:
  <<: *ssh-initialization-before-script
  script:
   - sleep 5
-  # - "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
+  #- "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
   # Clean then copy data to the server
   - "ssh root@${SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
-  - "rsync -a --progress ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
+  #- "rsync -a --progress ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
+  - "scp ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
   - "ssh root@${SERVER_IP} \"parallel --bar 'gzip -d -f' :::  /tmp/${APP_NAME}-${ENV}/resources/*.gz\""
   # Deleting old indexes before reindexing from scratch
   - "curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo"
   # Should better handle those index switches by using the strategy proposed in the README file
-  - "./scripts/createIndexAndAliases4CI.sh ${ES_HOST} ${APP_NAME} ${ENV} ; sleep 1 ; echo"
+  - "./scripts/createIndexAndAliases4CI.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} ; sleep 1 ; echo"
   - "./scripts/harvestCI.sh -host ${SERVER_IP} -port ${APP_PORT} -app ${APP_NAME} -env ${ENV} ; echo"
  environment:
   # take care that some variables cannot be expanded according to where they are
