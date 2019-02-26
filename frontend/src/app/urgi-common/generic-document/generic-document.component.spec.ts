@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { speculoosMatchers, ComponentTester } from 'ngx-speculoos';
 
-import { WheatisGnpisDocumentComponent } from './wheatis-gnpis-document.component';
+import { GenericDocumentComponent } from './generic-document.component';
 import { toWheatisGnpisDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
 describe('GnpisDocumentComponent', () => {
 
-  class GnpisDocumentComponentTester extends ComponentTester<WheatisGnpisDocumentComponent> {
+  class GnpisDocumentComponentTester extends ComponentTester<GenericDocumentComponent> {
     constructor() {
-      super(WheatisGnpisDocumentComponent);
+      super(GenericDocumentComponent);
     }
 
     get title() {
@@ -46,7 +46,7 @@ describe('GnpisDocumentComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [WheatisGnpisDocumentComponent, TruncatableDescriptionComponent]
+    declarations: [GenericDocumentComponent, TruncatableDescriptionComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));

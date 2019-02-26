@@ -1,7 +1,7 @@
 import { AggregatedPage, Aggregation, Bucket } from './page';
 import { AggregationCriterion } from './aggregation-criterion';
 import { RareDocumentModel } from '../rare/rare-document.model';
-import { WheatisGnpisDocumentModel } from '../wheatis-gnpis/wheatis-gnpis-document.model';
+import { GenericDocumentModel } from '../urgi-common/generic-document.model';
 
 export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
   return {
@@ -73,7 +73,7 @@ export function toRareDocument(name: string): RareDocumentModel {
   };
 }
 
-export function toWheatisGnpisDocument(name: string): WheatisGnpisDocumentModel {
+export function toWheatisGnpisDocument(name: string): GenericDocumentModel {
   return {
     identifier: name,
     name,

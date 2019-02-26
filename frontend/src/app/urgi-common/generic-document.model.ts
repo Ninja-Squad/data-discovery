@@ -1,6 +1,6 @@
 import { DocumentModel } from '../models/document.model';
 
-export interface WheatisGnpisDocumentModel extends DocumentModel {
+export interface GenericDocumentModel extends DocumentModel {
   url: string;
   species: Array<string>;
   entryType: string;
