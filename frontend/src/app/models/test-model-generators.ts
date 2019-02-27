@@ -73,7 +73,7 @@ export function toRareDocument(name: string): RareDocumentModel {
   };
 }
 
-export function toWheatisGnpisDocument(name: string): GenericDocumentModel {
+export function toWheatisDocument(name: string): GenericDocumentModel {
   return {
     identifier: name,
     name,
