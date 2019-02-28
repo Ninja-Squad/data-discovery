@@ -54,8 +54,8 @@ if [ -z "$APP_HOST" ] || [ -z "$APP_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" 
 fi
 
 INDEX_DATA_DIR="/tmp/$APP_NAME-$ENV/resources"
-if [ $COPY_FILES -eq 0 ] && [ -z "$(ls -1 $INDEX_DATA_DIR/*.json)" ]; then
-	echo "ERROR: data directory $INDEX_DATA_DIR contains no JSON file..."
+if [ $COPY_FILES -eq 0 ]; then
+	echo "WARN: Harvester will index JSON already present in $INDEX_DATA_DIR on the application server..."
 	exit 1
 fi
 
