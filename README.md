@@ -401,10 +401,11 @@ This readme will be useful :
 
       public static final String GNPIS = "gnpis-app";
 
-* Added `GNPIS` profil in :
-      - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisAggregationAnalyzer.java`
-      - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisDocumentDao.java`
-      - `./backend/src/main/java/fr/inra/urgi/datadiscovery/harvest/wheatis/WheatisHarvester.java`
+* Added `GNPIS` profile in :
+  
+  - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisAggregationAnalyzer.java`
+  - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisDocumentDao.java`
+  - `./backend/src/main/java/fr/inra/urgi/datadiscovery/harvest/wheatis/WheatisHarvester.java`
 
 * Add this code to `./backend/src/main/resources/application.yml` (**Specifying a new port for `gnpis-app`**)
 
@@ -435,15 +436,10 @@ This readme will be useful :
 
 * Edited `./frontend/src/app/models/test-model-generators.ts` by adding an `import` and `toGnpisDocument` function.
 
-* Created a `gnpis` module in `./frontend/src/app` with the following structure:
+* Since `GnpIS` and `WheatIS` share the same document structure we created a `gnpis` module in `./frontend/src/app` containing only `gnpis-header` and used the `generic-document` found in `frontend/src/app/urgi-common`, this generic document is common between GnpIS and WheatIS:
 
 ```
 gnpis
-├── gnpis-document
-│   ├── gnpis-document.component.html
-│   ├── gnpis-document.component.scss
-│   ├── gnpis-document.component.spec.ts
-│   └── gnpis-document.component.ts
 ├── gnpis-header
 │   ├── gnpis-header.component.html
 │   ├── gnpis-header.component.scss
@@ -451,6 +447,17 @@ gnpis
 │   └── gnpis-header.component.ts
 ├── gnpis-document.model.ts
 └── gnpis.module.ts
+```
+
+```
+urgi-common
+├── generic-document
+│   ├── generic-document.component.html
+│   ├── generic-document.component.scss
+│   ├── generic-document.component.spec.ts
+│   └── generic-document.component.ts
+├── generic-document.model.ts
+└── ...
 ```
 
 * Create a `gnpis` file in `./frontend/src/assets` containing the following file:
@@ -465,14 +472,14 @@ And edit them as desired.
   - `environment.gnpis.prod.ts`
   - `environment.gnpis.ts`
 
-* Add the `gnpis` configuration in `./frontend/angular.json` file
+* Added `gnpis` configuration in `./frontend/angular.json` file
 
-* Edit `./frontend/package.json` by adding:
+* Edited `./frontend/package.json` by adding:
 
       "start:gnpis": "ng serve --configuration=gnpis",
       "build:gnpis": "ng build --configuration=gnpis-production --no-progress",
 
-* Edit `./frontend/proxy.conf.js` by adding:
+* Edited `./frontend/proxy.conf.js` by adding:
 
       {
         context: [
@@ -485,12 +492,12 @@ And edit them as desired.
 
 ##### Scripts
 
-* Add this line to `scripts/createIndexAndAliases.sh` file:
+* Added this line to `scripts/createIndexAndAliases.sh` file:
 
       # GnpIS index/alias
       sh $BASEDIR/createIndexAndAliases4CI.sh localhost gnpis dev
 
-* Create `harvestGnpis.sh` with the following content:
+* Created `harvestGnpis.sh` with the following content:
 
       #!/bin/bash
 
@@ -526,56 +533,7 @@ In our case, after launching the test, we kept getting `Permission denied` error
 
 5. App is running at : http://localhost:8280/data-discovery-dev/
 
-Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob/master/README.md) for more details.
-
-##### List of CAMD files
-
-* `[C]` Created.
-* `[A]` Added (e.g `gz` file)
-* `[M]` Modified.
-* `[D]` Deleted before running the test (`./gradlew test`)
-* `...` = `fr > inra > urgi > datadiscovery`.
-```
-./
-├── [M] .gitlab-ci.yml
-├── backend > [D] build
-├── backend > src > main > java > ... > config > [M] AppProfile.java
-│                                     > dao > wheatis > [M] WheatisAggregationAnalyzer.java
-│                                     > dao > wheatis > [M] WheatisDocumentDao.java
-│                                     > harvest > wheatis > [M] WheatisHarvester.java
-├── backend > src > main > resources > [M] application.yml
-├── backend > src > main > resources > ... > domain > [C] gnpis > [C] GnpisGeneticResource.mapping.json
-│   
-├── data > gnpis > [A] DATA_FILE1.json.gz (can add many files)
-│   
-├── buildSrc > [D] build
-├── buildSrc > src > main > kotlin > [M] app.kt
-│   
-├── frontend > [M] angular.json
-│            > [M] package.json
-│            > [M] proxy.conf.js
-├── frontend > src > app > [C] gnpis > gnpis-document > [C] gnpis-document.component.html
-│                        > [C] gnpis > gnpis-document > [C] gnpis-document.component.scss
-│                        > [C] gnpis > gnpis-document > [C] gnpis-document.model.ts
-│                        > [C] gnpis > gnpis-document > [C] gnpis-document.component.spec.ts
-│                        > [C] gnpis > gnpis-header > [C] gnpis-header.component.html
-│                        > [C] gnpis > gnpis-header > [C] gnpis-header.component.scss
-│                        > [C] gnpis > gnpis-header > [C] gnpis-header.component.ts
-│                        > [C] gnpis > gnpis-header > [C] gnpis-header.component.spec.ts
-│                        > [C] gnpis > [C] gnpis.module.ts
-├── frontend > src > app > models > [M] test-model-generators.ts
-├── frontend > src > assets > [C] gnpis > [C] band.jpg
-│                           > [C] gnpis > [C] favicon.ico
-│                           > [C] gnpis > [C] logo.png
-│                           > [C] gnpis > [C] theme.scss
-├── frontend > src > environments > [C] environment.gnpis.prod.ts
-├──                               > [C] environment.gnpis.ts
-│
-├── scripts > [M] createIndexAndAliases.sh
-└── scripts > [C] harvestGnpis.sh
-```
-
-#### Deployment environments
+##### Ports used according to the applications and the environment:
 
 Checkout the [README.md](https://forgemia.inra.fr/urgi-is/data-discovery-config/blob/master/README.md) file for the 
 full list of deployment environments for the `data-discovery` webapp (server ports & context paths). 
