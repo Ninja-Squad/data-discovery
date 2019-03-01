@@ -9,8 +9,8 @@ USAGE:
 	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> [-h|--help]
 
 PARAMS:
-	-host          the host name of the targeted elasticsearch cluster
-	-port          the port value of the targeted elasticsearch cluster ($ES_PORT by default)
+	-host          the host name of the targeted application
+	-port          the port value of the targeted application ($APP_PORT by default)
 	-app           the name of the targeted application: rare, wheatis or gnpis
 	-env           the environement name of the targeted application (dev, beta, prod ...)
 	-h or --help   print this help
@@ -20,8 +20,8 @@ EOF
 }
 
 BASEDIR=$(dirname "$0")
-ES_HOST=""
-ES_PORT="9200"
+APP_HOST=""
+APP_PORT="9200"
 APP_NAME=""
 ENV=""
 
