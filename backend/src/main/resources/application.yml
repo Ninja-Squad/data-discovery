@@ -77,9 +77,9 @@ spring:
 
 data-discovery:
   elasticsearch-prefix: 'gnpis-dev-'
-  resource-dir: /tmp/gnpis-dev/resources
+  resource-dir: /tmp/data-discovery-dev/resources
 
 server:
   port: 8280
   servlet:
-    context-path: /gnpis-dev
+    context-path: /data-discovery-dev

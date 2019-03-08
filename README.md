@@ -418,12 +418,12 @@ This readme will be useful :
 
       data-discovery:
         elasticsearch-prefix: 'gnpis-dev-'
-        resource-dir: /tmp/gnpis-dev/resources
+        resource-dir: /tmp/data-discovery-dev/resources
 
       server:
         port: 8280
         servlet:
-          context-path: /gnpis-dev
+          context-path: /data-discovery-dev
 
 ##### `data` folder
 
@@ -476,8 +476,8 @@ And edit them as desired.
 
       {
         context: [
-          "/gnpis-dev/api",
-          "/gnpis-dev/actuator"
+          "/data-discovery-dev/api",
+          "/data-discovery-dev/actuator"
         ],
         target: "http://localhost:8280",
         secure: false
@@ -524,7 +524,7 @@ In our case, after launching the test, we kept getting `Permission denied` error
         ./scripts/createIndexAndAliases.sh
         ./scripts/harvestGnpis.sh
 
-5. App is running at : http://localhost:8280/gnpis-dev/
+5. App is running at : http://localhost:8280/data-discovery-dev/
 
 Check out the [main readme](https://forgemia.inra.fr/urgi-is/data-discovery/blob/master/README.md) for more details.
 

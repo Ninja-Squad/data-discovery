@@ -111,7 +111,7 @@ build-gnpis:
   # Restarting service with the updated jar and the according Spring profiles enabled
   - ssh root@${SERVER_IP} "systemctl restart bootapp@${APP_NAME}-${ENV}"
   - eval $(ssh-agent -k)
-  - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_NAME}-${ENV}"
+  - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
 
 .variables-rare-beta: &variables-rare-beta
  variables:
@@ -121,6 +121,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
   ES_PORT: ${ES_DEV_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-rare-staging: &variables-rare-staging
  variables:
@@ -130,6 +131,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-rare-prod: &variables-rare-prod
  variables:
@@ -139,6 +141,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-wheatis-beta: &variables-wheatis-beta
  variables:
@@ -148,6 +151,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
   ES_PORT: ${ES_DEV_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-wheatis-staging: &variables-wheatis-staging
  variables:
@@ -157,6 +161,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-wheatis-prod: &variables-wheatis-prod
  variables:
@@ -164,6 +169,7 @@ build-gnpis:
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
   SERVER_IP: ${SERVER_IP}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-gnpis-beta: &variables-gnpis-beta
  variables:
@@ -173,6 +179,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
   ES_PORT: ${ES_DEV_PORT}
+  APP_CONTEXT: data-discovery-${ENV}
 
 .variables-gnpis-staging: &variables-gnpis-staging
  variables:
@@ -182,6 +189,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
+  APP_CONTEXT: data-discovery-${ENV}
 
 .variables-gnpis-prod: &variables-gnpis-prod
  variables:
@@ -191,6 +199,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
+  APP_CONTEXT: data-discovery
 
 deploy-rare-to-beta:
  stage: staging
@@ -325,7 +334,7 @@ deploy-gnpis-to-prod:
   - "curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo"
   # Should better handle those index switches by using the strategy proposed in the README file
   - "./scripts/createIndexAndAliases4CI.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} ; sleep 1 ; echo"
-  - "./scripts/harvestCI.sh -host ${SERVER_IP} -port ${APP_PORT} -app ${APP_NAME} -env ${ENV} ; echo"
+  - "./scripts/harvestCI.sh -url http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT} -app ${APP_NAME} -env ${ENV} ; echo"
  environment:
   # take care that some variables cannot be expanded according to where they are
   # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md

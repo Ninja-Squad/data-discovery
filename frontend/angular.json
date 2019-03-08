@@ -150,7 +150,7 @@
                   "with": "src/environments/environment.gnpis.ts"
                 }
               ],
-              "baseHref": "/gnpis-dev/",
+              "baseHref": "/data-discovery-dev/",
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/gnpis/"

@@ -17,8 +17,8 @@ const PROXY_CONFIG = [
   },
   {
     context: [
-      "/gnpis-dev/api",
-      "/gnpis-dev/actuator"
+      "/data-discovery-dev/api",
+      "/data-discovery-dev/actuator"
     ],
     target: "http://localhost:8280",
     secure: false

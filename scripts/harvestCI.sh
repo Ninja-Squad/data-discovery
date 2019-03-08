@@ -7,13 +7,12 @@ DESCRIPTION:
 	Script used to index data in Data Discovery portals (RARe, WheatIS and GnpIS)
 
 USAGE:
-	$0 -host <host name> -port <port value> -app <application name> -env <environment name> -copy [-h|--help]
+	$0 -url <app url> -app <application name> -env <environment name> -copy [-h|--help]
 
 PARAMS:
-	-host          the host name of the targeted application
-	-port          the port value of the targeted application
+	-url           the application url (ex: http://HOST:PORT/CONTEXT_PATH)
 	-app           the name of the targeted application: rare, wheatis or gnpis
-	-env           the environement name of the targeted application (dev, beta, prod ...)
+	-env           the environment name of the targeted application (dev, beta, prod ...)
 	-copy          to set if the data files needs to be copied on the application host
 	-h or --help   print this help
 
@@ -22,10 +21,9 @@ EOF
 }
 
 BASEDIR=$(dirname "$0")
-APP_HOST=""
-APP_PORT=""
+APP_URL=""
 APP_NAME=""
-ENV=""
+APP_ENV=""
 COPY_FILES=0
 
 # any params
@@ -36,10 +34,9 @@ while [ -n "$1" ]; do
 	case $1 in
 		-h) help;shift 1;;
 		--help) help;shift 1;;
-		-host) APP_HOST=$2;shift 2;;
-		-port) APP_PORT=$2;shift 2;;
+		-url) APP_URL=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
-		-env) ENV=$2;shift 2;;
+		-env) APP_ENV=$2;shift 2;;
 		-copy) COPY_FILES=1;shift 1;;
 		--) shift;break;;
 		-*) echo "Unknown option: $1" && echo && help && echo;exit 1;;
@@ -47,13 +44,13 @@ while [ -n "$1" ]; do
 	esac
 done
 
-if [ -z "$APP_HOST" ] || [ -z "$APP_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" ]; then
+if [ -z "$APP_URL" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
     echo "ERROR: host, port, app and env parameters are mandatory!"
     echo && help
 	exit 4
 fi
 
-INDEX_DATA_DIR="/tmp/$APP_NAME-$ENV/resources"
+INDEX_DATA_DIR="/tmp/$APP_NAME-$APP_ENV/resources"
 if [ $COPY_FILES -eq 0 ]; then
 	echo "WARN: Harvester will index JSON already present in $INDEX_DATA_DIR on the application server..."
 fi
@@ -76,12 +73,11 @@ if [ $COPY_FILES -eq 1 ]; then
 fi
 
 {
-	curl -f -i -X POST -u ${APP_NAME}:f01a7031fc17 \
-	"http://${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}/api/harvests"
+	curl -f -i -X POST -u ${APP_NAME}:f01a7031fc17 "${APP_URL}/api/harvests"
 } || {
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
 		"\tfrom $INDEX_DATA_DIR\n"\
-		"\ton app http://${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}"
+		"\ton app ${APP_URL}"
 	exit $code
 }
