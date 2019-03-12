@@ -45,7 +45,7 @@ while [ -n "$1" ]; do
 done
 
 if [ -z "$APP_URL" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
-    echo "ERROR: host, port, app and env parameters are mandatory!"
+    echo "ERROR: url, app and env parameters are mandatory!"
     echo && help
 	exit 4
 fi

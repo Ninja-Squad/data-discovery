@@ -417,7 +417,7 @@ This readme will be useful :
             password: f01a7031fc17
 
       data-discovery:
-        elasticsearch-prefix: 'gnpis-dev-'
+        elasticsearch-prefix: 'data-discovery-dev-'
         resource-dir: /tmp/data-discovery-dev/resources
 
       server:
