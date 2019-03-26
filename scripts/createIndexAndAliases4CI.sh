@@ -50,7 +50,7 @@ if [ -z "$APP_HOST" ] || [ -z "$APP_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" 
 fi
 
 echo -e "\nCreate index: ${APP_NAME}-${ENV}-resource-physical-index"
-curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index"\
+curl -si -X PUT "${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}-resource-physical-index"\
  -H 'Content-Type: application/json' -d"
 {
     \"aliases\" : {
@@ -64,11 +64,11 @@ curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-inde
 "
 
 MAPPING_PARTIAL_PATH="${APP_NAME}"
-if [ "$APP_NAME" == "gnpis" ]; then
+if [ "$APP_NAME" == "data-discovery" ]; then
     MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and GnpISs
 fi
 echo -e "\n\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)"
-curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
+curl -si -X PUT "${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
  -H 'Content-Type: application/json' -d"
 $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
 "
