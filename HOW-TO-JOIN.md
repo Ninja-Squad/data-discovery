@@ -15,7 +15,7 @@ more detailed information about the indexed entity.
 
 In order to integrate your data, here is what is need for each searchable entry/document:
 
-- a short _[name](#name)_ identifying uniquely the entry, ie. IGR_2010_1
+- a short _[name](#name)_ identifying uniquely the entry, ie. _IGR_2010_1_
 - an _[url](#url)_ linking back to the entry in your own web application, ie. 
 https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3
 - a _[description](#description)_, describing the entry and containing all the relevant keywords 

@@ -1,5 +1,11 @@
 # Rare project - Data discovery
 
+## Contribute
+
+You might probably want to know how to contribute to the federation of data. That's great, let's have a look at [this guide](./HOW-TO-JOIN.md) to know how to.
+
+If you do want to contribute to code or even only install the program on-premise it's great also, just continue reading below.
+
 ## Setup
 
 ### Backend
@@ -11,12 +17,12 @@ You need to install:
 
 - a recent enough JDK8
 
-The application expects to connect on an ElasticSearch instance running on `http://127.0.0.1:9200`.
+The application expects to connect on an Elasticsearch instance running on `http://127.0.0.1:9200`.
 To have such an instance, simply run:
 
     docker-compose up
 
-And this will start ElasticSearch and a Kibana instance (allowing to explore the data on http://localhost:5601).
+And this will start Elasticsearch and a Kibana instance (allowing to explore the data on http://localhost:5601).
 
 Then at the root of the application, run `./gradlew build` to download the dependencies.
 Then run `./gradlew bootRun` to start the app.
@@ -80,7 +86,7 @@ You can approximate what runs on CI by executing:
 
 ## Harvest
 
-Harvesting (i.e. importing documents stored in JSON files into ElasticSearch) consists in
+Harvesting (i.e. importing documents stored in JSON files into Elasticsearch) consists in
 creating the necessary index and aliases, and then placing the JSON files into a directory where the server can find them.
 
 To create the index and its aliases execute the script 
@@ -418,7 +424,7 @@ This readme will be useful :
             password: f01a7031fc17
 
       data-discovery:
-        elasticsearch-prefix: 'data-discovery-dev-'
+        Elasticsearch-prefix: 'data-discovery-dev-'
         resource-dir: /tmp/data-discovery-dev/resources
 
       server:
