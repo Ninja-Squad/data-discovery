@@ -7,8 +7,9 @@ Initiated within transPLANT and WheatIS project & collaborations, we are now abl
 searchable data from any species of any kind of data.
 
 If you want to be referenced you'll need to provide CSV or JSON files with some metadata describing 
-the biological entities you manage. Once you have read below indications, we invite you to contact us 
-as soon as possible so that we can provide help and discuss the best way to do it.
+the biological entities you manage. Once you have read below indications, we invite you to [contact 
+us](mailto:urgi-contact@inra.fr) as soon as possible so that we can provide help and discuss the best
+way to go ahead.
 
 Since the tool makes a backlink to your information system, we need a URL allowing researchers to get 
 more detailed information about the indexed entity.
