@@ -141,6 +141,9 @@ can differ from one entity to another if you handle several databases.
 
 ### node
 
+The `node` is the name of you laboratory/institute, it should be the same for all the entities 
+you manage.
+
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
 | Mandatory | 1 | Should be the same for all the data you provide |
