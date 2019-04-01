@@ -1,4 +1,4 @@
-# How to join the wheatIS and /or the Plant federation of searchable data?
+# How to join the wheatIS and/or the Plant federations of searchable data?
 
 The purpose of this tool is to facilitate the discoverability of public data on plant biology managed by 
 different laboratories accross the world.
@@ -13,7 +13,7 @@ describing the data managed folowing the indications below and we invite you to 
 to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
-to get more detailed information about the indexed entity.
+to get more detailed information about the indexed entity directly in your information system.
 
 # Specifications for each searchable entry/document:
 
