@@ -1,20 +1,21 @@
-# How to join the federation
+# How to join the wheatIS and /or the Plant federation of searchable data?
 
-The purpose of this tool is to facilitate the discoverability of public biologicial data managed by 
+The purpose of this tool is to facilitate the discoverability of public data on plant biology managed by 
 different laboratories accross the world.
 
-Initiated within transPLANT and WheatIS project & collaborations, we are now able to index and make 
-searchable data from any species of any kind of data.
+Initiated within transPLANT (EC FP7, contract number 283496; http://www.transplantdb.eu/) and WheatIS 
+(www.wheatis.org) projects & collaborations, we are now able to index and make searchable data from 
+any species of any kind of data.
 
-If you want to be referenced you'll need to provide CSV or JSON files with some metadata describing 
-the biological entities you manage. Once you have read below indications, we invite you to [contact 
-us](mailto:urgi-contact@inra.fr) as soon as possible so that we can provide help and discuss the best
-way to go ahead.
+If you want your information system to be referenced, you have to provide CSV or JSON files with metadata 
+describing the data managed folowing the indications below and we invite you to [contact us]
+(mailto:urgi-contact@inra.fr) as soon as possible so that we can provide help and discuss the best way 
+to go ahead.
 
-Since the tool makes a backlink to your information system, we need a URL allowing researchers to get 
-more detailed information about the indexed entity.
+Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
+to get more detailed information about the indexed entity.
 
-In order to integrate your data, here is what is need for each searchable entry/document:
+# Specifications for each searchable entry/document:
 
 - a short _[name](#name)_ identifying uniquely the entry, ie. _IGR_2010_1_
 - an _[url](#url)_ linking back to the entry in your own web application, ie. 
@@ -86,16 +87,16 @@ used to match terms from users.
 It is up to you to provide the most relevant description allowing to match the entry, but keep in 
 mind that the more precise the description is, better the ranking in the search tool would be.
 
-Since we use Elasticsearch under the hood, which is based on Apache Lucene, the ranking will be 
-related to the term frequency/inverse document frequency (the used algorithm is currently BM25). That 
-means an entry having a description with a searched term appearing several times inside it but very 
-rarely in all other documents, will be likely returned with a higher score if this term is searched.
-You can get more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) 
-in Elasticsearch.
+Since the search tool is based on Elasticsearch, it relies on Apache Lucene indexes and the ranking 
+will be related to the term frequency/inverse document frequency (the used algorithm is currently 
+BM25). That means an entry having a description with a searched term appearing several times inside 
+it but very rarely in all other documents, will be likely returned with a high score. You can get 
+more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) in 
+Elasticsearch.
 
-Also, be aware that we are copying all fields in the description when integrating the data so that 
-the name, the species and so on will be searched automatically, so it is not mandatory to add them 
-explicitly in the description.
+Also, be aware that we are adding all fields contents to the content of the description when integrating 
+the data before indexation so that the name of the entry, its species etc... can be seached. It is 
+therefore not necessary to add them explicitly in the description.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -116,10 +117,11 @@ on the document.
 value according to the type of data.
 
 >>>
-Note: for WheatIS federation specifically, it must match any of these values in order to be 
-available through the [WheatIS search tool](https://urgi.versailes.inra.fr/wheatis), otherwise, the
-entry will be filtered out (anyway, if you have some non wheat related data, you don't have to provide
-twice in dedicated files, the loading process will manage all of them in the different flavours):
+Note: for WheatIS federation specifically, the species name must match one of the values below in order
+to be available through the [WheatIS search tool](https://urgi.versailes.inra.fr/wheatis), otherwise the
+entry will be filtered out. Note that if you have wheat and non wheat data, you don't have to provide
+them twice in dedicated files, the loading process will manage to generate the relevant indexes for the
+general plant search and the WheatIS search.
 
 - Aegilops*
 - Hordeum*
@@ -204,6 +206,6 @@ The order of the fields does not matter. All entries should be aggregated into a
 You can generate one or several files containing your data as long as each of them complies with 
 the format defined above.
 
-Once they are generated, you'll have to provide a way for us to fetch them on a regular basis: a 
+Once they are generated, you will have to provide a way for us to fetch them on a regular basis: a 
 simple web (or FTP) server is a good solution since it allows us to check if a new version of your 
 files has been produced.
