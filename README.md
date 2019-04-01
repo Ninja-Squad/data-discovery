@@ -4,7 +4,7 @@
 
 You might probably want to know how to contribute to the federation of data. That's great, let's have a look at [this guide](./HOW-TO-JOIN.md) to know how to.
 
-If you do want to contribute to code or even only install the program on-premise it's great also, just continue reading below.
+If you do want to contribute to code or even only install the program on-premise it's great also, just keep reading below.
 
 ## Setup
 
@@ -424,7 +424,7 @@ This readme will be useful :
             password: f01a7031fc17
 
       data-discovery:
-        Elasticsearch-prefix: 'data-discovery-dev-'
+        elasticsearch-prefix: 'data-discovery-dev-'
         resource-dir: /tmp/data-discovery-dev/resources
 
       server:

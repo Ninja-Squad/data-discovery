@@ -7,8 +7,8 @@ Initiated within transPLANT and WheatIS project & collaborations, we are now abl
 searchable data from any species of any kind of data.
 
 If you want to be referenced you'll need to provide CSV or JSON files with some metadata describing 
-what biological entities you store. Once you have read below indications, we invite you to contact us 
-as soon as possible so that we can provide help and discuss the best way to do.
+the biological entities you manage. Once you have read below indications, we invite you to contact us 
+as soon as possible so that we can provide help and discuss the best way to do it.
 
 Since the tool makes a backlink to your information system, we need a URL allowing researchers to get 
 more detailed information about the indexed entity.
@@ -21,11 +21,11 @@ https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3
 - a _[description](#description)_, describing the entry and containing all the relevant keywords 
 allowing to find your entry. This field is the one in which user entered terms are searched for, in 
 the search tool
-- an _[entryType](#entrytype)_ describing the type of the entry, that could be any of the one listed 
-in the dedicated secion
+- an _[entryType](#entrytype)_ describing the type of the entry, that could be any of the terms listed 
+in the dedicated section
 - a _[species](#species)_ field, containing the species related to the entry (zero, one or several, 
-if possible provide at least one)
-- a _[node](#node)_, the name of you laboratory/institute, it should be the same for all the entities 
+but it is highly recommended to provide at least one)
+- a _[node](#node)_, the name of your laboratory/institute, it should be the same for all the entities 
 you manage
 - a _[database](#database)_, the name of the database from which the entity has been extracted. It 
 can differ from one entity to another if you handle several databases
@@ -69,12 +69,13 @@ your data (some types are more generic and can include more specific ones):
 
 > **Note:** looking in the [data-discovery](https://urgi.versailles.inra.fr/data-discovery) portal at 
 the number of documents matching an entryType (see `Data type` filter on the left side) can help you 
-to chose the good one according to your willing to have sparse data filterable by own facet, but 
-which won’t be in the top list, or to have you data joining an already existing facet.
+to choose the data type having the closest meaning. If you choose a different data type than those 
+already provided, be aware that this filter might not display yours because of the top hits ranking 
+made on the filter.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Mandatory | 1 | no one, but preferably any of above items if applicable |
+| Mandatory | 1 | none, but preferably any of above items if applicable |
 
 ### description
 
@@ -82,14 +83,14 @@ The `description` field is the most important for the discoverability of the dat
 used to match terms from users.
 
 It is up to you to provide the most relevant description allowing to match the entry, but keep in 
-mind that the most precise the description, the better the ranking in the search tool.
+mind that the more precise the description is, better the ranking in the search tool would be.
 
 Since we use Elasticsearch under the hood, which is based on Apache Lucene, the ranking will be 
 related to the term frequency/inverse document frequency (the used algorithm is currently BM25). That 
 means an entry having a description with a searched term appearing several times inside it but very 
-rarely in all other documents, will be likely returned with a higher score if this term is searched 
-for in the WheatIS search tool. You can get more info on 
-[similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) in Elasticsearch.
+rarely in all other documents, will be likely returned with a higher score if this term is searched.
+You can get more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) 
+in Elasticsearch.
 
 Also, be aware that we are copying all fields in the description when integrating the data so that 
 the name, the species and so on will be searched automatically, so it is not mandatory to add them 
@@ -97,7 +98,7 @@ explicitly in the description.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Mandatory | 1 | no one |
+| Mandatory | 1 | none |
 
 ### url
 
@@ -106,7 +107,7 @@ on the document.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Mandatory | 1 | no one |
+| Mandatory | 1 | none |
 
 ### species
 
@@ -114,8 +115,10 @@ on the document.
 value according to the type of data.
 
 >>>
-Note: for the purpose of WheatIS federation, it must match any of these values in order to be 
-available through the WheatIS search tool, otherwise, the entry will be filtered out:
+Note: for WheatIS federation specifically, it must match any of these values in order to be 
+available through the [WheatIS search tool](https://urgi.versailes.inra.fr/wheatis), otherwise, the
+entry will be filtered out (anyway, if you have some non wheat related data, you don't have to provide
+twice in dedicated files, the loading process will manage all of them in the different flavours):
 
 - Aegilops*
 - Hordeum*
@@ -125,13 +128,16 @@ available through the WheatIS search tool, otherwise, the entry will be filtered
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Optional, but highly recommended | 0-* | no one |
+| Optional, but highly recommended | 0-* | none |
 
 ### database
 
+The name of the `database` from which the entity has been extracted. It 
+can differ from one entity to another if you handle several databases.
+
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Mandatory | 1 | no one |
+| Mandatory | 1 | none |
 
 ### node
 
