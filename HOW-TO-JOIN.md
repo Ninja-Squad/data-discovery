@@ -13,7 +13,7 @@ describing the data managed folowing the indications below and we invite you to 
 to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
-to get more detailed information about the indexed entity directly in your information system.
+to get more detailed information about the indexed entry directly in your information system.
 
 # Specifications for each searchable entry/document:
 
@@ -29,8 +29,8 @@ in the dedicated section
 but it is highly recommended to provide at least one)
 - a _[node](#node)_, the name of your laboratory/institute, it should be the same for all the entities 
 you manage
-- a _[database](#database)_, the name of the database from which the entity has been extracted. It 
-can differ from one entity to another if you handle several databases
+- a _[database](#database)_, the name of the database from which the entry has been extracted. It 
+can differ from one entry to another if you handle several databases
 
 ## List of fields
 
@@ -95,7 +95,7 @@ more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasti
 Elasticsearch.
 
 Also, be aware that we are adding all fields contents to the content of the description when integrating 
-the data before indexation so that the name of the entry, its species etc... can be seached. It is 
+the data before indexation so that the name of the entry, its species etc... can be searched. It is 
 therefore not necessary to add them explicitly in the description.
 
 | Status | Cardinality | Constraints |
@@ -105,7 +105,7 @@ therefore not necessary to add them explicitly in the description.
 ### url
 
 The `url` must be dereferencable so that this backlink to your information system display information 
-on the document.
+on the entry.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -135,8 +135,8 @@ general plant search and the WheatIS search.
 
 ### database
 
-The name of the `database` from which the entity has been extracted. It 
-can differ from one entity to another if you handle several databases.
+The name of the `database` from which the entry has been extracted. It 
+can differ from one entry to another if you handle several databases.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -164,9 +164,9 @@ No double quotes is needed neither.
 The header is not needed, displayed here only for documentation purpose.
 
 ```csv
-#name	entryType	node	databaseName	url	species	description
-TRIAL_IGR_2010_1	Experiment	URGI	GnpIS	https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3	Hordeum vulgare	IGR_2010_1 is a trial lead at site: IPGPAS, which comment is: 'IPGPAS public'. Observation variables: GNPISO_3:0000001 , GNPISO_3:0000002 , GNPISO_3:0000003 , GNPISO_3:0000004 , GNPISO_3:0000005 , GNPISO_3:0000006 , GNPISO_3:0000007 , GNPISO_3:0000008 , GNPISO_3:0000009 , GNPISO_3:0000010 , GNPISO_3:0000011 , GNPISO_7:0000001 , GNPISO_7:0000002 . Accession names: CamB1, Georgia, Harmal, Lubuski, Maresi, MDingo, Morex, Sebastian, Stratus from taxon(s) Hordeum vulgare Hordeum vulgare Phenotyping
-10883/2969	Bibliography	CIMMYT	CIMMYT Dspace	http://hdl.handle.net/10883/2969	Septoria tritici blotch,Triticum aestivum l.,Wheat	Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population 2013-01-01 Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population Article
+#name   entryType   node    databaseName    url species description
+TRIAL_IGR_2010_1    Experiment  URGI    GnpIS   https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3   Hordeum vulgare IGR_2010_1 is a trial lead at site: IPGPAS, which comment is: 'IPGPAS public'. Observation variables: GNPISO_3:0000001 , GNPISO_3:0000002 , GNPISO_3:0000003 , GNPISO_3:0000004 , GNPISO_3:0000005 , GNPISO_3:0000006 , GNPISO_3:0000007 , GNPISO_3:0000008 , GNPISO_3:0000009 , GNPISO_3:0000010 , GNPISO_3:0000011 , GNPISO_7:0000001 , GNPISO_7:0000002 . Accession names: CamB1, Georgia, Harmal, Lubuski, Maresi, MDingo, Morex, Sebastian, Stratus from taxon(s) Hordeum vulgare Hordeum vulgare Phenotyping
+10883/2969  Bibliography    CIMMYT  CIMMYT Dspace   http://hdl.handle.net/10883/2969    Septoria tritici blotch,Triticum aestivum l.,Wheat  Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population 2013-01-01 Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population Article
 ```
 
 ### JSON (JavaScript Object Notation)
