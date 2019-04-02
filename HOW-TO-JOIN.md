@@ -181,9 +181,7 @@ The order of the fields does not matter. All entries should be aggregated into a
     "databaseName": "GnpIS",
     "description": "IGR_2010_1 is a trial lead at site: IPGPAS, which comment is: 'IPGPAS public'. Observation variables: GNPISO_3:0000001 , GNPISO_3:0000002 , GNPISO_3:0000003 , GNPISO_3:0000004 , GNPISO_3:0000005 , GNPISO_3:0000006 , GNPISO_3:0000007 , GNPISO_3:0000008 , GNPISO_3:0000009 , GNPISO_3:0000010 , GNPISO_3:0000011 , GNPISO_7:0000001 , GNPISO_7:0000002 . Accession names: CamB1, Georgia, Harmal, Lubuski, Maresi, MDingo, Morex, Sebastian, Stratus from taxon(s) Hordeum vulgare Hordeum vulgare Phenotyping",
     "url": "https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3",
-    "species": [
-      "Hordeum vulgare"
-    ],
+    "species": "Hordeum vulgare",
     "name": "TRIAL_IGR_2010_1"
   },
   {
