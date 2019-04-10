@@ -72,12 +72,12 @@ spring:
   profiles: gnpis-app
   cloud.config.name: gnpis
   security.user:
-      name: gnpis
+      name: data-discovery
       password: f01a7031fc17
 
 data-discovery:
   elasticsearch-prefix: 'data-discovery-dev-'
-  resource-dir: /tmp/gnpis-dev/resources
+  resource-dir: /tmp/data-discovery-dev/resources
 
 server:
   port: 8280
