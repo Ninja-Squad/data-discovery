@@ -141,7 +141,7 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
-  APP_CONTEXT: ${APP_NAME}-${ENV}
+  APP_CONTEXT: ${APP_NAME}
 
 .variables-wheatis-beta: &variables-wheatis-beta
  variables:
@@ -169,7 +169,7 @@ build-gnpis:
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
   SERVER_IP: ${SERVER_IP}
-  APP_CONTEXT: ${APP_NAME}-${ENV}
+  APP_CONTEXT: ${APP_NAME}
 
 .variables-gnpis-beta: &variables-gnpis-beta
  variables:
