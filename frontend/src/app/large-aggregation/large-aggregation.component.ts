@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { merge, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { NULL_VALUE } from '../models/document.model';
@@ -16,21 +16,23 @@ const maxResultsDisplayed = 8;
   selector: 'dd-large-aggregation',
   templateUrl: './large-aggregation.component.html',
   styleUrls: ['./large-aggregation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class LargeAggregationComponent {
 
   @Input() aggregation: Aggregation;
   @Input() selectedKeys: Array<string> = [];
-  // the component emits an event if the user adds or remove a criterion
+  // the component emits an event if the user adds or removes a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
 
   @ViewChild('typeahead') typeahead: ElementRef<HTMLInputElement>;
 
+  focus$ = new Subject<string>();
   criterion = new FormControl('');
 
-  search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> =>
-    text$.pipe(
+  search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
+    const inputFocus$ = this.focus$;
+    /*const debouncedText$ = text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       map(term => {
@@ -50,7 +52,30 @@ export class LargeAggregationComponent {
 
         return result;
       })
-    )
+    )*/
+    //return debouncedText$;
+    return merge(text$, inputFocus$)
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        map(term => {
+          const allMatchingBuckets = this.aggregation.buckets
+          // returns values not already selected
+            .filter(bucket => !this.selectedKeys.includes(bucket.key)
+              // and that contains the term, ignoring the case
+              && this.displayableKey(bucket.key).toLowerCase().includes(term.toString()));
+
+          // return the first N results
+          const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
+
+          // if more results exist, add a fake refine bucket
+          if (allMatchingBuckets.length > maxResultsDisplayed) {
+            result.push('REFINE');
+          }
+
+          return result;
+        }));
+  }
 
   emitEvent(): void {
 
