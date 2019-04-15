@@ -9,8 +9,8 @@ USAGE:
 	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> [-h|--help]
 
 PARAMS:
-	-host          the host name of the targeted application
-	-port          the port value of the targeted application ($APP_PORT by default)
+	-host          the host name of the targeted Elasticsearch endpoint
+	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
 	-app           the name of the targeted application: rare, wheatis or gnpis
 	-env           the environement name of the targeted application (dev, beta, prod ...)
 	-h or --help   print this help
@@ -20,8 +20,8 @@ EOF
 }
 
 BASEDIR=$(dirname "$0")
-APP_HOST=""
-APP_PORT="9200"
+ES_HOST=""
+ES_PORT="9200"
 APP_NAME=""
 ENV=""
 
@@ -33,8 +33,8 @@ while [ -n "$1" ]; do
 	case $1 in
 		-h) help;shift 1;;
 		--help) help;shift 1;;
-		-host) APP_HOST=$2;shift 2;;
-		-port) APP_PORT=$2;shift 2;;
+		-host) ES_HOST=$2;shift 2;;
+		-port) ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
 		-env) ENV=$2;shift 2;;
 		--) shift;break;;
@@ -43,14 +43,14 @@ while [ -n "$1" ]; do
 	esac
 done
 
-if [ -z "$APP_HOST" ] || [ -z "$APP_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" ]; then
+if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" ]; then
     echo "ERROR: host, port, app and env parameters are mandatory!"
     echo && help
 	exit 4
 fi
 
 echo -e "\nCreate index: ${APP_NAME}-${ENV}-resource-physical-index"
-curl -si -X PUT "${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}-resource-physical-index"\
+curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index"\
  -H 'Content-Type: application/json' -d"
 {
     \"aliases\" : {
@@ -68,7 +68,7 @@ if [ "$APP_NAME" == "data-discovery" ]; then
     MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and GnpISs
 fi
 echo -e "\n\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)"
-curl -si -X PUT "${APP_HOST}:${APP_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
+curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
  -H 'Content-Type: application/json' -d"
 $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
 "
