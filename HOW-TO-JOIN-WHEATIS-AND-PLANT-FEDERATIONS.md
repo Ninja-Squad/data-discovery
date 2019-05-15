@@ -97,6 +97,10 @@ Also, be aware that we are adding all fields contents to the content of the desc
 the data before indexation so that the name of the entry, its species etc... can be searched. It is 
 therefore not necessary to add them explicitly in the description.
 
+>>>
+Note: be aware that all the data you provide in the file should be open access.
+>>>
+
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
 | Mandatory | 1 | none |
@@ -200,7 +204,7 @@ The order of the fields does not matter. All entries should be aggregated into a
 ```
 ## Data availability & update
 
-You can generate one or several files containing your data as long as each of them complies with 
+You can generate one or several files containing your public data as long as each of them complies with 
 the format defined above.
 
 Once they are generated, you will have to provide a way for us to fetch them on a regular basis: a 
