@@ -7,10 +7,9 @@ Initiated within transPLANT (EC FP7, contract number 283496; http://www.transpla
 (www.wheatis.org) projects & collaborations, we are now able to index and make searchable data from 
 any species of any kind of data.
 
-If you want your information system to be referenced, you have to provide CSV or JSON files with metadata 
-describing the data managed folowing the indications below and we invite you to [contact us]
-(mailto:urgi-contact@inra.fr) as soon as possible so that we can provide help and discuss the best way 
-to go ahead.
+If you want your information system to be referenced, you have to provide CSV or JSON files with metadata
+describing the data managed folowing the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr)
+as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
 to get more detailed information about the indexed entry directly in your information system.

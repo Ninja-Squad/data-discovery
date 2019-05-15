@@ -2,7 +2,7 @@
 
 ## Contribute
 
-You might probably want to know how to contribute to the federation of data. That's great, let's have a look at [this guide](./HOW-TO-JOIN.md) to know how to.
+You might probably want to know how to contribute to the federation of data. That's great, let's have a look at the [WheatIS/Plant guide](./HOW-TO-JOIN-WHEATIS-AND-PLANT-FEDERATIONS.md) or the [RARe guide](./HOW-TO-JOIN-RARe-FEDERATION.md) to know how to.
 
 If you do want to contribute to code or even only install the program on-premise it's great also, just keep reading below.
 
