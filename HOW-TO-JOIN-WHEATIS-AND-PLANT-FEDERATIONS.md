@@ -1,14 +1,13 @@
 # How to join the wheatIS and/or the Plant federations of searchable data?
 
-The purpose of this tool is to facilitate the discoverability of public data on plant biology managed by 
-different laboratories accross the world.
+The purpose of this web portal is to facilitate the discoverability of public data on plant biology
+managed by different laboratories accross the world.
 
-Initiated within transPLANT (EC FP7, contract number 283496; http://www.transplantdb.eu/) and WheatIS 
-(www.wheatis.org) projects & collaborations, we are now able to index and make searchable data from 
-any species of any kind of data.
+Initiated within transPLANT (EC FP7, contract number `283496`; http://www.transplantdb.eu/), WheatIS
+(www.wheatis.org) then Elixir-fr/IFB (ANR, contract number `11-INBS-0013`) projects & collaborations, we are
+now able to index and make findable data from any species of any kind of data.
 
-If you want your information system to be referenced, you have to provide CSV or JSON files with metadata
-describing the data managed folowing the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr)
+If you want your information system to be referenced, you have to provide CSV or JSON files with metadata only. The metadata format must folow the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr)
 as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
@@ -16,9 +15,9 @@ to get more detailed information about the indexed entry directly in your inform
 
 # Specifications for each searchable entry/document:
 
-- a short _[name](#name)_ identifying uniquely the entry, ie. _IGR_2010_1_
+- a short _[name](#name)_ identifying uniquely the entry, ie. `BTH_Le_Moulon_2000_SetA`
 - an _[url](#url)_ linking back to the entry in your own web application, ie. 
-https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3
+https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=56
 - a _[description](#description)_, describing the entry and containing all the relevant keywords 
 allowing to find your entry. This field is the one in which user entered terms are searched for, in 
 the search tool
@@ -59,8 +58,8 @@ your data (some types are more generic and can include more specific ones):
 - Repeat reference
 - Bibliography
 - Experiment
+- Phenotyping study
 - QTL
-- Phenotype
 - Pathway
 - Genetic map
 - GWAS analysis
@@ -107,7 +106,7 @@ Note: be aware that all the data you provide in the file should be open access.
 
 ### url
 
-The `url` must be dereferencable so that this backlink to your information system display information 
+The `url` must be a valid URL so that this backlinks to your information system display information
 on the entry.
 
 | Status | Cardinality | Constraints |
@@ -117,7 +116,9 @@ on the entry.
 ### species
 
 `species` field is not mandatory, but it can be used to filter data. It can contain zero, one or more 
-value according to the type of data.
+value according to the type of data.  
+It is recommended to favor the binomial form without the Author abbreviatoin (ie `L.`), eg Vitis
+vinifera, Quercus Robur, Triticum aestivum
 
 >>>
 Note: for WheatIS federation specifically, the species name must match one of the values below in order
@@ -148,7 +149,7 @@ can differ from one entry to another if you handle several databases.
 ### node
 
 The `node` is the name of you laboratory/institute, it should be the same for all the entities 
-you manage.
+you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -156,8 +157,10 @@ you manage.
 
 ## Formatting
 
-How to format the data to send to us? According to your experience, either in a TSV format or in a 
-JSON format. Below you find two kind of examples of what is expected with 2 entries: 
+How to format the data to send to us?  
+You can use either TSV or JSON format. The file(s) can be either sent to us or published in a web folder
+from where it will be regularly updated (see [Data availability & update](#data-availability-update)
+section). Below you find two kind of examples of what is expected with 2 entries:
 
 ### TSV (Tabulation Separated Values)
 
@@ -168,7 +171,7 @@ The header is not needed, displayed here only for documentation purpose.
 
 ```csv
 #name   entryType   node    databaseName    url species description
-TRIAL_IGR_2010_1    Experiment  URGI    GnpIS   https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3   Hordeum vulgare IGR_2010_1 is a trial lead at site: IPGPAS, which comment is: 'IPGPAS public'. Observation variables: GNPISO_3:0000001 , GNPISO_3:0000002 , GNPISO_3:0000003 , GNPISO_3:0000004 , GNPISO_3:0000005 , GNPISO_3:0000006 , GNPISO_3:0000007 , GNPISO_3:0000008 , GNPISO_3:0000009 , GNPISO_3:0000010 , GNPISO_3:0000011 , GNPISO_7:0000001 , GNPISO_7:0000002 . Accession names: CamB1, Georgia, Harmal, Lubuski, Maresi, MDingo, Morex, Sebastian, Stratus from taxon(s) Hordeum vulgare Hordeum vulgare Phenotyping
+TRIAL_BTH_Le_Moulon_2000_SetA	Phenotyping study	INRA-URGI	GnpIS	https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=56	Triticum aestivum aestivum	BTH_Le_Moulon_2000_SetA is a trial lead at site: Le Moulon. Observation variables: WIPO:0000070 , WIPO:0000074 , WIPO:0000109 , WIPO:0000217 , WIPO:0000218 , WIPO:0000219 . This trial started on 1999-10-20 and finished on 2000-07-31, in the frame of project: 'INRA_Wheat_Breeding_Network'. Accession names: AO00001, AO99001, CF9804, CF9825, CF99002, CF99003, CF99005, CF99007, CF99009, CF99016, CF99027, CF99031, CHARGER, DI9714, DI9812, EM99001, EM99002, EM99003, EM99006, EM99012, EM99017, EM99021, EM99027, HA1066.146, HA1070.50, HA1541.134, ISENGRAIN, RE9819, RE99002, RE99003, RE99004, RE99006, RE99007, RE99009, RE99014, RE99016, RE99017, RE99018, Ressor, SOISSONS, TREMIE, VOLTIGE
 10883/2969  Bibliography    CIMMYT  CIMMYT Dspace   http://hdl.handle.net/10883/2969    Septoria tritici blotch,Triticum aestivum l.,Wheat  Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population 2013-01-01 Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population Article
 ```
 
@@ -179,18 +182,18 @@ The order of the fields does not matter. All entries should be aggregated into a
 ```json
 [
   {
-    "entryType": "Experiment",
-    "node": "URGI",
+    "entryType": "Phenotyping study",
+    "node": "INRA-URGI",
     "databaseName": "GnpIS",
-    "description": "IGR_2010_1 is a trial lead at site: IPGPAS, which comment is: 'IPGPAS public'. Observation variables: GNPISO_3:0000001 , GNPISO_3:0000002 , GNPISO_3:0000003 , GNPISO_3:0000004 , GNPISO_3:0000005 , GNPISO_3:0000006 , GNPISO_3:0000007 , GNPISO_3:0000008 , GNPISO_3:0000009 , GNPISO_3:0000010 , GNPISO_3:0000011 , GNPISO_7:0000001 , GNPISO_7:0000002 . Accession names: CamB1, Georgia, Harmal, Lubuski, Maresi, MDingo, Morex, Sebastian, Stratus from taxon(s) Hordeum vulgare Hordeum vulgare Phenotyping",
-    "url": "https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=3",
-    "species": "Hordeum vulgare",
-    "name": "TRIAL_IGR_2010_1"
+    "description": "BTH_Le_Moulon_2000_SetA is a trial lead at site: Le Moulon. Observation variables: WIPO:0000070 , WIPO:0000074 , WIPO:0000109 , WIPO:0000217 , WIPO:0000218 , WIPO:0000219 . This trial started on 1999-10-20 and finished on 2000-07-31, in the frame of project: 'INRA_Wheat_Breeding_Network'. Accession names: AO00001, AO99001, CF9804, CF9825, CF99002, CF99003, CF99005, CF99007, CF99009, CF99016, CF99027, CF99031, CHARGER, DI9714, DI9812, EM99001, EM99002, EM99003, EM99006, EM99012, EM99017, EM99021, EM99027, HA1066.146, HA1070.50, HA1541.134, ISENGRAIN, RE9819, RE99002, RE99003, RE99004, RE99006, RE99007, RE99009, RE99014, RE99016, RE99017, RE99018, Ressor, SOISSONS, TREMIE, VOLTIGE",
+    "url": "https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=56",
+    "species": "Triticum aestivum aestivum",
+    "name": "TRIAL_BTH_Le_Moulon_2000_SetA"
   },
   {
     "entryType": "Bibliography",
     "node": "CIMMYT",
-    "databaseName": "CIMMYT Dspace",
+    "databaseName": "CIMMYT Publications",
     "description": "Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population 2013-01-01 Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population Article",
     "url": "http://hdl.handle.net/10883/2969",
     "species": [
@@ -202,11 +205,12 @@ The order of the fields does not matter. All entries should be aggregated into a
   }
 ]
 ```
+
 ## Data availability & update
 
-You can generate one or several files containing your public data as long as each of them complies with 
-the format defined above.
+You can generate one or several files containing your public data as long as each of them complies
+with the format defined above.
 
-Once they are generated, you will have to provide a way for us to fetch them on a regular basis: a 
-simple web (or FTP) server is a good solution since it allows us to check if a new version of your 
+Once they are generated, you will have to provide a way for us to fetch them on a regular basis: a
+simple web (or FTP) server is a good solution since it allows us to check if a new version of your
 files has been produced.
