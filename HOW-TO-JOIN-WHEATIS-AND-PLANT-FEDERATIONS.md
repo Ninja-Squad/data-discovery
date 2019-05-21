@@ -158,14 +158,14 @@ you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
 | :---: | :---: | :---: |
 | Mandatory | 1 | Should be the same for all the data you provide |
 
-## Formatting
+# Formatting
 
 How to format the data to send to us?  
 You can use either TSV or JSON format. The file(s) can be either sent to us or published in a web folder
 from where it will be regularly updated (see [Data availability & update](#data-availability-update)
 section). Below you find two kind of examples of what is expected with 2 entries:
 
-### TSV (Tabulation Separated Values)
+## TSV (Tabulation Separated Values)
 
 The order of the field matters as in any CSV/TSV file. Take care to remove any tabulation and return
 line from each field in order to comply with the expected format.  
@@ -178,7 +178,7 @@ TRIAL_BTH_Le_Moulon_2000_SetA	Phenotyping study	INRA-URGI	GnpIS	https://urgi.ver
 10883/2969  Bibliography    CIMMYT  CIMMYT Dspace   http://hdl.handle.net/10883/2969    Septoria tritici blotch,Triticum aestivum l.,Wheat  Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population 2013-01-01 Genetic analysis and mapping of seedling resistance to Septoria tritici blotch in 'Steele-ND'/'ND 735' bread wheat population Article
 ```
 
-### JSON (JavaScript Object Notation)
+## JSON (JavaScript Object Notation)
 
 The order of the fields does not matter. All entries should be aggregated into a single array per file.
 
@@ -209,7 +209,7 @@ The order of the fields does not matter. All entries should be aggregated into a
 ]
 ```
 
-## Data availability & update
+# Data availability & update
 
 You can generate one or several files containing your public data as long as each of them complies
 with the format defined above.
