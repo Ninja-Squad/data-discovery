@@ -17,25 +17,25 @@ to get more detailed information about the indexed entry directly in your inform
 # Specifications for each searchable entry/document:
 
 - a short _[name](#name)_ identifying uniquely the entry, ie. `BTH_Le_Moulon_2000_SetA`
-- an _[url](#url)_ linking back to the entry in your own web application, ie. 
+- an _[url](#url)_ linking back to the entry in your own web application, ie.
 https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=56
-- a _[description](#description)_, describing the entry and containing all the relevant keywords 
-allowing to find your entry. This field is the one in which user entered terms are searched for, in 
+- a _[description](#description)_, describing the entry and containing all the relevant keywords
+allowing to find your entry. This field is the one in which user entered terms are searched for, in
 the search tool
-- an _[entryType](#entrytype)_ describing the type of the entry, that could be any of the terms listed 
+- an _[entryType](#entrytype)_ describing the type of the entry, that could be any of the terms listed
 in the dedicated section
-- a _[species](#species)_ field, containing the species related to the entry (zero, one or several, 
+- a _[species](#species)_ field, containing the species related to the entry (zero, one or several,
 but it is highly recommended to provide at least one)
-- a _[node](#node)_, the name of your laboratory/institute, it should be the same for all the entities 
+- a _[node](#node)_, the name of your laboratory/institute, it should be the same for all the entities
 you manage
-- a _[database](#database)_, the name of the database from which the entry has been extracted. It 
+- a _[database](#database)_, the name of the database from which the entry has been extracted. It
 can differ from one entry to another if you handle several databases
 
 ## List of fields
 
 ### name
 
-The value of `name` field must be unique in your own dataset and should be clear enough to help 
+The value of `name` field must be unique in your own dataset and should be clear enough to help
 scientists to identify at the first glance this entry among the other.
 
 | Status | Cardinality | Constraints |
@@ -44,8 +44,8 @@ scientists to identify at the first glance this entry among the other.
 
 ### entryType
 
-The `entryType` field is not constrained on its value (it is not implemented as an 
-enumeration), but it is highly recommended to use any of following values fitting the best with 
+The `entryType` field is not constrained on its value (it is not implemented as an
+enumeration), but it is highly recommended to use any of following values fitting the best with
 your data (some types are more generic and can include more specific ones):
 
 - Genome annotation
@@ -70,10 +70,10 @@ your data (some types are more generic and can include more specific ones):
 - File
 - Study
 
-> **Note:** looking in the [data-discovery](https://urgi.versailles.inra.fr/data-discovery) portal at 
-the number of documents matching an entryType (see `Data type` filter on the left side) can help you 
-to choose the data type having the closest meaning. If you choose a different data type than those 
-already provided, be aware that this filter might not display yours because of the top hits ranking 
+> **Note:** looking in the [data-discovery](https://urgi.versailles.inra.fr/data-discovery) portal at
+the number of documents matching an entryType (see `Data type` filter on the left side) can help you
+to choose the data type having the closest meaning. If you choose a different data type than those
+already provided, be aware that this filter might not display yours because of the top hits ranking
 made on the filter.
 
 | Status | Cardinality | Constraints |
@@ -82,21 +82,21 @@ made on the filter.
 
 ### description
 
-The `description` field is the most important for the discoverability of the data since it's the one 
+The `description` field is the most important for the discoverability of the data since it's the one
 used to match terms from users.
 
-It is up to you to provide the most relevant description allowing to match the entry, but keep in 
+It is up to you to provide the most relevant description allowing to match the entry, but keep in
 mind that the more precise the description is, better the ranking in the search tool would be.
 
-Since the search tool is based on Elasticsearch, it relies on Apache Lucene indexes and the ranking 
-will be related to the term frequency/inverse document frequency (the used algorithm is currently 
-BM25). That means an entry having a description with a searched term appearing several times inside 
-it but very rarely in all other documents, will be likely returned with a high score. You can get 
-more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) in 
+Since the search tool is based on Elasticsearch, it relies on Apache Lucene indexes and the ranking
+will be related to the term frequency/inverse document frequency (the used algorithm is currently
+BM25). That means an entry having a description with a searched term appearing several times inside
+it but very rarely in all other documents, will be likely returned with a high score. You can get
+more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) in
 Elasticsearch.
 
-Also, be aware that we are adding all fields contents to the content of the description when integrating 
-the data before indexation so that the name of the entry, its species etc... can be searched. It is 
+Also, be aware that we are adding all fields contents to the content of the description when integrating
+the data before indexation so that the name of the entry, its species etc... can be searched. It is
 therefore not necessary to add them explicitly in the description.
 
 >>>
@@ -118,7 +118,7 @@ on the entry.
 
 ### species
 
-`species` field is not mandatory, but it can be used to filter data. It can contain zero, one or more 
+`species` field is not mandatory, but it can be used to filter data. It can contain zero, one or more
 value according to the type of data.  
 It is recommended to favor the binomial form without the Author abbreviatoin (ie `L.`), eg Vitis
 vinifera, Quercus Robur, Triticum aestivum
@@ -142,7 +142,7 @@ general plant search and the WheatIS search.
 
 ### database
 
-The name of the `database` from which the entry has been extracted. It 
+The name of the `database` from which the entry has been extracted. It
 can differ from one entry to another if you handle several databases.
 
 | Status | Cardinality | Constraints |
@@ -151,7 +151,7 @@ can differ from one entry to another if you handle several databases.
 
 ### node
 
-The `node` is the name of you laboratory/institute, it should be the same for all the entities 
+The `node` is the name of you laboratory/institute, it should be the same for all the entities
 you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
 
 | Status | Cardinality | Constraints |
@@ -167,7 +167,7 @@ section). Below you find two kind of examples of what is expected with 2 entries
 
 ### TSV (Tabulation Separated Values)
 
-The order of the field matters as in any CSV/TSV file. Take care to remove any tabulation and return 
+The order of the field matters as in any CSV/TSV file. Take care to remove any tabulation and return
 line from each field in order to comply with the expected format.  
 No double quotes is needed neither.  
 The header is not needed, displayed here only for documentation purpose.
