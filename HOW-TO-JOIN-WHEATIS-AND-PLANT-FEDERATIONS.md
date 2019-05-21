@@ -7,7 +7,8 @@ Initiated within transPLANT (EC FP7, contract number `283496`; http://www.transp
 (www.wheatis.org) then Elixir-fr/IFB (ANR, contract number `11-INBS-0013`) projects & collaborations, we are
 now able to index and make findable data from any species of any kind of data.
 
-If you want your information system to be referenced, you have to provide CSV or JSON files with metadata only. The metadata format must folow the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr)
+If you want your information system to be referenced, you have to provide CSV/TSV or JSON files with metadata only.
+The metadata format must folow the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr?subject=%5BWheatIS%2FData%20Discovery%5D)
 as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
