@@ -60,7 +60,7 @@ your data (some types are more generic and can include more specific ones):
 - Bibliography
 - Phenotyping study
 - Genotyping Experiment
-- NGS Experiment
+- Sequencing Experiment
 - Transcriptomic Experiment
 - QTL
 - Pathway
