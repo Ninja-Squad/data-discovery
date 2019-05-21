@@ -57,8 +57,10 @@ your data (some types are more generic and can include more specific ones):
 - Germplasm
 - Repeat reference
 - Bibliography
-- Experiment
 - Phenotyping study
+- Genotyping Experiment
+- NGS Experiment
+- Transcriptomic Experiment
 - QTL
 - Pathway
 - Genetic map
