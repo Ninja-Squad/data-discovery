@@ -87,9 +87,9 @@ build-wheatis:
   APP_NAME: ${WHEATIS_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
-build-gnpis:
+build-data-discovery:
  variables:
-  APP_NAME: ${GNPIS_APP_NAME}
+  APP_NAME: ${DATADISCOVERY_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
 .ssh-initialization-before-script: &ssh-initialization-before-script
@@ -171,31 +171,31 @@ build-gnpis:
   SERVER_IP: ${SERVER_IP}
   APP_CONTEXT: ${APP_NAME}
 
-.variables-gnpis-beta: &variables-gnpis-beta
+.variables-data-discovery-beta: &variables-data-discovery-beta
  variables:
   ENV: beta
-  APP_NAME: gnpis
-  APP_PORT: ${BETA_GNPIS_PORT}
+  APP_NAME: data-discovery
+  APP_PORT: ${BETA_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: data-discovery-${ENV}
 
-.variables-gnpis-staging: &variables-gnpis-staging
+.variables-data-discovery-staging: &variables-data-discovery-staging
  variables:
   ENV: staging
-  APP_NAME: gnpis
-  APP_PORT: ${STAGING_GNPIS_PORT}
+  APP_NAME: data-discovery
+  APP_PORT: ${STAGING_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: data-discovery-${ENV}
 
-.variables-gnpis-prod: &variables-gnpis-prod
+.variables-data-discovery-prod: &variables-data-discovery-prod
  variables:
   ENV: prod
-  APP_NAME: gnpis
-  APP_PORT: ${PROD_GNPIS_PORT}
+  APP_NAME: data-discovery
+  APP_PORT: ${PROD_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_PORT: ${ES_PROD_PORT}
@@ -279,9 +279,9 @@ deploy-wheatis-to-prod:
  when: manual
  allow_failure: false
 
-deploy-gnpis-to-beta:
+deploy-data-discovery-to-beta:
  stage: staging
- <<: *variables-gnpis-beta
+ <<: *variables-data-discovery-beta
  <<: *deploy_to_vm
  only:
   changes:
@@ -294,9 +294,9 @@ deploy-gnpis-to-beta:
    - master
  allow_failure: false
 
-deploy-gnpis-to-staging:
+deploy-data-discovery-to-staging:
  stage: staging
- <<: *variables-gnpis-staging
+ <<: *variables-data-discovery-staging
  <<: *deploy_to_vm
  only:
   changes:
@@ -305,9 +305,9 @@ deploy-gnpis-to-staging:
   refs:
    - master
 
-deploy-gnpis-to-prod:
+deploy-data-discovery-to-prod:
  stage: production
- <<: *variables-gnpis-prod
+ <<: *variables-data-discovery-prod
  <<: *deploy_to_vm
  only:
   changes:
@@ -411,9 +411,9 @@ data-integration-wheatis-prod:
   refs:
    - master
 
-data-integration-gnpis-beta:
+data-integration-data-discovery-beta:
  stage: data-integration-staging
- <<: *variables-gnpis-beta
+ <<: *variables-data-discovery-beta
  <<: *data-integration
  only:
   changes:
@@ -424,9 +424,9 @@ data-integration-gnpis-beta:
   refs:
    - master
 
-data-integration-gnpis-staging:
+data-integration-data-discovery-staging:
  stage: data-integration-staging
- <<: *variables-gnpis-staging
+ <<: *variables-data-discovery-staging
  <<: *data-integration
  only:
   changes:
@@ -434,9 +434,9 @@ data-integration-gnpis-staging:
   refs:
    - master
 
-data-integration-gnpis-prod:
+data-integration-data-discovery-prod:
  stage: data-integration-production
- <<: *variables-gnpis-prod
+ <<: *variables-data-discovery-prod
  <<: *data-integration
  only:
   changes:

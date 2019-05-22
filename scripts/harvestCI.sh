@@ -4,14 +4,14 @@
 help() {
 	cat <<EOF
 DESCRIPTION: 
-	Script used to index data in Data Discovery portals (RARe, WheatIS and GnpIS)
+	Script used to index data in Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
 	$0 -url <app url> -app <application name> -env <environment name> -copy [-h|--help]
 
 PARAMS:
 	-url           the application url (ex: http://HOST:PORT/CONTEXT_PATH)
-	-app           the name of the targeted application: rare, wheatis or gnpis
+	-app           the name of the targeted application: rare, wheatis or data-discovery
 	-env           the environment name of the targeted application (dev, beta, prod ...)
 	-copy          to set if the data files needs to be copied on the application host
 	-h or --help   print this help

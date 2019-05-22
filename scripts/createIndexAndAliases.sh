@@ -9,5 +9,5 @@ sh $BASEDIR/createIndexAndAliases4CI.sh -host localhost -app rare -env dev
 # WheatIS index/alias
 sh $BASEDIR/createIndexAndAliases4CI.sh -host localhost -app wheatis -env dev
 
-# GnpIS index/alias
+# DataDiscovery index/alias
 sh $BASEDIR/createIndexAndAliases4CI.sh -host localhost -app data-discovery -env dev

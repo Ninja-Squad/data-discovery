@@ -10,7 +10,7 @@ public final class AppProfile {
 
     public static final String RARE = "rare-app";
     public static final String WHEATIS = "wheatis-app";
-    public static final String GNPIS = "gnpis-app";
+    public static final String DATADISCOVERY = "data-discovery-app";
 
     private AppProfile() {
     }

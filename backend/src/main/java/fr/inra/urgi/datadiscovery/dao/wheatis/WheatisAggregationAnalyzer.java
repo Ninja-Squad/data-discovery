@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @author JB Nizet
  */
 @Component
-@Profile({AppProfile.WHEATIS, AppProfile.GNPIS})
+@Profile({AppProfile.WHEATIS, AppProfile.DATADISCOVERY})
 public class WheatisAggregationAnalyzer implements AggregationAnalyzer {
     private static final List<AppAggregation> AGGREGATIONS =
         Collections.unmodifiableList(Arrays.asList(WheatisAggregation.values()));

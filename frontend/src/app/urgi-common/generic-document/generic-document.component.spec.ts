@@ -5,9 +5,9 @@ import { GenericDocumentComponent } from './generic-document.component';
 import { toWheatisDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
-describe('GnpisDocumentComponent', () => {
+describe('DataDiscoveryDocumentComponent', () => {
 
-  class GnpisDocumentComponentTester extends ComponentTester<GenericDocumentComponent> {
+  class DataDiscoveryDocumentComponentTester extends ComponentTester<GenericDocumentComponent> {
     constructor() {
       super(GenericDocumentComponent);
     }
@@ -52,7 +52,7 @@ describe('GnpisDocumentComponent', () => {
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
-    const tester = new GnpisDocumentComponentTester();
+    const tester = new DataDiscoveryDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource

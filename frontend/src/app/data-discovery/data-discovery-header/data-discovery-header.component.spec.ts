@@ -1,19 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GnpisHeaderComponent } from './gnpis-header.component';
+import { DataDiscoveryHeaderComponent } from './data-discovery-header.component';
 
-describe('GnpisHeaderComponent', () => {
+describe('DataDiscoveryHeaderComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [GnpisHeaderComponent]
+    declarations: [DataDiscoveryHeaderComponent]
   }));
 
   it('should display title and image', () => {
-    const fixture = TestBed.createComponent(GnpisHeaderComponent);
+    const fixture = TestBed.createComponent(DataDiscoveryHeaderComponent);
 
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('h1');
-    expect(title.textContent).toContain('GnpIS');
+    expect(title.textContent).toContain('DataDiscovery');
 
     const image = fixture.nativeElement.querySelector('img');
     expect(image).toBeDefined();

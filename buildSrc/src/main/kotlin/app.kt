@@ -1,7 +1,7 @@
 import org.gradle.api.*
 import org.gradle.kotlin.dsl.*
 
-private val acceptableValues = setOf("rare", "wheatis", "gnpis")
+private val acceptableValues = setOf("rare", "wheatis", "data-discovery")
 
 val Project.app: String
     get() = findProperty("app")

@@ -383,7 +383,7 @@ are applies. In particular:
 
 See the `backend/src/main/resources/application.yml` file for details.
 
-### Example of adding a new application (GnpIS Portal)
+### Example of adding a new application (DataDiscovery Portal)
 
 This readme will be useful :
 * If we want to create a new application.
@@ -397,30 +397,30 @@ This readme will be useful :
 
 ##### In `buildSrc` folder
 
-* Added `gnpis` to the `acceptableValues` in `./buildSrc/src/main/kotlin/app.kt` file:
+* Added `data-discovery` to the `acceptableValues` in `./buildSrc/src/main/kotlin/app.kt` file:
 
-      private val acceptableValues = setOf("rare", "wheatis", "gnpis")
+      private val acceptableValues = setOf("rare", "wheatis", "data-discovery")
 
 ##### `backend` folder
 
 * Add this line in `backend/src/main/java/fr/inra/urgi/datadiscovery/config/AppProfile.java`
 
-      public static final String GNPIS = "gnpis-app";
+      public static final String DATADISCOVERY = "data-discovery-app";
 
-* Added `GNPIS` profile in :
+* Added `DATADISCOVERY` profile in :
   
   - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisAggregationAnalyzer.java`
   - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisDocumentDao.java`
   - `./backend/src/main/java/fr/inra/urgi/datadiscovery/harvest/wheatis/WheatisHarvester.java`
 
-* Add this code to `./backend/src/main/resources/application.yml` (**Specifying a new port for `gnpis-app`**)
+* Add this code to `./backend/src/main/resources/application.yml` (**Specifying a new port for `data-discovery-app`**)
 
       ---
       spring:
-        profiles: gnpis-app
-        cloud.config.name: gnpis
+        profiles: data-discovery-app
+        cloud.config.name: data-discovery
         security.user:
-            name: gnpis
+            name: data-discovery
             password: f01a7031fc17
 
       data-discovery:
@@ -434,25 +434,25 @@ This readme will be useful :
 
 ##### `data` folder
 
-* Create a folder called `gnpis` in `./data`, and put the compressed JSON files in it.
+* Create a folder called `data-discovery` in `./data`, and put the compressed JSON files in it.
 
 ##### `frontend` folder
 
 * Edited the `./frontend/coverage/index.html` file.
 
-* Edited `./frontend/src/app/models/test-model-generators.ts` by adding an `import` and `toGnpisDocument` function.
+* Edited `./frontend/src/app/models/test-model-generators.ts` by adding an `import` and `toDataDiscoveryDocument` function.
 
-* Since `GnpIS` and `WheatIS` share the same document structure we created a `gnpis` module in `./frontend/src/app` containing only `gnpis-header` and used the `generic-document` found in `frontend/src/app/urgi-common`, this generic document is common between GnpIS and WheatIS:
+* Since `DataDiscovery` and `WheatIS` share the same document structure we created a `data-discovery` module in `./frontend/src/app` containing only `data-discovery-header` and used the `generic-document` found in `frontend/src/app/urgi-common`, this generic document is common between DataDiscovery and WheatIS:
 
 ```
-gnpis
-├── gnpis-header
-│   ├── gnpis-header.component.html
-│   ├── gnpis-header.component.scss
-│   ├── gnpis-header.component.spec.ts
-│   └── gnpis-header.component.ts
-├── gnpis-document.model.ts
-└── gnpis.module.ts
+data-discovery
+├── data-discovery-header
+│   ├── data-discovery-header.component.html
+│   ├── data-discovery-header.component.scss
+│   ├── data-discovery-header.component.spec.ts
+│   └── data-discovery-header.component.ts
+├── data-discovery-document.model.ts
+└── data-discovery.module.ts
 ```
 
 ```
@@ -466,7 +466,7 @@ urgi-common
 └── ...
 ```
 
-* Create a `gnpis` file in `./frontend/src/assets` containing the following file:
+* Create a `data-discovery` file in `./frontend/src/assets` containing the following file:
   - `band.jpg`
   - `favicon.ico`
   - `logo.png`
@@ -475,15 +475,15 @@ urgi-common
 And edit them as desired.
 
 * Create and edit the environment files in `./frontend/src/environments`:
-  - `environment.gnpis.prod.ts`
-  - `environment.gnpis.ts`
+  - `environment.data-discovery.prod.ts`
+  - `environment.data-discovery.ts`
 
-* Added `gnpis` configuration in `./frontend/angular.json` file
+* Added `data-discovery` configuration in `./frontend/angular.json` file
 
 * Edited `./frontend/package.json` by adding:
 
-      "start:gnpis": "ng serve --configuration=gnpis",
-      "build:gnpis": "ng build --configuration=gnpis-production --no-progress",
+      "start:data-discovery": "ng serve --configuration=data-discovery",
+      "build:data-discovery": "ng build --configuration=data-discovery-production --no-progress",
 
 * Edited `./frontend/proxy.conf.js` by adding:
 
@@ -500,17 +500,17 @@ And edit them as desired.
 
 * Added this line to `scripts/createIndexAndAliases.sh` file:
 
-      # GnpIS index/alias
-      sh $BASEDIR/createIndexAndAliases4CI.sh localhost gnpis dev
+      # DataDiscovery index/alias
+      sh $BASEDIR/createIndexAndAliases4CI.sh localhost data-discovery dev
 
-* Created `harvestGnpis.sh` with the following content:
+* Created `harvestDataDiscovery.sh` with the following content:
 
       #!/bin/bash
 
       # delegates to parameterized script
       BASEDIR=$(dirname "$0")
 
-      sh $BASEDIR/harvestCI.sh localhost 8280 gnpis dev
+      sh $BASEDIR/harvestCI.sh localhost 8280 data-discovery dev
 
 ##### Testing
 
@@ -526,16 +526,16 @@ In our case, after launching the test, we kept getting `Permission denied` error
 
 2. Build the app
 
-        ./gradlew assemble -Papp=gnpis
+        ./gradlew assemble -Papp=data-discovery
 
 3. Deploy
 
-        java -jar backend/build/libs/gnpis.jar
+        java -jar backend/build/libs/data-discovery.jar
 
 4. Index the data
 
         ./scripts/createIndexAndAliases.sh
-        ./scripts/harvestGnpis.sh
+        ./scripts/harvestDataDiscovery.sh
 
 5. App is running at : http://localhost:8280/data-discovery-dev/
 

@@ -69,8 +69,8 @@ server:
 
 ---
 spring:
-  profiles: gnpis-app
-  cloud.config.name: gnpis
+  profiles: data-discovery-app
+  cloud.config.name: data-discovery
   security.user:
       name: data-discovery
       password: f01a7031fc17

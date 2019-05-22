@@ -1,14 +1,10 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
-import { GnpisModule } from '../app/gnpis/gnpis.module';
+import { DataDiscoveryModule } from '../app/data-discovery/data-discovery.module';
 
 export const environment = {
-  production: false,
-  title: 'Gnpis - Genetic and Genomic Information System',
+  production: true,
+  title: 'DataDiscovery - Genetic and Genomic Information System',
   navbar: {
-    title: 'Gnpis',
+    title: 'DataDiscovery',
     links: [
       { label: 'INRA', url: 'http://www.inra.fr/' },
       { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' },
@@ -60,10 +56,10 @@ export const environment = {
       }
     ]
   },
-  resourceModule: GnpisModule,
+  resourceModule: DataDiscoveryModule,
   /**
    * Map containing the list of the aggregations and their displayed name.
-   * Should be kept in sync with the `GnpisAggregation` enum of the backend.
+   * Should be kept in sync with the `DataDiscoveryAggregation` enum of the backend.
    */
   aggregationNames: {
     entry: 'Data type',
@@ -72,11 +68,3 @@ export const environment = {
     species: 'Species'
   }
 };
-
-/*
- * In development mode, to ignore zone related error stack frames such as
- * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can
- * import the following file, but please comment it out in production mode
- * because it will have performance impact when throw error
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

@@ -143,29 +143,29 @@
                 }
               ]
             },
-            "gnpis": {
+            "data-discovery": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.gnpis.ts"
+                  "with": "src/environments/environment.data-discovery.ts"
                 }
               ],
               "baseHref": "/data-discovery-dev/",
               "stylePreprocessorOptions": {
                 "includePaths": [
-                  "src/assets/gnpis/"
+                  "src/assets/data-discovery/"
                 ]
               },
               "assets": [
-                { "glob": "*", "input": "src/assets/gnpis", "output": "/assets" },
+                { "glob": "*", "input": "src/assets/data-discovery", "output": "/assets" },
                 "src/assets"
               ]
             },
-            "gnpis-production": {
+            "data-discovery-production": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.gnpis.prod.ts"
+                  "with": "src/environments/environment.data-discovery.prod.ts"
                 }
               ],
               "optimization": true,
@@ -180,11 +180,11 @@
               "baseHref": "./",
               "stylePreprocessorOptions": {
                 "includePaths": [
-                  "src/assets/gnpis/"
+                  "src/assets/data-discovery/"
                 ]
               },
               "assets": [
-                { "glob": "*", "input": "src/assets/gnpis", "output": "/assets" },
+                { "glob": "*", "input": "src/assets/data-discovery", "output": "/assets" },
                 "src/assets"
               ],
               "budgets": [
@@ -219,11 +219,11 @@
             "wheatis-production": {
               "browserTarget": "data-discovery-frontend:build:wheatis-production"
             },
-            "gnpis": {
-              "browserTarget": "data-discovery-frontend:build:gnpis"
+            "data-discovery": {
+              "browserTarget": "data-discovery-frontend:build:data-discovery"
             },
-            "gnpis-production": {
-              "browserTarget": "data-discovery-frontend:build:gnpis-production"
+            "data-discovery-production": {
+              "browserTarget": "data-discovery-frontend:build:data-discovery-production"
             }
           }
         },

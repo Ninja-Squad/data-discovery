@@ -3,7 +3,7 @@
 help() {
 	cat <<EOF
 DESCRIPTION: 
-	Script used to create index and aliases for Data Discovery portals (RARe, WheatIS and GnpIS)
+	Script used to create index and aliases for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
 	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> [-h|--help]
@@ -11,7 +11,7 @@ USAGE:
 PARAMS:
 	-host          the host name of the targeted Elasticsearch endpoint
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
-	-app           the name of the targeted application: rare, wheatis or gnpis
+	-app           the name of the targeted application: rare, wheatis or data-discovery
 	-env           the environement name of the targeted application (dev, beta, prod ...)
 	-h or --help   print this help
 
@@ -65,7 +65,7 @@ curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-inde
 
 MAPPING_PARTIAL_PATH="${APP_NAME}"
 if [ "$APP_NAME" == "data-discovery" ]; then
-    MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and GnpISs
+    MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and DataDiscoverys
 fi
 echo -e "\n\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)"
 curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
