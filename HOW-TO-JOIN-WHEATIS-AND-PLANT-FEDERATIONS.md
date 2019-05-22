@@ -7,7 +7,7 @@ Initiated within transPLANT (EC FP7, contract number `283496`; http://www.transp
 (www.wheatis.org) then Elixir-fr/IFB (ANR, contract number `11-INBS-0013`) projects & collaborations, we are
 now able to index and make findable data from any species of any kind of data.
 
-If you want your information system to be referenced, you have to provide CSV/TSV or JSON files with metadata only.
+If you want your information system to be referenced, you have to provide TSV or JSON files with metadata only.
 The metadata format must folow the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr?subject=%5BWheatIS%2FData%20Discovery%5D)
 as soon as possible so that we can provide help and discuss the best way to go ahead.
 
@@ -167,7 +167,7 @@ section). Below you find two kind of examples of what is expected with 2 entries
 
 ## TSV (Tabulation Separated Values)
 
-The order of the field matters as in any CSV/TSV file. Take care to remove any tabulation and return
+The order of the field matters as in any TSV file. Take care to remove any tabulation and return
 line from each field in order to comply with the expected format.  
 No double quotes is needed neither.  
 The header is not needed, displayed here only for documentation purpose.
