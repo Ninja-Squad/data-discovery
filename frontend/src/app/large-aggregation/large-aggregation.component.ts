@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { merge, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { NULL_VALUE } from '../models/document.model';
 
@@ -32,31 +32,8 @@ export class LargeAggregationComponent {
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
-    /*const debouncedText$ = text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => {
-        const allMatchingBuckets = this.aggregation.buckets
-        // returns values not already selected
-          .filter(bucket => !this.selectedKeys.includes(bucket.key)
-            // and that contains the term, ignoring the case
-            && this.displayableKey(bucket.key).toLowerCase().includes(term.toLowerCase()));
-
-        // return the first N results
-        const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
-
-        // if more results exist, add a fake refine bucket
-        if (allMatchingBuckets.length > maxResultsDisplayed) {
-          result.push('REFINE');
-        }
-
-        return result;
-      })
-    )*/
-    //return debouncedText$;
-    return merge(text$, inputFocus$)
+    let merged$ = merge(text$, inputFocus$)
       .pipe(
-        debounceTime(200),
         distinctUntilChanged(),
         map(term => {
           const allMatchingBuckets = this.aggregation.buckets
@@ -75,6 +52,7 @@ export class LargeAggregationComponent {
 
           return result;
         }));
+    return merged$;
   }
 
   emitEvent(): void {
