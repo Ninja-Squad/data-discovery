@@ -40,7 +40,7 @@ export class LargeAggregationComponent {
           // returns values not already selected
             .filter(bucket => !this.selectedKeys.includes(bucket.key)
               // and that contains the term, ignoring the case
-              && this.displayableKey(bucket.key).toLowerCase().includes(term.toString()));
+              && this.displayableKey(bucket.key).toLowerCase().includes(term.toString().toLowerCase()));
 
           // return the first N results
           const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
