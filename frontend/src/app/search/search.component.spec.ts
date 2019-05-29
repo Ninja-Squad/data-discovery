@@ -21,6 +21,7 @@ import { LargeAggregationComponent } from '../large-aggregation/large-aggregatio
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -68,6 +69,7 @@ describe('SearchComponent', () => {
       LargeAggregationComponent,
       AggregationNamePipe,
       DocumentCountComponent,
+      LoadingSpinnerComponent,
       TruncatableDescriptionComponent
     ]
   }));

@@ -36,6 +36,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   ]
 })
 export class SearchComponent implements OnInit {
+  loading = true;
   query = '';
   searchForm: FormGroup;
   results: Page<DocumentModel>;
@@ -81,7 +82,8 @@ export class SearchComponent implements OnInit {
         })
       )
       .subscribe(results => {
-        // sets the results and the aggregations if there are some
+	this.loading = false;
+  	// sets the results and the aggregations if there are some
         this.results = results;
         if (results.aggregations.length) {
           this.aggregations = results.aggregations;
@@ -146,6 +148,7 @@ export class SearchComponent implements OnInit {
    * It accepts a search options object with one mandatory field (the query) and optional ones (page, criteria)
    */
   private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion> }) {
+    this.loading = true;
     const queryParams: { [key: string]: string | Array<string> } = {
       query: options.query,
       page: options.page ? options.page.toString() : undefined
