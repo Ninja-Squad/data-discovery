@@ -82,8 +82,8 @@ export class SearchComponent implements OnInit {
         })
       )
       .subscribe(results => {
-	this.loading = false;
-  	// sets the results and the aggregations if there are some
+        this.loading = false;
+        // sets the results and the aggregations if there are some
         this.results = results;
         if (results.aggregations.length) {
           this.aggregations = results.aggregations;
