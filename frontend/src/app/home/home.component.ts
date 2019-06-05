@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { SearchService } from '../search.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-home',
@@ -12,6 +13,7 @@ import { SearchService } from '../search.service';
 })
 export class HomeComponent implements OnInit {
   searchForm: FormGroup;
+  placeholder = environment.searchPlaceholder;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
   constructor(private router: Router, private searchService: SearchService) {

@@ -9,6 +9,7 @@ import { DocumentModel } from '../models/document.model';
 import { Aggregation, Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-search',
@@ -38,6 +39,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class SearchComponent implements OnInit {
   loading = true;
   query = '';
+  placeholder = environment.searchPlaceholder;
   searchForm: FormGroup;
   results: Page<DocumentModel>;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;

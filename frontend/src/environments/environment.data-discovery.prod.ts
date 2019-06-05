@@ -12,6 +12,7 @@ export const environment = {
       { label: 'Help', url: 'https://urgi.versailles.inra.fr/' }
     ]
   },
+  searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: DataDiscoveryModule,
   /**
    * Map containing the list of the aggregations and their displayed name.

@@ -15,6 +15,7 @@ export const environment = {
       { label: 'WheatIS website', url: 'http://wheatis.org/' }
     ]
   },
+  searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: WheatisModule,
   /**
    * Map containing the list of the aggregations and their displayed name.

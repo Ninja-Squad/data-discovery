@@ -14,6 +14,7 @@ export const environment = {
       { label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }
     ]
   },
+  searchPlaceholder: 'Exemples : pisum sativum, rosa',
   resourceModule: RareModule,
   /**
    * Map containing the list of the aggregations and their displayed name.
