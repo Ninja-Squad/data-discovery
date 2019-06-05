@@ -27,6 +27,10 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   get title() {
     return this.element('a');
   }
+
+  get logo() {
+    return this.title.element('img');
+  }
 }
 
 describe('NavbarComponent', () => {
@@ -55,6 +59,7 @@ describe('NavbarComponent', () => {
 
     component.navbar = {
       title: 'RARe',
+      logoUrl: 'https://www.agrobrc-rare.org/',
       links: [
         { label: 'INRA', url: 'http://www.inra.fr/' },
         { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
@@ -63,7 +68,8 @@ describe('NavbarComponent', () => {
 
     tester.detectChanges();
 
-    expect(tester.title.textContent).toBe('RARe');
+    expect(tester.title.attr('href')).toBe('https://www.agrobrc-rare.org/');
+    expect(tester.logo.attr('title')).toBe('RARe logo with link');
 
     expect(tester.links.length).toBe(2);
 
