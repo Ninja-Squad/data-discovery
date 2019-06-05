@@ -12,8 +12,7 @@ export const environment = {
     logoUrl: 'http://www.wheatinitiative.org/',
     links: [
       { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' },
-      { label: 'WheatIS', url: 'http://wheatis.org/' },
-      { label: 'Wheat Initiative', url: 'http://www.wheatinitiative.org/' }
+      { label: 'WheatIS website', url: 'http://wheatis.org/' }
     ]
   },
   resourceModule: WheatisModule,
