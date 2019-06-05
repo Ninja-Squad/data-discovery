@@ -4,7 +4,8 @@ export const environment = {
   production: true,
   title: 'DataDiscovery - Genetic and Genomic Information System',
   navbar: {
-    title: 'DataDiscovery',
+    title: 'URGI',
+    logoUrl: 'https://urgi.versailles.inra.fr/',
     links: [
       { label: 'INRA', url: 'http://www.inra.fr/' },
       { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' },

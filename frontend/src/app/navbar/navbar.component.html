@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-md navbar-dark py-0">
   <div class="container px-0">
-    <a class="navbar-brand d-flex align-items-center mr-0 px-2" routerLink="/">{{ navbar.title }}</a>
+    <a class="navbar-brand d-flex align-items-center mr-0 px" href="{{ navbar.logoUrl }}">
+      <img src="assets/logo.png" alt="Logo" title="{{ navbar.title }} logo with link" height="56px"/>
+    </a>
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
     </button>
@@ -8,15 +10,15 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let link of navbar.links">
           <div *ngIf="!link.subMenu" >
-            <a class="nav-link d-flex align-items-center" [href]="link.url" target="_blank">{{ link.label }}</a>
+            <a class="nav-link d-flex align-items-center" [href]="link.url" title="{{ link.label }} link" target="_blank">{{ link.label }}</a>
           </div>
           <div *ngIf="link.subMenu">
             <!-- Dropdown -->
             <div ngbDropdown class="d-inline-block dropdown">
-              <a ngbDropdownToggle class="nav-link d-flex align-items-center" [href]="link.url">{{ link.label }}</a>
+              <a ngbDropdownToggle class="nav-link d-flex align-items-center" title="{{ link.label }} link" [href]="link.url">{{ link.label }}</a>
               <div ngbDropdownMenu class="dropdown-menu">
                 <div *ngFor="let subItem of link.subMenu">
-                  <a class="dropdown-item" href="{{ subItem.url }}" target="_blank">{{ subItem.label }}</a>
+                  <a class="dropdown-item" href="{{ subItem.url }}" title="{{ subItem.label }} link" target="_blank">{{ subItem.label }}</a>
                 </div>
               </div>
             </div>

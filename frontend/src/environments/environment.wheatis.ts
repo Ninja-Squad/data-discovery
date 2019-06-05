@@ -8,7 +8,8 @@ export const environment = {
   production: false,
   title: 'WheatIS - Wheat Information System',
   navbar: {
-    title: 'WheatIS',
+    title: 'Wheat Initiative',
+    logoUrl: 'http://www.wheatinitiative.org/',
     links: [
       { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' },
       { label: 'WheatIS', url: 'http://wheatis.org/' },

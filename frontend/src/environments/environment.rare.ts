@@ -9,6 +9,7 @@ export const environment = {
   title: 'RARe - Ressources Agronomiques pour la Recherche',
   navbar: {
     title: 'RARe Search',
+    logoUrl: '',
     links: [
       { label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }
     ]

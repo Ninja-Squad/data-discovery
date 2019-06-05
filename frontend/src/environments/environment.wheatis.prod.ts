@@ -4,7 +4,8 @@ export const environment = {
   production: true,
   title: 'WheatIS - Wheat Information System',
   navbar: {
-    title: 'WheatIS',
+    title: 'Wheat Initiative',
+    logoUrl: 'http://www.wheatinitiative.org/',
     links: [
       // { label: 'INRA', url: 'http://www.inra.fr/' },
       { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' },
