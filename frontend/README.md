@@ -7,7 +7,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 Run `yarn start` or `yarn start:rare` for a dev server. 
 Navigate to `http://localhost:4200/rare`. The app will automatically reload if you change any of the source files.
 
-To start another app, like WheatIS, you can run `yarn start:wheatis`, and go to `http://localhost:4200/wheatis`. 
+To start another app, like WheatIS, you can run `yarn start:wheatis`, and go to `http://localhost:4300/wheatis`.
 
 ## Build
 

@@ -45,8 +45,8 @@ Then in the `frontend` directory, run `yarn` to download the dependencies.
 Then run `yarn start` to start the app, using the proxy conf to reroute calls to `/api` to the backend.
 
 The application will be available on:
-- http://localhost:4200/rare-dev for RARe (runs with: `yarn start:rare` or simply `yarn start`)
-- http://localhost:4200/wheatis-dev for WheatIS (runs with: `yarn start:wheatis`)
+- http://localhost:4000/rare-dev for RARe (runs with: `yarn start:rare` or simply `yarn start`)
+- http://localhost:4100/wheatis-dev for WheatIS (runs with: `yarn start:wheatis`)
 
 ## Build
 
