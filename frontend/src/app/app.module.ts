@@ -24,6 +24,8 @@ import { ErrorInterceptorService } from './error-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { environment } from '../environments/environment';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { HelpComponent } from './help/help.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 registerLocaleData(localeFr);
 
@@ -41,7 +43,8 @@ registerLocaleData(localeFr);
     DocumentCountComponent,
     ErrorComponent,
     NavbarComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    HelpComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -53,6 +56,8 @@ registerLocaleData(localeFr);
     NgbTypeaheadModule,
     NgbTooltipModule,
     NgbModule,
+    HttpClientModule,
+    MarkdownModule.forRoot(),
     // the appropriate resource module depending on the `resourceModule` configured in the environment
     // each of the possible modules contains a component with a selector `dd-document`
     // able to display the genetic resource of the application
