@@ -1,14 +1,13 @@
 // non-public variables used in this theme only
-$_theme-black: #222222;
-$_theme-green: #a7c36d;
-$_theme-strong-green: #86ae31;
-$_theme-pale: #f7f7f4;
+$_theme-primary-color: #86ae31;
+$_theme-primary-color-light: #a7c36d;
+$_theme-secondary-color: #f7f7f4;
 
-$component-active-bg: $_theme-green;
+$component-active-bg: $_theme-primary-color-light;
 
 // override default link colors
-$link-color: $_theme-green;
-$link-hover-color: $_theme-strong-green;
+$link-color: $_theme-primary-color-light;
+$link-hover-color: $_theme-primary-color;
 
 // override default shadows behavior
 $enable-shadows: true;
@@ -19,15 +18,26 @@ $enable-shadows: true;
 
 // custom button
 $theme-btn-color: $white;
-$theme-btn-bg-color: $_theme-green;
-$theme-btn-border-color: $_theme-pale;
+$theme-btn-bg-color: $_theme-primary-color-light;
+$theme-btn-border-color: $_theme-secondary-color;
 $theme-btn-hover-color: $white;
-$theme-btn-hover-bg-color: $_theme-strong-green;
-$theme-btn-hover-border-color: $_theme-strong-green;
+$theme-btn-hover-bg-color: $_theme-primary-color;
+$theme-btn-hover-border-color: $_theme-primary-color;
 
 // custom navbar
 $theme-navbar-height: 4rem;
 $theme-navbar-color: $navbar-light-color;
-$theme-navbar-bg-color: $_theme-pale;
+$theme-navbar-bg-color: $_theme-secondary-color;
 $theme-navbar-hover-color: $white;
-$theme-navbar-hover-bg-color: $_theme-strong-green;
+$theme-navbar-hover-bg-color: $_theme-primary-color;
+
+// override default table
+$table-border-color: $_theme-primary-color-light;
+$table-border-width: 1px;
+$table-bg: $_theme-primary-color;
+$table-head-bg: $_theme-primary-color-light;
+$theme-border-color: $_theme-primary-color-light;
+$headings-margin-bottom: 1rem;
+
+// custom
+$theme-h1-bottom-width: 5px;

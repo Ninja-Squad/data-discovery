@@ -25,3 +25,26 @@ $fa-font-path: '~font-awesome/fonts';
     border-color: $theme-btn-hover-border-color;
   }
 }
+
+th,
+td {
+  padding: $table-cell-padding;
+  border: $table-border-width solid $table-border-color;
+}
+
+thead th {
+  background-color: $table-head-bg;
+  border-bottom: (2 * $table-border-width) solid $table-border-color;
+}
+
+h1{
+  border-bottom: $theme-h1-bottom-width solid $theme-border-color;
+}
+
+h2{
+  border-bottom: 3px solid $theme-border-color;
+}
+
+h3{
+  font-style: italic;
+}

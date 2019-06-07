@@ -21,6 +21,16 @@ TODO: fill brief version of specifications
 
 TODO: fill complete list of fields
 
+### field 1
+
+Description of field 1.
+
+| Status | Cardinality | Constraints |
+| :---: | :---: | :---: |
+| Mandatory | 1 | Unique |
+
+---
+
 ## Formatting
 
 How to format the data to send to us?  

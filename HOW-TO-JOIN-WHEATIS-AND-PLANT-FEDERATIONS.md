@@ -42,6 +42,8 @@ scientists to identify at the first glance this entry among the other.
 | :---: | :---: | :---: |
 | Mandatory | 1 | Unique |
 
+---
+
 ### entryType
 
 The `entryType` field is not constrained on its value (it is not implemented as an
@@ -80,6 +82,8 @@ made on the filter.
 | :---: | :---: | :---: |
 | Mandatory | 1 | none, but preferably any of above items if applicable |
 
+---
+
 ### description
 
 The `description` field is the most important for the discoverability of the data since it's the one
@@ -107,6 +111,8 @@ Note: be aware that all the data you provide in the file should be open access.
 | :---: | :---: | :---: |
 | Mandatory | 1 | none |
 
+---
+
 ### url
 
 The `url` must be a valid URL so that this backlinks to your information system display information
@@ -115,6 +121,8 @@ on the entry.
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
 | Mandatory | 1 | none |
+
+---
 
 ### species
 
@@ -140,6 +148,8 @@ general plant search and the WheatIS search.
 | :---: | :---: | :---: |
 | Optional, but highly recommended | 0-* | none |
 
+---
+
 ### database
 
 The name of the `database` from which the entry has been extracted. It
@@ -149,6 +159,8 @@ can differ from one entry to another if you handle several databases.
 | :---: | :---: | :---: |
 | Mandatory | 1 | none |
 
+---
+
 ### node
 
 The `node` is the name of you laboratory/institute, it should be the same for all the entities
@@ -157,6 +169,8 @@ you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
 | Mandatory | 1 | Should be the same for all the data you provide |
+
+---
 
 # Formatting
 
