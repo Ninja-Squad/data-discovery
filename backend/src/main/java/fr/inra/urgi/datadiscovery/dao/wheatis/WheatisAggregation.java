@@ -16,10 +16,10 @@ import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
  * @author JB Nizet
  */
 public enum WheatisAggregation implements AppAggregation {
+    SPECIES("species", "species.keyword", LARGE),
     ENTRY_TYPE("entry", "entryType.keyword", LARGE),
     DATABASE_NAME("db", "databaseName.keyword", LARGE),
-    NODE("node", "node.keyword", SMALL),
-    SPECIES("species", "species.keyword", LARGE);
+    NODE("node", "node.keyword", SMALL);
 
     private final String name;
     private final String field;
