@@ -21,7 +21,7 @@ export const environment = {
   aggregationNames: {
     entry: 'Data type',
     db: 'Database',
-    node: 'Node',
+    node: 'Data provider',
     species: 'Species'
   }
 };

@@ -80,7 +80,7 @@ export function toWheatisDocument(name: string): GenericDocumentModel {
     url: 'http://brc4env.fr',
     description: 'A description of the genetic document',
     databaseName: 'BRC4Env',
-    node: 'Node',
+    node: 'Data provider',
     species: [`${name} species`, `${name} species2`],
     entryType: 'Specimen'
   };
