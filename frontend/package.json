@@ -6,6 +6,7 @@
     "start": "ng serve --configuration=rare --port=4000",
     "start:rare": "ng serve --configuration=rare --port=4000",
     "start:wheatis": "ng serve --configuration=wheatis --port=4100",
+    "start:wheatis-production": "ng serve --configuration=wheatis-production --port=4101",
     "start:data-discovery": "ng serve --configuration=data-discovery --port=4200",
     "build": "ng build --configuration=rare-production --no-progress",
     "build:rare": "ng build --configuration=rare-production --no-progress",
@@ -14,7 +15,8 @@
     "test": "ng test --code-coverage --no-progress --no-watch",
     "test-multi-browsers": "ng test --code-coverage --no-progress --no-watch -c test-multi-browsers",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "sed -i 's/followSymlinks: false/followSymlinks: true/g' node_modules/watchpack/lib/DirectoryWatcher.js"
   },
   "private": true,
   "dependencies": {
