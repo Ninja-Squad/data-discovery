@@ -7,7 +7,7 @@ stages:
  - production
  - data-integration-production
 
-# Image source available on https://github.com/Ninja-Squad/docker-rare
+# Image source available on https://forgemia.inra.fr/urgi-is/docker-rare
 # It contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
 image: urgi/docker-browsers:latest
@@ -29,7 +29,7 @@ test:
    # because we need to pass some variables, but they are passed to _all_ containers
    # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
+   - name: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
      alias: elasticsearch
      # discovery.type=single-node
      # single-node is necessary to start in development mode

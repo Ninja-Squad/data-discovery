@@ -71,9 +71,9 @@ And the full app run on:
 
 The `.gitlab-ci.yml` file describes how Gitlab is running the CI jobs.
 
-It uses a base docker image named `ninjasquad/docker-rare`
-available on [DockerHub](https://hub.docker.com/r/ninjasquad/docker-rare/)
-and [Github](https://github.com/Ninja-Squad/docker-rare).
+It uses a base docker image named `urgi/docker-browsers`
+available on [DockerHub](https://hub.docker.com/r/urgi/docker-browsers/)
+and [INRA-MIA Gitlab](https://forgemia.inra.fr/urgi-is/docker-rare).
 The image is based on `openjdk:8` and adds a Chrome binary to let us run the frontend tests
 (with a headless Chrome in `--no-sandbox` mode).
 
@@ -82,7 +82,7 @@ to avoid symbolic links issues on Docker.
 
 You can approximate what runs on CI by executing:
 
-    docker run --rm -v "$PWD":/home/rare -w /home/rare ninjasquad/docker-rare ./gradlew build
+    docker run --rm -v "$PWD":/home/rare -w /home/rare urgi/docker-browsers ./gradlew build
 
 ## Harvest
 
