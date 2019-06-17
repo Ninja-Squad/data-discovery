@@ -1,3 +1,3 @@
 <!-- loaded from remote url -->
-<markdown [src]="'assets/help.md'" lineNumbers="true"></markdown>
-<!-- <markdown [src]="'assets/help.md'" (load)="onLoad($event)" (error)="onError($event)"></markdown> -->
+<markdown id="top" [src]="'assets/help.md'" lineNumbers="true" (error)="onError($event)"
+          (load)="onLoad($event)"></markdown>

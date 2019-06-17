@@ -25,7 +25,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { environment } from '../environments/environment';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { HelpComponent } from './help/help.component';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 
 registerLocaleData(localeFr);
 
@@ -49,7 +49,10 @@ registerLocaleData(localeFr);
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled',
+    }),
     ReactiveFormsModule,
     HttpClientModule,
     NgbPaginationModule,
@@ -61,15 +64,15 @@ registerLocaleData(localeFr);
       loader: HttpClient, // optional, only if you use [src] attribute
       markedOptions: {
         provide: MarkedOptions,
+        useFactory: markedOptionsFactory,
         useValue: {
-          gfm: true,
+          gfm: true, // default
           tables: true,
           breaks: false,
           pedantic: false,
           sanitize: false,
           smartLists: true,
-          smartypants: false,
-          baseUrl: '/help'
+          smartypants: false
         },
       }
     }),
@@ -82,7 +85,24 @@ registerLocaleData(localeFr);
     {provide: LOCALE_ID, useValue: 'fr-FR'},
     {provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true}
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [RouterModule]
 })
 export class AppModule {
+}
+
+export function markedOptionsFactory(): MarkedOptions {
+
+  const renderer = new MarkedRenderer();
+
+  renderer.link = (href: string, title: string, text: string) => {
+    if (href.startsWith('#')) {
+      const fragment = href.split('#')[1];
+      return `<a href='${location.pathname}#${fragment}'>${text}</a>`;
+    }
+    return `<a href="${href}" target="_blank" >${text}</a>`;
+  };
+  return {
+    renderer: renderer
+  };
 }

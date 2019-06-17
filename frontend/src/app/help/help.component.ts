@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-//import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'dd-help',
@@ -13,4 +12,12 @@ export class HelpComponent implements OnInit {
   ngOnInit() {
   }
 
+  onLoad(e: any) {
+    // console.log('Into onLoad');
+    // console.log(e);
+  }
+
+  onError(e: any) {
+    console.log('Got error', e);
+  }
 }
