@@ -14,7 +14,7 @@ as soon as possible so that we can provide help and discuss the best way to go a
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
 to get more detailed information about the indexed entry directly in your information system.
 
-# Specifications for each searchable entry/document:
+# Specifications for each searchable entry/document
 
 - a short _[name](#name)_ identifying uniquely the entry, ie. `BTH_Le_Moulon_2000_SetA`
 - an _[url](#url)_ linking back to the entry in your own web application, ie.
@@ -34,6 +34,7 @@ can differ from one entry to another if you handle several databases
 ## List of fields
 
 ### name
+[&#8593;](#top)
 
 The value of `name` field must be unique in your own dataset and should be clear enough to help
 scientists to identify at the first glance this entry among the other.
@@ -45,6 +46,7 @@ scientists to identify at the first glance this entry among the other.
 ---
 
 ### entryType
+[&#8593;](#top)
 
 The `entryType` field is not constrained on its value (it is not implemented as an
 enumeration), but it is highly recommended to use any of following values fitting the best with
@@ -85,6 +87,7 @@ made on the filter.
 ---
 
 ### description
+[&#8593;](#top)
 
 The `description` field is the most important for the discoverability of the data since it's the one
 used to match terms from users.
@@ -114,6 +117,7 @@ Note: be aware that all the data you provide in the file should be open access.
 ---
 
 ### url
+[&#8593;](#top)
 
 The `url` must be a valid URL so that this backlinks to your information system display information
 on the entry.
@@ -125,6 +129,7 @@ on the entry.
 ---
 
 ### species
+[&#8593;](#top)
 
 `species` field is not mandatory, but it can be used to filter data. It can contain zero, one or more
 value according to the type of data.  
@@ -151,6 +156,7 @@ general plant search and the WheatIS search.
 ---
 
 ### database
+[&#8593;](#top)
 
 The name of the `database` from which the entry has been extracted. It
 can differ from one entry to another if you handle several databases.
@@ -162,6 +168,7 @@ can differ from one entry to another if you handle several databases.
 ---
 
 ### node
+[&#8593;](#top)
 
 The `node` is the name of you laboratory/institute, it should be the same for all the entities
 you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
@@ -180,6 +187,7 @@ from where it will be regularly updated (see [Data availability & update](#data-
 section). Below you find two kind of examples of what is expected with 2 entries:
 
 ## TSV (Tabulation Separated Values)
+[&#8593;](#top)
 
 The order of the field matters as in any TSV file. Take care to remove any tabulation and return
 line from each field in order to comply with the expected format.  
@@ -193,6 +201,7 @@ TRIAL_BTH_Le_Moulon_2000_SetA	Phenotyping study	INRA-URGI	GnpIS	https://urgi.ver
 ```
 
 ## JSON (JavaScript Object Notation)
+[&#8593;](#top)
 
 The order of the fields does not matter. All entries should be aggregated into a single array per file.
 
@@ -224,6 +233,7 @@ The order of the fields does not matter. All entries should be aggregated into a
 ```
 
 # Data availability & update
+[&#8593;](#top)
 
 You can generate one or several files containing your public data as long as each of them complies
 with the format defined above.
