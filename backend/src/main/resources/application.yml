@@ -26,6 +26,7 @@ server:
       - application/javascript
       - text/html
       - text/css
+      - text/markdown
 
 logging.level:
   root: ERROR

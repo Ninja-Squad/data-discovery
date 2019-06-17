@@ -56,6 +56,7 @@ public class IndexFilter implements Filter {
             || uri.endsWith(".woff2")
             || uri.endsWith(".ttf")
             || uri.endsWith(".woff")
+            || uri.endsWith(".md")
             || uri.startsWith("/actuator"));
     }
 
