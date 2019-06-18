@@ -26,6 +26,8 @@ import { environment } from '../environments/environment';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { HelpComponent } from './help/help.component';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
+import { AboutComponent } from './about/about.component';
+import { JoinComponent } from './join/join.component';
 
 registerLocaleData(localeFr);
 
@@ -44,7 +46,9 @@ registerLocaleData(localeFr);
     ErrorComponent,
     NavbarComponent,
     LoadingSpinnerComponent,
-    HelpComponent
+    HelpComponent,
+    AboutComponent,
+    JoinComponent
   ],
   imports: [
     BrowserAnimationsModule,

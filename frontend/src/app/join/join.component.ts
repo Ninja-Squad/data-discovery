@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from "../../environments/environment";
 
 @Component({
-  selector: 'dd-help',
-  templateUrl: './help.component.html',
-  styleUrls: ['./help.component.scss']
+  selector: 'dd-join',
+  templateUrl: './join.component.html',
+  styleUrls: ['./join.component.scss']
 })
-export class HelpComponent implements OnInit {
+export class JoinComponent implements OnInit {
 
-  helpMdFile: string = environment.helpMdFile;
+  joinMdFile: string = environment.joinMdFile;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
@@ -23,4 +24,5 @@ export class HelpComponent implements OnInit {
   onError(e: any) {
     console.log('Got error', e);
   }
+
 }

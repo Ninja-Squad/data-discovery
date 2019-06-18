@@ -71,7 +71,7 @@ describe('NavbarComponent', () => {
     expect(tester.title.attr('href')).toBe('https://www.agrobrc-rare.org/');
     expect(tester.logo.attr('title')).toBe('RARe logo with link');
 
-    expect(tester.links.length - 1).toBe(2); // minus 1 because of Help link added automatically
+    expect(tester.links.length - 3).toBe(2); // minus 3 because of Help, About and Join links added automatically
 
     expect(tester.firstLink.textContent).toBe('INRA');
     expect(tester.firstLink.attr('href')).toBe('http://www.inra.fr/');

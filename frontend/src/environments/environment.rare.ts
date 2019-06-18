@@ -16,6 +16,10 @@ export const environment = {
   },
   searchPlaceholder: 'Exemples : pisum sativum, rosa',
   resourceModule: RareModule,
+  helpMdFile: 'assets/help.md',
+  aboutUsMdFile: 'assets/about.md',
+  joinMdFile: 'assets/join.md',
+  dataProvider: 'Fournisseurs de données',
   /**
    * Map containing the list of the aggregations and their displayed name.
    * Should be kept in sync with the `RareAggregation` enum of the backend.

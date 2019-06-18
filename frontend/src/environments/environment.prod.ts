@@ -12,6 +12,10 @@ export const environment = {
   },
   searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: RareModule,
+  helpMdFile: 'assets/help.md',
+  aboutUsMdFile: 'assets/about.md',
+  joinMdFile: 'assets/join.md',
+  dataProvider: 'Data providers',
   /**
    * Map containing the list of the aggregations and their displayed name.
    * Should be kept in sync with the `RareAggregation` enum of the backend.

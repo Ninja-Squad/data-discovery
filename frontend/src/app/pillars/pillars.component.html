@@ -1,5 +1,6 @@
 <ng-container *ngIf="(pillars$ | async) as pillars">
   <ul *ngIf="pillars.length > 0; else noPillar" class="list-unstyled pillar">
+    <h4>{{ environment.dataProvider }}</h4>
     <li *ngFor="let pillar of pillars">
       <span class="pillar-name">{{ pillar.name }}</span>
       <ul class="list-unstyled source">

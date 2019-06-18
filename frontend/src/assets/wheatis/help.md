@@ -1,1 +1,1 @@
-../../../../HOW-TO-JOIN-WHEATIS-AND-PLANT-FEDERATIONS.md
+../../../../HELP.md

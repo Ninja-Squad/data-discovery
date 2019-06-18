@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from "../../environments/environment";
 
 @Component({
-  selector: 'dd-help',
-  templateUrl: './help.component.html',
-  styleUrls: ['./help.component.scss']
+  selector: 'dd-about',
+  templateUrl: './about.component.html',
+  styleUrls: ['./about.component.scss']
 })
-export class HelpComponent implements OnInit {
+export class AboutComponent implements OnInit {
 
-  helpMdFile: string = environment.helpMdFile;
+  aboutMdFile: string = environment.aboutUsMdFile;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
@@ -23,4 +24,5 @@ export class HelpComponent implements OnInit {
   onError(e: any) {
     console.log('Got error', e);
   }
+
 }
