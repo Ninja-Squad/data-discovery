@@ -4700,7 +4700,7 @@ neo-async@^2.5.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.1.tgz#acb909e327b1e87ec9ef15f41b8a269512ad41ee"
   integrity sha512-3KL3fvuRkZ7s4IFOMfztb7zJp3QaVWnBeGoJlgB38XnCRPj/0tLzzLG5IB8NYOHbJ8g8UGrgZv44GLDk6CxTxA==
 
-ngx-markdown@^8.0.2:
+ngx-markdown@8.0.2:
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/ngx-markdown/-/ngx-markdown-8.0.2.tgz#060257801686fa58adb21d69c264e1c1cff54a84"
   integrity sha512-dLF205/JrSI7pOIgsrikhf9KYF6yiP797FuHGjVEw51KhHfuhCoR+3pl7Ky2vxuQBJjmkNGbgH75+Qy2SAnFEg==
@@ -5426,7 +5426,7 @@ preserve@^0.2.0:
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
   integrity sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=
 
-prismjs@^1.16.0:
+prismjs@1.16.0:
   version "1.16.0"
   resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.16.0.tgz#406eb2c8aacb0f5f0f1167930cb83835d10a4308"
   integrity sha512-OA4MKxjFZHSvZcisLGe14THYsug/nF6O1f0pAJc0KN0wTyAcLqmsbE+lTGKSpyh+9pEW57+k6pg2AfYR+coyHA==
