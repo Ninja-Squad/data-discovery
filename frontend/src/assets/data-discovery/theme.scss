@@ -1,7 +1,7 @@
 // non-public variables used in this theme only
 $_theme-primary-color: #48ab3d;
 $_theme-primary-color-light: rgba(#48ab3d, 0.4);
-$_theme-secondary-color-light: #eaeaea;
+$_theme-secondary-color: #eaeaea;
 
 $component-active-bg: $_theme-primary-color-light;
 
@@ -27,14 +27,14 @@ $theme-btn-hover-border-color: $_theme-primary-color;
 // custom navbar
 $theme-navbar-height: 4rem;
 $theme-navbar-color: $black;
-$theme-navbar-bg-color: $_theme-secondary-color-light;
+$theme-navbar-bg-color: $_theme-secondary-color;
 $theme-navbar-hover-color: $white;
 $theme-navbar-hover-bg-color: $_theme-primary-color-light;
 
 // override default table
 $table-border-color: $_theme-primary-color;
 $table-border-width: 1px;
-$table-bg: $_theme-secondary-color-light;
+$table-bg: $_theme-secondary-color;
 $table-head-bg: $_theme-primary-color-light;
 $theme-border-color: $_theme-primary-color-light;
 $headings-margin-bottom: 1rem;

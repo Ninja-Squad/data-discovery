@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-dark py-0">
   <div class="container px-0">
     <a class="navbar-brand d-flex align-items-center mr-0 px" href="{{ navbar.logoUrl }}">
-      <img src="assets/logo.png" alt="Logo" title="{{ navbar.title }} logo with link" height="56px"/>
+      <img src="assets/logo.png" alt="Logo" title="Logo with {{ navbar.title }} link" height="56px"/>
     </a>
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
@@ -24,28 +24,19 @@
             </div>
           </div>
         </li>
-        <!-- About link -->
-        <li>
-          <div>
-            <a class="nav-link d-flex align-items-center" routerLink="/about" routerLinkActive="true" title="About us" >About us</a>
-          </div>
-        </li>
-        <!-- Join link -->
-        <li>
-          <div>
-            <a class="nav-link d-flex align-items-center" routerLink="/join" routerLinkActive="true" title="Join us" >Join us</a>
-          </div>
-        </li>
-        <!-- Legal mentions link -->
-        <li>
-          <div>
-            <a class="nav-link d-flex align-items-center" routerLink="/legal" routerLinkActive="true" title="Legal mentions" >Legal mentions</a>
-          </div>
-        </li>
-        <!-- Help link -->
-        <li>
-          <div>
-            <a class="nav-link d-flex align-items-center" routerLink="/help" routerLinkActive="true" title="Help" >Help</a>
+        <li class="nav-item">
+          <div ngbDropdown class="d-inline-block dropdown">
+            <span ngbDropdownToggle class="nav-link d-flex align-items-center">More...</span>
+            <div ngbDropdownMenu class="dropdown-menu">
+              <!-- About link -->
+              <a class="dropdown-item" routerLink="/about" routerLinkActive="true" title="About">About</a>
+              <!-- Join link -->
+              <a class="dropdown-item" routerLink="/join" routerLinkActive="true" title="Join us">Join us</a>
+              <!-- Legal mentions link -->
+              <a class="dropdown-item" routerLink="/legal" routerLinkActive="true" title="Legal mentions">Legal mentions</a>
+              <!-- Help link -->
+              <a class="dropdown-item" routerLink="/help" routerLinkActive="true" title="Help">Help</a>
+            </div>
           </div>
         </li>
       </ul>

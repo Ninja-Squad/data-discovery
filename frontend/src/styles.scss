@@ -15,6 +15,19 @@ $fa-font-path: '~font-awesome/fonts';
   }
 }
 
+.dropdown-menu {
+  background-color: $theme-navbar-bg-color;
+}
+
+.dropdown-item {
+  color: $theme-navbar-color !important;
+  background-color: $theme-navbar-bg-color;
+  &:hover {
+    color: $theme-navbar-hover-color !important;
+    background-color: $theme-navbar-hover-bg-color;
+  }
+}
+
 .btn-outline-secondary {
   color: $theme-btn-color;
   background-color: $theme-btn-bg-color;
@@ -53,4 +66,14 @@ h4{
   font-style: italic;
   margin-bottom: 0px;
   margin-top: 20px;
+}
+
+blockquote{
+  border-left-color: $_theme-secondary-color;
+  border-left-style: solid;
+  border-left-width: 4px;
+  box-sizing: border-box;
+  color: grey;
+  padding-left: 0.5rem;
+  margin-left: 0.5rem;
 }
