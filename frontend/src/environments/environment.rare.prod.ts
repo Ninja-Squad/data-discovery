@@ -10,13 +10,13 @@ export const environment = {
       { label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }
     ]
   },
-  searchPlaceholder: 'Exemples : pisum sativum, rosa',
+  searchPlaceholder: '<em>e.g.</em>: pisum sativum, rosa',
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
-  dataProvider: 'Fournisseurs de données',
+  dataProvider: 'Data providers',
   /**
    * Map containing the list of the aggregations and their displayed name.
    * Should be kept in sync with the `RareAggregation` enum of the backend.

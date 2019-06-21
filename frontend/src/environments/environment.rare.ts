@@ -1,5 +1,5 @@
 // This file can be replaced during build by using the `fileReplacements` array.
-// `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
+// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 import { RareModule } from '../app/rare/rare.module';
@@ -14,13 +14,13 @@ export const environment = {
       { label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }
     ]
   },
-  searchPlaceholder: 'Exemples : pisum sativum, rosa',
+  searchPlaceholder: '<em>e.g.</em>: pisum sativum, rosa',
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
-  dataProvider: 'Fournisseurs de données',
+  dataProvider: 'Data providers',
   /**
    * Map containing the list of the aggregations and their displayed name.
    * Should be kept in sync with the `RareAggregation` enum of the backend.
