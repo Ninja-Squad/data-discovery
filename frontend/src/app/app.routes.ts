@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
-import { HelpComponent } from './help/help.component';
-import { AboutComponent } from "./about/about.component";
-import { JoinComponent } from "./join/join.component";
+import { MarkdownPageComponent } from "./markdown-page/markdown-page.component";
+import { environment } from "../environments/environment";
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'search', component: SearchComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'join', component: JoinComponent },
-  { path: 'help', component: HelpComponent }
+  { path: 'about', component: MarkdownPageComponent, data: { mdFile: environment.aboutUsMdFile } },
+  { path: 'join', component: MarkdownPageComponent, data: { mdFile: environment.joinUsMdFile } },
+  { path: 'legal', component: MarkdownPageComponent, data: { mdFile: environment.legalMentionsMdFile } },
+  { path: 'help', component: MarkdownPageComponent, data: { mdFile: environment.helpMdFile } },
 ];

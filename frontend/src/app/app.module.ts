@@ -24,10 +24,8 @@ import { ErrorInterceptorService } from './error-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { environment } from '../environments/environment';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
-import { HelpComponent } from './help/help.component';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
-import { AboutComponent } from './about/about.component';
-import { JoinComponent } from './join/join.component';
+import { MarkdownPageComponent } from "./markdown-page/markdown-page.component";
 
 registerLocaleData(localeFr);
 
@@ -46,9 +44,7 @@ registerLocaleData(localeFr);
     ErrorComponent,
     NavbarComponent,
     LoadingSpinnerComponent,
-    HelpComponent,
-    AboutComponent,
-    JoinComponent
+    MarkdownPageComponent
   ],
   imports: [
     BrowserAnimationsModule,

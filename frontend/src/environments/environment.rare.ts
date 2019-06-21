@@ -18,7 +18,8 @@ export const environment = {
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
-  joinMdFile: 'assets/join.md',
+  joinUsMdFile: 'assets/join.md',
+  legalMentionsMdFile: 'assets/legal.md',
   dataProvider: 'Fournisseurs de données',
   /**
    * Map containing the list of the aggregations and their displayed name.

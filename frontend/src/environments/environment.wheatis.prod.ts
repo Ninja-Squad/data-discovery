@@ -15,7 +15,8 @@ export const environment = {
   resourceModule: WheatisModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
-  joinMdFile: 'assets/join.md',
+  joinUsMdFile: 'assets/join.md',
+  legalMentionsMdFile: 'assets/legal.md',
   dataProvider: 'Data providers',
   /**
    * Map containing the list of the aggregations and their displayed name.
