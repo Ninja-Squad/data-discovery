@@ -11,8 +11,8 @@ export const environment = {
     title: 'URGI',
     logoUrl: 'https://urgi.versailles.inra.fr/',
     links: [
-      { label: 'GnpIS', url: 'https://urgi.versailles.inra.fr/gnpis' },
-      { label: 'Home', url: './' }
+      { label: 'Home', url: './' },
+      { label: 'GnpIS', url: 'https://urgi.versailles.inra.fr/gnpis' }
     ]
   },
   searchPlaceholder: 'Examples: yield, fhb',

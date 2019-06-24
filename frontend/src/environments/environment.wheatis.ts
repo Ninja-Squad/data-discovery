@@ -11,9 +11,9 @@ export const environment = {
     title: 'Wheat Initiative',
     logoUrl: 'http://www.wheatinitiative.org/',
     links: [
+      { label: 'Home', url: './' },
       { label: 'WheatIS website', url: 'http://wheatis.org/' },
-      { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' },
-      { label: 'Home', url: './' }
+      { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' }
     ]
   },
   searchPlaceholder: 'Examples: yield, fhb',
