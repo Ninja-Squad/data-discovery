@@ -55,6 +55,10 @@ test:
    - backend/src/**/*
    - frontend/**/*
 
+lint:
+ stage: test
+ script: cd frontend && yarn lint
+
 .build-app: &build_app
  # Hidden job which serves as a template for following
  # jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors

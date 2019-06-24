@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'dd-about',
@@ -8,7 +8,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class MarkdownPageComponent implements OnInit {
 
-  mdFile: string = "";
+  mdFile = '';
 
   constructor(private route: ActivatedRoute) {
   }

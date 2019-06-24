@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
-import { environment } from "../../environments/environment";
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-pillars',

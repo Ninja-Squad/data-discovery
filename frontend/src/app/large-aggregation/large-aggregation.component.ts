@@ -32,7 +32,7 @@ export class LargeAggregationComponent {
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
-    let merged$ = merge(text$, inputFocus$)
+    const merged$ = merge(text$, inputFocus$)
       .pipe(
         distinctUntilChanged(),
         map(term => {
