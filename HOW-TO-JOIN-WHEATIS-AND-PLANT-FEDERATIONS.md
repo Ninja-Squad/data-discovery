@@ -5,18 +5,18 @@ The metadata format must follow the indications below and we invite you to [cont
 as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers
-to get more detailed information about the indexed entry directly in your information system.
+to get detailed information about the indexed entry directly in your information system.
 
-# Specifications for each searchable entry/document
+# Overview of the metadata associated to each searchable entry/document
 
 - a short _[name](#name)_ identifying uniquely the entry, ie. `BTH_Le_Moulon_2000_SetA`
 - an _[url](#url)_ linking back to the entry in your own web application, ie.
 https://urgi.versailles.inra.fr/ephesis/ephesis/viewer.do#trialCard/trialId=56
-- a _[description](#description)_, describing the entry and containing all the relevant keywords
-allowing to find your entry. This field is the one in which user entered terms are searched for, in
-the search tool
+- a _[description](#description)_, of the entry that contains all the relevant keywords
+allowing to find your entry. All the terms of this field are used by the search tool to allow users to
+find entries
 - an _[entryType](#entrytype)_ describing the type of the entry, that could be any of the terms listed
-in the dedicated section
+in the dedicated section below
 - a _[species](#species)_ field, containing the species related to the entry (zero, one or several,
 but it is highly recommended to provide at least one)
 - a _[node](#node)_, the name of your laboratory/institute, it should be the same for all the entities
@@ -24,12 +24,12 @@ you manage
 - a _[database](#database)_, the name of the database from which the entry has been extracted. It
 can differ from one entry to another if you handle several databases
 
-## List of fields
+## Detailed specifications for the metadata fields
 
 ### name
 [&#8593;](#top)
 
-The value of `name` field must be unique in your own dataset and should be clear enough to help
+The value of the `name` field must be unique in your own dataset and should be clear enough to help
 scientists to identify at the first glance this entry among the other.
 
 | Status | Cardinality | Constraints |
@@ -43,7 +43,7 @@ scientists to identify at the first glance this entry among the other.
 
 The `entryType` field is not constrained on its value (it is not implemented as an
 enumeration), but it is highly recommended to use any of following values fitting the best with
-your data (some types are more generic and can include more specific ones):
+your data :
 
 - Genome annotation
 - Gene annotation
@@ -70,8 +70,8 @@ your data (some types are more generic and can include more specific ones):
 > **Note:** looking in the [data-discovery](https://urgi.versailles.inra.fr/data-discovery) portal at
 the number of documents matching an entryType (see `Data type` filter on the left side) can help you
 to choose the data type having the closest meaning. If you choose a different data type than those
-already provided, be aware that this filter might not display yours because of the top hits ranking
-made on the filter.
+already provided, be aware that this entry type will not appear in the list of possible filters.
+
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -82,22 +82,21 @@ made on the filter.
 ### description
 [&#8593;](#top)
 
-The `description` field is the most important for the discoverability of the data since it's the one
+The `description` field is the most important for the discoverability of the data since it is the one
 used to match terms from users.
 
 It is up to you to provide the most relevant description allowing to match the entry, but keep in
 mind that the more precise the description is, better the ranking in the search tool would be.
 
-Since the search tool is based on Elasticsearch, it relies on Apache Lucene indexes and the ranking
-will be related to the term frequency/inverse document frequency (the used algorithm is currently
-BM25). That means an entry having a description with a searched term appearing several times inside
-it but very rarely in all other documents, will be likely returned with a high score. You can get
-more info on [similarity](https://www.elastic.co/blog/found-similarity-in-elasticsearch) in
-Elasticsearch.
+The search tool is based on Elasticsearch. It therefore relies on Apache Lucene indexes in which 
+the ranking is related to the term frequency/inverse document frequency (the used algorithm is 
+currently BM25). That means that an entry having a description with a searched term appearing several
+times inside it but very rarely in all other documents will be likely returned with a high score.
+You can get more information on [similarity in Elasticsearch](https://www.elastic.co/blog/found-similarity-in-elasticsearch).
 
-Also, be aware that we are adding all fields contents to the content of the description when integrating
-the data before indexation so that the name of the entry, its species etc... can be searched. It is
-therefore not necessary to add them explicitly in the description.
+Also, be aware that we are adding all the other fields contents to the content of the description 
+when preparing the data for indexation so that the name of the entry, its species etc... can be 
+searched. It is therefore not necessary to add them explicitly in the description.
 
 >>>
 Note: be aware that all the data you provide in the file should be open access.
@@ -182,10 +181,10 @@ section). Below you find two kind of examples of what is expected with 2 entries
 ## TSV (Tabulation Separated Values)
 [&#8593;](#top)
 
-The order of the field matters as in any TSV file. Take care to remove any tabulation and return
-line from each field in order to comply with the expected format.  
-No double quotes is needed neither.  
-The header is not needed, displayed here only for documentation purpose.
+The order of the fields matters as in any TSV file.
+Take care to remove any unnecessary tabulation or return line between fields in order to comply with 
+the expected format.
+No double quotes are needed.
 
 ```csv
 #name   entryType   node    databaseName    url species description
@@ -231,6 +230,5 @@ The order of the fields does not matter. All entries should be aggregated into a
 You can generate one or several files containing your public data as long as each of them complies
 with the format defined above.
 
-Once they are generated, you will have to provide a way for us to fetch them on a regular basis: a
-simple web (or FTP) server is a good solution since it allows us to check if a new version of your
-files has been produced.
+We will decide with you on the best way to exchange them on a regular basis: a simple web (or FTP) 
+server is a good solution since it allows us to check if a new version of your files has been produced.
