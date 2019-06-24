@@ -4,7 +4,7 @@ If you want your information system to be referenced, you have to provide [TSV](
 The metadata format must follow the indications below (see [Data Specifications](#data-specifications)).
 We invite you to [contact us](mailto:urgi-contact@inra.fr?subject=%5BRARe%20portal%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
 
-Note that since the tool makes a backlink to your information system, we need a URL allowing researchers to get more detailed information about the indexed entry directly in your information system.
+Note that since the tool makes a backlink to your information system, a URL allowing researchers to get more detailed information about the indexed entry directly in your information system is needed.
 
 # Data Specifications
 
@@ -32,7 +32,7 @@ The value is constrained. You must use one of the following values:
 ## databaseSource
 
 Name of the database from which the entry has been extracted.
-It can differ from one entry to another if you handle several databases.
+It can differ from one entry to another if you handle several information systems.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -40,8 +40,8 @@ It can differ from one entry to another if you handle several databases.
 
 ## portalURL
 
-URL to access to the website of the `databaseSource` (database from which the entry was extracted).
-It must be a valid URL, so that this backlinks to your own information system.
+URL to access to the website of the `databaseSource` (information system from which the entry was extracted).
+It must be a valid URL that backlinks to your own information system.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -50,7 +50,7 @@ It must be a valid URL, so that this backlinks to your own information system.
 ## identifier
 
 Identifier of the entity.
-It is only used to uniquely identify the entry among all data, it is not displayed on the search tool.
+It is only used to uniquely identify the entry among all data; it is not displayed on the search tool. You should make sure that it is unique in your data and we modify it to make sure it is unique among all the data sources references under the web portal.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -68,13 +68,13 @@ The value must be unique in your own dataset and should be clear enough to help 
 ## description
 
 Description of the entry.
-It must contains all the relevant keywords allowing to find your entry.
+It must contains all the relevant keywords allowing to find your entry and to understand what the entry is.
 
 It is the most important field for the discoverability of the data since it is the one used to match terms searched by users.
 It is up to you to provide the most relevant description allowing to match the entry, but keep in mind that the more precise the description is, better the ranking in the search tool would be.
 
-Since the search tool is based on Elasticsearch, it relies on Apache Lucene indexes and the ranking will be related to the term frequency/inverse document frequency (the used algorithm is currently BM25).
-That means an entry having a description with a searched term appearing several times inside it but very rarely in all other documents will be likely returned with a high score.
+The search tool is based on Elasticsearch. It therefore relies on Apache Lucene indexes in which the ranking is related to the term frequency/inverse document frequency (the used algorithm is currently BM25).
+That means that an entry having a description with a searched term appearing several times inside it but very rarely in all other documents will be likely returned with a high score.
 You can get more information on [similarity in Elasticsearch](https://www.elastic.co/blog/found-similarity-in-elasticsearch).
 
 Also, be aware that the content of all other fields (the name of the entry, its species etc...) can also be searched.
@@ -87,7 +87,7 @@ It is therefore not necessary to add them explicitly in the description.
 ## dataURL
 
 URL to access to the entity information on the website of the `databaseSource` (database from which the entry was extracted).
-It must be a valid URL, so that this backlinks to the entry in your own information system.
+It must be a valid URL that backlinks to the entry in your own information system.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -232,10 +232,10 @@ The file(s) can be either sent to us or published in a web folder from where it 
 ## TSV (Tabulation Separated Values)
 
 The order of the fields matters as in any TSV file.
-Take care to remove any tabulation and return line from each field in order to comply with the expected format.
-No double quotes is needed.
+Take care to remove any unnecessary tabulation or return line between fields in order to comply with the expected format.
+No double quotes are needed.
 
-```csv
+```csv example
 pillarName	databaseSource	portalURL	identifier	name	description	dataURL	domain	taxon	materialType	biotopeType	countryOfOrigin	originLatitude	originLongitude	countryOfCollect	collectLatitude	collectLongitude
 Pilier Forêt	Forest Tree GnpIS	https://urgi.versailles.inra.fr/faidare/?germplasmLists=Forest%20BRC	https://doi.org/10.15454/0FZNAO	661300375	661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological status interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans	https://urgi.versailles.inra.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO	Plantae	Populus x generosa	Specimen							
 Pilier Micro-organisme	CIRM-CF	http://139.124.42.231/~davnav/BRFM/search_strain2.php	BRFM 902	BRFM 902	Pycnoporus sanguineus BRFM 902 GUY110 burnt wood, Macouria Polyporaceae Polyporales Basidiomycota	http://139.124.42.231/~davnav/BRFM/fiche.php?BRFM_Number=902	Fungi	Pycnoporus sanguineus		Wood	French Guiana	3.9988889	-53	French Guiana	3.9988889	-53
@@ -245,7 +245,7 @@ Pilier Micro-organisme	CIRM-CF	http://139.124.42.231/~davnav/BRFM/search_strain2
 
 The order of the fields does not matter. All entries should be aggregated into a single array per file.
 
-```json
+```json example
 [
   {
     "pillarName": "Pilier Forêt",
@@ -299,6 +299,6 @@ The order of the fields does not matter. All entries should be aggregated into a
 # Data availability & update
 
 You can generate one or several files containing your public data as long as each of them complies with the format defined above.
-Once they are generated, you will have to provide a way for us to fetch them on a regular basis: a simple web (or FTP) server is a good solution since it allows us to check if a new version of your files has been produced.
+We will decide with you on the best way to exchange them on a regular basis: a simple web (or FTP) server is a good solution since it allows us to check if a new version of your files has been produced.
 
 [&#8593;](#top)
