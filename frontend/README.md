@@ -5,16 +5,18 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Development server
 
 Run `yarn start` or `yarn start:rare` for a dev server. 
-Navigate to `http://localhost:4200/rare`. The app will automatically reload if you change any of the source files.
+Navigate to `http://localhost:4000/rare-dev`. The app will automatically reload if you change any of the source files.
 
-To start another app, like WheatIS, you can run `yarn start:wheatis`, and go to `http://localhost:4300/wheatis`.
+To start another app, you can:
+- for WheatIS, run : `yarn start:wheatis`, then go to `http://localhost:4100/wheatis-dev`.
+- for DataDiscovery, run: `yarn start:data-discovery`, then go to `http://localhost:4200/data-discovery-dev`.
 
 ## Build
 
 Run `yarn build` or `yarn build:rare` for a production build of the RARe project. 
 The build artifacts will be stored in the `dist/` directory. 
 
-Use the `yarn build:wheatis` flag for a production build of WheatIS.
+Use the `yarn build:wheatis` flag for a production build of WheatIS, and `yarn build:data-discovery` for DataDiscovery.
 
 ## Running unit tests
 
