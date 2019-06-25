@@ -57,7 +57,7 @@ test:
 
 lint:
  stage: test
- script: cd frontend && yarn lint
+ script: ./gradlew :frontend:lint
 
 .build-app: &build_app
  # Hidden job which serves as a template for following
