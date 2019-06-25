@@ -9,9 +9,9 @@ The logo is the property of INRA and you are not allowed to re-use it for your o
 
 ## Content
 
-The portal maintained by INRA allows to find public data across a federation of databases. The licences associated to data are therefore defined the institutes in charge of them.
+The portal maintained by INRA allows to find public data across a federation of databases. The licences associated to data are therefore defined by the institutes in charge of them.
 
-Users are sole responsible for the searches they carry out, as well as for the interpretation and use they make of the results.
+Users are sole responsible for the searches they carry out, as well as for the interpretation and for the use they make of the results.
 
 The access to the web site can be interrupted at any moment and without prior warning in case of force majeure or if the editor decides to terminate its provision of service.
 
@@ -31,16 +31,16 @@ The portal links to external web sites. INRA does not take responsibility of the
 Technical data (date, hour, IP address of the computer of the visitor, pages viewed) are collected only for the statistical analysis of the usage of the portal.
 These data are kept confidential and not transmitted to any other party. They are stored on INRA’s private servers for 5 years.
 
-During visits on URGI web site and GnpIS portal, a cookie can be automatically installed on visitor’s web browsers to retrieve statistics on the pages that are visited and support improvements of the services provided by the web site.
+During visits on URGI web site and its hosted applications, a cookie can be automatically installed on visitor’s web browsers to retrieve statistics on the pages that are visited and support improvements of the services provided by the web site.
 Visitors can configure their web browsers in order to be informed of the setting of cookies and refuse them.
 
 According to the European Regulation on the protection of personal data (EU Regulation 2016/679), you have the right to access, rectify, oppose and delete information about yourself.
-If you wish to exercise this right and obtain information about yourself, please contact us :
-- Land mail: URGI - INRA, Route de Saint-Cyr, 78026 Versailles Cedex
-- Or via the [contact form](https://urgi.versailles.inra.fr/Contact-us)
+If you wish to exercise this right and obtain information about yourself, please contact us:
+- By [email](mailto:urgi-contact@inra.fr?subject=%5BData%20Discovery%5D%20GPDR%20request)
+- Or via any other way available on our [contact form](https://urgi.versailles.inra.fr/Contact-us)
 
 ## Modifications
 
 The editor might change the terms of use and user’s rights without prior warning.
 
-Last update: 2019 June 6th
+Last update: 2019 June 25th

@@ -68,7 +68,7 @@ The value must be unique in your own dataset and should be clear enough to help 
 ## description
 
 Description of the entry.
-It must contains all the relevant keywords allowing to find your entry and to understand what the entry is.
+It must contain all the relevant keywords allowing to find your entry and to understand what the entry is.
 
 It is the most important field for the discoverability of the data since it is the one used to match terms searched by users.
 It is up to you to provide the most relevant description allowing to match the entry, but keep in mind that the more precise the description is, better the ranking in the search tool would be.
@@ -114,7 +114,7 @@ The value is constrained. You must use one of the following values, the one fitt
 
 ## taxon
 
-Genus or species (in the binomial form) of the entity, without the author abbreviation (eg Populus, Vitis vinifera).
+Genus or species (in the binomial form) of the entity, without the author abbreviation (_e.g._ Populus, Vitis vinifera).
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -179,20 +179,20 @@ Country from which the entity originally comes from.
 ## originLatitude
 
 Latitude of the country from which the entity originally comes from.
-It must be in a decimal degree format (eg 3.9988889, -53).
+It must be part of a decimal degrees format (_e.g._ `3.9988889` for `3.9988889,-53` coordinates).
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Optional | 1 | None |
+| Optional | 1 | -90 < Lat. < 90 |
 
 ## originLongitude
 
 Longitude of the country from which the entity originally comes from.
-It must be in a decimal degree format (eg 3.9988889, -53).
+It must be part of a decimal degrees format (_e.g._ `-53` for `3.9988889,-53` coordinates).
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Optional | 1 | None |
+| Optional | 1 | -180 < Long. < 180 |
 
 ## countryOfCollect
 
@@ -205,20 +205,20 @@ Country from which the entity was collected.
 ## collectLatitude
 
 Latitude of the country from which the entity was collected.
-It must be in a decimal degree format (eg 3.9988889, -53).
+It must be part of a decimal degrees format (_e.g._ `3.9988889` for `3.9988889,-53` coordinates).
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Optional | 1 | None |
+| Optional | 1 | -90 < Lat. < 90 |
 
 ## collectLongitude
 
 Longitude of the country from which the entity was collected.
-It must be in a decimal degree format (eg 3.9988889, -53).
+It must be part of a decimal degrees format (_e.g._ `-53` for `3.9988889,-53` coordinates).
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
-| Optional | 1 | None |
+| Optional | 1 | -180 < Long. < 180 |
 
 [&#8593;](#top)
 
@@ -232,20 +232,20 @@ The file(s) can be either sent to us or published in a web folder from where it 
 ## TSV (Tabulation Separated Values)
 
 The order of the fields matters as in any TSV file.
-Take care to remove any unnecessary tabulation or return line between fields in order to comply with the expected format.
+Take care to remove any tabulation or return line that can be present in the fields content in order to comply with the expected format.
 No double quotes are needed.
 
-```csv example
-pillarName	databaseSource	portalURL	identifier	name	description	dataURL	domain	taxon	materialType	biotopeType	countryOfOrigin	originLatitude	originLongitude	countryOfCollect	collectLatitude	collectLongitude
-Pilier Forêt	Forest Tree GnpIS	https://urgi.versailles.inra.fr/faidare/?germplasmLists=Forest%20BRC	https://doi.org/10.15454/0FZNAO	661300375	661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological status interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans	https://urgi.versailles.inra.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO	Plantae	Populus x generosa	Specimen							
-Pilier Micro-organisme	CIRM-CF	http://139.124.42.231/~davnav/BRFM/search_strain2.php	BRFM 902	BRFM 902	Pycnoporus sanguineus BRFM 902 GUY110 burnt wood, Macouria Polyporaceae Polyporales Basidiomycota	http://139.124.42.231/~davnav/BRFM/fiche.php?BRFM_Number=902	Fungi	Pycnoporus sanguineus		Wood	French Guiana	3.9988889	-53	French Guiana	3.9988889	-53
+```csv
+pillarName  databaseSource  portalURL   identifier  name    description dataURL domain  taxon   materialType    biotopeType countryOfOrigin originLatitude  originLongitude countryOfCollect    collectLatitude collectLongitude
+Pilier Forêt    Forest Tree GnpIS   https://urgi.versailles.inra.fr/faidare/?germplasmLists=Forest%20BRC    https://doi.org/10.15454/0FZNAO 661300375   661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological status interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans   https://urgi.versailles.inra.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO   Plantae Populus x generosa  Specimen                            
+Pilier Micro-organisme  CIRM-CF http://139.124.42.231/~davnav/BRFM/search_strain2.php   BRFM 902    BRFM 902    Pycnoporus sanguineus BRFM 902 GUY110 burnt wood, Macouria Polyporaceae Polyporales Basidiomycota   http://139.124.42.231/~davnav/BRFM/fiche.php?BRFM_Number=902    Fungi   Pycnoporus sanguineus       Wood    French Guiana   3.9988889   -53 French Guiana   3.9988889   -53
 ```
 
 ## JSON (JavaScript Object Notation)
 
 The order of the fields does not matter. All entries should be aggregated into a single array per file.
 
-```json example
+```json
 [
   {
     "pillarName": "Pilier Forêt",
@@ -299,6 +299,7 @@ The order of the fields does not matter. All entries should be aggregated into a
 # Data availability & update
 
 You can generate one or several files containing your public data as long as each of them complies with the format defined above.
-We will decide with you on the best way to exchange them on a regular basis: a simple web (or FTP) server is a good solution since it allows us to check if a new version of your files has been produced.
+
+Once they are generated, you will have to provide a way for us to fetch them on a regular basis. We can help you decide of the best way to do this exchange. Using a simple web (or FTP) server is a good solution since it allows us to check if a new version of your files has been produced.
 
 [&#8593;](#top)
