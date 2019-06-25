@@ -1,4 +1,5 @@
 import com.moowork.gradle.node.yarn.YarnTask
+import org.codehaus.groovy.ast.tools.GeneralUtils
 
 plugins {
   base
@@ -42,6 +43,14 @@ tasks {
   val yarn_run_test by getting {
     inputs.dir("src")
     outputs.dir("coverage")
+  }
+
+  val yarn_lint by getting(YarnTask::class){
+  }
+
+  // Lint
+  val lint by creating {
+    dependsOn(yarn_lint)
   }
 
   val test by creating {
