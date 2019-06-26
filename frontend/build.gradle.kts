@@ -46,6 +46,7 @@ tasks {
   }
 
   val yarn_lint by getting(YarnTask::class){
+    dependsOn(yarn_install)
   }
 
   // Lint
