@@ -159,8 +159,9 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
                     fileBuilder.addSuccesses(batch.size());
                 }
             }
-        }
-        catch(Exception e){
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
             fileBuilder.addError(index,
                                  "Exception occurred while processing file: " + e,
                                  0,

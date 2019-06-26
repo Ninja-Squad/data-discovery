@@ -360,7 +360,7 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
 
         @Override
         public Sort getSort() {
-            return null;
+            return Sort.unsorted();
         }
 
         @Override
