@@ -10,7 +10,7 @@ export const environment = {
       { label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }
     ]
   },
-  searchPlaceholder: '<em>e.g.</em>: pisum sativum, rosa',
+  searchPlaceholder: 'e.g. pisum sativum, rosa',
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
