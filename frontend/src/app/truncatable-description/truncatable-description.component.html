@@ -4,6 +4,7 @@
 </div>
 <ng-template #expandedDescription>
   <div class="full-description">
+    <button class="btn btn-link btn-inline" (click)="toggleDescription()">Hide</button>
     <span class="highlight" [innerHTML]="description"></span>
     <button class="btn btn-link btn-inline" (click)="toggleDescription()">Hide</button>
   </div>
