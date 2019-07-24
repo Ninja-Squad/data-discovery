@@ -103,7 +103,6 @@ build-data-discovery:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
   - ssh -o StrictHostKeyChecking=no root@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
-  #- ssh root@${SERVER_IP} 'service elasticsearch status || service elasticsearch restart'
 
 .deploy-to-vm: &deploy_to_vm
  # Hidden job which serves as template for executed jobs below.
@@ -324,15 +323,12 @@ deploy-data-discovery-to-prod:
  allow_failure: false
 
 .data-integration: &data-integration
-# variables:
-#  GIT_LFS_SKIP_SMUDGE: "0"
  retry: 1
  <<: *ssh-initialization-before-script
  script:
-  - sleep 5
-  # Do fetch of GIT LFS files only for data integration steps
-  - git config lfs.fetchinclude "*"
+  # Do fetch of GIT LFS files only for data integration steps for given app
   - git checkout $CI_COMMIT_REF_NAME
+  - git lfs pull -I "data/${APP_NAME}/*.gz"
   #- "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
   # Clean then copy data to the server and give the rights to bootapp
   - "ssh root@${SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
