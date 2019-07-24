@@ -330,11 +330,13 @@ deploy-data-discovery-to-prod:
   - git checkout $CI_COMMIT_REF_NAME
   - git lfs pull -I "data/${APP_NAME}/*.gz"
   #- "code=1 ; while [ $code != 0 ] ; do sleep 1 ; curl -s -u ${USER}:{PASSWORD} ${SERVER_IP}:${APP_PORT}/${APP_NAME}/actuator/info > /dev/null ; code=$? ; done ;"
-  # Clean then copy data to the server and give the rights to bootapp
-  - "ssh root@${SERVER_IP} \"rm -rf /tmp/${APP_NAME}-${ENV}/resources ; mkdir -p /tmp/${APP_NAME}-${ENV}/resources\""
-  #- "rsync -a --progress ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
-  - "scp ./data/${APP_NAME}/*gz root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/"
-  - "ssh root@${SERVER_IP} \"parallel --bar 'gzip -d -f' :::  /tmp/${APP_NAME}-${ENV}/resources/*.gz\""
+  # Make sure the destination folder exists and remove existing JSON
+  - ssh root@${SERVER_IP} "mkdir -p /tmp/${APP_NAME}-${ENV}/resources; rm -f /tmp/${APP_NAME}-${ENV}/resources/*.json"
+  # Synchronize data to the server (will delete files not present in the source folder)
+  - rsync -a --checksum --delete-excluded --include='*.gz' --exclude='*' ./data/${APP_NAME}/ root@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}/resources/
+  # Decompress JSON gzip files (keeping the original `.gz` file)
+  - ssh root@${SERVER_IP} "ls /tmp/${APP_NAME}-${ENV}/resources/*.gz | parallel 'gzip -d < {} > {.}'"
+  # Change owner to bootapp
   - "ssh root@${SERVER_IP} \"chown bootapp:bootapp -R /tmp/${APP_NAME}-${ENV}/resources/\""
   # Deleting old indexes before reindexing from scratch
   - "curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo"
