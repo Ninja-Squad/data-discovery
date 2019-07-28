@@ -173,7 +173,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
     }
 
     @Test
-    void shouldSearchAndAggregate() {
+    void shouldAggregate() {
         WheatisDocument document1 =
             WheatisDocument.builder()
                                   .withId("r1")
@@ -196,8 +196,8 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.search("foo", true, false, SearchRefinements.EMPTY, firstPage);
-        assertThat(result.getContent()).hasSize(2);
+            documentDao.aggregate("foo",  SearchRefinements.EMPTY);
+        assertThat(result.getContent()).hasSize(1);
 
         Terms databaseName = result.getAggregations().get(WheatisAggregation.DATABASE_NAME.getName());
         assertThat(databaseName.getName()).isEqualTo(WheatisAggregation.DATABASE_NAME.getName());
@@ -242,8 +242,8 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.search("bar", true, false, SearchRefinements.EMPTY, firstPage);
-        assertThat(result.getContent()).hasSize(2);
+            documentDao.aggregate("bar",  SearchRefinements.EMPTY);
+        assertThat(result.getContent()).hasSize(1);
 
         Terms aggregation = result.getAggregations().get(wheatisAggregation.getName());
         assertThat(aggregation.getName()).isEqualTo(wheatisAggregation.getName());

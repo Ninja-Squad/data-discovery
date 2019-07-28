@@ -77,7 +77,7 @@ spring:
       password: f01a7031fc17
 
 data-discovery:
-  elasticsearch-prefix: 'data-discovery-dev-'
+  elasticsearch-prefix: 'data-discovery-staging-'
   resource-dir: /tmp/data-discovery-dev/resources
 
 server:

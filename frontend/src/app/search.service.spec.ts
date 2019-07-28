@@ -22,7 +22,7 @@ describe('SearchService', () => {
 
   it('should search for the query', () => {
     let actualResults: AggregatedPage<DocumentModel>;
-    service.search('Bacteria', false, [], 2)
+    service.search('Bacteria',  [], 2)
       .subscribe(results => actualResults = results);
 
     const resource = toRareDocument('Bacteria');
@@ -34,14 +34,14 @@ describe('SearchService', () => {
 
   it('should search for the query and fetch the aggregations', () => {
     let actualResults: AggregatedPage<DocumentModel>;
-    service.search('Bacteria', true, [], 1)
+    service.aggregate('Bacteria', [])
       .subscribe(results => actualResults = results);
 
     const resource = toRareDocument('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('api/documents?query=Bacteria&page=0&highlight=true&aggregate=true').flush(expectedResults);
+    http.expectOne('api/documents-aggregate?query=Bacteria').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -49,7 +49,7 @@ describe('SearchService', () => {
     let actualResults: AggregatedPage<DocumentModel>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
-    service.search('Bacteria', false, [cooCriteria, domainCriteria], 1)
+    service.search('Bacteria', [cooCriteria, domainCriteria], 1)
       .subscribe(results => actualResults = results);
 
     const resource = toRareDocument('Bacteria');
@@ -62,18 +62,24 @@ describe('SearchService', () => {
 
   it('should search for the query, fetch the aggregations and add the aggregations selected', () => {
     let actualResults: AggregatedPage<DocumentModel>;
+    let actualAggregations: AggregatedPage<DocumentModel>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
-    service.search('Bacteria', true, [cooCriteria, domainCriteria], 1)
+    service.search('Bacteria', [cooCriteria, domainCriteria], 1)
       .subscribe(results => actualResults = results);
+    service.aggregate('Bacteria', [cooCriteria, domainCriteria])
+      .subscribe(agg => actualAggregations = agg);
 
     const resource = toRareDocument('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
-    const expectedResults = toSinglePage([resource], [aggregation]);
+    const expectedResults = toSinglePage([resource]);
+    const expectedAggregations = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('api/documents?query=Bacteria&page=0&highlight=true&aggregate=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/documents?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
+    http.expectOne('api/documents-aggregate?query=Bacteria&coo=France&coo=Italy&domain=Forest').flush(expectedAggregations);
     expect(actualResults).toEqual(expectedResults);
+    expect(actualAggregations).toEqual(expectedAggregations);
   });
 
   it('should have a typeahead that suggests if text longer than 1, after 300 ms and only if changed', fakeAsync(() => {

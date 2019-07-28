@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
  * A REST controller for the search API
  */
 @RestController
-@RequestMapping("/api/documents")
 public class SearchController {
 
     public static final int PAGE_SIZE = 20;
@@ -54,7 +53,7 @@ public class SearchController {
      *
      * @see AppAggregation
      */
-    @GetMapping
+    @GetMapping("/api/documents")
     public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam("query") String query,
 														@RequestParam("aggregate") Optional<Boolean> aggregate,
 														@RequestParam("highlight") Optional<Boolean> highlight,
@@ -68,6 +67,15 @@ public class SearchController {
                                                                     createRefinementsFromParameters(parameters),
                                                                     PageRequest.of(page.orElse(0), PAGE_SIZE)),
                                           aggregationAnalyzer);
+
+    }
+    @GetMapping("/api/documents-aggregate")
+    public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam("query") String query,
+            @RequestParam MultiValueMap<String, String> parameters) {
+
+        return AggregatedPageDTO.fromPage(documentDao.aggregate(query,
+                createRefinementsFromParameters(parameters)),
+                aggregationAnalyzer);
 
     }
 

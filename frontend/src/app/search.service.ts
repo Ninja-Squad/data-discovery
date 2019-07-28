@@ -18,22 +18,36 @@ export class SearchService {
    * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)
    */
   search(query: string,
-         aggregate: boolean,
          aggregationCriteria: Array<AggregationCriterion>,
          pageAsNumber: number): Observable<AggregatedPage<DocumentModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = (pageAsNumber - 1).toString();
     // we built the search parameters
     const params: { [key: string]: string | Array<string> } = { query, page, highlight: 'true' };
-    // if we need to fetch the aggregation, add the `agg` parameter
-    if (aggregate) {
-      params.aggregate = 'true';
-    }
+
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {
       aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
     }
     return this.http.get<AggregatedPage<DocumentModel>>('api/documents', {
+      params
+    });
+  }
+
+  /**
+   * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)
+   */
+  aggregate(query: string,
+         aggregationCriteria: Array<AggregationCriterion>): Observable<AggregatedPage<DocumentModel>> {
+
+    // we built the search parameters
+    const params: { [key: string]: string | Array<string> } = { query };
+
+    // if we have aggregation values, add them as domain=Plantae&domain=...
+    if (aggregationCriteria) {
+      aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
+    }
+    return this.http.get<AggregatedPage<DocumentModel>>('api/documents-aggregate', {
       params
     });
   }

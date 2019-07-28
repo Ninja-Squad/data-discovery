@@ -21,6 +21,7 @@ import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -72,11 +73,42 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
 
     @Override
     public AggregatedPage<D> search(String query,
-                                    boolean aggregate,
+                                    @Deprecated boolean aggregate,
                                     boolean highlight,
                                     SearchRefinements refinements,
                                     Pageable page) {
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page);
 
+        if (highlight) {
+            builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0))
+                   .withHighlightBuilder(new HighlightBuilder().encoder("html"));
+        }
+
+        return elasticsearchTemplate.queryForPage(builder.build(),getDocumentClass(),
+                documentHighlightMapper);
+    }
+
+
+    @Override
+    public AggregatedPage<D> aggregate(String query, SearchRefinements refinements) {
+
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, PageRequest.of(0,1));
+
+        getAppAggregations().forEach(appAggregation -> {
+            FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements);
+            builder.addAggregation(filterAggregation);
+        });
+
+        AggregatedPage<D> result = elasticsearchTemplate
+                .queryForPage(builder.build(), getDocumentClass(), documentHighlightMapper);
+
+        // the page contains filter aggregations, each containing a sub terms aggregation.
+        // we actually want the terms aggregation directly in the page
+        result = extractTermsAggregations(result);
+        return result;
+    }
+
+    private NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page) {
         // this full text query is executed, and its results are used to compute aggregations
         MultiMatchQueryBuilder fullTextQuery = multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
 
@@ -92,35 +124,13 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         // about them, and they're large
         SourceFilter sourceFilter = new FetchSourceFilterBuilder().withExcludes(SUGGESTIONS_FIELD).build();
 
-        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
+        return new NativeSearchQueryBuilder()
             .withQuery(fullTextQuery)
             .withSourceFilter(sourceFilter)
             .withFilter(refinementQuery)
             .withPageable(page);
-
-        if (aggregate) {
-            getAppAggregations().forEach(appAggregation -> {
-                FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements);
-                builder.addAggregation(filterAggregation);
-            });
-        }
-
-        if (highlight) {
-            builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0))
-                   .withHighlightBuilder(new HighlightBuilder().encoder("html"));
-        }
-
-        AggregatedPage<D> result = elasticsearchTemplate.queryForPage(builder.build(),
-                                                                      getDocumentClass(),
-                documentHighlightMapper);
-
-        if (aggregate) {
-            // the page contains filter aggregations, each containing a sub terms aggregation.
-            // we actually want the terms aggregation directly in the page
-            result = extractTermsAggregations(result);
-        }
-        return result;
     }
+
 
     private FilterAggregationBuilder createFilterAggregation(AppAggregation appAggregation,
                                                              SearchRefinements searchRefinements) {

@@ -18,14 +18,19 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
     /**
      * Searches for the given text anywhere (except typically in the identifier, the URL and numeric fields) in the
      * documents, and returns the requested page (results are sorted by score, in descending order).
-     * @param aggregate if true, terms aggregations are requested and present in the returned value. Otherwise,
-     * the returned aggregated page has no aggregation.
      */
     AggregatedPage<D> search(String query,
-                             boolean aggregate,
+                             @Deprecated boolean aggregate,
                              boolean highlight,
                              SearchRefinements refinements,
                              Pageable page);
+
+    /** Aggregates and return an empty result based on the given text anywhere (except typically in the identifier, the URL and numeric fields) in the
+     * documents, and returns the requested page (results are sorted by score, in descending order).
+     * Separation from the search method for performances reasons
+     */
+    AggregatedPage<D> aggregate(String query,
+            SearchRefinements refinements);
 
     /**
      * Suggests completions for the given term. It typically autocompletes all the fields except the identifier, the URL and

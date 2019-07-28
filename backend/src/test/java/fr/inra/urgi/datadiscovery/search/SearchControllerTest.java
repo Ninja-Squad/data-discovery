@@ -71,7 +71,7 @@ class SearchControllerTest {
     }
 
     @Test
-    void shouldSearchAndAggregate() throws Exception {
+    void shouldAggregate() throws Exception {
         RareDocument resource = RareDocument.builder()
                                                           .withId("CFBP 8402")
                                                           .withName("CFBP 8402")
@@ -94,7 +94,7 @@ class SearchControllerTest {
         // return aggregations in a random order
         Collections.shuffle(aggregations);
 
-        when(mockDocumentDao.search(query, true, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.aggregate(query,  SearchRefinements.EMPTY))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(resource),
                 pageRequest,
@@ -116,7 +116,7 @@ class SearchControllerTest {
                 ));
 
         ResultActions resultActions =
-            mockMvc.perform(get("/api/documents")
+            mockMvc.perform(get("/api/documents-aggregate")
                                                           .param("query", query)
                                                           .param("aggregate", "true"))
                    .andExpect(status().isOk())

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
-import { EMPTY, Observable } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import {EMPTY, Observable} from 'rxjs';
+import {catchError, mergeMap, switchMap} from 'rxjs/operators';
 
 import { SearchService } from '../search.service';
 import { DocumentModel } from '../models/document.model';
@@ -74,20 +74,27 @@ export class SearchComponent implements OnInit {
           // extract the aggregations if there are some
           // we consider all parameters as potential aggregations, except `query` and `page`
           this.aggregationCriteria = this.extractCriteriaFromParameters(params);
-          // launch the search
-          return this.searchService.search(this.query, true, this.aggregationCriteria, page)
-          // handle a potential error, by returning no result
+          // launch the search and handle a potential error, by returning no result
           // but allow to trigger a new search
+          return this.searchService.search(this.query,  this.aggregationCriteria, page)
             .pipe(
               catchError(() => EMPTY)
             );
         })
+      ).pipe(
+        mergeMap(query => {return this.searchService.aggregate(this.query,  this.aggregationCriteria)
+          .pipe(
+            catchError(() => EMPTY)
+          );
+        })
       )
       .subscribe(results => {
         this.loading = false;
-        // sets the results and the aggregations if there are some
-        this.results = results;
-        if (results.aggregations.length) {
+        if (! results.aggregations) {
+          // sets the results
+          this.results = results;
+        } else if (results.aggregations.length) {
+          // sets the aggregations if there are some
           this.aggregations = results.aggregations;
         }
       });

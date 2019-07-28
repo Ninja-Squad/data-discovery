@@ -96,7 +96,7 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 1, no criteria and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, true, [], 1);
+    expect(searchService.search).toHaveBeenCalledWith(query, [], 1);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual(results.aggregations);
@@ -125,7 +125,7 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 3, no criteria and and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, true, [], 3);
+    expect(searchService.search).toHaveBeenCalledWith(query, [], 3);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
@@ -159,10 +159,49 @@ describe('SearchComponent', () => {
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
     const domainCriteria = { name: 'domain', values: ['Plant'] };
-    expect(searchService.search).toHaveBeenCalledWith(query, true, [domainCriteria, cooCriteria], 3);
+    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
+  });
+
+
+  it('should search on init if there is a query, a page and criteria and display aggregations', () => {
+    // given a component
+    const router = TestBed.get(Router) as Router;
+    spyOn(router, 'navigate');
+    const searchService = TestBed.get(SearchService) as SearchService;
+    const resource = toRareDocument('Bacteria');
+    const aggregation = toAggregation('coo', ['France', 'Italy']);
+    const expectedResults = toSinglePage([resource]);
+    // const expectedAggregations = toSinglePage([resource], [aggregation]);
+
+    spyOn(searchService, 'search').and.returnValue(of(expectedResults));
+
+    // with a query on init
+    const query = 'Bacteria';
+    const page = 3;
+    // and criteria
+    const domain = 'Plant';
+    const coo = ['France', 'Italy'];
+    const queryParams = of({ query, page, domain, coo });
+    const activatedRoute = fakeRoute({ queryParams });
+    const component = new SearchComponent(activatedRoute, router, searchService);
+    // but this query was already the same
+    component.query = query;
+
+    // when loading
+    component.ngOnInit();
+
+    // then the search should be populated
+    expect(component.searchForm.get('search').value).toBe(query);
+    // the search service called with page 1, the criteria and asked for aggregations
+    const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
+    const domainCriteria = { name: 'domain', values: ['Plant'] };
+    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
+    // and the results fetched
+    expect(component.results).toEqual(expectedResults);
+    expect(component.aggregations).toEqual([aggregation]);
   });
 
   it('should hide results and pagination on a new search', () => {
