@@ -160,7 +160,10 @@ public abstract class AbstractHarvester<D extends Document, I extends IndexedDoc
                 }
             }
         } catch (RuntimeException e) {
-            throw e;
+            fileBuilder.addError(index,
+                    "Exception occurred while processing file: " + e,
+                    0,
+                    0);
         } catch (Exception e) {
             fileBuilder.addError(index,
                                  "Exception occurred while processing file: " + e,

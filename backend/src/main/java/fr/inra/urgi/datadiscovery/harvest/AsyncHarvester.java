@@ -29,6 +29,8 @@ public class AsyncHarvester {
                 this.harvester.harvest(harvestedStream, resultBuilder);
                 harvestResultDao.save(resultBuilder.build());
             });
+        } catch (Throwable e){
+            resultBuilder.addGlobalError("Following problem occurred while indexing: " + e.getMessage());
         }
 
         HarvestResult finalResult = resultBuilder.end();
