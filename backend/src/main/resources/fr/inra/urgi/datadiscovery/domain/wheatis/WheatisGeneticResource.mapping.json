@@ -13,8 +13,7 @@
         },
         "description": {
             "analyzer": "english",
-            "type": "text",
-            "copy_to": "suggestions"
+            "type": "text"
         },
         "entryType": {
             "type": "text",
