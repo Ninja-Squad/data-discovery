@@ -50,7 +50,7 @@ if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" ];
 fi
 
 echo -e "\nCreate index: ${APP_NAME}-${ENV}-resource-physical-index"
-curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index"\
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index"\
  -H 'Content-Type: application/json' -d"
 {
     \"aliases\" : {
@@ -61,15 +61,29 @@ curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-inde
         $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings.json )
     }
 }
-"
+"; echo
+
+echo -e "\nCreate pipeline: datadiscovery-description-tokenizer-pipeline"
+curl -s -X PUT "http://${ES_HOST}:${ES_PORT}/_ingest/pipeline/datadiscovery-description-tokenizer-pipeline" -H 'Content-Type: application/json' -d'
+{
+  "description": "Convert the description field into the suggestions field, to make it usable by an auto-completion query",
+  "processors": [
+    {
+      "datadiscovery_description_tokenizer" : {
+        "field" : "description",
+        "target_field": "suggestions"
+      }
+    }
+  ]
+}'; echo
 
 MAPPING_PARTIAL_PATH="${APP_NAME}"
 if [ "$APP_NAME" == "data-discovery" ]; then
     MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and DataDiscoverys
 fi
-echo -e "\n\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)"
-curl -si -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
+echo -e "\nApply mapping: $(ls -1 ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-physical-index/_mapping/${APP_NAME}-${ENV}-resource"\
  -H 'Content-Type: application/json' -d"
 $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
-"
-echo
+"; echo
+
