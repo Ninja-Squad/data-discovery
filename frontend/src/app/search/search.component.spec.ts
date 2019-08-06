@@ -81,8 +81,10 @@ describe('SearchComponent', () => {
     const router = TestBed.get(Router) as Router;
     spyOn(router, 'navigate');
     const searchService = TestBed.get(SearchService) as SearchService;
-    const results = toSinglePage([], [toAggregation('domain', ['Plant'])]);
+    const results = toSinglePage([toRareDocument('Bacteria')]);
+    const aggregationResult = toSinglePage([], [toAggregation('domain', ['Plant'])]);
     spyOn(searchService, 'search').and.returnValue(of(results));
+    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult));
 
     // with a query on init
     const query = 'Bacteria';
@@ -99,7 +101,7 @@ describe('SearchComponent', () => {
     expect(searchService.search).toHaveBeenCalledWith(query, [], 1);
     // and the results fetched
     expect(component.results).toEqual(results);
-    expect(component.aggregations).toEqual(results.aggregations);
+    expect(component.aggregations).toEqual(aggregationResult.aggregations);
   });
 
   it('should search on init if there is a query and a page', () => {
@@ -174,7 +176,9 @@ describe('SearchComponent', () => {
     const resource = toRareDocument('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource]);
-    // const expectedAggregations = toSinglePage([resource], [aggregation]);
+    const aggregationResult = toSinglePage([], [aggregation]);
+
+    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult));
 
     spyOn(searchService, 'search').and.returnValue(of(expectedResults));
 

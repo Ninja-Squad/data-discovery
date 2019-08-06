@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
-import {EMPTY, Observable} from 'rxjs';
-import {catchError, mergeMap, switchMap} from 'rxjs/operators';
+import {EMPTY, merge, Observable} from 'rxjs';
+import {catchError, switchMap} from 'rxjs/operators';
 
 import { SearchService } from '../search.service';
 import { DocumentModel } from '../models/document.model';
@@ -55,6 +55,7 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  // https://stackoverflow.com/questions/44412809/angular2-which-is-the-best-way-to-make-multiple-sync-calls-with-observables
   ngOnInit(): void {
     this.route.queryParamMap
       .pipe(
@@ -76,26 +77,28 @@ export class SearchComponent implements OnInit {
           this.aggregationCriteria = this.extractCriteriaFromParameters(params);
           // launch the search and handle a potential error, by returning no result
           // but allow to trigger a new search
-          return this.searchService.search(this.query,  this.aggregationCriteria, page)
-            .pipe(
-              catchError(() => EMPTY)
+          // return this.searchService.search(this.query,  this.aggregationCriteria, page)
+          //   .pipe(
+          //     catchError(() => EMPTY),
+          //   );
+          return merge(
+             this.searchService.search(this.query,  this.aggregationCriteria, page)
+                .pipe(
+                  catchError(() => EMPTY),
+                ),
+              this.searchService.aggregate(this.query,  this.aggregationCriteria)
+              .pipe(
+                catchError(() => EMPTY)
+              )
             );
-        })
-      ).pipe(
-        mergeMap(query => {return this.searchService.aggregate(this.query,  this.aggregationCriteria)
-          .pipe(
-            catchError(() => EMPTY)
-          );
-        })
-      )
+        }))
       .subscribe(results => {
         this.loading = false;
-        if (! results.aggregations) {
-          // sets the results
-          this.results = results;
-        } else if (results.aggregations.length) {
+        if (results.aggregations.length) {
           // sets the aggregations if there are some
           this.aggregations = results.aggregations;
+        } else {
+          this.results = results;
         }
       });
     this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
