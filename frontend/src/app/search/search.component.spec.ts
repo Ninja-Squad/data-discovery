@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
@@ -22,6 +22,7 @@ import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import {delay} from 'rxjs/operators';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -76,7 +77,7 @@ describe('SearchComponent', () => {
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
-  it('should search on init if there is a query', () => {
+  it('should search and aggregate on init if there is a query', () => {
     // given a component
     const router = TestBed.get(Router) as Router;
     spyOn(router, 'navigate');
@@ -103,6 +104,39 @@ describe('SearchComponent', () => {
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual(aggregationResult.aggregations);
   });
+
+
+  it('should search and aggregate on init if there is a query with long aggregation check', fakeAsync(() => {
+    // given a component
+    const router = TestBed.get(Router) as Router;
+    spyOn(router, 'navigate');
+    const searchService = TestBed.get(SearchService) as SearchService;
+    const results = toSinglePage([toRareDocument('Bacteria')]);
+    const aggregationResult = toSinglePage([], [toAggregation('domain', ['Plant'])]);
+    spyOn(searchService, 'search').and.returnValue(of(results));
+    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult).pipe(delay(1000)));
+
+    // with a query on init
+    const query = 'Bacteria';
+    const queryParams = of({ query });
+    const activatedRoute = fakeRoute({ queryParams });
+    const component = new SearchComponent(activatedRoute, router, searchService);
+
+    // when loading
+    component.ngOnInit();
+
+    // then the search should be populated
+    expect(component.searchForm.get('search').value).toBe(query);
+    // the search service called with page 1, no criteria and asked for aggregations
+    expect(searchService.search).toHaveBeenCalledWith(query, [], 1);
+    // and the results fetched
+    expect(component.results).toEqual(results);
+    // First aggregations is not there
+    expect(component.aggregations).toEqual([]);
+    // Then aggregations completes and get displayed
+    tick(1000);
+    expect(component.aggregations).toEqual(aggregationResult.aggregations);
+  }));
 
   it('should search on init if there is a query and a page', () => {
     // given a component
@@ -165,6 +199,47 @@ describe('SearchComponent', () => {
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
+  });
+
+
+  it('should search on init if there is a query, a page and criteria and display aggregations', () => {
+    // given a component
+    const router = TestBed.get(Router) as Router;
+    spyOn(router, 'navigate');
+    const searchService = TestBed.get(SearchService) as SearchService;
+    const resource = toRareDocument('Bacteria');
+    const aggregation = toAggregation('coo', ['France', 'Italy']);
+    const expectedResults = toSinglePage([resource]);
+    const aggregationResult = toSinglePage([], [aggregation]);
+
+    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult));
+
+    spyOn(searchService, 'search').and.returnValue(of(expectedResults));
+
+    // with a query on init
+    const query = 'Bacteria';
+    const page = 3;
+    // and criteria
+    const domain = 'Plant';
+    const coo = ['France', 'Italy'];
+    const queryParams = of({ query, page, domain, coo });
+    const activatedRoute = fakeRoute({ queryParams });
+    const component = new SearchComponent(activatedRoute, router, searchService);
+    // but this query was already the same
+    component.query = query;
+
+    // when loading
+    component.ngOnInit();
+
+    // then the search should be populated
+    expect(component.searchForm.get('search').value).toBe(query);
+    // the search service called with page 1, the criteria and asked for aggregations
+    const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
+    const domainCriteria = { name: 'domain', values: ['Plant'] };
+    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
+    // and the results fetched
+    expect(component.results).toEqual(expectedResults);
+    expect(component.aggregations).toEqual([aggregation]);
   });
 
 
