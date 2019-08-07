@@ -12,7 +12,7 @@ PARAMS:
 	-host          the host name of the targeted Elasticsearch endpoint
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
 	-app           the name of the targeted application: rare, wheatis or data-discovery
-	-env           the environement name of the targeted application (dev, beta, prod ...)
+	-env           the environment name of the targeted application (dev, beta, prod ...)
 	-h or --help   print this help
 
 EOF

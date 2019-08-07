@@ -1,5 +1,7 @@
 #!/bin/bash
-# set -x
+
+ES_HOST=localhost
+ES_PORT=9200
 
 help() {
 	cat <<EOF
@@ -7,24 +9,41 @@ DESCRIPTION:
 	Script used to index data in Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -url <app url> -app <application name> -env <environment name> -copy [-h|--help]
+	$0 -host <elasticsearch_host> -port <elasticsearch_port> -app <application name> -env <environment name> -copy [-h|--help]
 
 PARAMS:
-	-url           the application url (ex: http://HOST:PORT/CONTEXT_PATH)
+	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST)
+	-port          the port of Elasticsearch node (default: $ES_PORT)
 	-app           the name of the targeted application: rare, wheatis or data-discovery
 	-env           the environment name of the targeted application (dev, beta, prod ...)
-	-copy          to set if the data files needs to be copied on the application host
 	-h or --help   print this help
+
+DEPENDENCIES:
+    - jq 1.6+: https://github.com/stedolan/jq/releases/tag/jq-1.6
+    - GNU parallel: https://www.gnu.org/software/parallel/
+    - gzip: http://www.gzip.org/
 
 EOF
 	exit 1
 }
 
-BASEDIR=$(dirname "$0")
-APP_URL=""
-APP_NAME=""
-APP_ENV=""
-COPY_FILES=0
+check_command() {
+  command -v $1 >/dev/null || {
+    echo "Program $1 is missing, cannot continue..."
+    return 1
+  }
+  return 0
+}
+
+MISSING_COUNT=0
+check_command gzip || ((MISSING_COUNT += 1))
+check_command parallel || ((MISSING_COUNT += 1))
+check_command jq || ((MISSING_COUNT += 1))
+
+[ $MISSING_COUNT -ne 0 ] && {
+  echo "Please, install the $MISSING_COUNT missing program(s). Exiting."
+  exit $MISSING_COUNT
+}
 
 # any params
 [ -z "$1" ] && echo && help
@@ -34,50 +53,36 @@ while [ -n "$1" ]; do
 	case $1 in
 		-h) help;shift 1;;
 		--help) help;shift 1;;
-		-url) APP_URL=$2;shift 2;;
+		-host) ES_HOST=$2;shift 2;;
+		-port) ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
-		-copy) COPY_FILES=1;shift 1;;
 		--) shift;break;;
 		-*) echo "Unknown option: $1" && echo && help && echo;exit 1;;
 		*) break;;
 	esac
 done
 
-if [ -z "$APP_URL" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
-    echo "ERROR: url, app and env parameters are mandatory!"
+BASEDIR=$(dirname "$0")
+DATADIR=$(readlink -f "$BASEDIR/../data/$APP_NAME/")
+
+if [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
+    echo "ERROR: -app and -env parameters are mandatory!"
     echo && help
 	exit 4
 fi
 
-INDEX_DATA_DIR="/tmp/$APP_NAME-$APP_ENV/resources"
-if [ $COPY_FILES -eq 0 ]; then
-	echo "WARN: Harvester will index JSON already present in $INDEX_DATA_DIR on the application server..."
-fi
-
-if [ $COPY_FILES -eq 1 ]; then
-    DATADIR="$BASEDIR/../data/$APP_NAME"
-	echo "Creating index directory: $INDEX_DATA_DIR" && mkdir -p $INDEX_DATA_DIR
-	echo "Decompressing data files from $DATADIR into $INDEX_DATA_DIR"
-	
-	PARALLEL_FOUND=true
-	command -v parallel > /dev/null || PARALLEL_FOUND=false
-	if [ "$PARALLEL_FOUND" == "true" ]; then
-		echo "... using GNU parallel"
-		parallel --bar "gzip -d -f -c {} > $INDEX_DATA_DIR/{/.}" ::: $DATADIR/*.json.gz
-	else
-		echo "... sequentially"
-		cp $DATADIR/*.json.gz $INDEX_DATA_DIR && \
-		gzip -d -f $INDEX_DATA_DIR/*.json.gz
-	fi
-fi
+OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
+[ -d "$OUTDIR" ] && rm -rf "$OUTDIR"
+mkdir -p "$OUTDIR"
 
 {
-	curl -f -i -X POST -u ${APP_NAME}:f01a7031fc17 "${APP_URL}/api/harvests"
+#set -x
+echo "Indexing files from $DATADIR into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-physical-index ..."
+time parallel -j4 --bar "gunzip -c {} | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq | gzip -c | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-physical-index/${APP_NAME}-${APP_ENV}-resource/_bulk\" --data-binary '@-' > ${OUTDIR}/{/.}.log.gz" ::: $DATADIR/G*.json.gz
 } || {
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
-		"\tfrom $INDEX_DATA_DIR\n"\
-		"\ton app ${APP_URL}"
+		"\tfrom $DATADIR on app ${APP_NAME} and on env ${APP_ENV}"
 	exit $code
 }

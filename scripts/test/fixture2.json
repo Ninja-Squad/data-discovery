@@ -1,0 +1,18 @@
+[
+  {
+    "name": "123",
+    "desc": "I'm a description!"
+  },
+  {
+    "noname": "456",
+    "desc": "I'm another description!"
+  },
+  {
+    "name": ["789"],
+    "desc": "I'm yet another description!"
+  },
+  {
+    "name": 101112,
+    "desc": "I'm still yet another description!"
+  }
+]
