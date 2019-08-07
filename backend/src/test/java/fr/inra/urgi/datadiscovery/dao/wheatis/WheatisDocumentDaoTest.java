@@ -8,7 +8,6 @@ import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
-import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisIndexedDocument;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.*;
@@ -50,23 +49,16 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
     @BeforeAll
     void prepareIndex() {
         installDatadiscoveryDescriptionTokenizerPipeline();
-        ElasticsearchPersistentEntity indexedDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
-            WheatisIndexedDocument.class);
         ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
             WheatisDocument.class);
         elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
         elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings());
         elasticsearchTemplate.addAlias(
-            new AliasBuilder().withAliasName(indexedDocumentEntity.getIndexName())
-                              .withIndexName(PHYSICAL_INDEX)
-                              .build()
-        );
-        elasticsearchTemplate.addAlias(
             new AliasBuilder().withAliasName(documentEntity.getIndexName())
                               .withIndexName(PHYSICAL_INDEX)
                               .build()
         );
-        elasticsearchTemplate.putMapping(WheatisIndexedDocument.class);
+        elasticsearchTemplate.putMapping(WheatisDocument.class);
     }
 
     @BeforeEach
@@ -87,7 +79,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                   .withNode("URGI")
                                   .build();
 
-        documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
         assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
@@ -146,7 +138,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
     void shouldSuggestOnDescription() {
         WheatisDocument document =
             WheatisDocument.builder().withDescription("Hello world").build();
-        documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
         assertThat(documentDao.suggest("hel")).containsOnly("Hello");
@@ -177,7 +169,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
     void shouldNotSuggestOnUrl() {
         WheatisDocument document =
             WheatisDocument.builder().withUrl("foo bar baz").build();
-        documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
         assertThat(documentDao.suggest("foo")).isEmpty();
@@ -188,7 +180,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         config.accept(documentBuilder, "foo bar baz");
         WheatisDocument document = documentBuilder.build();
 
-        documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
@@ -220,8 +212,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                   .withSpecies(Arrays.asList("Girolla mucha gusta"))
                                   .build();
 
-        documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(document1),
-                                                 new WheatisIndexedDocument(document2)));
+        documentDao.saveAll(Arrays.asList(document1, document2));
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
@@ -267,8 +258,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                                                         .withEntryType("bar")
                                                                         .build();
 
-        documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(document1),
-                                                 new WheatisIndexedDocument(document2)));
+        documentDao.saveAll(Arrays.asList(document1, document2));
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
@@ -307,11 +297,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                                                  .withDatabaseName("D21")
                                                                  .build();
 
-        documentDao.saveAll(Arrays.asList(
-            new WheatisIndexedDocument(resource1),
-            new WheatisIndexedDocument(resource2),
-            new WheatisIndexedDocument(resource3),
-            new WheatisIndexedDocument(resource4)));
+        documentDao.saveAll(Arrays.asList(resource1, resource2, resource3, resource4));
         documentDao.refresh();
 
         Terms pillars = documentDao.findPillars();
@@ -360,8 +346,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                   .withDescription("Imagine all the people")
                                   .build();
 
-        documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(resource1),
-                                                 new WheatisIndexedDocument(resource2)));
+        documentDao.saveAll(Arrays.asList(resource1, resource2));
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result = documentDao.search("comes sun",
@@ -406,9 +391,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                                                             .withDescription("hello world")
                                                                             .build();
 
-            documentDao.saveAll(Arrays.asList(new WheatisIndexedDocument(document1),
-                                                     new WheatisIndexedDocument(document2),
-                                                     new WheatisIndexedDocument(document3)));
+            documentDao.saveAll(Arrays.asList(document1, document2, document3));
             documentDao.refresh();
         }
 

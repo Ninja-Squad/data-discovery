@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.Document;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 
 import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
@@ -29,6 +30,7 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
     type = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )
+@Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json")
 public class RareDocument implements Document {
 
     @Id

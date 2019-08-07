@@ -29,6 +29,7 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json")
+@Deprecated
 public final class RareIndexedDocument implements IndexedDocument<RareDocument> {
     @JsonUnwrapped
     private final RareDocument document;
