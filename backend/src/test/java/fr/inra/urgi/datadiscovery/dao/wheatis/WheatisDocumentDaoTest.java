@@ -1,13 +1,9 @@
 package fr.inra.urgi.datadiscovery.dao.wheatis;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.DocumentDao;
+import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.Document;
@@ -15,25 +11,24 @@ import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
 import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisIndexedDocument;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.query.AliasBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,20 +38,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles(AppProfile.WHEATIS)
-class WheatisDocumentDaoTest {
+class WheatisDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-wheatis-resource-physical-index";
 
     @Autowired
     private WheatisDocumentDao documentDao;
 
-    @Autowired
-    private ElasticsearchRestTemplate elasticsearchTemplate;
-
     private Pageable firstPage = PageRequest.of(0, 10);
 
     @BeforeAll
     void prepareIndex() {
+        installDatadiscoveryDescriptionTokenizerPipeline();
         ElasticsearchPersistentEntity indexedDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
             WheatisIndexedDocument.class);
         ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
@@ -465,11 +458,11 @@ class WheatisDocumentDaoTest {
         config.accept(documentBuilder, "foo bar baz");
         WheatisDocument document = documentBuilder.build();
 
-        documentDao.saveAll(Collections.singleton(new WheatisIndexedDocument(document)));
+        documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
         assertThat(documentDao.suggest("FOO")).containsExactly("foo bar baz");
         assertThat(documentDao.suggest("bing")).isEmpty();
     }
-}
 
+}

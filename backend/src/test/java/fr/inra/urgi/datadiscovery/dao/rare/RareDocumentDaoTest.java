@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
+import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.Location;
@@ -27,8 +28,6 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.query.AliasBuilder;
@@ -44,20 +43,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles(AppProfile.RARE)
-class RareDocumentDaoTest {
+class RareDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-rare-resource-physical-index";
 
     @Autowired
     private RareDocumentDao documentDao;
 
-    @Autowired
-    private ElasticsearchRestTemplate elasticsearchTemplate;
-
     private Pageable firstPage = PageRequest.of(0, 10);
 
     @BeforeAll
     void prepareIndex() {
+        installDatadiscoveryDescriptionTokenizerPipeline();
+
         ElasticsearchPersistentEntity indexedDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
             RareIndexedDocument.class);
         ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
@@ -790,11 +788,10 @@ class RareDocumentDaoTest {
         config.accept(documentBuilder, "foo bar baz");
         RareDocument document = documentBuilder.build();
 
-        documentDao.saveAll(Collections.singleton(new RareIndexedDocument(document)));
+        documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
         assertThat(documentDao.suggest("FOO")).containsExactly("foo bar baz");
         assertThat(documentDao.suggest("bing")).isEmpty();
     }
 }
-
