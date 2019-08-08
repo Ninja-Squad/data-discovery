@@ -13,7 +13,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 @Configuration
 public class HarvestConfig {
 
-    @Harvest
     @Bean
     public ObjectMapper harvestObjectMapper(Jackson2ObjectMapperBuilder objectMapperBuilder) {
         // build an ObjectMapper using the same configuration as for Spring MVC
