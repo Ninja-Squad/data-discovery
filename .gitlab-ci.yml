@@ -21,6 +21,7 @@ variables:
  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
  GIT_LFS_SKIP_SMUDGE: "1"
  ELASTICSEARCH_VERSION: "6.6.2"
+ ES_JAVA_OPTS: "-Des.discovery.type=single-node"
 
 test:
  stage: test
@@ -47,7 +48,7 @@ test:
                    https://urgi.versailles.inra.fr/nexus/content/repositories/releases/fr/inra/plugin/ingest/ingest-datadiscovery-description-tokenizer/${ELASTICSEARCH_VERSION}.0/ingest-datadiscovery-description-tokenizer-${ELASTICSEARCH_VERSION}.0.zip \
                    || { echo '[ERROR] Cannot install Elasticsearch plugin from Nexus repository. Need to install it, more info: \
                    https://forgemia.inra.fr/urgi-is/es-plugins/blob/master/ingest-datadiscovery-description-tokenizer/README.md' ; exit 1 ; } ;
-                 elasticsearch -Ediscovery.type=single-node"
+                 /usr/local/bin/docker-entrypoint.sh"
 #     command: ["bin/elasticsearch", "-Ediscovery.type=single-node"]
  script: ./gradlew --parallel test
  cache:
