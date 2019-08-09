@@ -12,10 +12,14 @@ services:
            || { echo '[ERROR] Cannot install Elasticsearch plugin from Nexus repository. Need to install it, more info: \
            https://forgemia.inra.fr/urgi-is/es-plugins/blob/master/ingest-datadiscovery-description-tokenizer/README.md' ; exit 1 ; } ;
          /usr/local/bin/docker-entrypoint.sh"
-    container_name: testelasticsearch
+    container_name: elasticsearch
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - xpack.security.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.watcher.enabled=false
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g -XX:ParallelGCThreads=2"
     ports:
       - 9200:9200
