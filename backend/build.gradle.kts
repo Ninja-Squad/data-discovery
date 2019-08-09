@@ -115,8 +115,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.data:spring-data-commons")
     implementation("org.springframework.data:spring-data-elasticsearch:3.2.0.M1") // to replace by GA version in June 2019
-    implementation("org.elasticsearch:elasticsearch:${project.ext["ELASTICSEARCH_VERSION"]}")
-    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:${project.ext["ELASTICSEARCH_VERSION"]}")
+    implementation("org.elasticsearch:elasticsearch:${project.ext["ELASTIC_VERSION"]}")
+    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:${project.ext["ELASTIC_VERSION"]}")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")

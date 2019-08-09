@@ -31,7 +31,7 @@ test:
    # because we need to pass some variables, but they are passed to _all_ containers
    # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+   - name: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
      alias: elasticsearch
      # discovery.type=single-node
      # single-node is necessary to start in development mode

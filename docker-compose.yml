@@ -1,14 +1,14 @@
 version: '3.3'
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION:?You need to set ES version in file docker.env which has a .env symlink.}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:?You need to set ES version in file docker.env which has a .env symlink.}
     command:
       - /bin/sh
       - -c
       - "export PATH=/usr/share/elasticsearch/bin:$PATH ;
          elasticsearch-plugin list | grep ingest-datadiscovery-description-tokenizer ||
            elasticsearch-plugin install --batch \
-           https://urgi.versailles.inra.fr/nexus/content/repositories/releases/fr/inra/plugin/ingest/ingest-datadiscovery-description-tokenizer/${ELASTICSEARCH_VERSION}.0/ingest-datadiscovery-description-tokenizer-${ELASTICSEARCH_VERSION}.0.zip \
+           https://urgi.versailles.inra.fr/nexus/content/repositories/releases/fr/inra/plugin/ingest/ingest-datadiscovery-description-tokenizer/${ELASTIC_VERSION}.0/ingest-datadiscovery-description-tokenizer-${ELASTIC_VERSION}.0.zip \
            || { echo '[ERROR] Cannot install Elasticsearch plugin from Nexus repository. Need to install it, more info: \
            https://forgemia.inra.fr/urgi-is/es-plugins/blob/master/ingest-datadiscovery-description-tokenizer/README.md' ; exit 1 ; } ;
          /usr/local/bin/docker-entrypoint.sh"
@@ -32,7 +32,7 @@ services:
         hard: 65536
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
     container_name: kibana
     environment:
       - "ELASTICSEARCH_URL=http://elasticsearch:9200"
