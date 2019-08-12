@@ -77,12 +77,28 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 mkdir -p "$OUTDIR"
 
 {
-#set -x
-echo "Indexing files from $DATADIR into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-physical-index ..."
-time parallel -j4 --eta "gunzip -c {} | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq | gzip -c | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-physical-index/${APP_NAME}-${APP_ENV}-resource/_bulk\" --data-binary '@-' > ${OUTDIR}/{/.}.log.gz" ::: $DATADIR/*.json.gz
+    #set -x
+    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias ..."
+    time parallel -j4 --eta "
+            gunzip -c {} \
+            | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{/.}.jq.err \
+            | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{/.}.jq.err \
+            | gzip -c \
+            | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
+                -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
+                --data-binary '@-' > ${OUTDIR}/{/.}.log.gz" \
+        ::: ${DATADIR}/*.json.gz
 } || {
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
-		"\tfrom $DATADIR on app ${APP_NAME} and on env ${APP_ENV}"
+		"\tfrom ${DATADIR} on app ${APP_NAME} and on env ${APP_ENV}"
 	exit $code
 }
+
+echo "Indexing has finished, updating settings"
+curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias/_settings\" --data-binary '@-' <<EOF
+{
+    "number_of_replicas": 0,
+    "refresh_interval": "30s",
+}
+EOF

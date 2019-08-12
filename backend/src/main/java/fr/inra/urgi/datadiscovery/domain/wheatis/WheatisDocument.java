@@ -17,7 +17,7 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
  * @author JB Nizet
  */
 @org.springframework.data.elasticsearch.annotations.Document(
-    indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource-index",
+    indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource-alias",
     type = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )

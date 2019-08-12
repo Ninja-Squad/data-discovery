@@ -338,7 +338,8 @@ deploy-data-discovery-to-prod:
  allow_failure: false
 
 .data-integration: &data-integration
- retry: 1
+ # do not retry to avoid overloading the Elasticsearch cluster
+ retry: 0
  script:
   # Do fetch of GIT LFS files only for data integration steps for given app
   - git checkout $CI_COMMIT_REF_NAME
