@@ -33,8 +33,7 @@ You can stop the Elastic Search and Kibana instances by running:
 
 ### Frontend
 
-The project uses Angular (6.x) for the frontend,
-with the Angular CLI.
+The project uses Angular (7.x) for the frontend, with the Angular CLI.
 
 You need to install:
 
@@ -74,8 +73,8 @@ The `.gitlab-ci.yml` file describes how Gitlab is running the CI jobs.
 It uses a base docker image named `urgi/docker-browsers`
 available on [DockerHub](https://hub.docker.com/r/urgi/docker-browsers/)
 and [INRA-MIA Gitlab](https://forgemia.inra.fr/urgi-is/docker-rare).
-The image is based on `openjdk:8` and adds a Chrome binary to let us run the frontend tests
-(with a headless Chrome in `--no-sandbox` mode).
+The image is based on `openjdk:8` and adds al needed to run the tests
+(ie. a Chrome binary with a headless Chrome in `--no-sandbox` mode).
 
 We install `node` and `yarn` in `/tmp` (this is not the case for local builds)
 to avoid symbolic links issues on Docker.
@@ -84,18 +83,31 @@ You can approximate what runs on CI by executing:
 
     docker run --rm -v "$PWD":/home/rare -w /home/rare urgi/docker-browsers ./gradlew build
 
+Or also run a gitlab-runner as Gitlab-CI would do (minus the environment variables and caching system):
+
+    gitlab-runner exec docker test
+
+## Documentation
+
+An API documentation describing most of the webservices can be generated using the
+build task `asciidoctor`, which executes tests and generates documentation based on snippets generated
+by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`/
+
+    ./gradlew asciidoctor
+
 ## Harvest
 
 Harvesting (i.e. importing documents stored in JSON files into Elasticsearch) consists in
-creating the necessary index and aliases, and then placing the JSON files into a directory where the server can find them.
+creating the necessary index and aliases and Elasticsearch templates.
 
-To create the index and its aliases execute the script 
+To create the index and its aliases execute the script with appropriate
 
     ./scripts/createIndexAndAliases.sh
 
-The directory, by default is `/tmp/rare-dev/resources` and `/tmp/wheatis-dev/resources`. But it's externalized into the 
-Spring Boot property `rare.resource-dir`, so it can be easily changed by modifying the value of this property (using an 
-environment variable for example).
+This script is a wrapper for the `./scripts/createIndexAndAliases4CI.sh` which handle some parameters to create
+indices, aliases and so on, on a another (possible remote) Elasticsearch for fitting to a specific environment:
+
+    ./scripts/createIndexAndAliases4CI.sh -host localhost -app rare -env dev
 
 You can run the scripts:
 
@@ -104,24 +116,13 @@ You can run the scripts:
     
 to trigger a harvest of the resources stored in the Git LFS directories `data/rare` and `data/wheatis`.
 
-Since the harvest process is handle by a webservice which runs inside the Spring Boot application, you 
-need to start `rare.jar` or `wheatis.jar` before (see [Build](#build) section)
-{: .alert .alert-warning}
-    
-The files must have the extension `.json`, and must be stored in that directory (not in a sub-directory).
-Once the files are ready and the server is started, the harvest is triggered by sending a POST request
-to the endpoint `/api/harvests`, as described in the API documentation that you can generate using the 
-build task `asciidoctor`, which executes tests and generates documentation based on snippets generated 
-by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`/
-
-    ./gradlew asciidoctor
-
 ## Indices and aliases
 
-The application uses two physical indices: 
+The application uses several physical indices, which are rolled over automatically based on the policies defined in the
+`./backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*_policy.json` files. This is based on the
+[Index Lifecyle Management](https://www.elastic.co/guide/en/elasticsearch/reference/6.6/index-lifecycle-management.html)
+provided by Elasticsearch.
 
- * one to store the harvest results. This one is created automatically if it doesn't exist yet when the application starts.
-   It doesn't contain important data, and can be deleted and recreated if really needed.
  * one to store physical resources. This one must be created explicitly before using the application. If not,
  requests to the web services will return errors.
 
@@ -329,10 +330,9 @@ curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
     
 ## Spring Cloud config
 
-On bootstrap, the application will try to connect to a remote Spring Cloud config server
-to fetch its configuration.
+On bootstrap, the application will try to connect to a remote Spring Cloud config server to fetch its configuration.
 The details of this remote server are filled in the `bootstrap.yml` file.
-By default, it tries to connect to the remote server on http://localhost:8888
+By default, it tries to connect to the local server on http://localhost:8888
 but it can of course be changed, or even configured via the `SPRING_CONFIG_URI` environment variable.
 
 It will try to fetch the configuration for the application name `rare`, and the default profile.
@@ -340,8 +340,7 @@ If such a configuration is not found, it will then fallback to the local `applic
 To avoid running the Spring Cloud config server every time when developing the application,
 all the properties are still available in `application.yml` even if they are configured on the remote Spring Cloud server as well.
 
-If you want to use the Spring Cloud config app locally, 
-see https://forgemia.inra.fr/urgi-is/data-discovery-config
+If you want to use the Spring Cloud config app locally, see https://forgemia.inra.fr/urgi-is/data-discovery-config
 
 The configuration is currently only read on startup,
 meaning the application has to be reboot if the configuration is changed on the Spring Cloud server.
@@ -372,174 +371,13 @@ Adding this property has the following consequences:
 
  - the generated jar file (in `backend/build/libs`) is named `wheatis.jar` instead of `rare.jar`;
  - the Spring active profile in `bootstrap.yml` is `wheatis-app` instead of `rare-app`;
- - the frontend application built and embedded inside the jar file is the WheatIS frontend application instead of the RARe frontend application, i.e. the frontend command `yarn build:wheatis` is executed instead of the command `yarn:rare`.
+ - the frontend application built and embedded inside the jar file is the WheatIS frontend application instead of the
+ RARe frontend application, i.e. the frontend command `yarn build:wheatis` is executed instead of the command `yarn:rare`.
  
 Since the active Spring profile is different, all the properties specific to this profile
 are applies. In particular:
  
  - the context path of the application is `/wheatis-dev` instead of `/rare-dev`; 
- - the resource directory where the JSON files to harvest are looked up is different;
  - the Elasticsearch prefix used for the index aliases is different.
 
 See the `backend/src/main/resources/application.yml` file for details.
-
-### Example of adding a new application (DataDiscovery Portal)
-
-This readme will be useful :
-* If we want to create a new application.
-* Or if anyone wanted to go back and edit what have been added/edited again.
-
-> In this example we created a new application which is very similar to `WheatIS` (for the moment), so there weren't many changes in the backend (we kept using the `WheatIS` java classes). Check out the [frontend README](https://forgemia.inra.fr/urgi-is/data-discovery/blob/master/frontend/README.md#add-another-application) for more details.
-
-#### Modifications
-
-* Edited `./.gitlab-ci.yml` file in the root directory.
-
-##### In `buildSrc` folder
-
-* Added `data-discovery` to the `acceptableValues` in `./buildSrc/src/main/kotlin/app.kt` file:
-
-      private val acceptableValues = setOf("rare", "wheatis", "data-discovery")
-
-##### `backend` folder
-
-* Add this line in `backend/src/main/java/fr/inra/urgi/datadiscovery/config/AppProfile.java`
-
-      public static final String DATADISCOVERY = "data-discovery-app";
-
-* Added `DATADISCOVERY` profile in :
-  
-  - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisAggregationAnalyzer.java`
-  - `./backend/src/main/java/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisDocumentDao.java`
-  - `./backend/src/main/java/fr/inra/urgi/datadiscovery/harvest/wheatis/WheatisHarvester.java`
-
-* Add this code to `./backend/src/main/resources/application.yml` (**Specifying a new port for `data-discovery-app`**)
-
-      ---
-      spring:
-        profiles: data-discovery-app
-        cloud.config.name: data-discovery
-        security.user:
-            name: data-discovery
-            password: f01a7031fc17
-
-      data-discovery:
-        elasticsearch-prefix: 'data-discovery-dev-'
-        resource-dir: /tmp/data-discovery-dev/resources
-
-      server:
-        port: 8280
-        servlet:
-          context-path: /data-discovery-dev
-
-##### `data` folder
-
-* Create a folder called `data-discovery` in `./data`, and put the compressed JSON files in it.
-
-##### `frontend` folder
-
-* Edited the `./frontend/coverage/index.html` file.
-
-* Edited `./frontend/src/app/models/test-model-generators.ts` by adding an `import` and `toDataDiscoveryDocument` function.
-
-* Since `DataDiscovery` and `WheatIS` share the same document structure we created a `data-discovery` module in `./frontend/src/app` containing only `data-discovery-header` and used the `generic-document` found in `frontend/src/app/urgi-common`, this generic document is common between DataDiscovery and WheatIS:
-
-```
-data-discovery
-├── data-discovery-header
-│   ├── data-discovery-header.component.html
-│   ├── data-discovery-header.component.scss
-│   ├── data-discovery-header.component.spec.ts
-│   └── data-discovery-header.component.ts
-├── data-discovery-document.model.ts
-└── data-discovery.module.ts
-```
-
-```
-urgi-common
-├── generic-document
-│   ├── generic-document.component.html
-│   ├── generic-document.component.scss
-│   ├── generic-document.component.spec.ts
-│   └── generic-document.component.ts
-├── generic-document.model.ts
-└── ...
-```
-
-* Create a `data-discovery` file in `./frontend/src/assets` containing the following file:
-  - `band.jpg`
-  - `favicon.ico`
-  - `logo.png`
-  - `theme.scss`
-
-And edit them as desired.
-
-* Create and edit the environment files in `./frontend/src/environments`:
-  - `environment.data-discovery.prod.ts`
-  - `environment.data-discovery.ts`
-
-* Added `data-discovery` configuration in `./frontend/angular.json` file
-
-* Edited `./frontend/package.json` by adding:
-
-      "start:data-discovery": "ng serve --configuration=data-discovery",
-      "build:data-discovery": "ng build --configuration=data-discovery-production --no-progress",
-
-* Edited `./frontend/proxy.conf.js` by adding:
-
-      {
-        context: [
-          "/data-discovery-dev/api",
-          "/data-discovery-dev/actuator"
-        ],
-        target: "http://localhost:8280",
-        secure: false
-      }
-
-##### Scripts
-
-* Added this line to `scripts/createIndexAndAliases.sh` file:
-
-      # DataDiscovery index/alias
-      sh $BASEDIR/createIndexAndAliases4CI.sh localhost data-discovery dev
-
-* Created `harvestDataDiscovery.sh` with the following content:
-
-      #!/bin/bash
-
-      # delegates to parameterized script
-      BASEDIR=$(dirname "$0")
-
-      sh $BASEDIR/harvestCI.sh localhost 8280 data-discovery dev
-
-##### Testing
-
-    ./gradlew test
-
-In our case, after launching the test, we kept getting `Permission denied` errors, the problem was solved by deleting `buildSrc/build` and `backend/build` directory and running the test again.
-
-##### Running the App
-
-1. Fire up Docker
-
-        docker-compose up
-
-2. Build the app
-
-        ./gradlew assemble -Papp=data-discovery
-
-3. Deploy
-
-        java -jar backend/build/libs/data-discovery.jar
-
-4. Index the data
-
-        ./scripts/createIndexAndAliases.sh
-        ./scripts/harvestDataDiscovery.sh
-
-5. App is running at : http://localhost:8280/data-discovery-dev/
-
-##### Ports used according to the applications and the environment:
-
-Checkout the [README.md](https://forgemia.inra.fr/urgi-is/data-discovery-config/blob/master/README.md) file for the 
-full list of deployment environments for the `data-discovery` webapp (server ports & context paths). 
