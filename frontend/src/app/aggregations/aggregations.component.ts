@@ -12,8 +12,26 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 export class AggregationsComponent {
 
   @Input() aggregations: Array<Aggregation> = [];
+  // private _aggregations: Array<Aggregation> = [];
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
+  @Input() aggLoading: boolean = false;
   @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
+
+  // aggLoading = false;
+
+  // @Input()
+  // set aggregations (newAggregations: Array<Aggregation> ) {
+  //   if (newAggregations && newAggregations.length > 0 ) {
+  //     this.aggLoading = true;
+  //   } else {
+  //     this.aggLoading = false;
+  //   }
+  //   this._aggregations = newAggregations;
+  // }
+  //
+  // get aggregations() {
+  //   return this._aggregations;
+  // }
 
   /**
    * Extracts the selected criteria for the aggregation.

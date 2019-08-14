@@ -38,6 +38,8 @@ import { environment } from '../../environments/environment';
 })
 export class SearchComponent implements OnInit {
   loading = true;
+  searchLoading = true;
+  aggLoading = true; //TODO: Deprecated? Synch through aggArray length
   query = '';
   placeholder = environment.searchPlaceholder;
   searchForm: FormGroup;
@@ -66,6 +68,9 @@ export class SearchComponent implements OnInit {
             // we reset the results and criteria
             this.results = undefined;
             this.aggregationCriteria = [];
+          } else {
+            this.searchLoading = false;
+            this.aggLoading = false;
           }
           this.query = requestedQuery;
           // set the search field
@@ -77,10 +82,6 @@ export class SearchComponent implements OnInit {
           this.aggregationCriteria = this.extractCriteriaFromParameters(params);
           // launch the search and handle a potential error, by returning no result
           // but allow to trigger a new search
-          // return this.searchService.search(this.query,  this.aggregationCriteria, page)
-          //   .pipe(
-          //     catchError(() => EMPTY),
-          //   );
           return merge(
              this.searchService.search(this.query,  this.aggregationCriteria, page)
                 .pipe(
@@ -93,11 +94,14 @@ export class SearchComponent implements OnInit {
             );
         }))
       .subscribe(results => {
-        this.loading = false;
+        // this.loading = false;
         if (results.aggregations.length) {
+          this.aggLoading = false;
           // sets the aggregations if there are some
           this.aggregations = results.aggregations;
+
         } else {
+          this.searchLoading = false;
           this.results = results;
         }
       });
@@ -160,7 +164,9 @@ export class SearchComponent implements OnInit {
    * It accepts a search options object with one mandatory field (the query) and optional ones (page, criteria)
    */
   private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion> }) {
-    this.loading = true;
+    // this.loading = true; // TODO: deprecated
+    this.searchLoading = true;
+    this.aggLoading = true;
     const queryParams: { [key: string]: string | Array<string> } = {
       query: options.query,
       page: options.page ? options.page.toString() : undefined

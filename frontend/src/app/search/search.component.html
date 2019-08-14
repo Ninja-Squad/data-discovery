@@ -26,9 +26,9 @@
 </div>
 
 <!-- Loading spinner-->
-<div class="text-center">
-  <dd-loading-spinner [loading]="loading"></dd-loading-spinner>
-</div>
+<!--<div class="text-center">-->
+<!--  <dd-loading-spinner [loading]="loading"></dd-loading-spinner>-->
+<!--</div>-->
 
 <div class="mt-3 mb-3 d-md-none">
   <button class="btn btn-outline-secondary" (click)="toggleFilters()">
@@ -41,11 +41,18 @@
     <h2 class="sr-only">Filters</h2>
     <dd-aggregations *ngIf="aggregations"
                        [aggregations]="aggregations"
+                       [aggLoading]="aggLoading"
                        [selectedCriteria]="aggregationCriteria"
                        (aggregationsChange)="updateSearchWithAggregation($event)">
     </dd-aggregations>
   </div>
   <div class="col-12 col-md-8 col-lg-9">
+
+    <!-- Loading skeleton-->
+    <div class="text-center">
+      <dd-loading-skeleton [loading]="searchLoading"></dd-loading-skeleton>
+    </div>
+
     <h2 class="sr-only">Results</h2>
     <div *ngIf="results">
       <dd-documents [documents]="results"></dd-documents>

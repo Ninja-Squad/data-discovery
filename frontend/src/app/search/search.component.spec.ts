@@ -37,6 +37,7 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
     return this.button('button');
   }
 
+
   get results() {
     return this.debugElement.query(By.directive(DocumentsComponent));
   }

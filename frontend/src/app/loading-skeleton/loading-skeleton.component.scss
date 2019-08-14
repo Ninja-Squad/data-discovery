@@ -1,0 +1,72 @@
+
+.loading {
+  //display: inline-block;
+  //display: flex;
+  //flex-flow: column nowrap;
+  //width: 100%;
+  //max-width: 500px;
+  //border-radius: 3px;
+  //box-shadow: 0 2px 1px rgba(#000, .5);
+  background: #FFF;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+//  animation: opacityPulse 1.5s infinite ease-in-out;
+//
+//  i {
+//    color: black;
+//    font-size: 2.2em;
+//  }
+//}
+//
+//$from: 0.3;
+//$to: 1;
+//@keyframes opacityPulse {
+//  0% { opacity: $from; }
+//  50% { opacity: $to; }
+//  100% { opacity: $from; }
+//}
+
+
+
+.skeleton-default {
+  width: 100%;
+  clip-path: polygon(
+      0 0,    100% 0,   100% 10px, 0 10px,
+      0 20px, 80% 20px, 80% 30px, 0 30px,
+      0 40px, 90% 40px, 90% 50px, 0 50px,
+      0 60px, 95% 60px, 95% 70px, 0 70px
+  );
+  height: 70px;
+}
+
+.skeleton-image-text {
+  clip-path: polygon(
+      0 0,    70px 0,   70px 70px, 0 70px, 0 0,
+      90px 0,    100% 0,   100% 10px, 90px 10px,
+      90px 20px, 80% 20px, 80% 30px, 90px 30px,
+      90px 40px, 90% 40px, 90% 50px, 90px 50px,
+      90px 60px, 95% 60px, 95% 70px, 90px 70px, 90px 0
+  );
+  height: 70px;
+  + .skeleton-image-text {
+    margin-top: 20px;
+  }
+}
+
+.skeleton-animated-background {
+  background-color: #edeff2;
+  background-image: linear-gradient(90deg, transparent, rgba(#000, .05), transparent);
+  background-repeat: no-repeat;
+  background-size: 200px 100%;
+  animation: 2500ms infinite backgroundAnimation;
+
+  @keyframes backgroundAnimation {
+    0% {
+      background-position: -200px 100%;
+    }
+    100% {
+      background-position: calc(100% + 200px) 100%;
+    }
+  }
+}
