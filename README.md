@@ -383,3 +383,6 @@ are applies. In particular:
  - the Elasticsearch prefix used for the index aliases is different.
 
 See the `backend/src/main/resources/application.yml` file for details.
+
+You can adapt the elasticsearch index used with the following parameter
+java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
