@@ -32,7 +32,7 @@ describe('SearchService', () => {
     expect(actualResults).toEqual(expectedResults);
   });
 
-  it('should search for the query and fetch the aggregations', () => {
+  it('should fetch the aggregations only', () => {
     let actualResults: AggregatedPage<DocumentModel>;
     service.aggregate('Bacteria', [])
       .subscribe(results => actualResults = results);
