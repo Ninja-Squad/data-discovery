@@ -8,7 +8,7 @@ import { SearchService } from '../search.service';
 import { DocumentModel } from '../models/document.model';
 import { Aggregation, Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -39,7 +39,7 @@ import { environment } from '../../environments/environment';
 export class SearchComponent implements OnInit {
   loading = true;
   searchLoading = true;
-  aggLoading = true; //TODO: Deprecated? Synch through aggArray length
+  aggLoading = true; // TODO: Deprecated? Synch through aggArray length
   query = '';
   placeholder = environment.searchPlaceholder;
   searchForm: FormGroup;
@@ -57,7 +57,7 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  // https://stackoverflow.com/questions/44412809/angular2-which-is-the-best-way-to-make-multiple-sync-calls-with-observables
+
   ngOnInit(): void {
     this.route.queryParamMap
       .pipe(
@@ -68,10 +68,8 @@ export class SearchComponent implements OnInit {
             // we reset the results and criteria
             this.results = undefined;
             this.aggregationCriteria = [];
-          } else {
-            this.searchLoading = false;
-            this.aggLoading = false;
           }
+
           this.query = requestedQuery;
           // set the search field
           this.searchForm.get('search').setValue(this.query);
@@ -176,9 +174,22 @@ export class SearchComponent implements OnInit {
       options.criteria
         .forEach(criteria => queryParams[criteria.name] = criteria.values);
     }
+
+    // detect unchanged search/route to switch off waiting spinner/skeleton widget
+    if ( options.query  === this.query &&
+      (
+        (options.criteria === this.aggregationCriteria)
+        || (!options.criteria && this.aggregationCriteria.length === 0 )
+      )
+    ) {
+      this.searchLoading = false;
+      this.aggLoading = false;
+    }
+
     this.router.navigate(['.'], {
       relativeTo: this.route,
       queryParams
     });
+
   }
 }
