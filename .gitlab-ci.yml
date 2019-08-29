@@ -343,6 +343,7 @@ deploy-data-discovery-to-prod:
  script:
   # Do fetch of GIT LFS files only for data integration steps for given app
   - git checkout $CI_COMMIT_REF_NAME
+  - git pull
   - git lfs pull -I "data/${APP_NAME}/*.gz"
   # Deleting old indexes before reindexing from scratch
   - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo
