@@ -13,7 +13,7 @@
 def to_bulk(identifier):
     .[] |
         if (has(identifier)) then
-            . |= { "index": { "_id": (.[identifier]|tostring)}}, .      # add a bulk header to the object
+            . |= { "index": {}}, .                                      # add a bulk header to the object
         else
             ("WARNING: Following document has been dropped from bulk because it misses the given key identifier ("
                 + identifier + "): " + (.| tostring)) | stderr          # print warning into stderr

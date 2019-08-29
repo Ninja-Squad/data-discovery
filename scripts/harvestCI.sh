@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ES_HOST=localhost
 ES_PORT=9200
@@ -79,7 +79,7 @@ mkdir -p "$OUTDIR"
 {
     #set -x
     echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias ..."
-    time parallel -j4 --eta "
+    time parallel --eta "
             gunzip -c {} \
             | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{/.}.jq.err \
             | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{/.}.jq.err \
@@ -91,7 +91,7 @@ mkdir -p "$OUTDIR"
 } || {
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
-		"\tfrom ${DATADIR} on app ${APP_NAME} and on env ${APP_ENV}"
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
 	exit $code
 }
 
@@ -102,3 +102,18 @@ curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/$
     "refresh_interval": "30s",
 }
 EOF
+
+{
+    #set -x
+    echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias ..."
+    time parallel --bar "
+            curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
+                -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
+                --data-binary '@{}' > ${OUTDIR}/{/.}.log.gz" \
+        ::: ${DATADIR}/suggestions/bulk*.gz
+} || {
+	code=$?
+	echo -e "A problem occurred (code=$code) when trying to index suggestions \n"\
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
+	exit $code
+}

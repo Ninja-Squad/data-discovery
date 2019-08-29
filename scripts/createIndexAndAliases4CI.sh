@@ -46,7 +46,7 @@ BASEDIR=$(dirname "$0")
 ES_HOST=""
 ES_PORT="9200"
 APP_NAME=""
-ENV=""
+APP_ENV=""
 
 # any params
 [ -z "$1" ] && echo && help
@@ -59,20 +59,20 @@ while [ -n "$1" ]; do
 		-host) ES_HOST=$2;shift 2;;
 		-port) ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
-		-env) ENV=$2;shift 2;;
+		-env) APP_ENV=$2;shift 2;;
 		--) shift;break;;
-		-*) echo "Unknown option: $1" && echo && help && echo;exit 1;;
+		-*) echo -e "${RED_BOLD}Unknown option: $1 ${NC}\n"&& help && echo;exit 1;;
 		*) break;;
 	esac
 done
 
-if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "ENV" ]; then
+if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
     echo "ERROR: host, port, app and env parameters are mandatory!"
     echo && help
 	exit 4
 fi
 
-TMP_FILE=$(mktemp)
+TMP_FILE=$(mktemp)F
 
 CODE=0
 
@@ -84,19 +84,20 @@ check_acknowledgment() {
     > ${TMP_FILE}
 }
 
-# each curl command below sees its ouptut checked for acknowledgment from Elasticsearch, else display an error with colorized output
+# each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output
 
 ### SETTINGS & MAPPINGS TEMPLATE
 MAPPING_PARTIAL_PATH="${APP_NAME}"
 if [ "$APP_NAME" == "data-discovery" ]; then
     MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and DataDiscovery
 fi
-echo -e "\nCreate settings/mappings template: ${APP_NAME}-${ENV}-settings-template"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${ENV}-settings-template" -H 'Content-Type: application/json' -d"
+echo -e "\nCreate settings/mappings template: ${APP_NAME}-${APP_ENV}-settings-template"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template" -H 'Content-Type: application/json' -d"
 {
-  \"index_patterns\": [\"${APP_NAME}-${ENV}-*\"],
+  \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-resource*\"],
+  \"order\": 101,
   \"mappings\": {
-    \"${APP_NAME}-${ENV}-resource\":
+    \"${APP_NAME}-${APP_ENV}-resource\":
         $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
     },
   \"settings\":
@@ -105,22 +106,23 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${ENV}-settings-temp
 "\
 > ${TMP_FILE}
 check_acknowledgment
-echo -e "You can check the state of the settings template with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${ENV}-settings-template?pretty'"
+echo -e "You can check the state of the settings template with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template?pretty'"
 
 
 ### ILM POLICY TEMPLATE
-echo -e "\nCreate policy template: ${APP_NAME}-${ENV}-policy-template"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${ENV}-policy-template" -H 'Content-Type: application/json' -d"
+echo -e "\nCreate policy template: ${APP_NAME}-${APP_ENV}-policy-template"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-policy-template" -H 'Content-Type: application/json' -d"
 {
-  \"index_patterns\": [\"${APP_NAME}-${ENV}-*\"],
+  \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-resource*\"],
+  \"order\": 101,
   \"settings\":{
     \"index.lifecycle.name\": \"${APP_NAME}_policy\",
-    \"index.lifecycle.rollover_alias\": \"${APP_NAME}-${ENV}-resource-alias\"
+    \"index.lifecycle.rollover_alias\": \"${APP_NAME}-${APP_ENV}-resource-alias\"
     }
 }"\
 > ${TMP_FILE}
 check_acknowledgment
-echo -e "You can check the state of the policy template with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${ENV}-policy-template?pretty'"
+echo -e "You can check the state of the policy template with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-policy-template?pretty'"
 
 
 ### INDEX LIFECYCLE MANAGEMENT POLICY
@@ -135,31 +137,31 @@ echo -e "You can check the state of the policy with:\ncurl -s -X GET '${ES_HOST}
 
 
 ### INGEST PIPELINE
-echo -e "\nCreate pipeline: datadiscovery-description-tokenizer-pipeline"
-curl -s -X PUT "http://${ES_HOST}:${ES_PORT}/_ingest/pipeline/datadiscovery-description-tokenizer-pipeline" -H 'Content-Type: application/json' -d'
-{
-  "description": "Convert the description field into the suggestions field, to make it usable by an auto-completion query",
-  "processors": [
-    {
-      "datadiscovery_description_tokenizer" : {
-        "field" : "description",
-        "target_field": "suggestions"
-      }
-    }
-  ]
-}'\
-> ${TMP_FILE}
-check_acknowledgment
-echo -e "You can check the state of the pipeline with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_ingest/pipeline/datadiscovery-description-tokenizer-pipeline?pretty'"
+#echo -e "\nCreate pipeline: datadiscovery-description-tokenizer-pipeline"
+#curl -s -X PUT "http://${ES_HOST}:${ES_PORT}/_ingest/pipeline/datadiscovery-description-tokenizer-pipeline" -H 'Content-Type: application/json' -d'
+#{
+#  "description": "Convert the description field into the suggestions field, to make it usable by an auto-completion query",
+#  "processors": [
+#    {
+#      "datadiscovery_description_tokenizer" : {
+#        "field" : "description",
+#        "target_field": "suggestions"
+#      }
+#    }
+#  ]
+#}'\
+#> ${TMP_FILE}
+#check_acknowledgment
+#echo -e "You can check the state of the pipeline with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_ingest/pipeline/datadiscovery-description-tokenizer-pipeline?pretty'"
 
 
 ## CREATE FIRST INDEX ALIASED BY THE ROLLOVER
-echo -e "\nCreate index (aliased by ${APP_NAME}-${ENV}-resource-alias) to write first in: ${APP_NAME}-${ENV}-resource-index-000001"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-index-000001?pretty"\
+echo -e "\nCreate index (aliased by ${APP_NAME}-${APP_ENV}-resource-alias) to write first in: ${APP_NAME}-${APP_ENV}-resource-index-000001"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-index-000001?pretty"\
  -H 'Content-Type: application/json' -d"
 {
     \"aliases\" : {
-        \"${APP_NAME}-${ENV}-resource-alias\" : {
+        \"${APP_NAME}-${APP_ENV}-resource-alias\" : {
           \"is_write_index\": true
         }
     }
@@ -167,7 +169,29 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-index-000001?p
 "\
 > ${TMP_FILE}
 check_acknowledgment
-echo -e "You can check the state of the aliased index with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-resource-index-000001/_alias?pretty'"
+echo -e "You can check the state of the aliased index with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-index-000001/_alias?pretty'"
+
+## CREATE SUGGESTION INDEX
+echo -e "\nCreate index aiming to store all suggestions: ${APP_NAME}-${APP_ENV}-suggestions"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions?pretty"\
+ -H 'Content-Type: application/json' -d"
+{
+    \"mappings\": {
+        \"${APP_NAME}-${APP_ENV}-suggestions\":
+            $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
+        },
+    \"settings\":
+            $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json),
+    \"aliases\" : {
+        \"${APP_NAME}-${APP_ENV}-suggestions-alias\" : {
+          \"is_write_index\": true
+        }
+    }
+}
+"\
+> ${TMP_FILE}
+check_acknowledgment
+echo -e "You can check the state of the index index with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions?pretty'"
 
 rm -f $TMP_FILE
 
