@@ -13,9 +13,21 @@ public class DocumentIndexSettings {
     public static String createSettings() {
         try {
             return Settings.builder().loadFromStream(
-                "settings.json",
-                DocumentIndexSettings.class.getResourceAsStream("settings.json"),
-                true
+                    "settings.json",
+                    DocumentIndexSettings.class.getResourceAsStream("settings.json"),
+                    true
+            ).build().toString();
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+    public static String createSuggestionsSettings() {
+        try {
+            return Settings.builder().loadFromStream(
+                    "settings-suggestions.json",
+                    DocumentIndexSettings.class.getResourceAsStream("settings-suggestions.json"),
+                    true
             ).build().toString();
         }
         catch (IOException e) {

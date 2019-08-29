@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
@@ -13,7 +12,9 @@ import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.Location;
+import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
+import org.assertj.core.util.Lists;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.query.AliasBuilder;
+import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RareDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-rare-resource-physical-index";
+    private static final String SUGGESTION_INDEX = "test-rare-suggestions";
 
     @Autowired
     private RareDocumentDao documentDao;
@@ -54,22 +57,32 @@ class RareDocumentDaoTest extends DocumentDaoTest {
     @BeforeAll
     void prepareIndex() {
         installDatadiscoveryDescriptionTokenizerPipeline();
-
         ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
-            RareDocument.class);
+                RareDocument.class);
+        ElasticsearchPersistentEntity suggestionDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
+                SuggestionDocument.class);
         elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
         elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings());
+        elasticsearchTemplate.deleteIndex(SUGGESTION_INDEX);
+        elasticsearchTemplate.createIndex(SUGGESTION_INDEX, DocumentIndexSettings.createSuggestionsSettings());
         elasticsearchTemplate.addAlias(
             new AliasBuilder().withAliasName(documentEntity.getIndexName())
-                              .withIndexName(PHYSICAL_INDEX)
-                              .build()
+                    .withIndexName(PHYSICAL_INDEX)
+                    .build()
+        );
+        elasticsearchTemplate.addAlias(
+            new AliasBuilder().withAliasName(suggestionDocumentEntity.getIndexName())
+                    .withIndexName(SUGGESTION_INDEX)
+                    .build()
         );
         elasticsearchTemplate.putMapping(RareDocument.class);
+        elasticsearchTemplate.putMapping(SuggestionDocument.class);
     }
 
     @BeforeEach
     void prepare() {
         documentDao.deleteAll();
+        documentDao.deleteAllSuggestions();
     }
 
     @Test
@@ -102,7 +115,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
         documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
-        assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
+//        assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
     }
 
     @Test
@@ -196,90 +209,13 @@ class RareDocumentDaoTest extends DocumentDaoTest {
     }
 
     @Test
-    void shouldSuggestOnName() {
-        shouldSuggest(RareDocument.Builder::withName);
-    }
+    void shouldSuggest() {
+        List<SuggestionDocument> suggestionDocuments = Lists.newArrayList(SuggestionDocument.builder().withSuggestion("Hello").build());
+        suggestionDocuments.add(SuggestionDocument.builder().withSuggestion("world").build());
+        documentDao.saveAllSuggestions(suggestionDocuments);
 
-    @Test
-    void shouldSuggestOnPillarName() {
-        shouldSuggest(RareDocument.Builder::withPillarName);
-    }
-
-    @Test
-    void shouldSuggestOnDatabaseSource() {
-        shouldSuggest(RareDocument.Builder::withDatabaseSource);
-    }
-
-    @Test
-    void shouldSuggestOnDomain() {
-        shouldSuggest(RareDocument.Builder::withDomain);
-    }
-
-    @Test
-    void shouldSuggestOnTaxon() {
-        shouldSuggest((b, s) -> b.withTaxon(Collections.singletonList(s)));
-    }
-
-    @Test
-    void shouldSuggestOnFamily() {
-        shouldSuggest((b, s) -> b.withFamily(Collections.singletonList(s)));
-    }
-
-    @Test
-    void shouldSuggestOnGenus() {
-        shouldSuggest((b, s) -> b.withGenus(Collections.singletonList(s)));
-    }
-
-    @Test
-    void shouldSuggestOnSpecies() {
-        shouldSuggest((b, s) -> b.withSpecies(Collections.singletonList(s)));
-    }
-
-    @Test
-    void shouldSuggestOnMaterialType() {
-        shouldSuggest((b, s) -> b.withMaterialType(Collections.singletonList(s)));
-    }
-
-    @Test
-    void shouldSuggestOnBiotopeType() {
-        shouldSuggest((b, s) -> b.withBiotopeType(Collections.singletonList(s)));
-    }
-
-    @Test
-    void shouldSuggestOnCountryOfOrigin() {
-        shouldSuggest(RareDocument.Builder::withCountryOfOrigin);
-    }
-
-    @Test
-    void shouldSuggestOnCountryOfCollect() {
-        shouldSuggest(RareDocument.Builder::withCountryOfCollect);
-    }
-
-    @Test
-    void shouldNotSuggestOnIdentifier() {
-        RareDocument document = RareDocument.builder().withId("foo-bar").build();
-        documentDao.saveAll(Collections.singleton(document));
-        documentDao.refresh();
-
-        assertThat(documentDao.suggest("foo")).isEmpty();
-    }
-
-    @Test
-    void shouldNotSuggestOnUrls() {
-        RareDocument document =
-            RareDocument.builder().withDataURL("foo bar baz").withPortalURL("foo bar baz").build();
-        documentDao.saveAll(Collections.singleton(document));
-        documentDao.refresh();
-
-        assertThat(documentDao.suggest("foo")).isEmpty();
-    }
-
-    @Test
-    void shouldSuggestOnDescription() {
-        RareDocument document =
-            RareDocument.builder().withDescription("Hello world").build();
-        documentDao.saveAll(Collections.singleton(document));
-        documentDao.refresh();
+        assertThat(documentDao.suggest("hel")).containsOnly("Hello");
+        assertThat(documentDao.suggest("wor")).containsOnly("world");
 
         assertThat(documentDao.suggest("hel")).containsOnly("Hello");
         assertThat(documentDao.suggest("wor")).containsOnly("world");
@@ -287,26 +223,12 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
     @Test
     void shouldSuggestSeveralResults() {
-        RareDocument resource =
-            RareDocument.builder()
-                               .withId(UUID.randomUUID().toString())
-                               .withName("vita e bella")
-                               .withDatabaseSource("Florilege")
-                               .build();
-
-        RareDocument resource2 =
-            RareDocument.builder()
-                               .withId(UUID.randomUUID().toString())
-                               .withTaxon(Collections.singletonList("vitis vinifera"))
-                               .withFamily(Collections.singletonList("vitis"))
-                               .withDatabaseSource("Florilege")
-                               .build();
-
-        documentDao.saveAll(Arrays.asList(resource, resource2));
-        documentDao.refresh();
+        SuggestionDocument s1 = SuggestionDocument.builder().withSuggestion("vita e bella").build();
+        SuggestionDocument s2 = SuggestionDocument.builder().withSuggestion("vitis vinifera").build();
+        documentDao.saveAllSuggestions(Arrays.asList(s1, s2));
 
         List<String> result = documentDao.suggest("vit");
-        assertThat(result).containsOnly("vitis", "vita e bella");
+        assertThat(result).containsOnly("vitis vinifera", "vita e bella");
 
         result = documentDao.suggest("vitis v");
         assertThat(result).containsOnly("vitis vinifera");
@@ -314,26 +236,11 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
     @Test
     void shouldRemoveCaseDifferingResults() {
-        RareDocument resource =
-            RareDocument.builder()
-                               .withId(UUID.randomUUID().toString())
-                               .withName("vita")
-                               .build();
+        SuggestionDocument resource = SuggestionDocument.builder().withSuggestion("vita").build();
+        SuggestionDocument resource2 = SuggestionDocument.builder().withSuggestion("vitis").build();
+        SuggestionDocument resource3 = SuggestionDocument.builder().withSuggestion("VITIS").build();
 
-        RareDocument resource2 =
-            RareDocument.builder()
-                               .withId(UUID.randomUUID().toString())
-                               .withName("vitis")
-                               .build();
-
-        RareDocument resource3 =
-            RareDocument.builder()
-                               .withId(UUID.randomUUID().toString())
-                               .withName("VITIS")
-                               .build();
-
-        documentDao.saveAll(Arrays.asList(resource, resource2, resource3));
-        documentDao.refresh();
+        documentDao.saveAllSuggestions(Arrays.asList(resource, resource2, resource3));
 
         List<String> result = documentDao.suggest("vit");
         assertThat(result).hasSize(2);
@@ -760,17 +667,5 @@ class RareDocumentDaoTest extends DocumentDaoTest {
             assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("France");
             assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L);
         }
-    }
-
-    private void shouldSuggest(BiConsumer<RareDocument.Builder, String> config) {
-        RareDocument.Builder documentBuilder = RareDocument.builder();
-        config.accept(documentBuilder, "foo bar baz");
-        RareDocument document = documentBuilder.build();
-
-        documentDao.saveAll(Collections.singleton(document));
-        documentDao.refresh();
-
-        assertThat(documentDao.suggest("FOO")).containsExactly("foo bar baz");
-        assertThat(documentDao.suggest("bing")).isEmpty();
     }
 }

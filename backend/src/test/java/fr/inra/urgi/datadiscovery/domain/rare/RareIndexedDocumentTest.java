@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit test for {@link RareIndexedDocument}
  * @author JB Nizet
  */
+@Deprecated
 class RareIndexedDocumentTest {
     @Test
     public void shouldStoreSuggestions() {

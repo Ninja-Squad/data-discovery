@@ -1,0 +1,9 @@
+{
+    "dynamic": "strict",
+    "properties": {
+        "suggestions": {
+            "type" : "completion",
+            "analyzer": "custom_suggestion_analyzer"
+        }
+    }
+}

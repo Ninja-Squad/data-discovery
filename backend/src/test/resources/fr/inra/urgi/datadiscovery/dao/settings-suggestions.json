@@ -1,0 +1,28 @@
+{
+    "number_of_replicas": 0,
+    "number_of_shards": 4,
+    "refresh_interval": "30s",
+    "analysis": {
+        "analyzer": {
+            "custom_suggestion_analyzer": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "english_stop_words",
+                    "english_stemmer"
+                ]
+            }
+        },
+        "filter" : {
+            "english_stemmer" : {
+                "type": "stemmer",
+                "name": "english"
+            },
+            "english_stop_words": {
+                "type": "stop",
+                "stopwords": "_english_"
+            }
+        }
+    }
+}

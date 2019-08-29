@@ -1,6 +1,6 @@
 package fr.inra.urgi.datadiscovery.dao;
 
-import fr.inra.urgi.datadiscovery.domain.Document;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 
 /**
  * Common interface to all aggregation types. Each application (RARe, WheatIS, etc.) typically defines an enum
@@ -16,7 +16,7 @@ public interface AppAggregation {
 
     /**
      * Returns the field of the aggregation, on which the aggregation is made. It's typically a keyword field
-     * of the {@link Document} class of the app
+     * of the {@link SearchDocument} class of the app
      */
     String getField();
 

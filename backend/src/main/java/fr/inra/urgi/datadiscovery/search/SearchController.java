@@ -7,7 +7,7 @@ import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.DocumentDao;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
-import fr.inra.urgi.datadiscovery.domain.Document;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.dto.AggregatedPageDTO;
 import fr.inra.urgi.datadiscovery.dto.PageDTO;
 import fr.inra.urgi.datadiscovery.exception.BadRequestException;
@@ -55,7 +55,7 @@ public class SearchController {
      * @see AppAggregation
      */
     @GetMapping
-    public AggregatedPageDTO<? extends Document> search(@RequestParam("query") String query,
+    public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam("query") String query,
 														@RequestParam("aggregate") Optional<Boolean> aggregate,
 														@RequestParam("highlight") Optional<Boolean> highlight,
 														@RequestParam("page") Optional<Integer> page,

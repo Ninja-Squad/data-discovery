@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit test for {@link WheatisIndexedDocument}
  * @author JB Nizet
  */
+@Deprecated
 class WheatisIndexedDocumentTest {
     @Test
     public void shouldStoreSuggestions() {

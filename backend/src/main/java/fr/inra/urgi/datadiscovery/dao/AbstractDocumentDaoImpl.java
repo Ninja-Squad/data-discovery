@@ -1,7 +1,8 @@
 package fr.inra.urgi.datadiscovery.dao;
 
-import fr.inra.urgi.datadiscovery.domain.Document;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
+import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -25,10 +26,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SourceFilter;
+import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
+import org.springframework.data.elasticsearch.core.query.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -42,7 +41,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
  * Base class for implementations of {@link DocumentDao}
  * @author JB Nizet, R. Flores
  */
-public abstract class AbstractDocumentDaoImpl<D extends Document, I extends IndexedDocument<D>>
+public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extends IndexedDocument<D>>
     implements DocumentDaoCustom<D, I> {
 
     /**
@@ -131,7 +130,7 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
         ).subAggregation(
             AggregationBuilders.terms(appAggregation.getName())
                                .field(appAggregation.getField())
-                               .missing(Document.NULL_VALUE)
+                               .missing(SearchDocument.NULL_VALUE)
                                .size(appAggregation.getType().getMaxBuckets()));
     }
 
@@ -172,27 +171,27 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
      *     </li>
      *     <li>
      *         The field is of type string and can be null. In that case, the null value is indexed, thanks to the
-     *         mapping, as {@link Document#NULL_VALUE}. This NULL value can be considered as any other real value
+     *         mapping, as {@link SearchDocument#NULL_VALUE}. This NULL value can be considered as any other real value
      *         and all we need is thus a terms query containing all the accepted values, including NULL
      *     </li>
      *     <li>
      *         The field is an array, and can be an empty array. In that case, it's considered by ElasticSearch as
      *         missing, but the aggregation created in {@link #search(String, boolean, boolean, SearchRefinements, Pageable)}
-     *         puts missing values in the bucket with the key {@link Document#NULL_VALUE}. So, the aggregation
-     *         considers null values and missing values as the same value: {@link Document#NULL_VALUE}.
-     *         It's still considered, when searching, as a missing value though. So, if {@link Document#NULL_VALUE}
+     *         puts missing values in the bucket with the key {@link SearchDocument#NULL_VALUE}. So, the aggregation
+     *         considers null values and missing values as the same value: {@link SearchDocument#NULL_VALUE}.
+     *         It's still considered, when searching, as a missing value though. So, if {@link SearchDocument#NULL_VALUE}
      *         is present in the set of accepted values, we want both the null values and the missing values. We thus
      *         create an <code>or</code> query (i.e. a <code>should</code> bool query in Elasticsearch terms), which
      *         combines a terms query containing all the accepted values, including NULL, and a "not exists" query.
      *         This combined query thus returns all the documents that have one of the real accepted values, or is null
-     *         and thus has the value {@link Document#NULL_VALUE} in the index, or does not exist.
+     *         and thus has the value {@link SearchDocument#NULL_VALUE} in the index, or does not exist.
      *     </li>
      * </ul>
      */
     private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
         TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
-        if (acceptedValues.contains(Document.NULL_VALUE)) {
+        if (acceptedValues.contains(SearchDocument.NULL_VALUE)) {
             return boolQuery()
                 .should(termsQuery)
                 .should(boolQuery().mustNot(existsQuery(term.getField())));
@@ -214,7 +213,7 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
                                .skipDuplicates(true));
 
         RestHighLevelClient client = elasticsearchTemplate.getClient();
-        String index = elasticsearchTemplate.getPersistentEntityFor(getDocumentClass()).getIndexName();
+        String index = elasticsearchTemplate.getPersistentEntityFor(getSuggestionDocumentClass()).getIndexName();
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().suggest(suggestion);
         sourceBuilder.fetchSource(false);
         SearchRequest req = new SearchRequest(new String[]{index}, sourceBuilder);
@@ -266,6 +265,24 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
     }
 
     @Override
+    public void saveAllSuggestions(Collection<SuggestionDocument> suggestions) {
+        List<IndexQuery> queries = suggestions.parallelStream().map(this::createSuggestionIndexQuery).collect(Collectors.toList());
+        elasticsearchTemplate.bulkIndex(queries);
+        // allow to refresh systematically since this method is only used for testing purpose, impact of performances is low
+        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(getSuggestionDocumentClass()).getIndexName());
+    }
+
+    @Override
+    public void deleteAllSuggestions() {
+        DeleteQuery deleteQuery = new DeleteQuery();
+        ElasticsearchPersistentEntity persistentEntity = elasticsearchTemplate.getPersistentEntityFor(SuggestionDocument.class);
+        deleteQuery.setIndex(persistentEntity.getIndexName());
+        deleteQuery.setType(persistentEntity.getIndexType());
+        elasticsearchTemplate.delete(deleteQuery);
+        elasticsearchTemplate.refresh(persistentEntity.getIndexName());
+    }
+
+    @Override
     public void putMapping() {
         elasticsearchTemplate.putMapping(getIndexedDocumentClass());
     }
@@ -295,6 +312,12 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
         return documents.getAggregations().get(pillarAggregationName);
     }
 
+    private IndexQuery createSuggestionIndexQuery(SuggestionDocument suggestion) {
+        IndexQuery query = new IndexQuery();
+        query.setObject(suggestion);
+        return query;
+    }
+
     private IndexQuery createIndexQuery(I entity) {
         IndexQuery query = new IndexQuery();
         query.setObject(entity);
@@ -303,17 +326,24 @@ public abstract class AbstractDocumentDaoImpl<D extends Document, I extends Inde
     }
 
     /**
-     * Returns the specific {@link Document} class of this DAO
+     * Returns the specific {@link SearchDocument} class of this DAO
      */
     protected abstract Class<D> getDocumentClass();
 
     /**
+     * Returns the {@link SuggestionDocument} class of this DAO.
+     * No need to make it abstract since it does not differ across applications
+     */
+    protected Class<SuggestionDocument> getSuggestionDocumentClass(){ return SuggestionDocument.class; }
+
+    /**
      * Returns the specific {@link IndexedDocument} class of this DAO
      */
+    @Deprecated
     protected abstract Class<I> getIndexedDocumentClass();
 
     /**
-     * Returns the list of fields of the specific {@link Document} subclass on which the full text query must be
+     * Returns the list of fields of the specific {@link SearchDocument} subclass on which the full text query must be
      * applied.
      */
     protected abstract Set<String> getSearchableFields();

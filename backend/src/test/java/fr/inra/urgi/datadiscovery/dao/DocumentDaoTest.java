@@ -19,8 +19,20 @@ public abstract class DocumentDaoTest {
 
     protected void installDatadiscoveryDescriptionTokenizerPipeline() {
         String source =
-                "{\"description\":\"[TEST] Convert a description field to make it usable by an auto-completion query\"," +
-                        "\"processors\":[{\"datadiscovery_description_tokenizer\":{\"field\":\"description\",\"target_field\":\"suggestions\"}}]}";
+                "{" +
+                    "\"description\":" +
+                        "\"[TEST] Convert a description field to make it usable by an auto-completion query\"," +
+                    "\"processors\":" +
+                        "[" +
+                            "{" +
+                            "   \"datadiscovery_description_tokenizer\":" +
+                                "{" +
+                                    "\"field\":\"description\"," +
+                                    "\"target_field\":\"suggestions\"" +
+                                "}" +
+                            "}" +
+                        "]" +
+                "}";
         PutPipelineRequest request = new PutPipelineRequest(
                 "datadiscovery-description-tokenizer-pipeline",
                 new BytesArray(source.getBytes(StandardCharsets.UTF_8)),

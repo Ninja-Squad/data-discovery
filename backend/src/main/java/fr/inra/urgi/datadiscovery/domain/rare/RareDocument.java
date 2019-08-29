@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.inra.urgi.datadiscovery.domain.Document;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Mapping;
@@ -19,7 +19,7 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
  * This document is used by all the search operations, but not by the harvesting process, which instead uses
  * {@link RareIndexedDocument}. Its index is in fact an alias which typically refers to the same physical index as
  * the alias used by {@link RareIndexedDocument}, except when we want to harvest to a new index
- * (in order to delete obsolete documents, or to accomodate with incompatible schema changes). In that case, once the
+ * (in order to delete obsolete documents, or to accommodate with incompatible schema changes). In that case, once the
  * harvest process is finished, the alias of {@link RareDocument} can be modified to refer to the new physical
  * index, in order to start searching in the newly harvested documents.
  *
@@ -31,7 +31,7 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json")
-public class RareDocument implements Document {
+public class RareDocument implements SearchDocument {
 
     @Id
     @JsonProperty("identifier")

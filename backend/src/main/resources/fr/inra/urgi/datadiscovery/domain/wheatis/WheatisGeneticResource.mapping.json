@@ -3,7 +3,6 @@
     "properties": {
         "name": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -17,7 +16,6 @@
         },
         "entryType": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -27,7 +25,6 @@
         },
         "databaseName": {
             "type": "text",
-            "copy_to": "suggestions",
             "analyzer": "french",
             "fields": {
                 "keyword": {
@@ -48,7 +45,6 @@
         },
         "species": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -59,17 +55,12 @@
         },
         "node": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
                     "ignore_above": 256
                 }
             }
-        },
-        "suggestions": {
-            "type" : "completion",
-            "analyzer": "custom_suggestion_analyzer"
         }
     }
 }

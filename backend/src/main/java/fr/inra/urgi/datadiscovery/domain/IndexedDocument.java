@@ -16,11 +16,12 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
  * Interface common to all indexed documents that can be indexed and searched by this application.
  * One implementation exists for each app: one for Rare, one for WheatIS, etc.
  *
- * It contains all the fields of a {@link Document}, and additional fields used uniquely for indexing
+ * It contains all the fields of a {@link SearchDocument}, and additional fields used uniquely for indexing
  * and which thus make it possible or easier to implement completion suggestions.
  * @author JB Nizet
  */
-public interface IndexedDocument<D extends Document> {
+@Deprecated
+public interface IndexedDocument<D extends SearchDocument> {
     /**
      * Returns the wrapped document
      */

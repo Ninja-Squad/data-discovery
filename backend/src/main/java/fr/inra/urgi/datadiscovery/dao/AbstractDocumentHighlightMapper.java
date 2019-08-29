@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import fr.inra.urgi.datadiscovery.domain.Document;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -19,7 +19,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
  * A base class for highlight mappers. There is one subclass for each app (RARe, WheatIS, etc.)
  * @author JB Nizet
  */
-public abstract class AbstractDocumentHighlightMapper<D extends Document>
+public abstract class AbstractDocumentHighlightMapper<D extends SearchDocument>
     implements SearchResultMapper {
 
     private DefaultResultMapper defaultResultMapper;
