@@ -93,7 +93,10 @@ lint:
  only:
   changes:
    - backend/src/**/*
+   - backend/build.gradle.kts
    - frontend/**/*
+   - build.gradle.kts
+   - docker.env
 
 build-rare:
  variables:
@@ -366,7 +369,7 @@ data-integration-rare-beta:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/rare/*.json.gz
   refs:
    - branches
  except:
@@ -379,7 +382,7 @@ data-integration-rare-staging:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/rare/*.json.gz
   refs:
    - master
 
@@ -389,7 +392,7 @@ data-integration-rare-prod:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/rare/*.json.gz
   refs:
    - master
 
@@ -399,7 +402,7 @@ data-integration-wheatis-beta:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/wheatis/*.json.gz
   refs:
    - branches
  except:
@@ -412,7 +415,7 @@ data-integration-wheatis-staging:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/wheatis/*.json.gz
   refs:
    - master
 
@@ -422,7 +425,7 @@ data-integration-wheatis-prod:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/wheatis/*.json.gz
   refs:
    - master
 
@@ -432,7 +435,7 @@ data-integration-data-discovery-beta:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/data-discovery/*.json.gz
   refs:
    - branches
  except:
@@ -445,7 +448,7 @@ data-integration-data-discovery-staging:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/data-discovery/*.json.gz
   refs:
    - master
 
@@ -455,7 +458,7 @@ data-integration-data-discovery-prod:
  <<: *data-integration
  only:
   changes:
-   - data/**/*.json.gz
+   - data/data-discovery/*.json.gz
   refs:
    - master
 

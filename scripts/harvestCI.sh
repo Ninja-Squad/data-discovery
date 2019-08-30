@@ -92,6 +92,7 @@ mkdir -p "$OUTDIR"
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
 		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
+	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/*.log.gz
 	exit $code
 }
 
@@ -106,7 +107,7 @@ EOF
 {
     #set -x
     echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias ..."
-    time parallel --bar "
+    time parallel --eta "
             curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
                 --data-binary '@{}' > ${OUTDIR}/{/.}.log.gz" \
@@ -115,5 +116,6 @@ EOF
 	code=$?
 	echo -e "A problem occurred (code=$code) when trying to index suggestions \n"\
 		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
+	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/bulk*.log.gz
 	exit $code
 }
