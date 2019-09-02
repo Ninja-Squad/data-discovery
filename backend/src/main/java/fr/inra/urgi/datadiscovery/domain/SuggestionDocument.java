@@ -48,7 +48,7 @@ public final class SuggestionDocument implements fr.inra.urgi.datadiscovery.doma
     }
 
     public int hashCode() {
-        return Objects.hash(//id,
+        return Objects.hash(
                 suggestions);
     }
 

@@ -51,7 +51,6 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
     @BeforeAll
     void prepareIndex() {
-        installDatadiscoveryDescriptionTokenizerPipeline();
         ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
                 WheatisDocument.class);
         ElasticsearchPersistentEntity suggestionDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(

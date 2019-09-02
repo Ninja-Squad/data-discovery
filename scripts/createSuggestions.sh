@@ -28,7 +28,7 @@ DESCRIPTION:
     -> last step is the generation of bulk files
       -> in parallel, but on the fly, the data is splitted in chunks and each data line sees inserted before it a bulk
            action-metadata line
-      -> then, the output is redirected to a compressed (to keep or not?) file
+      -> then, the output is redirected to compressed files
         Script used to create index and aliases for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:

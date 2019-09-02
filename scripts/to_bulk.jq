@@ -17,7 +17,7 @@ def to_bulk(identifier):
         else
             ("WARNING: Following document has been dropped from bulk because it misses the given key identifier ("
                 + identifier + "): " + (.| tostring)) | stderr          # print warning into stderr
-        | empty                                                         # drop the current malformed object from bulk
+            | empty                                                         # drop the current malformed object from bulk
         end
 ;
 

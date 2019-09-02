@@ -56,7 +56,6 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
     @BeforeAll
     void prepareIndex() {
-        installDatadiscoveryDescriptionTokenizerPipeline();
         ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
                 RareDocument.class);
         ElasticsearchPersistentEntity suggestionDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
@@ -213,9 +212,6 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         List<SuggestionDocument> suggestionDocuments = Lists.newArrayList(SuggestionDocument.builder().withSuggestion("Hello").build());
         suggestionDocuments.add(SuggestionDocument.builder().withSuggestion("world").build());
         documentDao.saveAllSuggestions(suggestionDocuments);
-
-        assertThat(documentDao.suggest("hel")).containsOnly("Hello");
-        assertThat(documentDao.suggest("wor")).containsOnly("world");
 
         assertThat(documentDao.suggest("hel")).containsOnly("Hello");
         assertThat(documentDao.suggest("wor")).containsOnly("world");

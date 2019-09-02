@@ -9,7 +9,7 @@ DESCRIPTION:
 	Script used to index data in Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -host <elasticsearch_host> -port <elasticsearch_port> -app <application name> -env <environment name> -copy [-h|--help]
+	$0 -host <elasticsearch_host> -port <elasticsearch_port> -app <application name> -env <environment name> [-h|--help]
 
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST)

@@ -100,7 +100,7 @@ by these tests. The documentation is generated in the folder `backend/build/asci
 Harvesting (i.e. importing documents stored in JSON files into Elasticsearch) consists in
 creating the necessary index and aliases and Elasticsearch templates.
 
-To create the index and its aliases execute the script with appropriate
+To create the index and its aliases execute the script below for local dev environment:
 
     ./scripts/createIndexAndAliases.sh
 
@@ -114,7 +114,7 @@ You can run the scripts:
     ./scripts/harvestRare.sh
     ./scripts/harvestWheatis.sh
     
-to trigger a harvest of the resources stored in the Git LFS directories `data/rare` and `data/wheatis`.
+to trigger a harvest of the resources stored in the Git LFS directories `data/rare` and `data/wheatis` respectively.
 
 ## Indices and aliases
 

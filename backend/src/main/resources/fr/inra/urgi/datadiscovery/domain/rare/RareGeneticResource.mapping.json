@@ -12,7 +12,6 @@
         },
         "name": {
             "type": "text",
-            "copy_to": "suggestions",
             "analyzer": "french",
             "fields": {
                 "keyword": {
@@ -27,7 +26,6 @@
         },
         "pillarName": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -37,7 +35,6 @@
         },
         "databaseSource": {
             "type": "text",
-            "copy_to": "suggestions",
             "analyzer": "french",
             "fields": {
                 "keyword": {
@@ -62,7 +59,6 @@
         },
         "domain": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -72,7 +68,6 @@
         },
         "taxon": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -82,7 +77,6 @@
         },
         "family": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -92,7 +86,6 @@
         },
         "genus": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -102,7 +95,6 @@
         },
         "species": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -112,7 +104,6 @@
         },
         "materialType": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -123,7 +114,6 @@
         },
         "biotopeType": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -134,7 +124,6 @@
         },
         "countryOfOrigin": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
                 "keyword": {
                     "type": "keyword",
@@ -148,9 +137,8 @@
         },
         "countryOfCollect": {
             "type": "text",
-            "copy_to": "suggestions",
             "fields": {
-                "keyword": {
+    		    "keyword": {
                     "type": "keyword",
                     "ignore_above": 256,
                     "null_value": "NULL"
@@ -159,10 +147,6 @@
         },
         "locationOfCollect": {
             "type": "geo_point"
-        },
-        "suggestions": {
-            "type" : "completion",
-            "analyzer": "custom_suggestion_analyzer"
         }
     }
 }
