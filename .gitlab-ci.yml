@@ -340,6 +340,7 @@ deploy-data-discovery-to-prod:
   - git checkout $CI_COMMIT_REF_NAME
   - git pull
   - git lfs pull -I "data/${APP_NAME}/*.gz"
+  - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
   # Deleting old indexes before reindexing from scratch
   - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo
   # Should better handle those index switches by using the strategy proposed in the README file
