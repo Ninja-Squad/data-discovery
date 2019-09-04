@@ -138,7 +138,7 @@
         "countryOfCollect": {
             "type": "text",
             "fields": {
-    		    "keyword": {
+                "keyword": {
                     "type": "keyword",
                     "ignore_above": 256,
                     "null_value": "NULL"

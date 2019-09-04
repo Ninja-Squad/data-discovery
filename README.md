@@ -73,7 +73,7 @@ The `.gitlab-ci.yml` file describes how Gitlab is running the CI jobs.
 It uses a base docker image named `urgi/docker-browsers`
 available on [DockerHub](https://hub.docker.com/r/urgi/docker-browsers/)
 and [INRA-MIA Gitlab](https://forgemia.inra.fr/urgi-is/docker-rare).
-The image is based on `openjdk:8` and adds al needed to run the tests
+The image is based on `openjdk:8` and adds all stuff needed to run the tests
 (ie. a Chrome binary with a headless Chrome in `--no-sandbox` mode).
 
 We install `node` and `yarn` in `/tmp` (this is not the case for local builds)
@@ -105,7 +105,7 @@ To create the index and its aliases execute the script below for local dev envir
     ./scripts/createIndexAndAliases.sh
 
 This script is a wrapper for the `./scripts/createIndexAndAliases4CI.sh` which handle some parameters to create
-indices, aliases and so on, on a another (possible remote) Elasticsearch for fitting to a specific environment:
+indices, aliases and so on, on another (possible remote) Elasticsearch for fitting to a specific environment:
 
     ./scripts/createIndexAndAliases4CI.sh -host localhost -app rare -env dev
 
@@ -118,13 +118,15 @@ to trigger a harvest of the resources stored in the Git LFS directories `data/ra
 
 ## Indices and aliases
 
-The application uses several physical indices, which are rolled over automatically based on the policies defined in the
+The application uses several physical indices, which (at least the resources index) can be rolled over automatically based on the policies defined in the
 `./backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*_policy.json` files. This is based on the
 [Index Lifecyle Management](https://www.elastic.co/guide/en/elasticsearch/reference/6.6/index-lifecycle-management.html)
 provided by Elasticsearch.
 
- * one to store physical resources. This one must be created explicitly before using the application. If not,
- requests to the web services will return errors.
+ * one to store physical resources, containing the main content
+ * one to store suggestions, use for the search type-ahead feature only
+
+Both indices must be created explicitly before using the application. If not, requests to the web services will return errors.
 
 Each index and alias below refers to `rare` application in `dev` environment, the equivalent shall be created for `wheatis` 
 app in `dev` environment as same as in `beta` or `prod` environments. For brevity, only `rare-dev` is explained here.
