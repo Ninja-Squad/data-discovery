@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+BOLD='\033[1m'
+RED_BOLD="${RED}${BOLD}"
+NC='\033[0m' # No format
+
 ES_HOST=localhost
 ES_PORT=9200
 
@@ -29,7 +36,7 @@ EOF
 
 check_command() {
   command -v $1 >/dev/null || {
-    echo "Program $1 is missing, cannot continue..."
+    echo -e "${ORANGE}Program $1 is missing, cannot continue...${NC}"
     return 1
   }
   return 0
@@ -41,7 +48,7 @@ check_command parallel || ((MISSING_COUNT += 1))
 check_command jq || ((MISSING_COUNT += 1))
 
 [ $MISSING_COUNT -ne 0 ] && {
-  echo "Please, install the $MISSING_COUNT missing program(s). Exiting."
+  echo -e "${RED}ERROR: please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
   exit $MISSING_COUNT
 }
 
@@ -58,7 +65,8 @@ while [ -n "$1" ]; do
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
 		--) shift;break;;
-		-*) echo "Unknown option: $1" && echo && help && echo;exit 1;;
+		-*) echo -e "${RED}ERROR: Unknown option: $1${NC}" && echo && help && echo;exit 1;;
+		*) echo -e "${RED}ERROR: Number or arguments unexpected. If you provide several hosts, please double quote them: $1${NC}" && echo && help && echo;exit 1;;
 		*) break;;
 	esac
 done
@@ -95,7 +103,6 @@ mkdir -p "$OUTDIR"
 	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/*.log.gz
 	exit $code
 }
-
 echo "Indexing has finished, updating settings"
 curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias/_settings\" --data-binary '@-' <<EOF
 {
@@ -114,8 +121,8 @@ EOF
         ::: ${DATADIR}/suggestions/bulk*.gz
 } || {
 	code=$?
-	echo -e "A problem occurred (code=$code) when trying to index suggestions \n"\
-		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
-	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/bulk*.log.gz
+	echo -e "${RED}A problem occurred (code=$code) when trying to index suggestions \n"\
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
+	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
 	exit $code
 }
