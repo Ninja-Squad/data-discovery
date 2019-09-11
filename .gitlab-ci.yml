@@ -351,7 +351,7 @@ deploy-data-discovery-to-prod:
   - git lfs pull -I "data/${APP_NAME}/*.gz"
   - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
   # Deleting old indexes before reindexing from scratch
-  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo
+  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/*${APP_NAME}-${ENV}-* ; echo
   # Should better handle those index switches by using the strategy proposed in the README file
   - ./scripts/createIndexAndAliases4CI.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} ; sleep 1 ; echo
   - ./scripts/harvestCI.sh -host "${ES_HOSTS}" -port ${ES_PORT} -app ${APP_NAME} -env ${ENV} ; echo
