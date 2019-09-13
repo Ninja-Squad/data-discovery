@@ -67,7 +67,6 @@ while [ -n "$1" ]; do
 		--) shift;break;;
 		-*) echo -e "${RED}ERROR: Unknown option: $1${NC}" && echo && help && echo;exit 1;;
 		*) echo -e "${RED}ERROR: Number or arguments unexpected. If you provide several hosts, please double quote them: $1${NC}" && echo && help && echo;exit 1;;
-		*) break;;
 	esac
 done
 
@@ -85,7 +84,7 @@ if [ -z "$ES_HOST" ]; then
 	exit 4
 fi
 
-# Check that all ES nodes become to the same cluster
+# Check that all ES nodes belong to the same cluster
 previous_cluster_info=""
 for es_host in ${ES_HOSTS} ; do
     cluster_info=$(curl -s -m 5 ${es_host}:9200)
@@ -99,7 +98,7 @@ for es_host in ${ES_HOSTS} ; do
     previous_node_name=$(echo "${previous_cluster_info}" | jq -r '.name?')
 
     [ -n "${previous_cluster_uuid}" ] && [ "${previous_cluster_uuid}" != "${cluster_uuid}" ] && {
-        echo -e "${RED}ERROR: you try to index data on nodes becoming to different clusters, having cluster_uuid: ${ORANGE}${previous_cluster_uuid}${RED} (node named '${ORANGE}${previous_node_name}${RED}') and ${ORANGE}${cluster_uuid}${RED} (node named '${ORANGE}${node_name}${RED}'). You must provide nodes from the same Elasticsearch cluster. Exiting.${NC}"
+        echo -e "${RED}ERROR: you try to index data on nodes belonging to different clusters, having cluster_uuid: ${ORANGE}${previous_cluster_uuid}${RED} (node named '${ORANGE}${previous_node_name}${RED}') and ${ORANGE}${cluster_uuid}${RED} (node named '${ORANGE}${node_name}${RED}'). You must provide nodes from the same Elasticsearch cluster. Exiting.${NC}"
          exit 5
     }
     previous_cluster_info="${cluster_info}"
