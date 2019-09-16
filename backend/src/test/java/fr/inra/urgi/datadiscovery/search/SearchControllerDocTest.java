@@ -131,7 +131,7 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, 2));
 
         mockMvc.perform(docGet("/api/documents").param("query", query))
@@ -155,7 +155,7 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(page, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, SearchController.PAGE_SIZE * page + 2));
 
         mockMvc.perform(docGet("/api/documents")
@@ -171,7 +171,7 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, true, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, true, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(highlightedSyrah, highlightedDorato), pageRequest, 2));
 
         mockMvc.perform(docGet("/api/documents")
@@ -188,7 +188,7 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(page, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, true, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(syrah, dorato),
                 pageRequest,
@@ -248,7 +248,7 @@ class SearchControllerDocTest {
                              .withTerm(RareAggregation.COUNTRY_OF_ORIGIN, Arrays.asList("France", "Italy"))
                              .build();
 
-        when(mockDocumentDao.search(query, false, false, expectedRefinements, pageRequest))
+        when(mockDocumentDao.search(query, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
         mockMvc.perform(docGet("/api/documents")

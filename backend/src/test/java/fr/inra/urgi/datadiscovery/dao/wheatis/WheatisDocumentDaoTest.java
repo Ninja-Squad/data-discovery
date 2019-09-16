@@ -139,8 +139,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         assertThat(documentDao.search("bar",
-                                             false,
-                                             false,
+                false,
                                              SearchRefinements.EMPTY,
                                              firstPage).getContent()).isEmpty();
     }
@@ -164,11 +163,11 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
+            documentDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getAggregations()).isNull();
 
-        result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
+        result = documentDao.search("bing", false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
     }
 
@@ -330,8 +329,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result = documentDao.search("comes sun",
-                                                                                  false,
-                                                                                  true,
+                true,
                                                                                   SearchRefinements.EMPTY,
                                                                                   firstPage);
 
@@ -383,7 +381,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<WheatisDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r1");
 
@@ -391,14 +389,14 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                            .withTerm(WheatisAggregation.DATABASE_NAME, Arrays.asList("unexisting", "GnpIS"))
                                            .build();
             result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r2", "r3");
 
             refinements = SearchRefinements.builder()
                                            .withTerm(WheatisAggregation.NODE, Arrays.asList("unexisting"))
                                            .build();
             result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).extracting(WheatisDocument::getId).isEmpty();
         }
 
@@ -410,7 +408,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<WheatisDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r3");
         }

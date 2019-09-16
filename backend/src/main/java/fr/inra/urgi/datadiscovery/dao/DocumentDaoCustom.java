@@ -20,7 +20,6 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
      * documents, and returns the requested page (results are sorted by score, in descending order).
      */
     AggregatedPage<D> search(String query,
-                             @Deprecated boolean aggregate,
                              boolean highlight,
                              SearchRefinements refinements,
                              Pageable page);

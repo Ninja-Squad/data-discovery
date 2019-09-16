@@ -14,7 +14,6 @@ import fr.inra.urgi.datadiscovery.exception.BadRequestException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,8 +61,7 @@ public class SearchController {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(documentDao.search(query,
-                                                                    aggregate.orElse(false),
-                                                                    highlight.orElse(false),
+                highlight.orElse(false),
                                                                     createRefinementsFromParameters(parameters),
                                                                     PageRequest.of(page.orElse(0), PAGE_SIZE)),
                                           aggregationAnalyzer);

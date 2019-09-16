@@ -57,7 +57,7 @@ class SearchControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
-        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
         mockMvc.perform(get("/api/documents").param("query", query))
@@ -152,7 +152,7 @@ class SearchControllerTest {
                              .withTerm(RareAggregation.MATERIAL, Arrays.asList("m1"))
                              .build();
 
-        when(mockDocumentDao.search(query, false, false, expectedRefinements, pageRequest))
+        when(mockDocumentDao.search(query, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
         mockMvc.perform(get("/api/documents")

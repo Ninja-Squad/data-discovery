@@ -14,7 +14,7 @@ export class AggregationsComponent {
   @Input() aggregations: Array<Aggregation> = [];
   // private _aggregations: Array<Aggregation> = [];
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
-  @Input() aggLoading: boolean = false;
+  @Input() aggLoading = false;
   @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
 
   // aggLoading = false;

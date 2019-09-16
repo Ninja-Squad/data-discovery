@@ -5,7 +5,7 @@ package fr.inra.urgi.datadiscovery.domain;
  * One implementation exists for each app: one for Rare, one for WheatIS, etc.
  * @author JB Nizet
  */
-public interface SearchDocument {
+public interface SearchDocument extends Document {
 
     /**
      * The value used to index null values, in order to be able to create a refinement query for this value.

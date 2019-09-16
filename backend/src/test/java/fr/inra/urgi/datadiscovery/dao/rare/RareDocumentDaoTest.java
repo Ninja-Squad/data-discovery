@@ -31,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.query.AliasBuilder;
-import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -188,8 +187,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.save(document);
 
         assertThat(documentDao.search(document.getId(),
-                                             false,
-                                             false,
+                false,
                                              SearchRefinements.EMPTY,
                                              firstPage).getContent()).isEmpty();
     }
@@ -201,8 +199,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.save(document);
 
         assertThat(documentDao.search("bar",
-                                             false,
-                                             false,
+                false,
                                              SearchRefinements.EMPTY,
                                              firstPage).getContent()).isEmpty();
     }
@@ -260,16 +257,16 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
+            documentDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getAggregations()).isNull();
 
-        result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
+        result = documentDao.search("bing", false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
     }
 
     @Test
-    void shouldSearchAndAggregate() {
+    void shouldAggregate() {
         RareDocument document1 = RareDocument.builder()
                                                                   .withId("r1")
                                                                   .withName("foo")
@@ -296,8 +293,8 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.search("foo", true, false, SearchRefinements.EMPTY, firstPage);
-        assertThat(result.getContent()).hasSize(2);
+            documentDao.aggregate("foo", SearchRefinements.EMPTY);
+        assertThat(result.getContent()).hasSize(1);
 
         Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
         assertThat(domain.getName()).isEqualTo(RareAggregation.DOMAIN.getName());
@@ -369,8 +366,8 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.search("vitis", true, false, SearchRefinements.EMPTY, firstPage);
-        assertThat(result.getContent()).hasSize(2);
+            documentDao.aggregate("vitis", SearchRefinements.EMPTY);
+        assertThat(result.getContent()).hasSize(1);
 
         Terms material = result.getAggregations().get(rareAggregation.getName());
         assertThat(material.getName()).isEqualTo(rareAggregation.getName());
@@ -395,8 +392,8 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.search("vitis", true, false, SearchRefinements.EMPTY, firstPage);
-        assertThat(result.getContent()).hasSize(2);
+            documentDao.aggregate("vitis",SearchRefinements.EMPTY);
+        assertThat(result.getContent()).hasSize(1);
 
         Terms material = result.getAggregations().get(rareAggregation.getName());
         assertThat(material.getName()).isEqualTo(rareAggregation.getName());
@@ -501,8 +498,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result = documentDao.search("comes sun",
-                                                                               false,
-                                                                               true,
+                true,
                                                                                SearchRefinements.EMPTY,
                                                                                firstPage);
 
@@ -558,7 +554,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r1", "r3");
 
@@ -566,14 +562,14 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                            .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting", "Fungi"))
                                            .build();
             result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r2");
 
             refinements = SearchRefinements.builder()
                                            .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting"))
                                            .build();
             result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).extracting(RareDocument::getId).isEmpty();
         }
 
@@ -585,7 +581,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r2");
         }
@@ -598,7 +594,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r3");
         }
@@ -611,7 +607,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r3");
         }
@@ -625,7 +621,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r2");
 
@@ -636,7 +632,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             result =
-                documentDao.search("hello", false, false, refinements, firstPage);
+                documentDao.search("hello", false, refinements, firstPage);
             assertThat(result.getContent()).isEmpty();
         }
 
@@ -648,9 +644,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.search("hello", true, false, refinements, firstPage);
-
-            assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r1", "r3");
+                documentDao.aggregate("hello", refinements);
 
             Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
             assertThat(domain.getBuckets()).hasSize(2);

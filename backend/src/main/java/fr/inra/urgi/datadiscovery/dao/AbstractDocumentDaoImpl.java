@@ -73,7 +73,6 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
 
     @Override
     public AggregatedPage<D> search(String query,
-                                    @Deprecated boolean aggregate,
                                     boolean highlight,
                                     SearchRefinements refinements,
                                     Pageable page) {
@@ -186,7 +185,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
      *     </li>
      *     <li>
      *         The field is an array, and can be an empty array. In that case, it's considered by ElasticSearch as
-     *         missing, but the aggregation created in {@link #search(String, boolean, boolean, SearchRefinements, Pageable)}
+     *         missing, but the aggregation created in {@link DocumentDaoCustom#search(String, boolean, SearchRefinements, Pageable)}
      *         puts missing values in the bucket with the key {@link SearchDocument#NULL_VALUE}. So, the aggregation
      *         considers null values and missing values as the same value: {@link SearchDocument#NULL_VALUE}.
      *         It's still considered, when searching, as a missing value though. So, if {@link SearchDocument#NULL_VALUE}
