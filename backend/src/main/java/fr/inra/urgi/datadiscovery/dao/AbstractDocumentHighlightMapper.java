@@ -53,6 +53,11 @@ public abstract class AbstractDocumentHighlightMapper<D extends SearchDocument>
                     newDescription = descriptionHighlight.getFragments()[0].string();
                     hightlightFound = true;
                 }
+                HighlightField descriptionSynonymsHighlight = highlightFields.get("description.synonyms");
+                if (descriptionSynonymsHighlight != null && descriptionSynonymsHighlight.getFragments().length == 1) {
+                    newDescription = descriptionSynonymsHighlight.getFragments()[0].string();
+                    hightlightFound = true;
+                }
             }
 
             if (hightlightFound) {

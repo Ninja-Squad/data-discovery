@@ -79,8 +79,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page);
 
         if (highlight) {
-            builder.withHighlightFields(new HighlightBuilder.Field("description").numOfFragments(0))
-                   .withHighlightBuilder(new HighlightBuilder().encoder("html"));
+            builder.withHighlightFields(
+                        new HighlightBuilder.Field("description").numOfFragments(0),
+                        new HighlightBuilder.Field("description.synonyms").numOfFragments(0)
+                    ).withHighlightBuilder(new HighlightBuilder().encoder("html"));
         }
 
         return elasticsearchTemplate.queryForPage(builder.build(),getDocumentClass(),
