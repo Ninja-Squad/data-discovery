@@ -26,6 +26,8 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    volumes:
+      - ./data/synonyms:/usr/share/elasticsearch/config/analysis/synonyms
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}

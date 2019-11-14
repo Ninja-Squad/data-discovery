@@ -30,6 +30,7 @@ public class WheatisDocumentDaoImpl
     private static final Set<String> SEARCHABLE_FIELDS = Collections.unmodifiableSet(Stream.of(
         "name",
         "description",
+        "description.synonyms",
         "entryType",
         "databaseName",
         "node",

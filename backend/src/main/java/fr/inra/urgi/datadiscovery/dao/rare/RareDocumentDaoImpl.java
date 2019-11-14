@@ -31,6 +31,7 @@ public class RareDocumentDaoImpl
     private static final Set<String> SEARCHABLE_FIELDS = Collections.unmodifiableSet(Stream.of(
         "name",
         "description",
+        "description.synonyms",
         "pillarName",
         "databaseSource",
         "domain",
