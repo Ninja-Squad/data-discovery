@@ -8,6 +8,7 @@ RED_BOLD="${RED}${BOLD}"
 NC='\033[0m' # No format
 
 ES_HOST=localhost
+ES_HOSTS=${ES_HOST}
 ES_PORT=9200
 
 help() {
