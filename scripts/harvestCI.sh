@@ -114,8 +114,7 @@ mkdir -p "$OUTDIR"
 {
 #    set -x
     echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias ..."
-    time parallel --bar --link "
-            gunzip -c {1} \
+    time parallel --bar --link --halt soon,done=100% "gunzip -c {1} \
             | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
             | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{1/.}.jq.err \
             | gzip -c \
@@ -125,9 +124,9 @@ mkdir -p "$OUTDIR"
         ::: ${DATADIR}/*.json.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
-	echo -e "A problem occured (code=$code) when trying to index data \n"\
-		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
-	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/*.log.gz
+	echo -e "${RED_BOLD}A problem occured on about ${code}% of given documents, when trying to index data \n"\
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment.${NC}"
+	parallel "[ -s {} ] && gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}${BOLD}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/*.log.gz
 	exit $code
 }
 echo "Indexing has finished, updating settings"
@@ -141,15 +140,14 @@ EOF
 {
 #    set -x
     echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias ..."
-    time parallel -j${HOST_NB} --bar --link "
-            curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
+    time parallel --bar --link -j$((HOST_NB * 2)) --halt soon,done=100% "curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
                 --data-binary '@{1}' > ${OUTDIR}/{1/.}.log.gz" \
         ::: ${DATADIR}/suggestions/bulk_*.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
-	echo -e "${RED}A problem occurred (code=$code) when trying to index suggestions \n"\
+	echo -e "${RED_BOLD}A problem occurred on about ${code}% of given files when trying to index suggestions \n"\
 		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
-	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
+	parallel "[ -s ] && gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
 	exit $code
 }
