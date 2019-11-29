@@ -10,6 +10,7 @@ NC='\033[0m' # No format
 ES_HOST=localhost
 ES_HOSTS=${ES_HOST}
 ES_PORT=9200
+TIMESTAMP=""
 
 help() {
 	cat <<EOF
@@ -17,13 +18,14 @@ DESCRIPTION:
 	Script used to index data in Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> [-h|--help]
+	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -timestamp <epoch timestamp> [-h|--help]
 
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
 	-app           the name of the targeted application: rare, wheatis or data-discovery
 	-env           the environment name of the targeted application (dev, beta, prod ...)
+	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
 	-h or --help   print this help
 
 DEPENDENCIES:
@@ -65,6 +67,7 @@ while [ -n "$1" ]; do
 		-port) ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
+		-timestamp) TIMESTAMP=$2;shift 2;;
 		--) shift;break;;
 		-*) echo -e "${RED}ERROR: Unknown option: $1${NC}" && echo && help && echo;exit 1;;
 		*) echo -e "${RED}ERROR: Number or arguments unexpected. If you provide several hosts, please double quote them: $1${NC}" && echo && help && echo;exit 1;;
@@ -84,6 +87,10 @@ if [ -z "$ES_HOST" ]; then
     echo && help
 	exit 4
 fi
+
+DATE_TMSTP=$(date -d @${TIMESTAMP})
+[ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
+echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
 
 # Check that all ES nodes belong to the same cluster
 previous_cluster_info=""
@@ -113,24 +120,25 @@ mkdir -p "$OUTDIR"
 
 {
 #    set -x
-    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias ..."
-    time parallel --bar --link --halt soon,done=100% "gunzip -c {1} \
+    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
+    time parallel --bar --link "
+            gunzip -c {1} \
             | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
             | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{1/.}.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
+                -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
                 --data-binary '@-' > ${OUTDIR}/{1/.}.log.gz" \
         ::: ${DATADIR}/*.json.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
-	echo -e "${RED_BOLD}A problem occured on about ${code}% of given documents, when trying to index data \n"\
-		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment.${NC}"
-	parallel "[ -s {} ] && gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}${BOLD}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/*.log.gz
+	echo -e "A problem occured (code=$code) when trying to index data \n"\
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
+	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/*.log.gz
 	exit $code
 }
 echo "Indexing has finished, updating settings"
-curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-resource-alias/_settings\" --data-binary '@-' <<EOF
+curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource/_settings\" --data-binary '@-' <<EOF
 {
     "number_of_replicas": 0,
     "refresh_interval": "30s",
@@ -139,15 +147,36 @@ EOF
 
 {
 #    set -x
-    echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias ..."
-    time parallel --bar --link -j$((HOST_NB * 2)) --halt soon,done=100% "curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-suggestions-alias/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
+    echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
+    time parallel -j${HOST_NB} --bar --link "
+            curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
+                -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
                 --data-binary '@{1}' > ${OUTDIR}/{1/.}.log.gz" \
         ::: ${DATADIR}/suggestions/bulk_*.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
-	echo -e "${RED_BOLD}A problem occurred on about ${code}% of given files when trying to index suggestions \n"\
+	echo -e "${RED}A problem occurred (code=$code) when trying to index suggestions \n"\
 		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
-	parallel "[ -s ] && gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
+	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
+	exit $code
+}
+#set -x
+PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | sed -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -2 | tail -1) # current timestamp index has already been created so looking for the 2nd last one
+{
+    echo -e "Updating aliases for latest resources and suggestions indices with timestamp ${TIMESTAMP} instead of previous ${PREVIOUS_TIMESTAMP}..."
+    curl -s -H 'Content-Type: application/json' -XPOST "${ES_HOST}:${ES_PORT}/_aliases?pretty" --data-binary '@-' <<EOF
+    {
+        "actions" : [
+            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${PREVIOUS_TIMESTAMP}-suggestions", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
+            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${PREVIOUS_TIMESTAMP}-resource-index", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } },
+            { "add" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
+            { "add" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } }
+        ]
+    }
+EOF
+} || {
+	code=$?
+	echo -e "${RED}A problem occurred (code=$code) when trying to update aliases for resource and suggestions indices having timestamp $TIMESTAMP \n"\
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
 	exit $code
 }
