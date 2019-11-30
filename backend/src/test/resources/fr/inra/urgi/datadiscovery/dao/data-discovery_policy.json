@@ -4,7 +4,7 @@
       "hot": {
         "actions": {
           "rollover": {
-            "max_size": "15gb"
+            "max_size": "60gb"
           }
         }
       },
@@ -14,7 +14,7 @@
             "max_num_segments": 1
           },
           "shrink": {
-            "number_of_shards": 2
+            "number_of_shards": 4
           }
         }
       }
