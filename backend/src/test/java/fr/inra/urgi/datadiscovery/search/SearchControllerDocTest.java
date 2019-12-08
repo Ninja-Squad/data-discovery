@@ -134,7 +134,7 @@ class SearchControllerDocTest {
         when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, 2));
 
-        mockMvc.perform(docGet("/api/documents").param("query", query))
+        mockMvc.perform(docGet("/api/search").param("query", query))
                .andExpect(status().isOk())
                .andDo(document("search/fulltext",
                                requestParameters(QUERY_PARAM),
@@ -158,7 +158,7 @@ class SearchControllerDocTest {
         when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, SearchController.PAGE_SIZE * page + 2));
 
-        mockMvc.perform(docGet("/api/documents")
+        mockMvc.perform(docGet("/api/search")
                             .param("query", query)
                             .param("page", Integer.toString(page)))
                .andExpect(status().isOk())
@@ -174,7 +174,7 @@ class SearchControllerDocTest {
         when(mockDocumentDao.search(query, true, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(highlightedSyrah, highlightedDorato), pageRequest, 2));
 
-        mockMvc.perform(docGet("/api/documents")
+        mockMvc.perform(docGet("/api/search")
                             .param("query", query)
                             .param("highlight", "true"))
                .andExpect(status().isOk())
@@ -211,7 +211,7 @@ class SearchControllerDocTest {
                 )
             ));
 
-        mockMvc.perform(docGet("/api/documents")
+        mockMvc.perform(docGet("/api/search")
                             .param("query", query)
                             .param("page", Integer.toString(page))
                             .param("aggregate", "true"))
@@ -251,7 +251,7 @@ class SearchControllerDocTest {
         when(mockDocumentDao.search(query, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
-        mockMvc.perform(docGet("/api/documents")
+        mockMvc.perform(docGet("/api/search")
                             .param("query", query)
                             .param(RareAggregation.DOMAIN.getName(), "Plantae")
                             .param(RareAggregation.COUNTRY_OF_ORIGIN.getName(), "France", "Italy"))

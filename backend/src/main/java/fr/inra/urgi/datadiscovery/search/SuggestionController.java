@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * A REST controller for the suggestion API
  */
 @RestController
-@RequestMapping("/api/document-suggestions")
+@RequestMapping("/api/suggest")
 public class SuggestionController {
 
     private DocumentDao<?, ?> documentDao;

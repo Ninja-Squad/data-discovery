@@ -60,7 +60,7 @@ class SearchControllerTest {
         when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
-        mockMvc.perform(get("/api/documents").param("query", query))
+        mockMvc.perform(get("/api/search").param("query", query))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
                .andExpect(jsonPath("$.maxResults").value(SearchController.MAX_RESULTS))
@@ -116,7 +116,7 @@ class SearchControllerTest {
                 ));
 
         ResultActions resultActions =
-            mockMvc.perform(get("/api/documents-aggregate")
+            mockMvc.perform(get("/api/aggregate")
                                                           .param("query", query)
                                                           .param("aggregate", "true"))
                    .andExpect(status().isOk())
@@ -155,7 +155,7 @@ class SearchControllerTest {
         when(mockDocumentDao.search(query, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
-        mockMvc.perform(get("/api/documents")
+        mockMvc.perform(get("/api/search")
                             .param("query", query)
                             .param("page", "1")
                             .param(RareAggregation.DOMAIN.getName(), "d1")
@@ -169,7 +169,7 @@ class SearchControllerTest {
         int page = SearchController.MAX_RESULTS / SearchController.PAGE_SIZE;
         String query = "pauca";
 
-        mockMvc.perform(get("/api/documents")
+        mockMvc.perform(get("/api/search")
                             .param("query", query)
                             .param("page", Integer.toString(page)))
                .andExpect(status().isBadRequest());

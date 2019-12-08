@@ -41,7 +41,7 @@ describe('SearchService', () => {
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('api/documents-aggregate?query=Bacteria').flush(expectedResults);
+    http.expectOne('api/aggregate?query=Bacteria').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -77,7 +77,7 @@ describe('SearchService', () => {
 
     http.expectOne('api/documents?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
-    http.expectOne('api/documents-aggregate?query=Bacteria&coo=France&coo=Italy&domain=Forest').flush(expectedAggregations);
+    http.expectOne('api/aggregate?query=Bacteria&coo=France&coo=Italy&domain=Forest').flush(expectedAggregations);
     expect(actualResults).toEqual(expectedResults);
     expect(actualAggregations).toEqual(expectedAggregations);
   });

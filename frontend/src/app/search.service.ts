@@ -29,7 +29,7 @@ export class SearchService {
     if (aggregationCriteria) {
       aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
     }
-    return this.http.get<AggregatedPage<DocumentModel>>('api/documents', {
+    return this.http.get<AggregatedPage<DocumentModel>>('api/search', {
       params
     });
   }
@@ -47,7 +47,7 @@ export class SearchService {
     if (aggregationCriteria) {
       aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
     }
-    return this.http.get<AggregatedPage<DocumentModel>>('api/documents-aggregate', {
+    return this.http.get<AggregatedPage<DocumentModel>>('api/aggregate', {
       params
     });
   }
@@ -79,7 +79,7 @@ export class SearchService {
   }
 
   private suggest(query: string): Observable<Array<string>> {
-    return this.http.get<Array<string>>('api/document-suggestions', {
+    return this.http.get<Array<string>>('api/suggest', {
       params: { query }
     });
   }

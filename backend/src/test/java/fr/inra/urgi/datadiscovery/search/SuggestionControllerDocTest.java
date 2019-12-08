@@ -53,7 +53,7 @@ class SuggestionControllerDocTest {
                                       "Vitis berlandieri Boutin A",
                                       "Vitis berlandieri Boutin B"));
 
-        mockMvc.perform(docGet("/api/document-suggestions")
+        mockMvc.perform(docGet("/api/suggest")
                             .param("query", query))
                .andExpect(status().isOk())
                .andDo(document("suggestions/list",

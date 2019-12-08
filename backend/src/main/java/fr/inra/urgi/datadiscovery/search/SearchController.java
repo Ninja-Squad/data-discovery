@@ -52,7 +52,7 @@ public class SearchController {
      *
      * @see AppAggregation
      */
-    @GetMapping("/api/documents")
+    @GetMapping("/api/search")
     public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam("query") String query,
 														@RequestParam("aggregate") Optional<Boolean> aggregate,
 														@RequestParam("highlight") Optional<Boolean> highlight,
@@ -61,13 +61,13 @@ public class SearchController {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(documentDao.search(query,
-                highlight.orElse(false),
-                                                                    createRefinementsFromParameters(parameters),
-                                                                    PageRequest.of(page.orElse(0), PAGE_SIZE)),
-                                          aggregationAnalyzer);
+                                            highlight.orElse(false),
+                                            createRefinementsFromParameters(parameters),
+                                            PageRequest.of(page.orElse(0), PAGE_SIZE)),
+                                            aggregationAnalyzer);
 
     }
-    @GetMapping("/api/documents-aggregate")
+    @GetMapping("/api/aggregate")
     public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam("query") String query,
             @RequestParam MultiValueMap<String, String> parameters) {
 

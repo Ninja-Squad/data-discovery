@@ -38,7 +38,7 @@ class SuggestionControllerTest {
         when(mockDocumentDao.suggest(query))
             .thenReturn((Arrays.asList("vitis", "vitis vinifera")));
 
-        mockMvc.perform(get("/api/document-suggestions").param("query", query))
+        mockMvc.perform(get("/api/suggest").param("query", query))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$[0]").value("vitis"))
                .andExpect(jsonPath("$[1]").value("vitis vinifera"));
