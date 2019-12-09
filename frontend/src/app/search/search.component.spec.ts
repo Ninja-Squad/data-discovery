@@ -21,7 +21,7 @@ import { LargeAggregationComponent } from '../large-aggregation/large-aggregatio
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
-import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import {delay} from 'rxjs/operators';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
@@ -71,7 +71,7 @@ describe('SearchComponent', () => {
       LargeAggregationComponent,
       AggregationNamePipe,
       DocumentCountComponent,
-      LoadingSpinnerComponent,
+      LoadingSkeletonComponent,
       TruncatableDescriptionComponent
     ]
   }));
@@ -385,6 +385,10 @@ describe('SearchComponent', () => {
     const component = tester.componentInstance;
     tester.detectChanges();
 
+    // Simulate search done, remove skeleton
+    component.aggLoading = false;
+    component.searchLoading = false;
+
     // then it should not display results if empty
     expect(tester.results).toBeNull();
 
@@ -410,6 +414,10 @@ describe('SearchComponent', () => {
     const tester = new SearchComponentTester();
     const component = tester.componentInstance;
     tester.detectChanges();
+
+    // Simulate search done, remove skeleton
+    component.aggLoading = false;
+    component.searchLoading = false;
 
     // when it has results
     const content: Array<DocumentModel> = [];

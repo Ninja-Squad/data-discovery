@@ -11,6 +11,7 @@ import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 
 describe('AggregationsComponent', () => {
 
@@ -39,7 +40,8 @@ describe('AggregationsComponent', () => {
       SmallAggregationComponent,
       LargeAggregationComponent,
       AggregationNamePipe,
-      DocumentCountComponent
+      DocumentCountComponent,
+      LoadingSkeletonComponent
     ]
   }));
 
