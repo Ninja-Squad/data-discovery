@@ -37,9 +37,8 @@ import { environment } from '../../environments/environment';
   ]
 })
 export class SearchComponent implements OnInit {
-  loading = true;
   searchLoading = true;
-  aggLoading = true; // TODO: Deprecated? Synch through aggArray length
+  aggLoading = true;
   query = '';
   placeholder = environment.searchPlaceholder;
   searchForm: FormGroup;
@@ -128,6 +127,14 @@ export class SearchComponent implements OnInit {
    */
   newSearch() {
     const query = this.searchForm.get('search').value;
+    if ( ! (query  === this.query)) {
+      // Add the following conditions if we don't reset aggregations on new search anymore && (
+      //       (options.criteria === this.aggregationCriteria)
+      //       || (!options.criteria && this.aggregationCriteria.length === 0 )
+      //     )
+      // )
+      this.setPleaseWaitWidgetsOn();
+    }
     this.search({ query });
   }
 
@@ -136,6 +143,7 @@ export class SearchComponent implements OnInit {
    * and navigates to the requested page.
    */
   navigateToPage(requestedPage: number) {
+    this.setPleaseWaitWidgetsOn();
     this.search({ query: this.query, page: requestedPage, criteria: this.aggregationCriteria });
   }
 
@@ -150,6 +158,7 @@ export class SearchComponent implements OnInit {
    */
   updateSearchWithAggregation(criteria: Array<AggregationCriterion>) {
     this.aggregationCriteria = criteria;
+    this.setPleaseWaitWidgetsOn();
     this.search({ query: this.query, criteria: this.aggregationCriteria });
   }
 
@@ -162,9 +171,9 @@ export class SearchComponent implements OnInit {
    * It accepts a search options object with one mandatory field (the query) and optional ones (page, criteria)
    */
   private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion> }) {
-    // this.loading = true; // TODO: deprecated
-    this.searchLoading = true;
-    this.aggLoading = true;
+    // Dispatch Skeleton/spinner to the calling methods. see setPleaseWaitWidgetsOn()
+    // this.searchLoading = true;
+    // this.aggLoading = true;
     const queryParams: { [key: string]: string | Array<string> } = {
       query: options.query,
       page: options.page ? options.page.toString() : undefined
@@ -176,20 +185,27 @@ export class SearchComponent implements OnInit {
     }
 
     // detect unchanged search/route to switch off waiting spinner/skeleton widget
-    if ( options.query  === this.query &&
-      (
-        (options.criteria === this.aggregationCriteria)
-        || (!options.criteria && this.aggregationCriteria.length === 0 )
-      )
-    ) {
-      this.searchLoading = false;
-      this.aggLoading = false;
-    }
+    // only new search triggers the skeleton/spinner
+    // DEPRECATED
+    // if ( options.query  === this.query &&
+    //     (
+    //       (options.criteria === this.aggregationCriteria)
+    //       || (!options.criteria && this.aggregationCriteria.length === 0 )
+    //     )
+    // ) {
+    //   this.searchLoading = false;
+    //   this.aggLoading = false;
+    // }
 
     this.router.navigate(['.'], {
       relativeTo: this.route,
       queryParams
     });
 
+  }
+
+  private setPleaseWaitWidgetsOn() {
+    this.searchLoading = true;
+    this.aggLoading = true;
   }
 }
