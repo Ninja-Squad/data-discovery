@@ -35,7 +35,7 @@ export class SearchService {
   }
 
   /**
-   * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)
+   * Aggregates documents for the given query (full-text search), and return an Aggregated page with aggregations and without results
    */
   aggregate(query: string,
          aggregationCriteria: Array<AggregationCriterion>): Observable<AggregatedPage<DocumentModel>> {
