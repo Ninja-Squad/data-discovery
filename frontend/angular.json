@@ -157,6 +157,7 @@
                 }
               ],
               "baseHref": "/data-discovery-dev/",
+              "sourceMap": true,
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/data-discovery/"
