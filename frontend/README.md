@@ -20,7 +20,7 @@ Use the `yarn build:wheatis` flag for a production build of WheatIS, and `yarn b
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 # Add another application
 
