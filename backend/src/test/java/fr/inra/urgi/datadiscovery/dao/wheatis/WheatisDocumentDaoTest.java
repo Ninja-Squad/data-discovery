@@ -102,8 +102,8 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
     }
 
     @Test
-    void shouldSearchOnId() {
-        shouldSearch(WheatisDocument.Builder::withId);
+    void shouldSearchOnName() {
+        shouldSearch(WheatisDocument.Builder::withName);
     }
 
     @Test

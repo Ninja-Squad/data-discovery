@@ -152,18 +152,8 @@ time parallel --bar \
 ::: ${DATADIR}/*.gz | \
 LC_ALL=C sort -u | \
 parallel --pipe -k \
-    "paste -d '@' - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - \
-                  - - - - - |                                       # paste merges 5*10 suggestions, much more efficient than one per line
-    jq -McR '. | split(\"@\")' |                                    # takes merges suggestions and transform them in JSON arrays, splitting on arobase special character, previoulsy used in paste command (only ASCII character seems to be recognized by paste
-    sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \1 }/g'   # insert ES bulk metadata above each JSON array
+    "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+            s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
 " | \
 parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/bulk_{#}.gz"
 

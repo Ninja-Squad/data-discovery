@@ -132,6 +132,7 @@ build-data-discovery:
   APP_PORT: ${BETA_RARE_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
+  ES_HOSTS: ${ES_DEV_HOSTS}
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}-${ENV}
 
@@ -141,8 +142,9 @@ build-data-discovery:
   APP_NAME: rare
   APP_PORT: ${STAGING_RARE_PORT}
   SERVER_IP: ${SERVER_IP}
-  ES_HOST: ${ES_PROD_HOST}
-  ES_PORT: ${ES_PROD_PORT}
+  ES_HOST: ${ES_DEV_HOST}
+  ES_HOSTS: ${ES_DEV_HOSTS}
+  ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-rare-prod: &variables-rare-prod
@@ -152,6 +154,7 @@ build-data-discovery:
   APP_PORT: ${PROD_RARE_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
+  ES_HOSTS: ${ES_PROD_HOSTS}
   ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: ${APP_NAME}
 
@@ -162,6 +165,7 @@ build-data-discovery:
   APP_PORT: ${BETA_WHEATIS_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
+  ES_HOSTS: ${ES_DEV_HOSTS}
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}-${ENV}
 
@@ -171,8 +175,9 @@ build-data-discovery:
   APP_NAME: wheatis
   APP_PORT: ${STAGING_WHEATIS_PORT}
   SERVER_IP: ${SERVER_IP}
-  ES_HOST: ${ES_PROD_HOST}
-  ES_PORT: ${ES_PROD_PORT}
+  ES_HOST: ${ES_DEV_HOST}
+  ES_HOSTS: ${ES_DEV_HOSTS}
+  ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}-${ENV}
 
 .variables-wheatis-prod: &variables-wheatis-prod
@@ -182,6 +187,7 @@ build-data-discovery:
   APP_PORT: ${PROD_WHEATIS_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
+  ES_HOSTS: ${ES_PROD_HOSTS}
   ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: ${APP_NAME}
 
@@ -192,6 +198,7 @@ build-data-discovery:
   APP_PORT: ${BETA_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_DEV_HOST}
+  ES_HOSTS: ${ES_DEV_HOSTS}
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: data-discovery-${ENV}
 
@@ -201,8 +208,9 @@ build-data-discovery:
   APP_NAME: data-discovery
   APP_PORT: ${STAGING_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP}
-  ES_HOST: ${ES_PROD_HOST}
-  ES_PORT: ${ES_PROD_PORT}
+  ES_HOST: ${ES_DEV_HOST}
+  ES_HOSTS: ${ES_DEV_HOSTS}
+  ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: data-discovery-${ENV}
 
 .variables-data-discovery-prod: &variables-data-discovery-prod
@@ -212,6 +220,7 @@ build-data-discovery:
   APP_PORT: ${PROD_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
+  ES_HOSTS: ${ES_PROD_HOSTS}
   ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: data-discovery
 
@@ -342,10 +351,10 @@ deploy-data-discovery-to-prod:
   - git lfs pull -I "data/${APP_NAME}/*.gz"
   - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
   # Deleting old indexes before reindexing from scratch
-  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/${APP_NAME}-${ENV}-* ; echo
+  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/*${APP_NAME}-${ENV}-* ; echo
   # Should better handle those index switches by using the strategy proposed in the README file
   - ./scripts/createIndexAndAliases4CI.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} ; sleep 1 ; echo
-  - ./scripts/harvestCI.sh -host ${ES_HOST} -port ${ES_PORT} -app ${APP_NAME} -env ${ENV} ; echo
+  - ./scripts/harvestCI.sh -host "${ES_HOSTS}" -port ${ES_PORT} -app ${APP_NAME} -env ${ENV} ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are
   # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Mapping;
@@ -24,18 +26,20 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json")
 public final class WheatisDocument implements SearchDocument {
     @Id
-    @JsonProperty("name")
+    @JsonIgnore
     private final String id;
-
+    private final String name;
     private final String entryType;
     private final String databaseName;
     private final String url;
+
     private final List<String> species;
     private final String node;
     private final String description;
 
     @JsonCreator
-    public WheatisDocument(@JsonProperty("name") String id,
+    public WheatisDocument(String id,
+						   String name,
 						   String entryType,
 						   String databaseName,
 						   String url,
@@ -43,6 +47,7 @@ public final class WheatisDocument implements SearchDocument {
 						   String node,
 						   String description) {
         this.id = id;
+        this.name = name;
         this.entryType = entryType;
         this.databaseName = databaseName;
         this.url = url;
@@ -53,6 +58,7 @@ public final class WheatisDocument implements SearchDocument {
 
     public WheatisDocument(Builder builder) {
         this(builder.id,
+             builder.name,
              builder.entryType,
              builder.databaseName,
              builder.url,
@@ -64,6 +70,10 @@ public final class WheatisDocument implements SearchDocument {
     @Override
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getEntryType() {
@@ -101,6 +111,7 @@ public final class WheatisDocument implements SearchDocument {
         }
         WheatisDocument that = (WheatisDocument) o;
         return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
             Objects.equals(entryType, that.entryType) &&
             Objects.equals(databaseName, that.databaseName) &&
             Objects.equals(url, that.url) &&
@@ -111,13 +122,14 @@ public final class WheatisDocument implements SearchDocument {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, entryType, databaseName, url, species, node, description);
+        return Objects.hash(id, name, entryType, databaseName, url, species, node, description);
     }
 
     @Override
     public String toString() {
         return "WheatisGeneticResource{" +
             "id='" + id + '\'' +
+            ", name='" + name + '\'' +
             ", entryType='" + entryType + '\'' +
             ", databaseName='" + databaseName + '\'' +
             ", url='" + url + '\'' +
@@ -137,18 +149,20 @@ public final class WheatisDocument implements SearchDocument {
 
     public static class Builder {
         private String id;
+
+        private String name;
         private String entryType;
         private String databaseName;
         private String url;
         private List<String> species = Collections.emptyList();
         private String node;
         private String description;
-
         private Builder() {
         }
 
         private Builder(WheatisDocument document) {
             this.id = document.getId();
+            this.name = document.getName();
             this.entryType= document.getEntryType();
             this.databaseName = document.getDatabaseName();
             this.url = document.getUrl();
@@ -159,6 +173,11 @@ public final class WheatisDocument implements SearchDocument {
 
         public Builder withId(String id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
             return this;
         }
 

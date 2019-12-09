@@ -31,7 +31,7 @@ class WheatisDocumentTest {
     void shouldMarshallAndUnMarshall() throws IOException {
         WheatisDocument document =
             WheatisDocument.builder()
-                                  .withId("14_mtDNA")
+                                  .withName("14_mtDNA")
                                   .withEntryType("Marker")
                                   .withDatabaseName("Evoltree")
                                   .withDescription("14_mtDNA is a RFLP marker. It is used in GD2 database for the species Pinus banksiana.")
