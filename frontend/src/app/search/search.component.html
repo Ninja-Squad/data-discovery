@@ -53,22 +53,24 @@
       <dd-loading-skeleton [loading]="searchLoading"></dd-loading-skeleton>
     </div>
 
-    <h2 class="sr-only">Results</h2>
-    <div *ngIf="results">
-      <dd-documents [documents]="results"></dd-documents>
-    </div>
+    <div *ngIf=" ! searchLoading">
+      <h2 class="sr-only">Results</h2>
+      <div *ngIf="results">
+        <dd-documents [documents]="results"></dd-documents>
+      </div>
 
-    <div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">
-      <h2 class="sr-only">Paging</h2>
-      <!-- we add 1 to the page because ngb-pagination is 1 based -->
-      <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
-                      [collectionSize]="collectionSize()"
-                      [pageSize]="results.size"
-                      [maxSize]="5"
-                      [boundaryLinks]="true"
-                      [ellipses]="false"
-                      size="sm">
-      </ngb-pagination>
+      <div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">
+        <h2 class="sr-only">Paging</h2>
+        <!-- we add 1 to the page because ngb-pagination is 1 based -->
+        <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
+                        [collectionSize]="collectionSize()"
+                        [pageSize]="results.size"
+                        [maxSize]="5"
+                        [boundaryLinks]="true"
+                        [ellipses]="false"
+                        size="sm">
+        </ngb-pagination>
+      </div>
     </div>
   </div>
 </div>

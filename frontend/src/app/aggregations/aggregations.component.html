@@ -2,7 +2,7 @@
   <dd-loading-skeleton [loading]="aggLoading"></dd-loading-skeleton>
 </div>
 
-<div *ngIf="aggregations?.length">
+<div *ngIf="aggregations?.length && ! aggLoading">
   <div *ngFor="let aggregation of aggregations">
     <!-- we display checkboxes if there are only a few options -->
     <ng-template #smallAggregation>
