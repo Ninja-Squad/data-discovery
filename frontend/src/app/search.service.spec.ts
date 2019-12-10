@@ -28,7 +28,7 @@ describe('SearchService', () => {
     const resource = toRareDocument('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('api/documents?query=Bacteria&page=1&highlight=true').flush(expectedResults);
+    http.expectOne('api/search?query=Bacteria&page=1&highlight=true').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -55,7 +55,7 @@ describe('SearchService', () => {
     const resource = toRareDocument('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('api/documents?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
@@ -75,7 +75,7 @@ describe('SearchService', () => {
     const expectedResults = toSinglePage([resource]);
     const expectedAggregations = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('api/documents?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
     http.expectOne('api/aggregate?query=Bacteria&coo=France&coo=Italy&domain=Forest').flush(expectedAggregations);
     expect(actualResults).toEqual(expectedResults);
@@ -104,7 +104,7 @@ describe('SearchService', () => {
     tick(300); // should finally trigger a search for 'vit'
 
     const vitResult = ['vitis', 'vitis vinifera'];
-    http.expectOne('api/document-suggestions?query=vit').flush(vitResult);
+    http.expectOne('api/suggest?query=vit').flush(vitResult);
 
     entered.next(' viti ');
     tick(100);
@@ -123,7 +123,7 @@ describe('SearchService', () => {
     tick(300); // should trigger a second search
 
     const vitisVResult = ['vitis vinifera'];
-    http.expectOne('api/document-suggestions?query=vitis%20v').flush(vitisVResult);
+    http.expectOne('api/suggest?query=vitis%20v').flush(vitisVResult);
 
     expect(results).toEqual([[], vitResult, vitisVResult]);
 
