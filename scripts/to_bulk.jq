@@ -12,12 +12,17 @@
 
 def to_bulk(identifier):
     .[] |
-        if (has(identifier)) then
-            . |= { "index": {}}, .                                      # add a bulk header to the object
+        if (( .databaseName? + "__" + .entryType? + "__" + (.species?|tostring) + "__" + .name? + "__" + .identifier? | tostring) != "________") then
+            . |= { "index": { "_id": ( .databaseName? + "__" + .entryType? + "__" +
+                if ((.species | type) == "array"
+                    and (.species|length) <= 1) then
+                    .species?[0]|tostring
+                else
+                    .species|tostring
+                end
+                + "__" + .name? +  "__" + .identifier? | tostring)}}, .                                      # add a bulk header with custom _id to the object
         else
-            ("WARNING: Following document has been dropped from bulk because it misses the given key identifier ("
-                + identifier + "): " + (.| tostring)) | stderr          # print warning into stderr
-            | empty                                                         # drop the current malformed object from bulk
+            . |= { "index": { }}, .                                      # add a default bulk header to the object
         end
 ;
 
