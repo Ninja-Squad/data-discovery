@@ -167,8 +167,8 @@ PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${A
     curl -s -H 'Content-Type: application/json' -XPOST "${ES_HOST}:${ES_PORT}/_aliases?pretty" --data-binary '@-' <<EOF
     {
         "actions" : [
-            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${PREVIOUS_TIMESTAMP}-suggestions", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
-            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${PREVIOUS_TIMESTAMP}-resource-index", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } },
+            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-*suggestion*", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
+            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-*resource*", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } },
             { "add" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
             { "add" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } }
         ]
