@@ -94,10 +94,6 @@ check_acknowledgment() {
 # each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output
 
 ### SETTINGS & MAPPINGS TEMPLATE
-MAPPING_PARTIAL_PATH="${APP_NAME}"
-if [ "$APP_NAME" == "data-discovery" ]; then
-    MAPPING_PARTIAL_PATH="wheatis" # needed to avoid duplicate mapping.json file between WheatIS and DataDiscovery
-fi
 echo -e "\nCreate settings/mappings template: ${APP_NAME}-${APP_ENV}-settings-template"
 curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template" -H 'Content-Type: application/json' -d"
 {
@@ -105,7 +101,7 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-
   \"order\": 101,
   \"mappings\": {
     \"${APP_NAME}-${APP_ENV}-resource\":
-        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
+        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
     },
   \"settings\":
     $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings.json )
