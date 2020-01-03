@@ -158,7 +158,7 @@ export class SearchComponent implements OnInit {
    */
   updateSearchWithAggregation(criteria: Array<AggregationCriterion>) {
     this.aggregationCriteria = criteria;
-    this.setPleaseWaitWidgetsOn();
+    this.setPleaseWaitWidgetsOn(true);
     this.search({ query: this.query, criteria: this.aggregationCriteria });
   }
 
@@ -204,8 +204,10 @@ export class SearchComponent implements OnInit {
 
   }
 
-  private setPleaseWaitWidgetsOn() {
+  private setPleaseWaitWidgetsOn(searchOnly : boolean = false ) {
     this.searchLoading = true;
-    this.aggLoading = true;
+    if (! searchOnly ){
+      this.aggLoading = true;
+    }
   }
 }
