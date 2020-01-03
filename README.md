@@ -37,7 +37,7 @@ The project uses Angular (7.x) for the frontend, with the Angular CLI.
 
 You need to install:
 
-- a recent enough NodeJS (8.11+)
+- a recent enough NodeJS (8.11+). Node 10 is recommended for Angular 7.
 - Yarn as a package manager (see [here to install](https://yarnpkg.com/en/docs/install))
 
 Then in the `frontend` directory, run `yarn` to download the dependencies.
