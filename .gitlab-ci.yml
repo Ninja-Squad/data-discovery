@@ -8,6 +8,7 @@ stages:
  - data-integration-staging
  - production
  - data-integration-production
+ - build-es-synonyms
 
 # Image source available on https://forgemia.inra.fr/urgi-is/docker-rare
 # It contains a JDK 8 and a Chrome browser
@@ -24,6 +25,30 @@ variables:
  GIT_LFS_SKIP_SMUDGE: "1"
  ELASTIC_VERSION: "6.6.2"
 
+build-es-synonyms:
+ # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
+ # (more details here: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html)
+ # docker-in-docker (dind) approach is used here.
+ # https://stackoverflow.com/questions/47280922/role-of-docker-in-docker-dind-service-in-gitlab-ci
+ # The runner should be executed in privileged mode.
+ # It is recommended to use dind with TLS enabled.
+ image: docker:19.03.1
+ stage: build-es-synonyms
+ services:
+  - docker:19.03.1-dind
+ script:
+  - cd data/synonyms
+  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION} .
+  - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
+  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+ only:
+  refs:
+   - master
+  changes:
+   - data/synonyms/Dockerfile
+   - data/synonyms/all_autophrases.txt
+   - data/synonyms/all_synonyms.txt
+
 test:
  stage: test
  # the backend tests need an elasticsearch instance
@@ -33,7 +58,7 @@ test:
    # because we need to pass some variables, but they are passed to _all_ containers
    # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
      alias: elasticsearch
      # discovery.type=single-node
      # single-node is necessary to start in development mode
