@@ -23,7 +23,6 @@ import { ErrorComponent } from './error/error.component';
 import { ErrorInterceptorService } from './error-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { environment } from '../environments/environment';
-import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { LoadingSkeletonComponent } from './loading-skeleton/loading-skeleton.component';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
@@ -44,7 +43,6 @@ registerLocaleData(localeFr);
     DocumentCountComponent,
     ErrorComponent,
     NavbarComponent,
-    LoadingSpinnerComponent,
     LoadingSkeletonComponent,
     MarkdownPageComponent
   ],
