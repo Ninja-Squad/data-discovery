@@ -1,12 +1,12 @@
 ---
 stages:
+ - build-es-synonyms
  - test
  - build
  - staging
  - data-integration-staging
  - production
  - data-integration-production
- - build-es-synonyms
 
 # Image source available on https://forgemia.inra.fr/urgi-is/docker-rare
 # It contains a JDK 8 and a Chrome browser
@@ -22,6 +22,7 @@ variables:
  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
  GIT_LFS_SKIP_SMUDGE: "1"
  ELASTIC_VERSION: "6.6.2"
+ IMAGE_TAG: $CI_COMMIT_SHORT_SHA
 
 build-es-synonyms:
  # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
@@ -35,17 +36,17 @@ build-es-synonyms:
  services:
   - docker:19.03.1-dind
  script:
+  # The IMAGE_TAG is used to distinguish dev image (with SHA1 as a tag) from the stable one (with 'latest' as a tag).
+  # 'latest' tag is used only for an image built from master branch.
+  - if [ "$CI_COMMIT_BRANCH" == "master" ]; then IMAGE_TAG="latest"; fi
   - cd data/synonyms
-  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION} .
+  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
-  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+  # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
+  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
  only:
-  refs:
-   - master
   changes:
-   - data/synonyms/Dockerfile
-   - data/synonyms/all_autophrases.txt
-   - data/synonyms/all_synonyms.txt
+   - data/synonyms/*
 
 test:
  stage: test
@@ -56,7 +57,7 @@ test:
    # because we need to pass some variables, but they are passed to _all_ containers
    # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
      alias: elasticsearch
      # discovery.type=single-node
      # single-node is necessary to start in development mode
@@ -395,6 +396,7 @@ data-integration-rare-beta:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/synonyms/*
   refs:
    - branches
  except:
@@ -408,6 +410,7 @@ data-integration-rare-staging:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/synonyms/*
   refs:
    - master
 
@@ -418,6 +421,7 @@ data-integration-rare-prod:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/synonyms/*
   refs:
    - master
 
@@ -428,6 +432,7 @@ data-integration-wheatis-beta:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/*
   refs:
    - branches
  except:
@@ -441,6 +446,7 @@ data-integration-wheatis-staging:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/*
   refs:
    - master
 
@@ -451,6 +457,7 @@ data-integration-wheatis-prod:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/*
   refs:
    - master
 
@@ -461,6 +468,7 @@ data-integration-data-discovery-beta:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/*
   refs:
    - branches
  except:
@@ -474,6 +482,7 @@ data-integration-data-discovery-staging:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/*
   refs:
    - master
 
@@ -484,6 +493,7 @@ data-integration-data-discovery-prod:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/*
   refs:
    - master
 
