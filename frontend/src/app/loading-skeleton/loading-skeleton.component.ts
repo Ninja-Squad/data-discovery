@@ -22,28 +22,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
        </ng-container>
       
       <ng-template #aggSkeleton>
-          <div class="card skeleton-loading-aggregation">
-              <div class="skeleton-aggregation skeleton-animated-background"></div>
-          </div>
-          <div class="card skeleton-loading-aggregation">
-              <div class="skeleton-aggregation skeleton-animated-background"></div>
-          </div>
-          <div class="card skeleton-loading-aggregation">
+          <div *ngFor="let iAgg of [].constructor(3)" class="card skeleton-loading-aggregation">
               <div class="skeleton-aggregation skeleton-animated-background"></div>
           </div>
       </ng-template>
       
       <ng-template #searchSkeleton>
-          <div class="card skeleton-loading">
-              <div class="skeleton-default skeleton-animated-background"></div>
-          </div>
-          <div class="card skeleton-loading">
-              <div class="skeleton-default skeleton-animated-background"></div>
-          </div>
-          <div class="card skeleton-loading">
-              <div class="skeleton-default skeleton-animated-background"></div>
-          </div>
-          <div class="card skeleton-loading">
+          <div *ngFor="let iSearch of [].constructor(5)" class="card skeleton-loading">
               <div class="skeleton-default skeleton-animated-background"></div>
           </div>
       </ng-template>
