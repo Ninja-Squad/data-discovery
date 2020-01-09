@@ -22,6 +22,11 @@ Use the `yarn build:wheatis` flag for a production build of WheatIS, and `yarn b
 
 Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+
+## Analyzing Application size
+
+Run `yarn build:stats` to generate size statistics and `yarn analyze` to visualize them.
+
 # Add another application
 
 Each application (like RARe or WheatIS) works in the same way.
