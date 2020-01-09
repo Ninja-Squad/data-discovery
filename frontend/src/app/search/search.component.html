@@ -29,17 +29,18 @@
 <div class="mt-3 mb-3 d-md-none">
   <button class="btn btn-outline-secondary" (click)="toggleFilters()">
     <i class="fa fa-sliders" aria-hidden="true"></i>&ngsp;Filters&ngsp;
-    <i class="fa" [class.fa-caret-up]="filters === 'show'" [class.fa-caret-down]="filters === 'hide'" aria-hidden="true"></i>
+    <i class="fa" [class.fa-caret-up]="filters === 'show'" [class.fa-caret-down]="filters === 'hide'"
+       aria-hidden="true"></i>
   </button>
 </div>
 <div class="row mt-sm-2 mt-md-5">
   <div class="col-12 col-md-4 col-lg-3 filters" [@showHide]="filters">
     <h2 class="sr-only">Filters</h2>
     <dd-aggregations *ngIf="aggregations"
-                       [aggregations]="aggregations"
-                       [aggLoading]="aggLoading"
-                       [selectedCriteria]="aggregationCriteria"
-                       (aggregationsChange)="updateSearchWithAggregation($event)">
+                     [aggregations]="aggregations"
+                     [aggLoading]="aggLoading"
+                     [selectedCriteria]="aggregationCriteria"
+                     (aggregationsChange)="updateSearchWithAggregation($event)">
     </dd-aggregations>
   </div>
   <div class="col-12 col-md-8 col-lg-9">

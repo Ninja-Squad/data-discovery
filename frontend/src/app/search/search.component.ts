@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { FormControl, FormGroup } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {FormControl, FormGroup} from '@angular/forms';
 import {EMPTY, merge, Observable} from 'rxjs';
 import {catchError, switchMap} from 'rxjs/operators';
 
-import { SearchService } from '../search.service';
-import { DocumentModel } from '../models/document.model';
-import { Aggregation, Page } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
+import {SearchService} from '../search.service';
+import {DocumentModel} from '../models/document.model';
+import {Aggregation, Page} from '../models/page';
+import {AggregationCriterion} from '../models/aggregation-criterion';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'dd-search',
@@ -80,15 +80,15 @@ export class SearchComponent implements OnInit {
           // launch the search and handle a potential error, by returning no result
           // but allow to trigger a new search
           return merge(
-             this.searchService.search(this.query,  this.aggregationCriteria, page)
-                .pipe(
-                  catchError(() => EMPTY),
-                ),
-              this.searchService.aggregate(this.query,  this.aggregationCriteria)
+            this.searchService.search(this.query, this.aggregationCriteria, page)
+              .pipe(
+                catchError(() => EMPTY),
+              ),
+            this.searchService.aggregate(this.query, this.aggregationCriteria)
               .pipe(
                 catchError(() => EMPTY)
               )
-            );
+          );
         }))
       .subscribe(results => {
         // this.loading = false;
@@ -127,7 +127,7 @@ export class SearchComponent implements OnInit {
    */
   newSearch() {
     const query = this.searchForm.get('search').value;
-    if ( ! (query  === this.query)) {
+    if (!(query === this.query)) {
       // Add the following conditions if we don't reset aggregations on new search anymore && (
       //       (options.criteria === this.aggregationCriteria)
       //       || (!options.criteria && this.aggregationCriteria.length === 0 )
@@ -135,7 +135,7 @@ export class SearchComponent implements OnInit {
       // )
       this.setPleaseWaitWidgetsOn();
     }
-    this.search({ query });
+    this.search({query});
   }
 
   /**
@@ -144,7 +144,7 @@ export class SearchComponent implements OnInit {
    */
   navigateToPage(requestedPage: number) {
     this.setPleaseWaitWidgetsOn();
-    this.search({ query: this.query, page: requestedPage, criteria: this.aggregationCriteria });
+    this.search({query: this.query, page: requestedPage, criteria: this.aggregationCriteria});
   }
 
   collectionSize() {
@@ -159,7 +159,7 @@ export class SearchComponent implements OnInit {
   updateSearchWithAggregation(criteria: Array<AggregationCriterion>) {
     this.aggregationCriteria = criteria;
     this.setPleaseWaitWidgetsOn(true);
-    this.search({ query: this.query, criteria: this.aggregationCriteria });
+    this.search({query: this.query, criteria: this.aggregationCriteria});
   }
 
   toggleFilters() {
@@ -189,9 +189,9 @@ export class SearchComponent implements OnInit {
 
   }
 
-  private setPleaseWaitWidgetsOn(searchOnly : boolean = false ) {
+  private setPleaseWaitWidgetsOn(searchOnly: boolean = false) {
     this.searchLoading = true;
-    if (! searchOnly ){
+    if (!searchOnly) {
       this.aggLoading = true;
     }
   }

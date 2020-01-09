@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ErrorInterceptorService } from '../error-interceptor.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {ErrorInterceptorService} from '../error-interceptor.service';
 
 // Based ideas taken from https://codepen.io/Dreamdealer/pen/JyBdMX
 /*
@@ -14,39 +14,39 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
  */
 
 @Component({
-    selector: 'dd-loading-skeleton',
-    template: `        
-       <ng-container *ngIf="loading">
+  selector: 'dd-loading-skeleton',
+  template: `
+      <ng-container *ngIf="loading">
           <ng-container *ngIf="aggregationStyle ; then aggSkeleton; else searchSkeleton">
           </ng-container>
-       </ng-container>
-      
+      </ng-container>
+
       <ng-template #aggSkeleton>
           <div *ngFor="let iAgg of [].constructor(3)" class="card skeleton-loading-aggregation">
               <div class="skeleton-aggregation skeleton-animated-background"></div>
           </div>
       </ng-template>
-      
+
       <ng-template #searchSkeleton>
           <div *ngFor="let iSearch of [].constructor(5)" class="card skeleton-loading">
               <div class="skeleton-default skeleton-animated-background"></div>
           </div>
       </ng-template>
-    `,
-    styleUrls: ['./loading-skeleton.component.scss']
+  `,
+  styleUrls: ['./loading-skeleton.component.scss']
 })
 export class LoadingSkeletonComponent implements OnInit {
 
-    @Input() loading: boolean;
-    @Input() aggregationStyle = false;
+  @Input() loading: boolean;
+  @Input() aggregationStyle = false;
 
-    constructor(private errorService: ErrorInterceptorService) {
-    }
+  constructor(private errorService: ErrorInterceptorService) {
+  }
 
-    ngOnInit(): void {
-        // Force loading stop when an error is intercepted
-        this.errorService.getErrors().subscribe(() => {
-            this.loading = false;
-        });
-    }
+  ngOnInit(): void {
+    // Force loading stop when an error is intercepted
+    this.errorService.getErrors().subscribe(() => {
+      this.loading = false;
+    });
+  }
 }

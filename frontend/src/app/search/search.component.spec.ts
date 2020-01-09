@@ -1,27 +1,27 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NgbPagination, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { of } from 'rxjs';
-import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
+import {ReactiveFormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Router} from '@angular/router';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {By} from '@angular/platform-browser';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {NgbPagination, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
+import {of} from 'rxjs';
+import {ComponentTester, fakeRoute, speculoosMatchers} from 'ngx-speculoos';
 
-import { SearchComponent } from './search.component';
-import { DocumentsComponent } from '../documents/documents.component';
-import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
-import { SearchService } from '../search.service';
-import { DocumentModel } from '../models/document.model';
-import { toAggregation, toRareDocument, toSecondPage, toSinglePage } from '../models/test-model-generators';
-import { AggregationsComponent } from '../aggregations/aggregations.component';
-import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
-import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
-import { AggregationNamePipe } from '../aggregation-name.pipe';
-import { DocumentCountComponent } from '../document-count/document-count.component';
-import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
-import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import {SearchComponent} from './search.component';
+import {DocumentsComponent} from '../documents/documents.component';
+import {RareDocumentComponent} from '../rare/rare-document/rare-document.component';
+import {SearchService} from '../search.service';
+import {DocumentModel} from '../models/document.model';
+import {toAggregation, toRareDocument, toSecondPage, toSinglePage} from '../models/test-model-generators';
+import {AggregationsComponent} from '../aggregations/aggregations.component';
+import {SmallAggregationComponent} from '../small-aggregation/small-aggregation.component';
+import {LargeAggregationComponent} from '../large-aggregation/large-aggregation.component';
+import {AggregationNamePipe} from '../aggregation-name.pipe';
+import {DocumentCountComponent} from '../document-count/document-count.component';
+import {TruncatableDescriptionComponent} from '../truncatable-description/truncatable-description.component';
+import {LoadingSkeletonComponent} from '../loading-skeleton/loading-skeleton.component';
 import {delay} from 'rxjs/operators';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
@@ -90,8 +90,8 @@ describe('SearchComponent', () => {
 
     // with a query on init
     const query = 'Bacteria';
-    const queryParams = of({ query });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
 
     // when loading
@@ -119,8 +119,8 @@ describe('SearchComponent', () => {
 
     // with a query on init
     const query = 'Bacteria';
-    const queryParams = of({ query });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
 
     // when loading
@@ -150,8 +150,8 @@ describe('SearchComponent', () => {
     // with a query on init
     const query = 'Bacteria';
     const page = 3;
-    const queryParams = of({ query, page });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query, page});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // but this query was already the same
     component.query = query;
@@ -182,8 +182,8 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({ query, page, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query, page, domain, coo});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // but this query was already the same
     component.query = query;
@@ -194,8 +194,8 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 1, the criteria and asked for aggregations
-    const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
-    const domainCriteria = { name: 'domain', values: ['Plant'] };
+    const cooCriteria = {name: 'coo', values: ['France', 'Italy']};
+    const domainCriteria = {name: 'domain', values: ['Plant']};
     expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
     // and the results fetched
     expect(component.results).toEqual(results);
@@ -223,8 +223,8 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({ query, page, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query, page, domain, coo});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // but this query was already the same
     component.query = query;
@@ -235,14 +235,13 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 1, the criteria and asked for aggregations
-    const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
-    const domainCriteria = { name: 'domain', values: ['Plant'] };
+    const cooCriteria = {name: 'coo', values: ['France', 'Italy']};
+    const domainCriteria = {name: 'domain', values: ['Plant']};
     expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
     // and the results fetched
     expect(component.results).toEqual(expectedResults);
     expect(component.aggregations).toEqual([aggregation]);
   });
-
 
 
   it('should hide results and pagination on a new search', () => {
@@ -258,8 +257,8 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({ query, page, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query, page, domain, coo});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // with an existing query and results
     component.query = 'Rosa';
@@ -284,8 +283,8 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({ query, page: 2, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query, page: 2, domain, coo});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
 
     query = 'Bacteria';
@@ -313,13 +312,13 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = ['Plant'];
     const coo = ['France', 'Italy'];
-    const queryParams = of({ query, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
+    const queryParams = of({query, domain, coo});
+    const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     component.query = query;
     component.aggregationCriteria = [
-      { name: 'coo', values: ['France', 'Italy'] },
-      { name: 'domain', values: ['Plant'] }
+      {name: 'coo', values: ['France', 'Italy']},
+      {name: 'domain', values: ['Plant']}
     ];
 
     // when navigating
@@ -497,14 +496,14 @@ describe('SearchComponent', () => {
 
     // when the aggregation emits an event
     const aggregationsComponent = tester.aggregations.componentInstance as AggregationsComponent;
-    const criteria = [{ name: 'coo', values: ['France'] }];
+    const criteria = [{name: 'coo', values: ['France']}];
     aggregationsComponent.aggregationsChange.emit(criteria);
 
     // then it should add a criteria
     expect(component.aggregationCriteria).toBe(criteria);
 
     // when the aggregation emits an event with another value
-    const updatedCriteria = [{ name: 'coo', values: ['France', 'Italy'] }];
+    const updatedCriteria = [{name: 'coo', values: ['France', 'Italy']}];
     aggregationsComponent.aggregationsChange.emit(updatedCriteria);
 
     // then it should update the existing criteria
