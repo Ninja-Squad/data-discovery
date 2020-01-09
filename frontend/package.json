@@ -16,7 +16,10 @@
     "test-multi-browsers": "ng test --code-coverage --no-progress --no-watch -c test-multi-browsers",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "sed -i 's/followSymlinks: false/followSymlinks: true/g' node_modules/watchpack/lib/DirectoryWatcher.js"
+    "postinstall": "sed -i 's/followSymlinks: false/followSymlinks: true/g' node_modules/watchpack/lib/DirectoryWatcher.js",
+    "build:stats": "ng build --configuration=rare-production --stats-json",
+    "analyze": "webpack-bundle-analyzer dist/data-discovery-frontend/stats.json"
+
   },
   "private": true,
   "dependencies": {
