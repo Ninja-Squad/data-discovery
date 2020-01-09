@@ -9,9 +9,9 @@ plugins {
 val isCi = System.getenv("CI") != null
 
 node {
-  version = "8.11.3"
-  npmVersion = "6.2.0"
-  yarnVersion = "1.7.0"
+  version = "13.6.0"
+  npmVersion = "6.13.4"
+  yarnVersion = "1.21.1"
   if (isCi) {
     // we specify a custom installation directory because of permission issues on Docker
     workDir = file("/tmp/node")

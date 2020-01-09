@@ -25,7 +25,7 @@ export class LargeAggregationComponent {
   // the component emits an event if the user adds or removes a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
 
-  @ViewChild('typeahead') typeahead: ElementRef<HTMLInputElement>;
+  @ViewChild('typeahead', {static: false}) typeahead: ElementRef<HTMLInputElement>;
 
   focus$ = new Subject<string>();
   criterion = new FormControl('');

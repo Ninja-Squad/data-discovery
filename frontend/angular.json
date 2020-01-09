@@ -166,6 +166,13 @@
               "assets": [
                 { "glob": "*", "input": "src/assets/data-discovery", "output": "/assets" },
                 "src/assets"
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
               ]
             },
             "data-discovery-production": {
