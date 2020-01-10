@@ -9,7 +9,7 @@ plugins {
 val isCi = System.getenv("CI") != null
 
 node {
-  version = "13.6.0"
+  version = "12.14.1"
   npmVersion = "6.13.4"
   yarnVersion = "1.21.1"
   if (isCi) {
