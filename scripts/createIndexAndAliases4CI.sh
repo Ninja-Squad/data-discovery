@@ -101,7 +101,7 @@ fi
 echo -e "\nCreate settings/mappings template: ${APP_NAME}-${APP_ENV}-settings-template"
 curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template" -H 'Content-Type: application/json' -d"
 {
-  \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-resource*\"],
+  \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-tmstp*-resource*\"],
   \"order\": 101,
   \"mappings\": {
     \"${APP_NAME}-${APP_ENV}-resource\":
