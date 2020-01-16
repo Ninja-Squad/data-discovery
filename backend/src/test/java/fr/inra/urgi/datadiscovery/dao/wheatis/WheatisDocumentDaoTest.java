@@ -358,7 +358,6 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result = documentDao.search("blé",
-                false,
                 true,
                 SearchRefinements.EMPTY,
                 firstPage);
