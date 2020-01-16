@@ -339,6 +339,36 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                           "Imagine all the people");
     }
 
+    @Test
+    void shouldHighlightSynonymsInDescription() {
+        WheatisDocument resource1 =
+                WheatisDocument.builder()
+                        .withId("r1")
+                        .withDescription("wheat is good for your health, <p>or maybe not</p>, I don't know.")
+                        .build();
+
+
+        WheatisDocument resource2 =
+                WheatisDocument.builder()
+                        .withId("r2")
+                        .withDescription("Triticum is very diverse and it includes diploid, tetraploid and hexaploid")
+                        .build();
+
+        documentDao.saveAll(Arrays.asList(resource1, resource2));
+        documentDao.refresh();
+
+        AggregatedPage<WheatisDocument> result = documentDao.search("blé",
+                false,
+                true,
+                SearchRefinements.EMPTY,
+                firstPage);
+
+        assertThat(result.getContent())
+                .extracting(WheatisDocument::getDescription)
+                .containsOnly("<em>wheat</em> is good for your health, &lt;p&gt;or maybe not&lt;&#x2F;p&gt;, I don&#x27;t know.",
+                        "<em>Triticum</em> is very diverse and it includes diploid, tetraploid and hexaploid");
+    }
+
     @Nested
     class RefinementTest {
         @BeforeEach
