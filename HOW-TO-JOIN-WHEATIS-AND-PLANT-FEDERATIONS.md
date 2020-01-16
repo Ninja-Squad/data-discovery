@@ -12,7 +12,7 @@ Note that since the tool makes a backlink to your information system, we need a 
 - an _[entryType](#entrytype)_ describing the type of the entry, that could be any of the terms listed in the dedicated section below
 - a _[species](#species)_ field, containing the species related to the entry (zero, one or several, but it is highly recommended to provide at least one)
 - a _[node](#node)_, the name of your laboratory/institute, it should be the same for all the entities you manage
-- a _[database](#database)_, the name of the database from which the entry has been extracted. It can differ from one entry to another if you handle several databases
+- a _[databaseName](#databasename)_, the name of the database from which the entry has been extracted. It can differ from one entry to another if you handle several databases
 
 ## Detailed specifications for the metadata fields
 
@@ -116,10 +116,10 @@ Note: for WheatIS federation specifically, the species name must match one of th
 
 ---
 
-### database
+### databaseName
 [&#8593;](#top)
 
-The name of the `database` from which the entry has been extracted. It can differ from one entry to another if you handle several databases.
+The `databaseName` from which the entry has been extracted. It can differ from one entry to another if you handle several databases.
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -130,7 +130,7 @@ The name of the `database` from which the entry has been extracted. It can diffe
 ### node
 [&#8593;](#top)
 
-The `node` is the name of you laboratory/institute, it should be the same for all the entities you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
+The `node` is the name of your laboratory/institute, it should be the same for all the entities you manage, ie. INRA-URGI, EBI, IPK, USDA-ARS, CIMMYT...
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
