@@ -527,7 +527,6 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result = documentDao.search("blé",
-                false,
                 true,
                 SearchRefinements.EMPTY,
                 firstPage);
