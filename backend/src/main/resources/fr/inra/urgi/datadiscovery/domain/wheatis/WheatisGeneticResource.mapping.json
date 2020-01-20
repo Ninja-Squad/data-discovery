@@ -59,6 +59,16 @@
                 }
             }
         },
+        "annotation": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
         "node": {
             "type": "text",
             "fields": {

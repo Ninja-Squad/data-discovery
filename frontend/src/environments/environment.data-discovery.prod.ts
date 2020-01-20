@@ -27,6 +27,7 @@ export const environment = {
     entry: 'Data type',
     db: 'Database',
     node: 'Data provider',
-    species: 'Species'
+    species: 'Species',
+    goAnnonttation: 'GO Annotations'
   }
 };

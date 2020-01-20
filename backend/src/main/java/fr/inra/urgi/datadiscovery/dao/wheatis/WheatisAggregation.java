@@ -19,7 +19,8 @@ public enum WheatisAggregation implements AppAggregation {
     SPECIES("species", "species.keyword", LARGE),
     ENTRY_TYPE("entry", "entryType.keyword", LARGE),
     DATABASE_NAME("db", "databaseName.keyword", LARGE),
-    NODE("node", "node.keyword", SMALL);
+    NODE("node", "node.keyword", SMALL),
+    GO_ANNOTATION("GO Annotation", "annotation.keyword", LARGE);
 
     private final String name;
     private final String field;
