@@ -30,6 +30,12 @@ Then run `./gradlew bootRun` to start the app.
 You can stop the Elastic Search and Kibana instances by running:
 
     docker-compose stop
+    
+or 
+
+    docker-compose down 
+    
+to also remove the stopped containers as well as any networks that were created.
 
 ### Frontend
 
