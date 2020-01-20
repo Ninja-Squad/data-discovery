@@ -44,7 +44,11 @@
            placeholder="{{ 'large-aggregation.filter-on' | translate }} {{ aggregation.name.toLowerCase() | aggregationName }}..."
            (focus)="focus$.next($any($event.target).value)"/>
   </div>
+
+  <div *ngIf="aggregation.name === 'annot'">
+    <dd-descendants-checkbox (searchDescendantsChange)="onSearchDescendants($event)"
+                             [searchDescendants]="searchDescendants"
+    ></dd-descendants-checkbox>
+  </div>
+
 </div>
-
-
-

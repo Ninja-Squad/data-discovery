@@ -13,6 +13,7 @@ import { DocumentCountComponent } from '../document-count/document-count.compone
 import { Bucket } from '../models/page';
 import { NULL_VALUE } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
 
 describe('LargeAggregationComponent', () => {
 
@@ -55,7 +56,7 @@ describe('LargeAggregationComponent', () => {
       NgbTooltipModule,
       I18nTestingModule
     ],
-    declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent]
+    declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent, DescendantsCheckboxComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));

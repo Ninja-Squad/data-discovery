@@ -9,6 +9,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { NULL_VALUE } from '../models/document.model';
+import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
 
 describe('SmallAggregationComponent', () => {
 
@@ -37,7 +38,7 @@ describe('SmallAggregationComponent', () => {
       ReactiveFormsModule,
       NgbTooltipModule
     ],
-    declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent]
+    declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent, DescendantsCheckboxComponent]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));

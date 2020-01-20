@@ -21,6 +21,7 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
      */
     AggregatedPage<D> search(String query,
                              boolean highlight,
+                             boolean descendants,
                              SearchRefinements refinements,
                              Pageable page);
 
@@ -29,7 +30,7 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
      * Separation from the search method for performances reasons
      */
     AggregatedPage<D> aggregate(String query,
-            SearchRefinements refinements);
+            SearchRefinements refinements, boolean descendants);
 
     /**
      * Suggests completions for the given term. It typically autocompletes all the fields except the identifier, the URL and

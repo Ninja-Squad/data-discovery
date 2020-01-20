@@ -59,12 +59,13 @@ describe('HomeComponent', () => {
 
     // with a query
     const query = 'Bacteria';
+    const descendants = false;
     component.searchForm.get('search').setValue(query);
     // when searching
     component.search();
 
     // then it should redirect to the search with correct parameters
-    expect(router.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { query } });
+    expect(router.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { query, descendants } });
   });
 
   it('should display a search bar and trigger a search', () => {

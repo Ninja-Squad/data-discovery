@@ -26,6 +26,7 @@ import {delay} from 'rxjs/operators';
 import {I18nTestingModule} from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
+import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -80,6 +81,7 @@ describe('SearchComponent', () => {
       DocumentCountComponent,
       LoadingSkeletonComponent,
       TruncatableDescriptionComponent,
+      DescendantsCheckboxComponent,
       GenericSelectAllResultsComponent
     ],
     providers: [{ provide: BasketService, useValue: basketService }]
@@ -99,7 +101,8 @@ describe('SearchComponent', () => {
 
     // with a query on init
     const query = 'Bacteria';
-    const queryParams = of({query});
+    const descendants = false;
+    const queryParams = of({query, descendants});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
 
@@ -109,7 +112,7 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 1, no criteria and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, [], 1);
+    expect(searchService.search).toHaveBeenCalledWith(query, [], 1, false);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual(aggregationResult.aggregations);
@@ -128,7 +131,8 @@ describe('SearchComponent', () => {
 
     // with a query on init
     const query = 'Bacteria';
-    const queryParams = of({query});
+    const descendants = false;
+    const queryParams = of({query, descendants});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
 
@@ -138,7 +142,7 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 1, no criteria and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, [], 1);
+    expect(searchService.search).toHaveBeenCalledWith(query, [], 1, false);
     // and the results fetched
     expect(component.results).toEqual(results);
     // First aggregations is not there
@@ -159,7 +163,8 @@ describe('SearchComponent', () => {
     // with a query on init
     const query = 'Bacteria';
     const page = 3;
-    const queryParams = of({query, page});
+    const descendants = false;
+    const queryParams = of({query, descendants, page});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // but this query was already the same
@@ -171,7 +176,7 @@ describe('SearchComponent', () => {
     // then the search should be populated
     expect(component.searchForm.get('search').value).toBe(query);
     // the search service called with page 3, no criteria and and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, [], 3);
+    expect(searchService.search).toHaveBeenCalledWith(query, [], 3, false);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
@@ -191,7 +196,8 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({query, page, domain, coo});
+    const descendants = false;
+    const queryParams = of({query, descendants, page, domain, coo});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // but this query was already the same
@@ -205,7 +211,7 @@ describe('SearchComponent', () => {
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = {name: 'coo', values: ['France', 'Italy']};
     const domainCriteria = {name: 'domain', values: ['Plant']};
-    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
+    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3, false);
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
@@ -228,11 +234,12 @@ describe('SearchComponent', () => {
 
     // with a query on init
     const query = 'Bacteria';
+    const descendants = false;
     const page = 3;
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({query, page, domain, coo});
+    const queryParams = of({query, descendants, page, domain, coo});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // but this query was already the same
@@ -246,7 +253,7 @@ describe('SearchComponent', () => {
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = {name: 'coo', values: ['France', 'Italy']};
     const domainCriteria = {name: 'domain', values: ['Plant']};
-    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3);
+    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3, false);
     // and the results fetched
     expect(component.results).toEqual(expectedResults);
     expect(component.aggregations).toEqual([aggregation]);
@@ -262,11 +269,12 @@ describe('SearchComponent', () => {
 
     // with a query on init
     const query = 'Bacteria';
+    const descendants = false;
     const page = 3;
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({query, page, domain, coo});
+    const queryParams = of({query, descendants, page, domain, coo});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     // with an existing query and results
@@ -292,7 +300,8 @@ describe('SearchComponent', () => {
     // and criteria
     const domain = 'Plant';
     const coo = ['France', 'Italy'];
-    const queryParams = of({query, page: 2, domain, coo});
+    const descendants = false;
+    const queryParams = of({query, descendants, page: 2, domain, coo});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
 
@@ -306,7 +315,8 @@ describe('SearchComponent', () => {
       relativeTo: activatedRoute,
       queryParams: {
         query,
-        page: undefined
+        page: undefined,
+        descendants: 'false'
       }
     });
   });
@@ -318,10 +328,11 @@ describe('SearchComponent', () => {
     const searchService = TestBed.inject(SearchService);
     spyOn(searchService, 'search');
     const query = 'Bacteria';
+    const descendants = false;
     // and criteria
     const domain = ['Plant'];
     const coo = ['France', 'Italy'];
-    const queryParams = of({query, domain, coo});
+    const queryParams = of({query, descendants, domain, coo});
     const activatedRoute = fakeRoute({queryParams});
     const component = new SearchComponent(activatedRoute, router, searchService);
     component.query = query;
@@ -339,6 +350,7 @@ describe('SearchComponent', () => {
       queryParams: {
         query,
         page: '2',
+        descendants: 'false',
         coo,
         domain
       }

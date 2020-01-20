@@ -1,0 +1,17 @@
+  <!-- Rounded switch to Increase sensitivity -->
+  <label for="descendants1" style="margin-right: 5px"
+         class="form-check-label">
+    Expand search
+  </label>
+  <label class="switch">
+    <input type="checkbox" class="form-check-input" id="descendants1"
+           (change)="onDescendantsChecked($event)" [checked]="searchDescendants">
+    <span class="slider round"></span>
+  </label>
+<!--  <a href="#">-->
+<!--    <span class="glyphicon glyphicon-question-sign"></span>-->
+<!--  </a>-->
+  <i class="fa fa-question-circle-o icon-size" aria-hidden="true"
+     placement="top"
+     [openDelay]="150" [closeDelay]="800"
+     ngbTooltip="Search for results with associated ontology terms."></i>

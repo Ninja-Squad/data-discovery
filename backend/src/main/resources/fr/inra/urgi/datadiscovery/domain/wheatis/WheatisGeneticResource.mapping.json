@@ -59,7 +59,27 @@
                 }
             }
         },
-        "annotation": {
+        "annotationId": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "annotationName": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "ancestors": {
             "type": "text",
             "fields": {
                 "keyword": {

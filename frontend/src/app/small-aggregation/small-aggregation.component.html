@@ -17,5 +17,12 @@
         </div>
       </div>
     </form>
+
+    <div *ngIf="aggregation.name === 'annot'" style="margin-bottom: 10px">
+      <dd-descendants-checkbox (searchDescendantsChange)="onSearchDescendants($event)"
+                               [searchDescendants]="searchDescendants"
+      ></dd-descendants-checkbox>
+    </div>
+
   </div>
 </div>

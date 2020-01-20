@@ -26,6 +26,7 @@ import { environment } from '../environments/environment';
 import { LoadingSkeletonComponent } from './loading-skeleton/loading-skeleton.component';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
+import { DescendantsCheckboxComponent } from './descendants-checkbox/descendants-checkbox.component';
 import { I18nModule } from './i18n/i18n.module';
 
 registerLocaleData(localeFr);
@@ -45,7 +46,8 @@ registerLocaleData(localeFr);
     ErrorComponent,
     NavbarComponent,
     LoadingSkeletonComponent,
-    MarkdownPageComponent
+    MarkdownPageComponent,
+    DescendantsCheckboxComponent
   ],
   imports: [
     BrowserAnimationsModule,

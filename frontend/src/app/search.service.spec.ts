@@ -22,26 +22,26 @@ describe('SearchService', () => {
 
   it('should search for the query', () => {
     let actualResults: AggregatedPage<DocumentModel>;
-    service.search('Bacteria',  [], 2)
+    service.search('Bacteria',  [], 1, false)
       .subscribe(results => actualResults = results);
 
     const resource = toRareDocument('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('api/search?query=Bacteria&page=1&highlight=true').flush(expectedResults);
+    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&descendants=false').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
   it('should fetch the aggregations only', () => {
     let actualResults: AggregatedPage<DocumentModel>;
-    service.aggregate('Bacteria', [])
+    service.aggregate('Bacteria', [], false)
       .subscribe(results => actualResults = results);
 
     const resource = toRareDocument('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('api/aggregate?query=Bacteria').flush(expectedResults);
+    http.expectOne('api/aggregate?query=Bacteria&descendants=false').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
@@ -49,13 +49,13 @@ describe('SearchService', () => {
     let actualResults: AggregatedPage<DocumentModel>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
-    service.search('Bacteria', [cooCriteria, domainCriteria], 1)
+    service.search('Bacteria', [cooCriteria, domainCriteria], 1, false)
       .subscribe(results => actualResults = results);
 
     const resource = toRareDocument('Bacteria');
     const expectedResults = toSinglePage([resource]);
 
-    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&descendants=false&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
@@ -65,9 +65,9 @@ describe('SearchService', () => {
     let actualAggregations: AggregatedPage<DocumentModel>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
-    service.search('Bacteria', [cooCriteria, domainCriteria], 1)
+    service.search('Bacteria', [cooCriteria, domainCriteria], 1, false)
       .subscribe(results => actualResults = results);
-    service.aggregate('Bacteria', [cooCriteria, domainCriteria])
+    service.aggregate('Bacteria', [cooCriteria, domainCriteria], false)
       .subscribe(agg => actualAggregations = agg);
 
     const resource = toRareDocument('Bacteria');
@@ -75,9 +75,9 @@ describe('SearchService', () => {
     const expectedResults = toSinglePage([resource]);
     const expectedAggregations = toSinglePage([resource], [aggregation]);
 
-    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&coo=France&coo=Italy&domain=Forest')
+    http.expectOne('api/search?query=Bacteria&page=0&highlight=true&descendants=false&coo=France&coo=Italy&domain=Forest')
       .flush(expectedResults);
-    http.expectOne('api/aggregate?query=Bacteria&coo=France&coo=Italy&domain=Forest').flush(expectedAggregations);
+    http.expectOne('api/aggregate?query=Bacteria&descendants=false&coo=France&coo=Italy&domain=Forest').flush(expectedAggregations);
     expect(actualResults).toEqual(expectedResults);
     expect(actualAggregations).toEqual(expectedAggregations);
   });

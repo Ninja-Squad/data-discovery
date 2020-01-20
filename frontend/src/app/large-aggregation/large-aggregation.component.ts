@@ -24,11 +24,13 @@ export class LargeAggregationComponent {
   @Input() selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or removes a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  @Output() searchDescendantsChange = new EventEmitter<boolean>();
 
   @ViewChild('typeahead') typeahead: ElementRef<HTMLInputElement>;
 
   focus$ = new Subject<string>();
   criterion = new FormControl('');
+  @Input() searchDescendants: boolean;
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
@@ -63,6 +65,11 @@ export class LargeAggregationComponent {
       values: this.selectedKeys
     };
     this.aggregationChange.emit(event);
+  }
+
+  onSearchDescendants(event: boolean) {
+    this.searchDescendants = event;
+    this.searchDescendantsChange.emit(event);
   }
 
   removeKey(key: string) {

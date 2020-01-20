@@ -33,7 +33,7 @@ export const environment = {
     db: 'Database',
     node: 'Data provider',
     species: 'Species',
-    goAnnonttation: 'GO Annotations'
+    annot: 'Ontology annotation'
   }
 };
 

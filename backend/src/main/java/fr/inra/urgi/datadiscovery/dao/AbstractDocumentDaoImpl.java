@@ -5,12 +5,9 @@ import static fr.inra.urgi.datadiscovery.dao.DocumentDao.PORTAL_URL_AGGREGATION_
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
@@ -20,10 +17,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
@@ -44,11 +38,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.query.DeleteQuery;
-import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SourceFilter;
+import org.springframework.data.elasticsearch.core.query.*;
 
 /**
  * Base class for implementations of {@link DocumentDao}
@@ -86,9 +76,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     @Override
     public AggregatedPage<D> search(String query,
                                     boolean highlight,
+                                    boolean descendants,
                                     SearchRefinements refinements,
                                     Pageable page) {
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page);
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
 
         if (highlight) {
             builder.withHighlightFields(
@@ -97,18 +88,19 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
                     ).withHighlightBuilder(new HighlightBuilder().encoder("html"));
         }
 
+        logger.debug(builder.build().toString());
         return elasticsearchTemplate.queryForPage(builder.build(),getDocumentClass(),
                 documentHighlightMapper);
     }
 
 
     @Override
-    public AggregatedPage<D> aggregate(String query, SearchRefinements refinements) {
+    public AggregatedPage<D> aggregate(String query, SearchRefinements refinements, boolean descendants) {
 
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, PageRequest.of(0,1));
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, PageRequest.of(0,1), descendants);
 
         getAppAggregations().forEach(appAggregation -> {
-            FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements);
+            FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements, descendants);
             builder.addAggregation(filterAggregation);
         });
 
@@ -121,7 +113,24 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         return result;
     }
 
-    private NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page) {
+    protected List<String> getAnnotationsIds(SearchRefinements refinements){
+        List<String> annotIds = new ArrayList<String>();
+        Pattern pattern = Pattern.compile("\\(\\w{2,6}:\\d{7}\\)$");
+        for (AppAggregation term : refinements.getTerms()) {
+            if(term.getName().equals("annot")) {
+                Set<String> annotRefinments = refinements.getRefinementsForTerm(term);
+                for (String annotRefinment : annotRefinments) {
+                    Matcher matcher = pattern.matcher(annotRefinment);
+                    if (matcher.find()) {
+                        annotIds.add(matcher.group(0).replace("(","").replace(")",""));
+                    }
+                }
+            }
+        }
+        return annotIds;
+    }
+
+    private NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
         // this full text query is executed, and its results are used to compute aggregations
         MultiMatchQueryBuilder fullTextQuery = multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
 
@@ -130,12 +139,12 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         // See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
         BoolQueryBuilder refinementQuery = boolQuery();
         for (AppAggregation term : refinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(refinements, term));
+            refinementQuery.must(createRefinementQuery(refinements, term, descendants));
         }
 
         SearchRefinements implicitRefinements = getImplicitSearchRefinements();
         for (AppAggregation term : implicitRefinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(implicitRefinements, term));
+            refinementQuery.must(createRefinementQuery(implicitRefinements, term, descendants));
         }
 
         // this allows avoiding to get back the suggestions field in the found documents, since we don't care
@@ -151,10 +160,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
 
 
     private FilterAggregationBuilder createFilterAggregation(AppAggregation appAggregation,
-                                                             SearchRefinements searchRefinements) {
+                                                             SearchRefinements searchRefinements, boolean descendants) {
         return AggregationBuilders.filter(
             appAggregation.getName(),
-            createQueryForAllRefinementsExcept(searchRefinements, appAggregation)
+            createQueryForAllRefinementsExcept(searchRefinements, appAggregation, descendants)
         ).subAggregation(
             AggregationBuilders.terms(appAggregation.getName())
                                .field(appAggregation.getField())
@@ -163,16 +172,16 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     }
 
     private QueryBuilder createQueryForAllRefinementsExcept(SearchRefinements refinements,
-                                                            AppAggregation appAggregation) {
+                                                            AppAggregation appAggregation, boolean descendants) {
         BoolQueryBuilder refinementQuery = boolQuery();
         for (AppAggregation term : refinements.getTerms()) {
             if (!term.equals(appAggregation)) {
-                refinementQuery.must(createRefinementQuery(refinements, term));
+                refinementQuery.must(createRefinementQuery(refinements, term, descendants));
             }
         }
         SearchRefinements implicitRefinements = getImplicitSearchRefinements();
         for (AppAggregation term : implicitRefinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(implicitRefinements, term));
+            refinementQuery.must(createRefinementQuery(implicitRefinements, term, descendants));
         }
         return refinementQuery;
     }
@@ -208,7 +217,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
      *     </li>
      *     <li>
      *         The field is an array, and can be an empty array. In that case, it's considered by ElasticSearch as
-     *         missing, but the aggregation created in {@link DocumentDaoCustom#search(String, boolean, SearchRefinements, Pageable)}
+     *         missing, but the aggregation created in {@link DocumentDaoCustom#search(String, boolean, boolean, SearchRefinements, Pageable)}
      *         puts missing values in the bucket with the key {@link SearchDocument#NULL_VALUE}. So, the aggregation
      *         considers null values and missing values as the same value: {@link SearchDocument#NULL_VALUE}.
      *         It's still considered, when searching, as a missing value though. So, if {@link SearchDocument#NULL_VALUE}
@@ -220,16 +229,29 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
      *     </li>
      * </ul>
      */
-    private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term) {
+    private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term, boolean descendants) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
         TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        if (term.getName().equals("annot")) {
+            List<String> goIds = getAnnotationsIds(refinements);
+            boolQuery.should(termsQuery("annotationId.keyword", goIds));
+            if(descendants) {
+                for(int i =0 ; i < goIds.size(); i++) {
+                    boolQuery.should(prefixQuery("ancestors.keyword", goIds.get(i))) ;
+                }
+            }
+        }else{
+            boolQuery.should(termsQuery);
+        }
+
         if (acceptedValues.contains(SearchDocument.NULL_VALUE)) {
             return boolQuery()
-                .should(termsQuery)
+                .should(boolQuery)
                 .should(boolQuery().mustNot(existsQuery(term.getField())));
         }
         else {
-            return termsQuery;
+            return boolQuery;
         }
     }
 
@@ -338,7 +360,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         BoolQueryBuilder refinementQuery = boolQuery();
         SearchRefinements implicitRefinements = getImplicitSearchRefinements();
         for (AppAggregation term : implicitRefinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(implicitRefinements, term));
+            refinementQuery.must(createRefinementQuery(implicitRefinements, term, false));
         }
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
             .withQuery(refinementQuery)

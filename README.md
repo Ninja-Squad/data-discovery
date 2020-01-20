@@ -62,6 +62,12 @@ $ git lfs pull -I data/rare/
 Downloading LFS objects: 100% (16/16), 8.8 MB | 0 B/s
 ```
 
+Git might request you to enable additional parameters, which is acceptable:
+
+```sh
+git config lfs.https://forgemia.inra.fr/urgi-is/data-discovery.git/info/lfs.locksverify true
+```
+
 ### Backend
 
 The project uses Spring (5.x) for the backend, with Spring Boot.
@@ -91,13 +97,11 @@ You can stop the Elasticsearch and Kibana instances by running:
 docker-compose stop
 ```
 
-or run:
+or run the following command to also remove the stopped containers as well as any networks that were created:
 
 ```sh
 docker-compose down
 ```
-
-to also remove the stopped containers as well as any networks that were created.
 
 ### Frontend
 
@@ -200,6 +204,8 @@ Before all, if you have cloned the repository without fetching the data (see [Da
 Feedback related to portability on MacOS and other GNU/Linux distro is really welcomed.
 
 For MacOS, care to use latest GNU Parallel and Bash v4 versions, not the version provided by default via Brew.
+Don't use zsh!
+
 Install the following packages to be able to run the scripts:
 
 ```sh
@@ -211,7 +217,7 @@ Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creati
 To create the index and its aliases execute the script below for local dev environment:
 
 ```sh
-./scripts/index.sh -app rare|wheat|data-discovery --local
+./scripts/index.sh -app rare|wheatis|data-discovery --local
 ```
 
 The -app parameter will trigger a harvest of the resources stored in the Git LFS directories `data/rare`, `data/wheatis` and `data/data-discovery` respectively.
@@ -301,6 +307,12 @@ You can adapt the elasticsearch index used with the following parameter
 
 ```sh
 java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
+```
+
+For debuging:
+
+```sh
+java -jar backend/build/libs/data-discovery.jar --debug
 ```
 
 ## Configuration
