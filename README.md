@@ -1,17 +1,36 @@
 # Rare project - Data discovery
 
+- [Rare project - Data discovery](#rare-project---data-discovery)
+  - [Contribute](#contribute)
+    - [Data](#data)
+    - [Code](#code)
+  - [Setup](#setup)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+  - [Build](#build)
+  - [CI](#ci)
+  - [Documentation](#documentation)
+  - [Harvest](#harvest)
+  - [Indices and aliases](#indices-and-aliases)
+  - [Spring Cloud config](#spring-cloud-config)
+  - [Building other apps](#building-other-apps)
 ## Contribute
+
+If you want to install the program on-premise, it's cool, just keep reading  at [Setup section and beyond](#setup).
+
+### Data
 
 You might probably want to know how to contribute to the federation of data. That's great, let's have a look at the [WheatIS/Plant guide](./HOW-TO-JOIN-WHEATIS-AND-PLANT-FEDERATIONS.md) or the [RARe guide](./HOW-TO-JOIN-RARe-FEDERATION.md) to know how to.
 
-If you do want to contribute to code or even only install the program on-premise it's great also, just keep reading below.
+### Code
+
+If you do want to contribute to code, that's great also, have a look at [CONTRIBUTING.md](./CONTRIBUTING.MD).
 
 ## Setup
 
 ### Backend
 
-The project uses Spring (5.x) for the backend,
-with Spring Boot.
+The project uses Spring (5.x) for the backend, with Spring Boot.
 
 You need to install:
 
@@ -27,14 +46,14 @@ And this will start Elasticsearch and a Kibana instance (allowing to explore the
 Then at the root of the application, run `./gradlew build` to download the dependencies.
 Then run `./gradlew bootRun` to start the app.
 
-You can stop the Elastic Search and Kibana instances by running:
+You can stop the Elasticsearch and Kibana instances by running:
 
     docker-compose stop
-    
-or 
+
+or run:
 
     docker-compose down 
-    
+
 to also remove the stopped containers as well as any networks that were created.
 
 ### Frontend
@@ -43,34 +62,41 @@ The project uses Angular (7.x) for the frontend, with the Angular CLI.
 
 You need to install:
 
-- a recent enough NodeJS (8.11+). Node 10 is recommended for Angular 7.
+- a recent enough NodeJS, v10+ is required for Angular 7.
 - Yarn as a package manager (see [here to install](https://yarnpkg.com/en/docs/install))
 
 Then in the `frontend` directory, run `yarn` to download the dependencies.
 Then run `yarn start` to start the app, using the proxy conf to reroute calls to `/api` to the backend.
 
 The application will be available on:
-- http://localhost:4000/rare-dev for RARe (runs with: `yarn start:rare` or simply `yarn start`)
-- http://localhost:4100/wheatis-dev for WheatIS (runs with: `yarn start:wheatis`)
+
+- <http://localhost:4000/rare-dev> for RARe (runs with: `yarn start:rare` or simply `yarn start`)
+- <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `yarn start:wheatis`)
+- <http://localhost:4200/data-discovery-dev> for WheatIS (runs with: `yarn start:data-discovery`)
+
+See [./frontend/package.json (scripts section)](./frontend/package.json) for other yarn commands.
 
 ## Build
 
 To build the app, just run:
 
     ./gradlew assemble
-or 
+
+or
+
     ./gradlew assemble -Papp=wheatis
 
-This will build a standalone jar at `backend/build/libs/rare.jar` or  `backend/build/libs/wheatis.jar`, that you can run with:
+This will build a standalone jar at `backend/build/libs/`, that you can run with either:
 
     java -jar backend/build/libs/rare.jar
     java -jar backend/build/libs/wheatis.jar
+    java -jar backend/build/libs/data-discovery.jar
 
-And the full app run on:
+And the full app running on:
 
-- http://localhost:8080/rare-dev
-- http://localhost:8180/wheatis-dev
-
+- <http://localhost:8080/rare-dev>
+- <http://localhost:8180/wheatis-dev>
+- <http://localhost:8280/data-discovery-dev>
 
 ## CI
 
@@ -97,132 +123,57 @@ Or also run a gitlab-runner as Gitlab-CI would do (minus the environment variabl
 
 An API documentation describing most of the webservices can be generated using the
 build task `asciidoctor`, which executes tests and generates documentation based on snippets generated
-by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`/
+by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`
 
     ./gradlew asciidoctor
 
 ## Harvest
 
-Harvesting (i.e. importing documents stored in JSON files into Elasticsearch) consists in
-creating the necessary index and aliases and Elasticsearch templates.
+Harvesting (i.e. importing JSON documents stored into Elasticsearch) consists in creating the necessary index and aliases and Elasticsearch templates.
 
 To create the index and its aliases execute the script below for local dev environment:
 
-    ./scripts/createIndexAndAliases.sh
+    ./scripts/index.sh -app rare|wheat|data-discovery --local
 
-This script is a wrapper for the `./scripts/createIndexAndAliases4CI.sh` which handle some parameters to create
-indices, aliases and so on, on another (possible remote) Elasticsearch for fitting to a specific environment:
-
-    ./scripts/createIndexAndAliases4CI.sh -host localhost -app rare -env dev
-
-You can run the scripts:
-
-    ./scripts/harvestRare.sh
-    ./scripts/harvestWheatis.sh
-    
-to trigger a harvest of the resources stored in the Git LFS directories `data/rare` and `data/wheatis` respectively.
+The -app parameter will trigger a harvest of the resources stored in the Git LFS directories `data/rare`, `data/wheatis` and `data/data-discovery` respectively.
 
 ## Indices and aliases
 
-The application uses several physical indices, which (at least the resources index) can be rolled over automatically based on the policies defined in the
-`./backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*_policy.json` files. This is based on the
-[Index Lifecyle Management](https://www.elastic.co/guide/en/elasticsearch/reference/6.6/index-lifecycle-management.html)
-provided by Elasticsearch.
+The application uses several physical indices:
 
- * one to store physical resources, containing the main content
- * one to store suggestions, use for the search type-ahead feature only
+- one to store physical resources, containing the main content
+- one to store suggestions, use for the search type-ahead feature only
 
 Both indices must be created explicitly before using the application. If not, requests to the web services will return errors.
 
-Each index and alias below refers to `rare` application in `dev` environment, the equivalent shall be created for `wheatis` 
-app in `dev` environment as same as in `beta` or `prod` environments. For brevity, only `rare-dev` is explained here.
+Each index and alias below refers to `rare` application in `dev` environment, the equivalent shall be created for `wheatis` and `data-discovery` app in `dev` environment as same as in `beta` or `staging` or `prod` environments. For brevity, only `rare-dev` is explained here.
 {: .alert .alert-info}
 
-The application doesn't use the physical resources index directly. Instead, it uses two aliases, that must be created 
-before using the application:
+The application doesn't use the physical resources index directly. Instead, it uses two aliases, that must be created before using the application:
 
- * `rare-dev-resource-index` is the alias used by the application to search for documents
- * `rare-dev-resource-harvest-index` is the alias used by the application to store documents when the harvest is triggered.
- 
-In normal operations, these two aliases should refer to the same physical resource index. The script
-`createIndexAndAliases.sh` creates a physical index (named `rare-dev-resource-physical-index`) and creates these two aliases 
-referring to this physical index.
+- `rare-dev-resource-alias` is the alias used by the application to store and search for documents
+- `rare-dev-suggestions-alias` is the alias used by the application to store and search for suggestions, only used for completion service.
 
-Once the index and the aliases have been created, a harvest can be triggered. The first operation that a harvest
-does is to create or update (put) the mapping for the document entity into the index aliased by `rare-dev-resource-harvest-index`. 
-Then it parses the JSON files and stores them into this same index. Since the `rare-dev-resource-index` alias 
-normally refers to the same physical index, searches will find the resources stored by the harvester.
+In normal operations, these two aliases should refer to physical indices having a timestamp such as `rare-dev-tmstp1579877133-suggestions` and `rare-dev-tmstp1579877133-resource-index`. Those timestamps allow for reindexing data without breaking another runnning application having another timestamp. The alias switch being done atomicly, we always see data in the web interface.
 
-### Why two aliases
-
-Using two aliases is useful when deleting obsolete documents. This is actually done by removing everything
-and then harvesting the new JSON files again, to re-populate the index from scratch.
-
-Two scenarios are possible:
-
-#### Deleting with some downtime
-
-The harvest duration depends on the performance of Elasticsearch, of the performance of the harvester, and 
-of course, of the number of documents to harvest. If you don't mind about having a period of time 
-where the documents are not available, you can simply 
-
- - delete the physical index;
- - re-create it with its aliases;
- - trigger a new harvest.
- 
-Keep in mind that, with the current known set of documents (17172), on a development machine where everything is running
-concurrently, when both the Elasticsearch server and the application are hot, a harvest only takes 12 seconds.
-So, even if you have 10 times that number of documents (170K documents), it should only take around 2 minutes of downtime.
-If you have 100 times that number of documents (1.7M documents), it should take around 20 minutes, which is still not a 
-very long time.
-
-(Your mileage may vary: I assumed a linear complexity here).
-
-Here are curl commands illustrating the above scenario:
-```
-# delete the physical index and its aliases
-curl -X DELETE "localhost:9200/rare-dev-resource-physical-index"
-
-# recreate the physical index and its aliases
-curl -X PUT "localhost:9200/rare-dev-resource-physical-index" -H 'Content-Type: application/json' -d'
-{
-    "aliases" : {
-        "rare-dev-resource-index" : {},
-        "rare-dev-resource-harvest-index" : {}
-    }
-    "settings": ...
-}
-'
-```
-
-**NOTE**: Every time a physical index is created, the settings must be specified, the same ay as in the 
-`createIndexAndAliases.sh` script. The exact content of the settings is omitted here for brevity and readability.
-{: .alert .alert-info}
+Using two aliases is useful when deleting obsolete documents. This is actually done by removing everything and then harvesting the new JSON files again, to re-populate the index from scratch.
 
 ## Spring Cloud config
 
-On bootstrap, the application will try to connect to a remote Spring Cloud config server to fetch its configuration.
-The details of this remote server are filled in the `bootstrap.yml` file.
-By default, it tries to connect to the local server on http://localhost:8888
-but it can of course be changed, or even configured via the `SPRING_CONFIG_URI` environment variable.
+On bootstrap, the application will try to connect to a remote Spring Cloud config server to fetch its configuration. The details of this remote server are filled in the `bootstrap.yml` file. By default, it tries to connect to the local server on <http://localhost:8888> but it can of course be changed, or even configured via the `SPRING_CONFIG_URI` environment variable.
 
 It will try to fetch the configuration for the application name `rare`, and the default profile.
 If such a configuration is not found, it will then fallback to the local `application.yml` properties.
+
 To avoid running the Spring Cloud config server every time when developing the application,
 all the properties are still available in `application.yml` even if they are configured on the remote Spring Cloud server as well.
 
-If you want to use the Spring Cloud config app locally, see https://forgemia.inra.fr/urgi-is/data-discovery-config
+If you want to use the Spring Cloud config app locally, see <https://forgemia.inra.fr/urgi-is/data-discovery-config>
 
-The configuration is currently only read on startup,
-meaning the application has to be reboot if the configuration is changed on the Spring Cloud server.
-For a dynamic reload without restarting the application, 
-see http://cloud.spring.io/spring-cloud-static/Finchley.SR1/single/spring-cloud.html#refresh-scope
+The configuration is currently only read on startup, meaning the application has to be reboot if the configuration is changed on the Spring Cloud server. For a dynamic reload without restarting the application, see <http://cloud.spring.io/spring-cloud-static/Finchley.SR1/single/spring-cloud.html#refresh-scope>
 to check what has to be changed.
 
-In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project 
-and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar.
-More info on how pass a parameter to a Spring Boot app: 
-https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config
+In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar. More info on [how to pass a parameter to a Spring Boot app](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config).
 
 ## Building other apps
 
@@ -233,25 +184,25 @@ To build a different app, specify an `app` property when building. For example, 
 the WheatIS app, run the following command
 
     ./gradlew assemble -Papp=wheatis
-    
+
 You can also run the backend WheatIS application using
 
     ./gradlew bootRun -Papp=wheatis
-    
+
 Adding this property has the following consequences:
 
- - the generated jar file (in `backend/build/libs`) is named `wheatis.jar` instead of `rare.jar`;
- - the Spring active profile in `bootstrap.yml` is `wheatis-app` instead of `rare-app`;
- - the frontend application built and embedded inside the jar file is the WheatIS frontend application instead of the
- RARe frontend application, i.e. the frontend command `yarn build:wheatis` is executed instead of the command `yarn:rare`.
- 
+- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` instead of `rare.jar`;
+- the Spring active profile in `bootstrap.yml` is `wheatis-app` instead of `rare-app`;
+- the frontend application built and embedded inside the jar file is the WheatIS frontend application instead of the  RARe frontend application, i.e. the frontend command `yarn build:wheatis` is executed instead of the command `yarn:rare`.
+
 Since the active Spring profile is different, all the properties specific to this profile
 are applies. In particular:
- 
- - the context path of the application is `/wheatis-dev` instead of `/rare-dev`; 
- - the Elasticsearch prefix used for the index aliases is different.
+
+- the context path of the application is `/wheatis-dev` instead of `/rare-dev`;
+- the Elasticsearch prefix used for the index aliases is different.
 
 See the `backend/src/main/resources/application.yml` file for details.
 
 You can adapt the elasticsearch index used with the following parameter
-java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
+
+    java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"

@@ -15,14 +15,15 @@ DESCRIPTION:
 	Wrapper script used to create index and aliases then index data for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> [-h|--help]
+	$0 [-host <ES host> -port <ES port> -app <application name> -env <environment name>] [--local] [-h|--help]
 
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the indexing load on several hosts
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
 	-app           the name of the targeted application: rare, wheatis or data-discovery
 	-env           the environment name of the targeted application (dev, beta, prod ...)
-        --clean	       clean the previous existing indices and rollover alias
+	--local        use local environment for rare application (by default) and ignore all other options except -app if provided at a previous position
+	--clean	       clean the previous existing indices and rollover alias
 	-h or --help   print this help
 
 EOF
@@ -49,6 +50,7 @@ while [ -n "$1" ]; do
 		-port) ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
+		--local) [ -z "$APP_NAME" ] && APP_NAME="rare" ; APP_ENV="dev"; ES_HOSTS="localhost"; ES_HOST="localhost" ; ES_PORT="9200"; ES_HOST='localhost';shift; break;;
 		--clean) CLEAN=1;shift 1;;
 		--) shift;break;;
 		-*) echo -e "${RED_BOLD}Unknown option: $1 ${NC}\n"&& help && echo;exit 1;;
