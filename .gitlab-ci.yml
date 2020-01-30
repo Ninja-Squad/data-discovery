@@ -2,6 +2,8 @@
 stages:
  - test
  - build
+ - beta
+ - data-integration-beta
  - staging
  - data-integration-staging
  - production
@@ -225,7 +227,7 @@ build-data-discovery:
   APP_CONTEXT: data-discovery
 
 deploy-rare-to-beta:
- stage: staging
+ stage: beta
  <<: *variables-rare-beta
  <<: *deploy_to_vm
  only:
@@ -268,7 +270,7 @@ deploy-rare-to-prod:
  allow_failure: false
 
 deploy-wheatis-to-beta:
- stage: staging
+ stage: beta
  <<: *variables-wheatis-beta
  <<: *deploy_to_vm
  only:
@@ -311,7 +313,7 @@ deploy-wheatis-to-prod:
  allow_failure: false
 
 deploy-data-discovery-to-beta:
- stage: staging
+ stage: beta
  <<: *variables-data-discovery-beta
  <<: *deploy_to_vm
  only:
@@ -376,7 +378,7 @@ deploy-data-discovery-to-prod:
  when: manual
 
 data-integration-rare-beta:
- stage: data-integration-staging
+ stage: data-integration-beta
  <<: *variables-rare-beta
  <<: *data-integration
  only:
@@ -413,7 +415,7 @@ data-integration-rare-prod:
    - master
 
 data-integration-wheatis-beta:
- stage: data-integration-staging
+ stage: data-integration-beta
  <<: *variables-wheatis-beta
  <<: *data-integration
  only:
@@ -450,7 +452,7 @@ data-integration-wheatis-prod:
    - master
 
 data-integration-data-discovery-beta:
- stage: data-integration-staging
+ stage: data-integration-beta
  <<: *variables-data-discovery-beta
  <<: *data-integration
  only:
