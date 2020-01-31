@@ -86,6 +86,12 @@ or
 
     ./gradlew assemble -Papp=wheatis
 
+
+which is a shortcut for
+
+
+   ./gradlew assemble -Papp=wheatis && java -jar path/to/wheatis.jar
+
 This will build a standalone jar at `backend/build/libs/`, that you can run with either:
 
     java -jar backend/build/libs/rare.jar
