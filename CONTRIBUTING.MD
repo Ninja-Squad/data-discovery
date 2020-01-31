@@ -42,7 +42,7 @@
 - A `git rebase` is strongly recommanded before merging a MR
   - [Git rebase official documentation](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
   - [How to keep a clean history](https://about.gitlab.com/2018/06/07/keeping-git-commit-history-clean/)
-- Merge requests should be reviewed by at least 1 colleague
+- Merge requests should be reviewed by at least 1 developper
 - Continuous Integration is launched automatically by Gitlab on each commit push or merge request creation.
 
 ## Data management
