@@ -12,6 +12,8 @@
   - refactor (code refactoring)
   - chore (base maintenance such as version bump)
   - test (for anything related to tests)
+  - doc (related to documentation)
+  - data (any change on data files)
 
 ### Commits & branches merge
 
@@ -39,7 +41,14 @@
     La branche 'chore/explaining_how_to_merge' est paramétrée pour suivre la branche distante 'chore/explaining_how_to_merge' depuis 'origin'.
     ```
 
-- A `git rebase` is strongly recommanded before merging a MR
+- A `git rebase` is strongly recommanded before merging a MR (either vie Gitlab UI, or via command line in case of conflict, see links and code below):
+
+  ```sh
+  git checkout feat/my-feature
+  git fetch origin
+  git rebase origin/master
+  ```
+
   - [Git rebase official documentation](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
   - [How to keep a clean history](https://about.gitlab.com/2018/06/07/keeping-git-commit-history-clean/)
 - Merge requests should be reviewed by at least 1 developper

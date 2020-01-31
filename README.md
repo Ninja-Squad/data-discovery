@@ -16,7 +16,7 @@
   - [Building other apps](#building-other-apps)
 ## Contribute
 
-If you want to install the program on-premise, it's cool, just keep reading  at [Setup section and beyond](#setup).
+If you want to install the program locally, it's cool, just keep reading at [Setup section and beyond](#setup).
 
 ### Data
 
@@ -58,11 +58,11 @@ to also remove the stopped containers as well as any networks that were created.
 
 ### Frontend
 
-The project uses Angular (7.x) for the frontend, with the Angular CLI.
+The project uses Angular (8.x) for the frontend, with the Angular CLI.
 
 You need to install:
 
-- a recent enough NodeJS, v10+ is required for Angular 7.
+- a recent enough NodeJS, v10+ is required for Angular 8.
 - Yarn as a package manager (see [here to install](https://yarnpkg.com/en/docs/install))
 
 Then in the `frontend` directory, run `yarn` to download the dependencies.
@@ -72,7 +72,7 @@ The application will be available on:
 
 - <http://localhost:4000/rare-dev> for RARe (runs with: `yarn start:rare` or simply `yarn start`)
 - <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `yarn start:wheatis`)
-- <http://localhost:4200/data-discovery-dev> for WheatIS (runs with: `yarn start:data-discovery`)
+- <http://localhost:4200/data-discovery-dev> for DataDiscovery (runs with: `yarn start:data-discovery`)
 
 See [./frontend/package.json (scripts section)](./frontend/package.json) for other yarn commands.
 
@@ -135,7 +135,7 @@ by these tests. The documentation is generated in the folder `backend/build/asci
 
 ## Harvest
 
-Harvesting (i.e. importing JSON documents stored into Elasticsearch) consists in creating the necessary index and aliases and Elasticsearch templates.
+Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creating the necessary index and aliases and Elasticsearch templates.
 
 To create the index and its aliases execute the script below for local dev environment:
 
