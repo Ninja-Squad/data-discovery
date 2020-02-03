@@ -121,7 +121,7 @@ mkdir -p "$OUTDIR"
 {
 #    set -x
     echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
-    parallel --bar --link "
+    parallel --bar --link --halt now,fail=1 "
             gunzip -c {1} \
             | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
             | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{1/.}.jq.err \
@@ -137,6 +137,10 @@ mkdir -p "$OUTDIR"
 	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/*.log.gz
 	exit $code
 }
+# check all JQ err files...
+FILES_IN_ERROR=$(find "${OUTDIR}" -size "+0b" -name "*jq.err")
+[ -n "${FILES_IN_ERROR}" ] && { echo -e "${RED}ERROR: some problems occured with JQ processing, look at files:${ORANGE} ${FILES_IN_ERROR}${NC}" ; exit 4 ; }
+
 echo "Indexing has finished, updating settings"
 curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource/_settings\" --data-binary '@-' <<EOF
 {
@@ -148,7 +152,7 @@ EOF
 {
 #    set -x
     echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
-    parallel -j${HOST_NB} --bar --link "
+    parallel -j${HOST_NB} --bar --link --halt now,fail=1 "
             curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
                 --data-binary '@{1}' > ${OUTDIR}/{1/.}.log.gz" \
