@@ -21,14 +21,8 @@
             }
         },
         "description": {
-            "analyzer": "ascii_folding",
-            "type": "text",
-            "fields": {
-                "synonyms": {
-                    "type": "text",
-                    "analyzer": "syn_text"
-                }
-            }
+            "analyzer": "english",
+            "type": "text"
         },
         "pillarName": {
             "type": "text",
