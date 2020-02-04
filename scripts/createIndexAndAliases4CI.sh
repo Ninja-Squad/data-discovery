@@ -108,7 +108,7 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-
         $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${MAPPING_PARTIAL_PATH}/*.mapping.json)
     },
   \"settings\":
-    $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings.json )
+    $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/${MAPPING_PARTIAL_PATH}/settings.json )
 }
 "\
 > ${TMP_FILE}
