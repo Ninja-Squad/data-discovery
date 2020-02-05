@@ -10,11 +10,13 @@ import org.elasticsearch.common.settings.Settings;
  * @author JB Nizet
  */
 public class DocumentIndexSettings {
-    public static String createSettings() {
+    public static String createSettings(String profile) {
         try {
+            String appName = profile.substring(0, profile.lastIndexOf("-"));
+            appName = profile.equals("data-discovery-app") ? "wheatis" : appName;
             return Settings.builder().loadFromStream(
-                    "settings.json",
-                    DocumentIndexSettings.class.getResourceAsStream("settings.json"),
+                    appName + "/settings.json",
+                    DocumentIndexSettings.class.getResourceAsStream(appName + "/settings.json"),
                     true
             ).build().toString();
         }

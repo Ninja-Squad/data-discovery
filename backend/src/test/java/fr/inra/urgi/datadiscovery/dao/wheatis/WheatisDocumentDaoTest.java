@@ -56,7 +56,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         ElasticsearchPersistentEntity suggestionDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
                 SuggestionDocument.class);
         elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
-        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings());
+        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings(AppProfile.WHEATIS));
         elasticsearchTemplate.deleteIndex(SUGGESTION_INDEX);
         elasticsearchTemplate.createIndex(SUGGESTION_INDEX, DocumentIndexSettings.createSuggestionsSettings());
         elasticsearchTemplate.addAlias(
