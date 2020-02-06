@@ -3,6 +3,7 @@ package fr.inra.urgi.datadiscovery.dao;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+import fr.inra.urgi.datadiscovery.config.AppProfile;
 import org.elasticsearch.common.settings.Settings;
 
 /**
@@ -12,8 +13,7 @@ import org.elasticsearch.common.settings.Settings;
 public class DocumentIndexSettings {
     public static String createSettings(String profile) {
         try {
-            String appName = profile.substring(0, profile.lastIndexOf("-"));
-            appName = profile.equals("data-discovery-app") ? "wheatis" : appName;
+            String appName = AppProfile.RARE.equals(profile) ? "rare" : "wheatis";
             return Settings.builder().loadFromStream(
                     appName + "/settings.json",
                     DocumentIndexSettings.class.getResourceAsStream(appName + "/settings.json"),
