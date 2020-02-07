@@ -68,7 +68,10 @@ test:
       - /bin/sh
       - -c
       - "export PATH=/usr/share/elasticsearch/bin:$PATH ;
-         exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch"
+         exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch ;
+         ln -s \
+         /builds/urgi-is/data-discovery/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/wheatis/WheatisGeneticResource.mapping.json \
+         /builds/urgi-is/data-discovery/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/data-discovery/WheatisGeneticResourceCI.mapping.json"
  script: ./gradlew --parallel test
  cache:
    key: "$CI_COMMIT_REF_NAME"
