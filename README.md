@@ -56,20 +56,26 @@ You need to install:
 The application expects to connect on an Elasticsearch instance running on `http://127.0.0.1:9200`.
 To have such an instance, simply run:
 
-    docker-compose up
+```sh
+docker-compose up
+```
 
-And this will start Elasticsearch and a Kibana instance (allowing to explore the data on http://localhost:5601).
+And this will start Elasticsearch and a Kibana instance (allowing to explore the data on <http://localhost:5601>).
 
 Then at the root of the application, run `./gradlew build` to download the dependencies.
 Then run `./gradlew bootRun` to start the app.
 
 You can stop the Elasticsearch and Kibana instances by running:
 
-    docker-compose stop
+```sh
+docker-compose stop
+```
 
 or run:
 
-    docker-compose down 
+```sh
+docker-compose down
+```
 
 to also remove the stopped containers as well as any networks that were created.
 
@@ -97,23 +103,29 @@ See [./frontend/package.json (scripts section)](./frontend/package.json) for oth
 
 To build the app, just run:
 
-    ./gradlew assemble
+```sh
+./gradlew assemble
+```
 
 or
 
-    ./gradlew assemble -Papp=wheatis
-
+```sh
+./gradlew assemble -Papp=wheatis
+```
 
 which is a shortcut for
 
-
-   ./gradlew assemble -Papp=wheatis && java -jar path/to/wheatis.jar
+```sh
+./gradlew assemble -Papp=wheatis && java -jar path/to/wheatis.jar
+```
 
 This will build a standalone jar at `backend/build/libs/`, that you can run with either:
 
-    java -jar backend/build/libs/rare.jar
-    java -jar backend/build/libs/wheatis.jar
-    java -jar backend/build/libs/data-discovery.jar
+```sh
+java -jar backend/build/libs/rare.jar
+java -jar backend/build/libs/wheatis.jar
+java -jar backend/build/libs/data-discovery.jar
+```
 
 And the full app running on:
 
@@ -136,11 +148,15 @@ to avoid symbolic links issues on Docker.
 
 You can approximate what runs on CI by executing:
 
-    docker run --rm -v "$PWD":/home/rare -w /home/rare urgi/docker-browsers ./gradlew build
+```sh
+docker run --rm -v "$PWD":/home/rare -w /home/rare urgi/docker-browsers ./gradlew build
+```
 
 Or also run a gitlab-runner as Gitlab-CI would do (minus the environment variables and caching system):
 
-    gitlab-runner exec docker test
+```sh
+gitlab-runner exec docker test
+```
 
 ## Documentation
 
@@ -148,7 +164,9 @@ An API documentation describing most of the webservices can be generated using t
 build task `asciidoctor`, which executes tests and generates documentation based on snippets generated
 by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`
 
-    ./gradlew asciidoctor
+```sh
+./gradlew asciidoctor
+```
 
 ## Harvest
 
@@ -156,7 +174,9 @@ Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creati
 
 To create the index and its aliases execute the script below for local dev environment:
 
-    ./scripts/index.sh -app rare|wheat|data-discovery --local
+```sh
+./scripts/index.sh -app rare|wheat|data-discovery --local
+```
 
 The -app parameter will trigger a harvest of the resources stored in the Git LFS directories `data/rare`, `data/wheatis` and `data/data-discovery` respectively.
 
@@ -206,11 +226,15 @@ applications (WheatIS, for the moment, but more could come).
 To build a different app, specify an `app` property when building. For example, to assemble
 the WheatIS app, run the following command
 
-    ./gradlew assemble -Papp=wheatis
+```sh
+./gradlew assemble -Papp=wheatis
+```
 
 You can also run the backend WheatIS application using
 
-    ./gradlew bootRun -Papp=wheatis
+```sh
+./gradlew bootRun -Papp=wheatis
+```
 
 Adding this property has the following consequences:
 
@@ -228,4 +252,6 @@ See the `backend/src/main/resources/application.yml` file for details.
 
 You can adapt the elasticsearch index used with the following parameter
 
-    java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
+```sh
+java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
+```
