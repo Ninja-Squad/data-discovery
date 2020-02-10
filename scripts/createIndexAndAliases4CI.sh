@@ -87,8 +87,7 @@ check_acknowledgment() {
     jq '.acknowledged? == true' ${TMP_FILE} | grep 'true' >/dev/null || {
         ((CODE++)) ;
         echo -e "${RED_BOLD}ERROR: unexpected response from previous command:${NC}\n${ORANGE}$(cat ${TMP_FILE})${NC}";
-    }
-    > ${TMP_FILE}
+    } > ${TMP_FILE}
 }
 
 # each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output

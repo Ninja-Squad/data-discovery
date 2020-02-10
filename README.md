@@ -12,6 +12,7 @@
   - [CI](#ci)
   - [Documentation](#documentation)
   - [Harvest](#harvest)
+    - [Portability](#portability)
   - [Indices and aliases](#indices-and-aliases)
   - [Spring Cloud config](#spring-cloud-config)
   - [Building other apps](#building-other-apps)
@@ -169,6 +170,12 @@ by these tests. The documentation is generated in the folder `backend/build/asci
 ```
 
 ## Harvest
+
+Before all, if you've cloned the repository with git LFS data skipped (see [Data handling](#data-handling) section), take care to fetch the relevant data before running any indexing script.
+
+### Portability
+
+Feedback related to portability on MacOS and other GNU/Linux distro is really welcomed. For MacOS, care to use latest GNU Parallel and Bash v4 versions, not the version provided by default via Brew.
 
 Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creating the necessary index and aliases and Elasticsearch templates.
 

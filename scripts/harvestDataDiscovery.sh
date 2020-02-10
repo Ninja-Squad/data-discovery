@@ -3,4 +3,4 @@
 # delegates to parameterized script
 BASEDIR=$(dirname "$0")
 
-sh $BASEDIR/harvestCI.sh -app data-discovery -env dev
+sh $BASEDIR/index.sh -app data-discovery --local

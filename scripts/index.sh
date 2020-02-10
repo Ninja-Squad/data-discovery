@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#set -x
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 ORANGE='\033[0;33m'
@@ -37,6 +35,7 @@ APP_NAME=""
 APP_ENV=""
 TIMESTAMP=$(date +%s)
 CLEAN=0
+INDEX=1
 
 # any params
 [ -z "$1" ] && echo && help
@@ -51,6 +50,7 @@ while [ -n "$1" ]; do
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
 		--local) [ -z "$APP_NAME" ] && APP_NAME="rare" ; APP_ENV="dev"; ES_HOSTS="localhost"; ES_HOST="localhost" ; ES_PORT="9200"; ES_HOST='localhost';shift; break;;
+		--no-data) INDEX=0;shift 1;;
 		--clean) CLEAN=1;shift 1;;
 		--) shift;break;;
 		-*) echo -e "${RED_BOLD}Unknown option: $1 ${NC}\n"&& help && echo;exit 1;;
@@ -75,14 +75,15 @@ curl -s -m 5 ${ES_HOST}:${ES_PORT} > /dev/null
 PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | sed -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -1) # no index yet created with current timestamp. So using the latest as previous timestamp.
 
 # Create index, aliases with their mapping
-sh ${BASEDIR}/createIndexAndAliases4CI.sh -host "$ES_HOST" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
+sh "${BASEDIR}"/createIndexAndAliases4CI.sh -host "$ES_HOST" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
 CODE=$?
 [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when creating index, see errors above. Exiting.${NC}" ; exit $CODE ; }
-#exit 0
 echo
 
 # Does index data in created indices
-sh ${BASEDIR}/harvestCI.sh -host "$ES_HOSTS" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
+if [ "1" -eq "${INDEX}" ]; then
+    sh "${BASEDIR}"/harvestCI.sh -host "$ES_HOSTS" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
+fi
 CODE=$?
 [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when indexing data, see errors above. Exiting.${NC}" ; exit $CODE ; }
 

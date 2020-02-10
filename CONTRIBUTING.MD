@@ -1,5 +1,12 @@
 # How to contribute to DataDiscovery
 
+- [How to contribute to DataDiscovery](#how-to-contribute-to-datadiscovery)
+  - [Git management](#git-management)
+    - [Branches](#branches)
+    - [Commits & branches merge](#commits--branches-merge)
+  - [Data management](#data-management)
+  - [Development environment](#development-environment)
+
 ## Git management
 
 ### Branches
@@ -58,8 +65,7 @@
 
 - Git LFS is used to store with the application the JSON data ready to be loaded in elasticsearch. If you clone the repository without installing git LFS, the data will not be cloned. To get the JSON data, you must install git LFS (look at [how to install](https://git-lfs.github.com/)).
 - Another dedicated Git LFS project (internal only) will be created to handle all private + public JSON files
-- **TODO**: refer to the good Git LFS project in the CI settings for indexing the relevant data into the relevant Elasticsearch indices/instances
-- the JSON files generation is handled by an external ET (extract/transform) tool.
+- the JSON files generation is handled by an external ET (extract/transform) tool, only per-app suggestions are generated here using `./scripts/createSuggestions.sh`.
 
 ## Development environment
 
