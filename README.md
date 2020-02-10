@@ -5,6 +5,7 @@
     - [Data](#data)
     - [Code](#code)
   - [Setup](#setup)
+    - [Data handling](#data-handling)
     - [Backend](#backend)
     - [Frontend](#frontend)
   - [Build](#build)
@@ -14,6 +15,7 @@
   - [Indices and aliases](#indices-and-aliases)
   - [Spring Cloud config](#spring-cloud-config)
   - [Building other apps](#building-other-apps)
+
 ## Contribute
 
 If you want to install the program locally, it's cool, just keep reading at [Setup section and beyond](#setup).
@@ -27,6 +29,21 @@ You might probably want to know how to contribute to the federation of data. Tha
 If you do want to contribute to code, that's great also, have a look at [CONTRIBUTING.md](./CONTRIBUTING.MD).
 
 ## Setup
+
+### Data handling
+
+At the moment, all data is located next to the code in the `data` directory. You might want to have a look at the code only, in such case, you can skip the data at git clone step by setting variable `GIT_LFS_SKIP_SMUDGE=1`, ie.:
+
+```sh
+GIT_LFS_SKIP_SMUDGE=1 git clone git@forgemia.inra.fr:urgi-is/data-discovery.git
+```
+
+After clone done, if you want to fetch some of the data (for instance for RARe only), let's run:
+
+```sh
+$ git lfs pull -I data/rare/
+Downloading LFS objects: 100% (16/16), 8.8 MB | 0 B/s
+```
 
 ### Backend
 
