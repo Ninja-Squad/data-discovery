@@ -70,10 +70,7 @@ test:
       - /bin/sh
       - -c
       - "export PATH=/usr/share/elasticsearch/bin:$PATH ;
-         exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch ;
-         ln -s \
-         /builds/urgi-is/data-discovery/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json \
-         /builds/urgi-is/data-discovery/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/data-discovery/WheatisGeneticResourceCI.mapping.json"
+         exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch"
  script: ./gradlew --parallel test
  cache:
    key: "$CI_COMMIT_REF_NAME"
@@ -413,7 +410,6 @@ data-integration-rare-beta:
  only:
   changes:
    - data/rare/*.json.gz
-   - data/synonyms/*
   refs:
    - branches
  except:
@@ -427,7 +423,6 @@ data-integration-rare-staging:
  only:
   changes:
    - data/rare/*.json.gz
-   - data/synonyms/*
   refs:
    - branches
  except:
@@ -442,7 +437,6 @@ data-integration-rare-prod:
  only:
   changes:
    - data/rare/*.json.gz
-   - data/synonyms/*
   refs:
    - master
 
