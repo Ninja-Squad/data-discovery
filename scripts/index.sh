@@ -13,14 +13,15 @@ DESCRIPTION:
 	Wrapper script used to create index and aliases then index data for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 [-host <ES host> -port <ES port> -app <application name> -env <environment name>] [--local] [-h|--help]
+	$0 [-host <ES host> -port <ES port> -app <application name> -env <environment name>] [--local] [--no-data] [-h|--help]
 
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the indexing load on several hosts
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
 	-app           the name of the targeted application: rare, wheatis or data-discovery
 	-env           the environment name of the targeted application (dev, beta, prod ...)
-	--local        use local environment for rare application (by default) and ignore all other options except -app if provided at a previous position
+	--local        use local environment for RARe application (by default) and ignore all Elasticsearch related options (env, host, port)
+	--no-data      does not index data, only create indices and aliases
 	--clean	       clean the previous existing indices and rollover alias
 	-h or --help   print this help
 
@@ -36,6 +37,7 @@ APP_ENV=""
 TIMESTAMP=$(date +%s)
 CLEAN=0
 INDEX=1
+LOCAL=0
 
 # any params
 [ -z "$1" ] && echo && help
@@ -45,11 +47,11 @@ while [ -n "$1" ]; do
 	case $1 in
 		-h) help;shift 1;;
 		--help) help;shift 1;;
-		-host) ES_HOST=$(echo "$2" | cut -f 1 -d' ') ; ES_HOSTS="$2" ;shift 2;;
-		-port) ES_PORT=$2;shift 2;;
+		-host) [ "$LOCAL" -eq "1" ] || ES_HOST=$(echo "$2" | cut -f 1 -d' ') ; ES_HOSTS="$2" ;shift 2;;
+		-port) [ "$LOCAL" -eq "1" ] || ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
-		-env) APP_ENV=$2;shift 2;;
-		--local) [ -z "$APP_NAME" ] && APP_NAME="rare" ; APP_ENV="dev"; ES_HOSTS="localhost"; ES_HOST="localhost" ; ES_PORT="9200"; ES_HOST='localhost';shift; break;;
+		-env) [ "$LOCAL" -eq "1" ] || APP_ENV=$2;shift 2;;
+		--local) LOCAL=1 ; [ -z "$APP_NAME" ] && APP_NAME="rare" ; APP_ENV="dev"; ES_HOSTS="localhost"; ES_HOST="localhost" ; ES_PORT="9200"; echo "Working in local mode, ignoring all Elasticsearch related options (env, host, port)" ;shift; break;;
 		--no-data) INDEX=0;shift 1;;
 		--clean) CLEAN=1;shift 1;;
 		--) shift;break;;
@@ -63,7 +65,6 @@ if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_EN
     echo && help
     exit 4
 fi
-
 # Check ES node connectivity
 curl -s -m 5 ${ES_HOST}:${ES_PORT} > /dev/null
 [ $? != 0 ] && {

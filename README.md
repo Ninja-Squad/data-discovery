@@ -33,7 +33,7 @@ If you do want to contribute to code, that's great also, have a look at [CONTRIB
 
 ### Data handling
 
-At the moment, all data is located next to the code in the `data` directory. You might want to have a look at the code only, in such case, you can skip the data at git clone step by setting variable `GIT_LFS_SKIP_SMUDGE=1`, ie.:
+At the moment, all data is located next to the code in the `data` directory. If you want to have a look at the code only, you can ignore this directory at git clone step by setting the variable `GIT_LFS_SKIP_SMUDGE=1`, ie.:
 
 ```sh
 GIT_LFS_SKIP_SMUDGE=1 git clone git@forgemia.inra.fr:urgi-is/data-discovery.git
@@ -171,7 +171,7 @@ by these tests. The documentation is generated in the folder `backend/build/asci
 
 ## Harvest
 
-Before all, if you've cloned the repository with git LFS data skipped (see [Data handling](#data-handling) section), take care to fetch the relevant data before running any indexing script.
+Before all, if you have cloned the repository without fetching the data (see [Data handling](#data-handling) section), take care to get it before running any indexing script.
 
 ### Portability
 
