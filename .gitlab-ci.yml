@@ -38,9 +38,6 @@ build-es-synonyms:
  services:
   - docker:19.03.1-dind
  script:
-  # The IMAGE_TAG is used to distinguish dev image (with SHA1 as a tag) from the stable one (with 'latest' as a tag).
-  # 'latest' tag is used only for an image built from master branch.
-  - if [ "$CI_COMMIT_BRANCH" == "master" ]; then IMAGE_TAG="latest"; fi
   - cd data/synonyms
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
