@@ -1,6 +1,6 @@
 ---
 stages:
- - build-es-synonyms
+ - es-synonyms
  - test
  - build
  - beta
@@ -34,7 +34,7 @@ build-es-synonyms:
  # The runner should be executed in privileged mode.
  # It is recommended to use dind with TLS enabled.
  image: docker:19.03.1
- stage: build-es-synonyms
+ stage: es-synonyms
  services:
   - docker:19.03.1-dind
  script:
@@ -46,6 +46,38 @@ build-es-synonyms:
  only:
   changes:
    - data/synonyms/*
+
+deploy-synonyms-to-dev-cluster:
+ stage: es-synonyms
+ script:
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
+  - for ES_HOST in $ES_DEV_HOSTS ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
+  - for ES_HOST in $ES_DEV_HOSTS ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /usr/share/elasticsearch/config/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /usr/share/elasticsearch/config/analysis/synonyms/" ; done ;
+  - eval $(ssh-agent -k)
+ only:
+  changes:
+   - data/synonyms/all_autophrases.txt
+   - data/synonyms/all_synonyms.txt
+  refs:
+   - branches
+ except:
+  - master
+
+deploy-synonyms-to-prod-cluster:
+ stage: es-synonyms
+ script:
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
+  - for ES_HOST in $ES_PROD_HOSTS ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
+  - for ES_HOST in $ES_PROD_HOSTS ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /usr/share/elasticsearch/config/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /usr/share/elasticsearch/config/analysis/synonyms/" ; done ;
+  - eval $(ssh-agent -k)
+ only:
+  changes:
+   - data/synonyms/all_autophrases.txt
+   - data/synonyms/all_synonyms.txt
+  refs:
+   - master
 
 test:
  stage: test
