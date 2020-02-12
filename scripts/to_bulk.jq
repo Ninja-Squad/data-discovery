@@ -12,7 +12,7 @@
 
 def to_bulk(identifier):
     .[] |
-        if (( .databaseName? + "__" + .entryType? + "__" + (.species?|tostring) + "__" + .name? + "__" + .identifier? | tostring) != "________") then
+        if (( .databaseName? + "__" + .entryType? + "__" + (.species?|tostring) + "__" + (.name?|tostring) + "__" + .identifier? | tostring) != "________") then
             . |= { "index": { "_id": ( .databaseName? + "__" + .entryType? + "__" +
                 if ((.species | type) == "array"
                     and (.species|length) <= 1) then
@@ -20,9 +20,9 @@ def to_bulk(identifier):
                 else
                     .species|tostring
                 end
-                + "__" + .name? +  "__" + .identifier? | tostring)}}, .                                      # add a bulk header with custom _id to the object
+                + "__" + (.name?|tostring) +  "__" + .identifier? | tostring)}}, . | del(.identifier?) # add a bulk header with custom _id to the object
         else
-            . |= { "index": { }}, .                                      # add a default bulk header to the object
+            . |= { "index": { }}, . | del(.identifier?) # add a default bulk header to the object
         end
 ;
 
