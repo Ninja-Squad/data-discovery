@@ -121,6 +121,10 @@ test:
 lint:
  stage: test
  script: ./gradlew :frontend:lint
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
 
 .build-app: &build_app
  # Hidden job which serves as a template for following
