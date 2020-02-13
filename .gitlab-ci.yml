@@ -53,7 +53,7 @@ deploy-synonyms-to-dev-cluster:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
   - for ES_HOST in $ES_DEV_HOSTS ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
-  - for ES_HOST in $ES_DEV_HOSTS ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /usr/share/elasticsearch/config/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /usr/share/elasticsearch/config/analysis/synonyms/" ; done ;
+  - for ES_HOST in $ES_DEV_HOSTS ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /etc/elasticsearch/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
   changes:
@@ -70,7 +70,7 @@ deploy-synonyms-to-prod-cluster:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
   - for ES_HOST in $ES_PROD_HOSTS ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
-  - for ES_HOST in $ES_PROD_HOSTS ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /usr/share/elasticsearch/config/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /usr/share/elasticsearch/config/analysis/synonyms/" ; done ;
+  - for ES_HOST in $ES_PROD_HOSTS ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /etc/elasticsearch/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /usr/share/elasticsearch/config/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
   changes:
