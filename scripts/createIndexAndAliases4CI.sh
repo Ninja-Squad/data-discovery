@@ -29,7 +29,7 @@ EOF
 
 check_command() {
   command -v $1 >/dev/null || {
-    echo -e "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
+    echo "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
     return 1
   }
   return 0
@@ -39,7 +39,7 @@ MISSING_COUNT=0
 check_command jq || _=$((MISSING_COUNT += 1))
 
 [ $MISSING_COUNT -ne 0 ] && {
-  echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
+  echo "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
   exit $MISSING_COUNT
 }
 
@@ -93,8 +93,8 @@ check_acknowledgment() {
 # each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output
 
 ### SETTINGS & MAPPINGS TEMPLATE
-echo -e "\nCreate settings/mappings template: ${APP_NAME}-${APP_ENV}-settings-template"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template" -H 'Content-Type: application/json' -d"
+echo ; echo "Create settings/mappings template: ${APP_NAME}-${APP_ENV}-settings-template"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template?pretty" -H 'Content-Type: application/json' -d"
 {
   \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-tmstp*-resource*\"],
   \"order\": 101,
@@ -108,17 +108,18 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-
 "\
 > ${TMP_FILE}
 check_acknowledgment
-echo -e "You can check the state of the settings template with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template?pretty'"
-
+echo "You can check the state of the settings template with:"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template?pretty'"
 
 ## CREATE FIRST INDEX ALIASED BY THE ROLLOVER
-echo -e "\nCreate index to write first in: ${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index"
+echo ; echo "Create index to write first in: ${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index"
 curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index?pretty" > ${TMP_FILE}
 check_acknowledgment
-echo -e "You can check the state of the aliased index with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/?pretty'"
+echo "You can check the state of the aliased index with:"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/?pretty'"
 
 ## CREATE SUGGESTION INDEX
-echo -e "\nCreate index aiming to store all suggestions: ${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions"
+echo ; echo "Create index aiming to store all suggestions: ${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions"
 curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions?pretty"\
  -H 'Content-Type: application/json' -d"
 {
@@ -132,10 +133,11 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-s
 "\
 > ${TMP_FILE}
 check_acknowledgment
-echo -e "You can check the state of the index index with:\ncurl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions?pretty'"
+echo "You can check the state of the index index with:"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions?pretty'"
 
 rm -f $TMP_FILE
 
-[ $CODE -gt 0 ] && { echo -e "${RED_BOLD}ERROR: a problem occurred during previous steps. Found ${CODE} errors.${NC}" ; exit ${CODE} ; }
+[ $CODE -gt 0 ] && { echo "${RED_BOLD}ERROR: a problem occurred during previous steps. Found ${CODE} errors.${NC}" ; exit ${CODE} ; }
 
-echo -e "\n${GREEN}${BOLD}All seems OK.${NC}"
+echo ; echo "${GREEN}${BOLD}All seems OK.${NC}"
