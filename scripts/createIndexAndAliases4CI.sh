@@ -36,7 +36,7 @@ check_command() {
 }
 
 MISSING_COUNT=0
-check_command jq || ((MISSING_COUNT += 1))
+check_command jq || _=$((MISSING_COUNT += 1))
 
 [ $MISSING_COUNT -ne 0 ] && {
   echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
@@ -85,9 +85,9 @@ CODE=0
 
 check_acknowledgment() {
     jq '.acknowledged? == true' ${TMP_FILE} | grep 'true' >/dev/null || {
-        ((CODE++)) ;
-        echo -e "${RED_BOLD}ERROR: unexpected response from previous command:${NC}\n${ORANGE}$(cat ${TMP_FILE})${NC}";
-    } > ${TMP_FILE}
+        CODE=$((CODE+=1)) ;
+        echo "${RED_BOLD}ERROR: unexpected response from previous command:${NC}${ORANGE}"; echo ; cat "${TMP_FILE}" ; echo "${NC}";
+    }
 }
 
 # each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output
