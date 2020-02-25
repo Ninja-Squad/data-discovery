@@ -121,7 +121,7 @@ mkdir -p "$OUTDIR"
 {
 #    set -x
     echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
-    parallel --bar --link --halt now,fail=1 "
+    parallel -j${HOST_NB} --bar --link --halt now,fail=1 "
             gunzip -c {1} \
             | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
             | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{1/.}.jq.err \
