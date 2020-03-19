@@ -1,9 +1,23 @@
 <div>
-  <h3>
-    <a class="main-link name" [href]="document.dataURL ? document.dataURL : document.portalURL" target="_blank">
-      {{ document.name }}
-    </a>
-    <small> - {{ document.pillarName }}</small>
+  <h3 class="d-flex">
+    <div class="flex-grow-1">
+      <a class="main-link name" [href]="document.dataURL ? document.dataURL : document.portalURL" target="_blank">
+        {{ document.name }}
+      </a>
+      <small> - {{ document.pillarName }}</small>&ngsp;
+    </div>
+    <div class="">
+      <button *ngIf="!selectedForOrdering" type="button" class="btn btn-sm btn-outline-dark" (click)="addToBasket()"
+              ngbTooltip="Add to basket" container="body">
+        <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+        <span class="fa fa-fw fa-plus"></span>
+      </button>
+      <button *ngIf="selectedForOrdering" type="button" class="btn btn-sm btn-success" (click)="removeFromBasket()"
+              ngbTooltip="Remove from basket" container="body">
+        <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+        <span class="fa fa-fw fa-check"></span>
+      </button>
+    </div>
   </h3>
   <div>
     <span class="mr-4">

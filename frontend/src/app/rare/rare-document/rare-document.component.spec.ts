@@ -4,6 +4,8 @@ import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
+import { BasketService } from '../basket.service';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('RareDocumentComponent', () => {
 
@@ -47,15 +49,35 @@ describe('RareDocumentComponent', () => {
     get shortDescriptionButton() {
       return this.button('.full-description button');
     }
+
+    get addToBasketButton() {
+      return this.button('button.btn-outline-dark');
+    }
+
+    get removeFromBasketButton() {
+      return this.button('button.btn-success');
+    }
+
+    get tooltip() {
+      return document.querySelector('ngb-tooltip-window');
+    }
   }
 
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', [
+    'isAccessionInBasket',
+    'addToBasket',
+    'removeFromBasket'
+  ]);
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [RareDocumentComponent, TruncatableDescriptionComponent]
+    imports: [NgbTooltipModule],
+    declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
+    providers: [{ provide: BasketService, useValue: basketService }]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
+    basketService.isAccessionInBasket.and.returnValue(false);
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
@@ -79,6 +101,8 @@ describe('RareDocumentComponent', () => {
     expect(tester.fullDescriptionButton).toBeNull();
     expect(tester.fullDescription).toBeNull();
     expect(tester.shortDescriptionButton).toBeNull();
+    expect(tester.removeFromBasketButton).toBeNull();
+    expect(tester.addToBasketButton).not.toBeNull();
   });
 
   it('should have a link to portal if data url is null or empty', () => {
@@ -105,7 +129,49 @@ describe('RareDocumentComponent', () => {
     component.document = resource;
     tester.detectChanges();
 
-    // then we should them
+    // then we should list them
     expect(tester.type).toContainText('type1, type2');
+  });
+
+  it('should add/remove to/from basket', () => {
+    const tester = new RareDocumentComponentTester();
+    const component = tester.componentInstance;
+
+    // given a resource with several types
+    const resource = toRareDocument('Bacteria');
+    component.document = resource;
+    tester.detectChanges();
+
+    // when hovering the add to basket button
+    tester.addToBasketButton.dispatchEventOfType('mouseenter');
+
+    // then we should have the tooltip displayed
+    expect(tester.tooltip).not.toBeNull();
+    expect(tester.tooltip.textContent).toBe('Add to basket');
+
+    tester.addToBasketButton.click();
+
+    // then we should have added the item to the basket
+    expect(basketService.addToBasket).toHaveBeenCalledWith(resource);
+
+    // we switched the button to display a green one
+    expect(tester.addToBasketButton).toBeNull();
+    expect(tester.removeFromBasketButton).not.toBeNull();
+
+    // when hovering the remove from basket button
+    tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
+
+    // then we should have the tooltip displayed
+    expect(tester.tooltip).not.toBeNull();
+    expect(tester.tooltip.textContent).toBe('Remove from basket');
+
+    tester.removeFromBasketButton.click();
+
+    // then we should have removed the item to the basket
+    expect(basketService.removeFromBasket).toHaveBeenCalledWith(resource);
+
+    // we switched back the button
+    expect(tester.removeFromBasketButton).toBeNull();
+    expect(tester.addToBasketButton).not.toBeNull();
   });
 });

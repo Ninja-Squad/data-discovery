@@ -12,6 +12,7 @@ import { TruncatableDescriptionComponent } from '../truncatable-description/trun
 import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { BasketService } from '../rare/basket.service';
 
 describe('DocumentsComponent', () => {
 
@@ -33,13 +34,16 @@ describe('DocumentsComponent', () => {
     }
   }
 
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket']);
+
   beforeEach(() => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, I18nTestingModule],
       declarations: [DocumentsComponent, RareDocumentComponent, TruncatableDescriptionComponent],
       providers: [
-        { provide: LOCALE_ID, useValue: 'fr-FR' }
+        { provide: LOCALE_ID, useValue: 'fr-FR' },
+        { provide: BasketService, useValue: basketService }
       ]
     });
 

@@ -24,6 +24,7 @@ import {TruncatableDescriptionComponent} from '../truncatable-description/trunca
 import {LoadingSkeletonComponent} from '../loading-skeleton/loading-skeleton.component';
 import {delay} from 'rxjs/operators';
 import {I18nTestingModule} from '../i18n/i18n-testing.module.spec';
+import { BasketService } from '../rare/basket.service';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -53,6 +54,7 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
 }
 
 describe('SearchComponent', () => {
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket']);
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
@@ -75,7 +77,8 @@ describe('SearchComponent', () => {
       DocumentCountComponent,
       LoadingSkeletonComponent,
       TruncatableDescriptionComponent
-    ]
+    ],
+    providers: [{ provide: BasketService, useValue: basketService }]
   }));
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
