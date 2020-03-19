@@ -34,7 +34,7 @@
     <input #typeahead class="form-control" [formControl]="criterion" [ngbTypeahead]="search"
            (selectItem)="selectKey($event)" [resultTemplate]="resultTemplate" container="body"
            placeholder="Filter on {{ aggregation.name.toLowerCase() | aggregationName }}..."
-           (focus)="focus$.next($event.target.value)"/>
+           (focus)="focus$.next($any($event.target).value)"/>
   </div>
 </div>
 

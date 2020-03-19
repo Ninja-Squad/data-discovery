@@ -9,15 +9,15 @@
     <div id="navbar" class="collapse navbar-collapse" [class.collapse]="navbarCollapsed">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let link of navbar.links">
-          <div *ngIf="!link.subMenu" >
+          <div *ngIf="!$any(link).subMenu" >
             <a class="nav-link d-flex align-items-center" [href]="link.url" title="{{ link.label }} link" target="_blank">{{ link.label }}</a>
           </div>
-          <div *ngIf="link.subMenu">
+          <div *ngIf="$any(link).subMenu">
             <!-- Dropdown -->
             <div ngbDropdown class="d-inline-block dropdown">
               <a ngbDropdownToggle class="nav-link d-flex align-items-center" title="{{ link.label }} link" [href]="link.url">{{ link.label }}</a>
               <div ngbDropdownMenu class="dropdown-menu">
-                <div *ngFor="let subItem of link.subMenu">
+                <div *ngFor="let subItem of $any(link).subMenu">
                   <a class="dropdown-item" href="{{ subItem.url }}" title="{{ subItem.label }} link" target="_blank">{{ subItem.label }}</a>
                 </div>
               </div>
