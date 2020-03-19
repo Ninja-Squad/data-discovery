@@ -16,8 +16,8 @@ describe('SearchService', () => {
       imports: [HttpClientTestingModule]
     });
 
-    service = TestBed.get(SearchService) as SearchService;
-    http = TestBed.get(HttpTestingController) as HttpTestingController;
+    service = TestBed.inject(SearchService);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should search for the query', () => {

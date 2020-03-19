@@ -80,9 +80,9 @@ describe('SearchComponent', () => {
 
   it('should search and aggregate on init if there is a query', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     const results = toSinglePage([toRareDocument('Bacteria')]);
     const aggregationResult = toSinglePage([], [toAggregation('domain', ['Plant'])]);
     spyOn(searchService, 'search').and.returnValue(of(results));
@@ -109,9 +109,9 @@ describe('SearchComponent', () => {
 
   it('should search and aggregate on init if there is a query with long aggregation check', fakeAsync(() => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     const results = toSinglePage([toRareDocument('Bacteria')]);
     const aggregationResult = toSinglePage([], [toAggregation('domain', ['Plant'])]);
     spyOn(searchService, 'search').and.returnValue(of(results));
@@ -141,9 +141,9 @@ describe('SearchComponent', () => {
 
   it('should search on init if there is a query and a page', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     const results = toSinglePage([]);
     spyOn(searchService, 'search').and.returnValue(of(results));
 
@@ -170,9 +170,9 @@ describe('SearchComponent', () => {
 
   it('should search on init if there is a query, a page and criteria', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     const results = toSinglePage([]);
     spyOn(searchService, 'search').and.returnValue(of(results));
 
@@ -205,9 +205,9 @@ describe('SearchComponent', () => {
 
   it('should search on init if there is a query, a page and criteria and display aggregations', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     const resource = toRareDocument('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource]);
@@ -246,9 +246,9 @@ describe('SearchComponent', () => {
 
   it('should hide results and pagination on a new search', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     const results = toSinglePage([]);
 
     // with a query on init
@@ -274,9 +274,9 @@ describe('SearchComponent', () => {
 
   it('should navigate to search and reset the page to default when a query is entered', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     spyOn(searchService, 'search');
     // with a current query Rosa and a current page 2
     let query = 'Rosa';
@@ -304,9 +304,9 @@ describe('SearchComponent', () => {
 
   it('should navigate to requested page and keep criteria when pagination is used', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
     spyOn(searchService, 'search');
     const query = 'Bacteria';
     // and criteria
@@ -338,8 +338,8 @@ describe('SearchComponent', () => {
 
   it('should toggle filters', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const router = TestBed.inject(Router);
+    const searchService = TestBed.inject(SearchService);
     const activatedRoute = fakeRoute({});
     const component = new SearchComponent(activatedRoute, router, searchService);
     expect(component.filters).toBe('hide');

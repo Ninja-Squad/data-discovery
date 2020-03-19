@@ -56,7 +56,7 @@ describe('PillarsComponent', () => {
     });
 
     tester = new PillarsComponentTester();
-    pillarService = TestBed.get(PillarService);
+    pillarService = TestBed.inject(PillarService);
 
     jasmine.addMatchers(speculoosMatchers);
   });

@@ -48,10 +48,10 @@ describe('HomeComponent', () => {
 
   it('should navigate to search when a query is entered', () => {
     // given a component
-    const router = TestBed.get(Router) as Router;
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
-    const searchService = TestBed.get(SearchService) as SearchService;
+    const searchService = TestBed.inject(SearchService);
 
     const component = new HomeComponent(router, searchService);
 

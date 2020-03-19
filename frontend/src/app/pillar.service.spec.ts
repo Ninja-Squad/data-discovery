@@ -15,8 +15,8 @@ describe('PillarService', () => {
       ]
     });
 
-    service = TestBed.get(PillarService) as PillarService;
-    http = TestBed.get(HttpTestingController) as HttpTestingController;
+    service = TestBed.inject(PillarService);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should list pillars', () => {

@@ -45,7 +45,7 @@ describe('ErrorComponent', () => {
       ]
     });
 
-    const errorInterceptorService: ErrorInterceptorService = TestBed.get(ErrorInterceptorService);
+    const errorInterceptorService = TestBed.inject(ErrorInterceptorService);
     spyOn(errorInterceptorService, 'getErrors').and.returnValue(httpErrors);
 
     tester = new ErrorComponentTester();

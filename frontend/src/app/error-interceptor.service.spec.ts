@@ -22,9 +22,9 @@ describe('ErrorInterceptorService', () => {
       ]
     });
 
-    service = TestBed.get(ErrorInterceptorService);
-    http = TestBed.get(HttpTestingController);
-    httpClient = TestBed.get(HttpClient);
+    service = TestBed.inject(ErrorInterceptorService);
+    http = TestBed.inject(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
   });
 
   it('should emit error when error is not an HTTP response', () => {
