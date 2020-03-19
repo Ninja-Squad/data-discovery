@@ -6,9 +6,9 @@ import { toRareDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { BasketService } from '../basket.service';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
 
 describe('RareDocumentComponent', () => {
-
   class RareDocumentComponentTester extends ComponentTester<RareDocumentComponent> {
     constructor() {
       super(RareDocumentComponent);
@@ -63,21 +63,21 @@ describe('RareDocumentComponent', () => {
     }
   }
 
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', [
-    'isAccessionInBasket',
-    'addToBasket',
-    'removeFromBasket'
-  ]);
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [NgbTooltipModule],
-    declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
-    providers: [{ provide: BasketService, useValue: basketService }]
-  }));
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket', 'addToBasket', 'removeFromBasket']);
+  const basketEvents = new Subject<boolean>();
+  basketService.isAccessionInBasket.and.returnValue(basketEvents);
+
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [NgbTooltipModule],
+      declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
+      providers: [{ provide: BasketService, useValue: basketService }]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
-    basketService.isAccessionInBasket.and.returnValue(false);
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
@@ -153,6 +153,8 @@ describe('RareDocumentComponent', () => {
 
     // then we should have added the item to the basket
     expect(basketService.addToBasket).toHaveBeenCalledWith(resource);
+    basketEvents.next(true);
+    tester.detectChanges();
 
     // we switched the button to display a green one
     expect(tester.addToBasketButton).toBeNull();
@@ -166,9 +168,11 @@ describe('RareDocumentComponent', () => {
     expect(tester.tooltip.textContent).toBe('Remove from basket');
 
     tester.removeFromBasketButton.click();
+    basketEvents.next(false);
+    tester.detectChanges();
 
     // then we should have removed the item to the basket
-    expect(basketService.removeFromBasket).toHaveBeenCalledWith(resource);
+    expect(basketService.removeFromBasket).toHaveBeenCalledWith(resource.identifier);
 
     // we switched back the button
     expect(tester.removeFromBasketButton).toBeNull();

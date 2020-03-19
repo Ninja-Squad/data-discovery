@@ -13,6 +13,7 @@ import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
+import { of } from 'rxjs';
 
 describe('DocumentsComponent', () => {
 
@@ -35,6 +36,7 @@ describe('DocumentsComponent', () => {
   }
 
   const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket']);
+  basketService.isAccessionInBasket.and.returnValue(of(false));
 
   beforeEach(() => {
     registerLocaleData(localeFr);

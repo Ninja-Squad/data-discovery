@@ -1,0 +1,29 @@
+<div
+  class="basket-counter"
+  [class.navbar-nav]="itemCounter > 0"
+  [class.navbar-text]="itemCounter === 0"
+  ngbTooltip="Click to view the {{ itemCounter | i18nPlural: itemMessageMapping }}"
+  [disableTooltip]="itemCounter === 0"
+  (click)="viewItems(basketModal)"
+>
+  <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+  <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
+</div>
+
+<ng-template #basketModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Basket summary</h4>
+    <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngFor="let item of basket.items" class="d-flex">
+      <span class="flex-grow-1">{{ item.name }}</span
+      >&ngsp;
+      <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.accession)">
+        <span class="fa fa-fw fa-trash"></span>
+      </button>
+    </div>
+  </div>
+</ng-template>

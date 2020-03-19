@@ -6,14 +6,26 @@
       </a>
       <small> - {{ document.pillarName }}</small>&ngsp;
     </div>
-    <div class="">
-      <button *ngIf="!selectedForOrdering" type="button" class="btn btn-sm btn-outline-dark" (click)="addToBasket()"
-              ngbTooltip="Add to basket" container="body">
+    <div>
+      <button
+        *ngIf="!selectedForOrdering"
+        type="button"
+        class="btn btn-sm btn-outline-dark"
+        (click)="addToBasket()"
+        ngbTooltip="Add to basket"
+        container="body"
+      >
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
         <span class="fa fa-fw fa-plus"></span>
       </button>
-      <button *ngIf="selectedForOrdering" type="button" class="btn btn-sm btn-success" (click)="removeFromBasket()"
-              ngbTooltip="Remove from basket" container="body">
+      <button
+        *ngIf="selectedForOrdering"
+        type="button"
+        class="btn btn-sm btn-success"
+        (click)="removeFromBasket()"
+        ngbTooltip="Remove from basket"
+        container="body"
+      >
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
         <span class="fa fa-fw fa-check"></span>
       </button>

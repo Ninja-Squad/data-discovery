@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
 import { BasketService } from '../basket.service';
 
@@ -9,24 +9,23 @@ import { BasketService } from '../basket.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RareDocumentComponent implements OnInit {
-
   selectedForOrdering = false;
   @Input() document: RareDocumentModel;
 
-  constructor(private basketService: BasketService) {
-  }
+  constructor(private changeDetectorRef: ChangeDetectorRef, private basketService: BasketService) {}
 
   ngOnInit(): void {
-    this.selectedForOrdering = this.basketService.isAccessionInBasket(this.document);
+    this.basketService.isAccessionInBasket(this.document).subscribe(isInBasket => {
+      this.selectedForOrdering = isInBasket;
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   addToBasket() {
-    this.selectedForOrdering = true;
     this.basketService.addToBasket(this.document);
   }
 
   removeFromBasket() {
-    this.selectedForOrdering = false;
-    this.basketService.removeFromBasket(this.document);
+    this.basketService.removeFromBasket(this.document.identifier);
   }
 }
