@@ -73,7 +73,12 @@ curl -s -m 5 ${ES_HOST}:${ES_PORT} > /dev/null
 }
 
 # Get previous existing timestamp
-PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | sed -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -1) # no index yet created with current timestamp. So using the latest as previous timestamp.
+SED_CMD="sed"
+if [[ $OSTYPE == darwin* ]]; then
+  # Use gsed on the mac
+  SED_CMD="gsed"
+fi
+PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -1) # no index yet created with current timestamp. So using the latest as previous timestamp.
 
 # Create index, aliases with their mapping
 sh "${BASEDIR}"/createIndexAndAliases4CI.sh -host "$ES_HOST" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
@@ -91,7 +96,12 @@ CODE=$?
 # Clean if asked
 [ $CLEAN != 0 ] && {
     echo -e "Found previous timestamp: ${GREEN}${PREVIOUS_TIMESTAMP}${NC}"
-    date -d "@${PREVIOUS_TIMESTAMP}" &>/dev/null
+    DATE_CMD="date"
+    if [[ $OSTYPE == darwin* ]]; then
+      # Use gdate on the mac
+      DATE_CMD="gdate"
+    fi
+    "${DATE_CMD}" -d "@${PREVIOUS_TIMESTAMP}" &>/dev/null
     if [ $? != 0 ]; then
         echo -e "Cannot clean previous indices and aliases because no valid previous timestamp has been found: ${ORANGE}${PREVIOUS_TIMESTAMP}${NC}."
     else

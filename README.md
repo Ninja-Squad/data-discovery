@@ -54,6 +54,9 @@ You need to install:
 
 - a recent enough JDK8
 
+The docker images need quite a bit of resources,
+so make sure you have at least 4g of RAM configured (Docker Desktop / Resources / Memory).
+
 The application expects to connect on an Elasticsearch instance running on `http://127.0.0.1:9200`.
 To have such an instance, simply run:
 
@@ -175,7 +178,14 @@ Before all, if you have cloned the repository without fetching the data (see [Da
 
 ### Portability
 
-Feedback related to portability on MacOS and other GNU/Linux distro is really welcomed. For MacOS, care to use latest GNU Parallel and Bash v4 versions, not the version provided by default via Brew.
+Feedback related to portability on MacOS and other GNU/Linux distro is really welcomed.
+
+For MacOS, care to use latest GNU Parallel and Bash v4 versions, not the version provided by default via Brew.
+Install the following packages to be able to run the scripts:
+
+```sh
+brew install gnu-sed coreutils parallel
+```
 
 Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creating the necessary index and aliases and Elasticsearch templates.
 

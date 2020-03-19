@@ -75,7 +75,12 @@ if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_EN
 	exit 4
 fi
 
-DATE_TMSTP=$(date -d @${TIMESTAMP})
+DATE_CMD="date"
+if [[ $OSTYPE == darwin* ]]; then
+  # Use gdate on the mac
+  DATE_CMD="gdate"
+fi
+DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 [ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
 echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
 
