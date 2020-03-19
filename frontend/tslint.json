@@ -64,7 +64,7 @@
     "no-import-side-effect": [
       true,
       {
-        "ignore-module": "(core-js/.*|zone\\.js/.*)$"
+        "ignore-module": "(core-js/.*|zone\\.js/.*|@angular/localize/.*)$"
       }
     ],
     "no-inferrable-types": [
@@ -83,6 +83,7 @@
       true,
       "@angular/common",
       "@angular/core",
+      "@angular/localize",
       "@angular/platform-browser",
       "@angular/platform-browser-dynamic",
       "@angular/router",
