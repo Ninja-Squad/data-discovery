@@ -23,7 +23,7 @@ export class ErrorInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
-      tap(null, err => this.errorSubject.next(this.toError(err)))
+      tap({ error: err => this.errorSubject.next(this.toError(err)) })
     );
   }
 

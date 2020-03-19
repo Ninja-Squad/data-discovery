@@ -1,6 +1,6 @@
 {
   "rulesDirectory": [
-    "node_modules/codelyzer"
+    "codelyzer"
   ],
   "rules": {
     "arrow-return-shorthand": true,
@@ -95,7 +95,6 @@
     "no-trailing-whitespace": true,
     "no-unnecessary-initializer": true,
     "no-unused-expression": true,
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
     "one-line": [
@@ -140,24 +139,22 @@
       "check-separator",
       "check-type"
     ],
-    "angular-whitespace": [true, "check-semicolon", "check-interpolation", "check-pipe"],
-    "banana-in-box": true,
     "component-class-suffix": true,
     "contextual-life-cycle": true,
     "directive-class-suffix": true,
-    "enforce-component-selector": true,
-    "no-conflicting-life-cycle-hooks": true,
+    "no-conflicting-lifecycle": true,
+    "no-inputs-metadata-property": true,
     "no-input-rename": true,
+    "no-outputs-metadata-property": true,
     "no-output-on-prefix": true,
     "no-output-rename": true,
+    "template-banana-in-box": true,
     "template-conditional-complexity": true,
     "template-cyclomatic-complexity": [true, 10],
-    "templates-no-negated-async": true,
-    "use-host-property-decorator": true,
-    "use-input-property-decorator": true,
+    "template-no-negated-async": true,
+    "use-component-selector": true,
+    "use-component-view-encapsulation": true,
     "use-life-cycle-interface": true,
-    "use-output-property-decorator": true,
-    "use-pipe-transform-interface": true,
-    "use-view-encapsulation": true
+    "use-pipe-transform-interface": true
   }
 }
