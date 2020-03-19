@@ -150,7 +150,7 @@ mkdir -p "$OUTDIR"
 	exit $code
 }
 # check all JQ err files...
-FILES_IN_ERROR=$(find "${OUTDIR}" -size "+0b" -name "*jq.err")
+FILES_IN_ERROR=$(find "${OUTDIR}" -size "+0" -name "*jq.err")
 [ -n "${FILES_IN_ERROR}" ] && { echo -e "${RED}ERROR: some problems occured with JQ processing, look at files:${ORANGE} ${FILES_IN_ERROR}${NC}" ; exit 4 ; }
 
 echo "Indexing has finished, updating settings"
