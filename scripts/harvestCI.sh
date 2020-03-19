@@ -12,6 +12,18 @@ ES_HOSTS="${ES_HOST}"
 ES_PORT=9200
 TIMESTAMP=""
 
+READLINK_CMD="readlink"
+DATE_CMD="date"
+SED_CMD="sed"
+if [[ $OSTYPE == darwin* ]]; then
+  # Use greadlink on the mac
+  READLINK_CMD="greadlink"
+  # Use gdate on the mac
+  DATE_CMD="gdate"
+  # Use gsed on the mac
+  SED_CMD="gsed"
+fi
+
 help() {
 	cat <<EOF
 DESCRIPTION: 
@@ -75,11 +87,6 @@ while [ -n "$1" ]; do
 done
 
 BASEDIR=$(dirname "$0")
-READLINK_CMD="readlink"
-if [[ $OSTYPE == darwin* ]]; then
-  # Use greadlink on the mac
-  READLINK_CMD="greadlink"
-fi
 DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/$APP_NAME/")
 
 if [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
@@ -93,11 +100,6 @@ if [ -z "$ES_HOST" ]; then
 	exit 4
 fi
 
-DATE_CMD="date"
-if [[ $OSTYPE == darwin* ]]; then
-  # Use gdate on the mac
-  DATE_CMD="gdate"
-fi
 DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 [ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
 echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
@@ -175,11 +177,6 @@ EOF
 	exit $code
 }
 #set -x
-SED_CMD="sed"
-if [[ $OSTYPE == darwin* ]]; then
-  # Use gsed on the mac
-  SED_CMD="gsed"
-fi
 PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -2 | tail -1) # current timestamp index has already been created so looking for the 2nd last one
 {
     echo -e "Updating aliases for latest resources and suggestions indices with timestamp ${TIMESTAMP} instead of previous ${PREVIOUS_TIMESTAMP}..."

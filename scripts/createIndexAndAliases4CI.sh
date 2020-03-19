@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -27,9 +27,15 @@ EOF
 	exit 1
 }
 
+DATE_CMD="date"
+if [[ $OSTYPE == darwin* ]]; then
+    # Use gdate on the mac
+    DATE_CMD="gdate"
+fi
+
 check_command() {
   command -v $1 >/dev/null || {
-    echo "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
+    echo -e "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
     return 1
   }
   return 0
@@ -39,7 +45,7 @@ MISSING_COUNT=0
 check_command jq || _=$((MISSING_COUNT += 1))
 
 [ $MISSING_COUNT -ne 0 ] && {
-  echo "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
+  echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
   exit $MISSING_COUNT
 }
 
@@ -70,7 +76,7 @@ while [ -n "$1" ]; do
 done
 
 if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
-    echo "ERROR: host, port, app and env parameters are mandatory!"
+    echo -e "${RED}ERROR: host, port, app and env parameters are mandatory!${NC}"
     echo && help
 	exit 4
 fi
@@ -91,7 +97,7 @@ CODE=0
 check_acknowledgment() {
     jq '.acknowledged? == true' ${TMP_FILE} | grep 'true' >/dev/null || {
         CODE=$((CODE+=1)) ;
-        echo "${RED_BOLD}ERROR: unexpected response from previous command:${NC}${ORANGE}"; echo ; cat "${TMP_FILE}" ; echo "${NC}";
+        echo -e "${RED_BOLD}ERROR: unexpected response from previous command:${NC}${ORANGE}"; echo ; cat "${TMP_FILE}" ; echo -e "${NC}";
     }
 }
 
@@ -145,4 +151,4 @@ rm -f $TMP_FILE
 
 [ $CODE -gt 0 ] && { echo "${RED_BOLD}ERROR: a problem occurred during previous steps. Found ${CODE} errors.${NC}" ; exit ${CODE} ; }
 
-echo ; echo "${GREEN}${BOLD}All seems OK.${NC}"
+echo ; echo -e "${GREEN}${BOLD}All seems OK.${NC}"
