@@ -100,7 +100,7 @@ describe('PillarsComponent', () => {
     expect(tester.pillarListItem(1)).toContainText('Forest');
 
     expect(tester.databaseSourceItem(0, 0)).toContainText('Florilège');
-    expect(tester.databaseSourceItem(0, 0)).toContainText('[1\u00a0000]');
+    expect(tester.databaseSourceItem(0, 0)).toContainText('[1\u202f000]');
 
     expect(tester.databaseSourceItem(0, 1)).toContainText('CNRGV');
     expect(tester.databaseSourceItem(0, 1)).toContainText('[200]');

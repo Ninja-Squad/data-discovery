@@ -103,6 +103,6 @@ describe('DocumentsComponent', () => {
     // then it should display each result
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(20);
-    expect(tester.resume).toContainText('Results 4\u00a0001 to 4\u00a0020 from 12\u00a0000 (limited to 10\u00a0000)');
+    expect(tester.resume).toContainText('Results 4\u202f001 to 4\u202f020 from 12\u202f000 (limited to 10\u202f000)');
   });
 });

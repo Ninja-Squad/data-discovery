@@ -53,7 +53,7 @@ describe('DocumentCountComponent', () => {
 
     // then we should have the name and the count properly formatted
     expect(tester.name).toHaveText('Biotope');
-    expect(tester.count).toHaveText('[1\u00a0298]');
+    expect(tester.count).toHaveText('[1\u202f298]');
   });
 
   it('should display a link that opens in a new tab if it is possible and a count', () => {
@@ -71,7 +71,7 @@ describe('DocumentCountComponent', () => {
     expect(tester.link).toHaveText('Florilège');
     expect(tester.link.attr('href')).toBe('http://florilege.arcad-project.org/fr/collections');
     expect(tester.link.attr('target')).toBe('_blank');
-    expect(tester.count).toHaveText('[1\u00a0298]');
+    expect(tester.count).toHaveText('[1\u202f298]');
   });
 
   it('should display a tooltip to explain the count', () => {
@@ -89,7 +89,7 @@ describe('DocumentCountComponent', () => {
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('1\u00a0298 documents match Florilège');
+    expect(tester.tooltip.textContent).toBe('1\u202f298 documents match Florilège');
 
     // and hide it when leaving
     tester.count.dispatchEventOfType('mouseleave');
