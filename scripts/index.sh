@@ -81,8 +81,8 @@ curl -s -m 5 ${ES_HOST}:${ES_PORT} > /dev/null
     exit 6
 }
 
-# Get previous existing timestamp
-PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -1) # no index yet created with current timestamp. So using the latest as previous timestamp.
+# Get previous existing timestamps
+PREVIOUS_TIMESTAMPS=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | grep -v "$TIMESTAMP")
 
 # Create index, aliases with their mapping
 $SHELL "${BASEDIR}"/createIndexAndAliases4CI.sh -host "$ES_HOST" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
@@ -99,16 +99,22 @@ CODE=$?
 
 # Clean if asked
 [ $CLEAN != 0 ] && {
-    echo -e "Found previous timestamp: ${GREEN}${PREVIOUS_TIMESTAMP}${NC}"
-    "${DATE_CMD}" -d "@${PREVIOUS_TIMESTAMP}" &>/dev/null
-    if [ $? != 0 ]; then
-        echo -e "Cannot clean previous indices and aliases because no valid previous timestamp has been found: ${ORANGE}${PREVIOUS_TIMESTAMP}${NC}."
-    else
-        echo "Cleaning previous rollover alias and indices with timestamp ${PREVIOUS_TIMESTAMP}..."
-        curl -s -X DELETE "${ES_HOST}:${ES_PORT}/*-tmstp${PREVIOUS_TIMESTAMP}*?pretty"
-        CODE=$?
-        [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when deleting old alias and indices, see errors above. Exiting.${NC}" ; exit $CODE ; }
-    fi
+    echo -e "Found following previous timestamps:\n${GREEN}${PREVIOUS_TIMESTAMPS}${NC}"
+    for TMSTP in ${PREVIOUS_TIMESTAMPS}; do
+        "${DATE_CMD}" -d "@${TMSTP}" &>/dev/null
+        if [ $? != 0 ]; then
+            echo -e "Cannot clean previous indices and aliases based on this timestamp (${ORANGE}${TMSTP}${NC}) because it looks to be invalid."
+        else
+            echo "Cleaning previous indices with timestamp ${TMSTP}..."
+            curl -s -X DELETE "${ES_HOST}:${ES_PORT}/*-tmstp${TMSTP}*?pretty"
+            CODE=$?
+            [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when deleting old alias and indices, see errors above. Exiting.${NC}" ; exit $CODE ; }
+        fi
+    done
+}
+[ $CLEAN == 0 ] &&
+{
+    echo -e "If a clean of indices had been triggered, following timestamps would have been deleted: ${PREVIOUS_TIMESTAMPS}."
 }
 
 exit 0
