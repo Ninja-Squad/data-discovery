@@ -1,18 +1,20 @@
 <ng-container *ngIf="(pillars$ | async) as pillars">
-  <ul *ngIf="pillars.length > 0; else noPillar" class="list-unstyled pillar">
-    <h4>{{ environment.dataProvider }}</h4>
-    <li *ngFor="let pillar of pillars">
-      <span class="pillar-name">{{ pillar.name }}</span>
-      <ul class="list-unstyled source">
-        <li *ngFor="let databaseSource of pillar.databaseSources">
-          <dd-document-count [name]="databaseSource.name"
-                               [url]="databaseSource.url"
-                               [count]="databaseSource.documentCount">
-          </dd-document-count>
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <ng-container *ngIf="pillars.length > 0; else noPillar">
+    <h4 class="data-provider">{{ environment.dataProvider }}</h4>
+    <ul class="list-unstyled pillar">
+      <li *ngFor="let pillar of pillars">
+        <span class="pillar-name">{{ pillar.name }}</span>
+        <ul class="list-unstyled source">
+          <li *ngFor="let databaseSource of pillar.databaseSources">
+            <dd-document-count [name]="databaseSource.name"
+                                 [url]="databaseSource.url"
+                                 [count]="databaseSource.documentCount">
+            </dd-document-count>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </ng-container>
   <ng-template #noPillar>
     <div class="alert alert-warning" role="alert">
       <div class="text-center" style="font-size: 6em;"><span class="fa fa-frown-o"></span></div>
