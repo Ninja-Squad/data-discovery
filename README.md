@@ -5,6 +5,7 @@
     - [Data](#data)
     - [Code](#code)
   - [Setup](#setup)
+    - [Requirements](#requirements)
     - [Data handling](#data-handling)
     - [Backend](#backend)
     - [Frontend](#frontend)
@@ -30,6 +31,20 @@ You might probably want to know how to contribute to the federation of data. Tha
 If you do want to contribute to code, that's great also, have a look at [CONTRIBUTING.md](./CONTRIBUTING.MD).
 
 ## Setup
+
+### Requirements
+
+The application itself is running under a Java OpenJDK 8+: <https://openjdk.java.net/install/>
+
+For getting the data, you need to install Git LFS: <https://git-lfs.github.com/>
+
+The indexing process depends on the following tools, you need to have them installed and available in your `PATH` variable:
+
+- JQ 1.6+: <https://stedolan.github.io/jq/>
+- GNU Parallel (recent enough version): <https://www.gnu.org/software/parallel/>
+- GNU coreutils (sed, date...): <https://www.gnu.org/software/coreutils/>
+- GNU GZIP: <https://git.savannah.gnu.org/cgit/gzip.git>
+- GNU Bash v4+: <https://www.gnu.org/software/bash/>
 
 ### Data handling
 
