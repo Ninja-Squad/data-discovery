@@ -1,10 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { RareBasketComponent } from './rare-basket.component';
 import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
-import { Basket, BasketItem, BasketService } from '../basket.service';
-import { Subject } from 'rxjs';
+import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
+import { of, Subject } from 'rxjs';
 import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { LOCATION } from '../rare.module';
 
 class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   constructor() {
@@ -39,6 +40,10 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
     return document.querySelector('.close');
   }
 
+  get sendBasket(): HTMLElement {
+    return document.querySelector('#send-basket');
+  }
+
   get removeItemFromBasket(): HTMLElement {
     return document.querySelector('.fa-trash');
   }
@@ -51,15 +56,20 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
 describe('RareBasketComponent', () => {
   let tester: RareBasketComponentTester;
   let service: jasmine.SpyObj<BasketService>;
+  let location: jasmine.SpyObj<Location>;
   const basketEvents = new Subject<Basket>();
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', ['getBasket', 'removeFromBasket']);
+    service = jasmine.createSpyObj<BasketService>('BasketService', ['getBasket', 'removeFromBasket', 'sendBasket']);
     service.getBasket.and.returnValue(basketEvents);
+    location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
       imports: [NgbTooltipModule, NgbModalModule],
       declarations: [RareBasketComponent],
-      providers: [{ provide: BasketService, useValue: service }]
+      providers: [
+        { provide: BasketService, useValue: service },
+        { provide: LOCATION, useValue: location }
+      ]
     });
     jasmine.addMatchers(speculoosMatchers);
     tester = new RareBasketComponentTester();
@@ -86,7 +96,7 @@ describe('RareBasketComponent', () => {
     expect(tester.tooltip).toBeNull();
 
     // 1 item
-    basketEvents.next({ items: [{ name: 'rosa' } as BasketItem] });
+    basketEvents.next({ items: [{ identifier: 'rosa' } as BasketItem] });
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('1');
 
@@ -100,7 +110,7 @@ describe('RareBasketComponent', () => {
     tester.basketCounter.dispatchEventOfType('mouseleave');
 
     // several items
-    basketEvents.next({ items: [{ name: 'rosa' } as BasketItem, { name: 'rosa rosae' } as BasketItem] });
+    basketEvents.next({ items: [{ identifier: 'rosa' } as BasketItem, { identifier: 'rosa rosae' } as BasketItem] });
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('2');
 
@@ -114,7 +124,7 @@ describe('RareBasketComponent', () => {
 
   it('should open a summary modal on click', () => {
     tester.detectChanges();
-    basketEvents.next({ items: [{ accession: 'rosa', name: 'Rosa' } as BasketItem] });
+    basketEvents.next({ items: [{ identifier: 'rosa', accession: 'Rosa' } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
 
@@ -127,8 +137,29 @@ describe('RareBasketComponent', () => {
     basketEvents.next({ items: [] });
     tester.detectChanges();
     expect(tester.modalBody.textContent).not.toContain('Rosa');
+    expect(tester.modalBody.textContent).toContain('Aucune accession');
 
     tester.modalClose.click();
     expect(tester.modalTitle).toBeNull();
   });
+
+  it('should send the basket', fakeAsync(() => {
+    const reference = 'ABCDEFGH';
+    service.sendBasket.and.returnValue(
+      of({
+        reference
+      } as BasketCreated)
+    );
+    tester.detectChanges();
+    basketEvents.next({ items: [{ identifier: 'rosa', accession: 'Rosa' } as BasketItem] });
+    tester.detectChanges();
+    tester.basketCounter.click();
+
+    tester.sendBasket.click();
+    tick();
+    expect(service.sendBasket).toHaveBeenCalled();
+
+    expect(tester.modalTitle).toBeNull();
+    expect(location.assign).toHaveBeenCalledWith(`http://localhost:4201/baskets/${reference}`);
+  }));
 });

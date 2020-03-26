@@ -18,12 +18,20 @@
     </button>
   </div>
   <div class="modal-body">
-    <div *ngFor="let item of basket.items" class="d-flex">
-      <span class="flex-grow-1">{{ item.name }}</span
-      >&ngsp;
-      <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.accession)">
-        <span class="fa fa-fw fa-trash"></span>
-      </button>
-    </div>
+    <ng-container *ngIf="basket.items.length > 0; else emptyBasket">
+      <div *ngFor="let item of basket.items" class="d-flex">
+        <span class="flex-grow-1">{{ item.accession }}</span
+        >&ngsp;
+        <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.identifier)">
+          <span class="fa fa-fw fa-trash"></span>
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #emptyBasket>
+      <p>Aucune accession</p>
+    </ng-template>
+  </div>
+  <div class="modal-footer" *ngIf="basket.items.length > 0">
+    <button type="button" id="send-basket" class="btn btn-outline-dark" (click)="modal.close('order')">Terminer ma demande</button>
   </div>
 </ng-template>

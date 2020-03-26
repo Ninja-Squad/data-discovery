@@ -28,5 +28,6 @@ export const environment = {
     material: 'Matériel',
     taxon: 'Taxon',
     biotope: 'Biotope'
-  }
+  },
+  rareBasket: 'http://localhost:4201'
 };

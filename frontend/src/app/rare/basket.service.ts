@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { RareDocumentModel } from './rare-document.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 /**
  * An item of basket command
  */
 export interface BasketItem {
-
   /**
    * The RARe accession name being ordered
    */
-  name: string;
+  accession: string;
 
   /**
    * The RARe accession identifier being ordered
    */
-  accession: string;
+  identifier: string;
 
   /**
    * The email of the GRC contact in charge of handling this ordered item
@@ -28,15 +29,19 @@ export interface Basket {
   items: Array<BasketItem>;
 }
 
+export interface BasketCreated extends Basket {
+  id: string;
+  reference: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class BasketService {
-
   basket: Basket;
   private basket$ = new BehaviorSubject<Basket>(this.basket);
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.restoreBasketFromLocalStorage();
   }
 
@@ -45,11 +50,12 @@ export class BasketService {
     if (rareBasketStringified) {
       try {
         this.basket = JSON.parse(rareBasketStringified);
-      } catch (e) {
-        this.basket = {
-          items: []
-        };
-      }
+      } catch (e) {}
+    }
+    if (!this.basket) {
+      this.basket = {
+        items: []
+      };
     }
     this.emitNewBasket();
   }
@@ -59,19 +65,27 @@ export class BasketService {
   }
 
   addToBasket(rareAccession: RareDocumentModel) {
-    const basketItem: BasketItem = { accession: rareAccession.identifier, name: rareAccession.name, contactEmail: 'TODO' };
+    // TODO contact email (contact1@grc1.fr for demo purposes)
+    const basketItem: BasketItem = {
+      accession: rareAccession.name,
+      identifier: rareAccession.identifier,
+      contactEmail: 'contact1@grc1.fr'
+    };
     this.basket.items.push(basketItem);
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }
 
   isAccessionInBasket(rareAccession: RareDocumentModel): Observable<boolean> {
-    return this.basket$
-      .pipe(map(basket => basket.items.map(item => item.accession).includes(rareAccession.identifier)));
+    return this.basket$.pipe(
+      map(basket => basket.items.map(item => item.identifier).includes(rareAccession.identifier)),
+      // do not re-emit when value is the same
+      distinctUntilChanged()
+    );
   }
 
-  removeFromBasket(accession: string) {
-    this.basket.items = this.basket.items.filter(item => accession !== item.accession);
+  removeFromBasket(identifier: string) {
+    this.basket.items = this.basket.items.filter(item => identifier !== item.identifier);
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }
@@ -82,5 +96,14 @@ export class BasketService {
 
   getBasket(): Observable<Basket> {
     return this.basket$.asObservable();
+  }
+
+  sendBasket(): Observable<BasketCreated> {
+    return this.http.post<BasketCreated>(`${environment.rareBasket}/api/baskets`, this.basket).pipe(
+      tap(() => {
+        this.basket.items = [];
+        this.emitNewBasket();
+      })
+    );
   }
 }
