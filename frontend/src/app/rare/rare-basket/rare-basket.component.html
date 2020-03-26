@@ -1,14 +1,17 @@
-<div
-  class="basket-counter"
-  [class.navbar-nav]="itemCounter > 0"
-  [class.navbar-text]="itemCounter === 0"
-  ngbTooltip="Click to view the {{ itemCounter | i18nPlural: itemMessageMapping }}"
-  [disableTooltip]="itemCounter === 0"
-  (click)="viewItems(basketModal)"
->
+<div class="basket-counter navbar-text" *ngIf="itemCounter === 0; else navbarButton">
   <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-  <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
+  <span class="badge badge-pill badge-light">0</span>
 </div>
+<ng-template #navbarButton>
+  <button
+    class="basket-counter btn"
+    ngbTooltip="Click to view the {{ itemCounter | i18nPlural: itemMessageMapping }}"
+    (click)="viewItems(basketModal)"
+  >
+    <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+    <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
+  </button>
+</ng-template>
 
 <ng-template #basketModal let-modal>
   <div class="modal-header">

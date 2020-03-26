@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { RareBasketComponent } from './rare-basket.component';
-import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
 import { of, Subject } from 'rxjs';
 import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -17,7 +17,7 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   }
 
   get basketCounter() {
-    return this.element('.basket-counter.navbar-nav') as TestButton;
+    return this.button('.basket-counter.btn');
   }
 
   get tooltip() {

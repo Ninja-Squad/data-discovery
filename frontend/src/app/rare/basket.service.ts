@@ -102,6 +102,7 @@ export class BasketService {
     return this.http.post<BasketCreated>(`${environment.rareBasket}/api/baskets`, this.basket).pipe(
       tap(() => {
         this.basket.items = [];
+        this.saveBasketToLocalStorage();
         this.emitNewBasket();
       })
     );
