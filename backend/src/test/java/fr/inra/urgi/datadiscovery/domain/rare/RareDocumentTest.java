@@ -41,7 +41,7 @@ class RareDocumentTest {
                                .withPillarName("Plant")
                                .withDatabaseSource("Florilège")
                                .withPortalURL("http://florilege.arcad-project.org/fr/collections")
-                               .withDataURL("https://urgi.versailles.inrae.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
+                               .withDataURL("https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
                                .withDomain("Plantae")
                                .withTaxon(Collections.singletonList("Vitis vinifera"))
                                .withFamily(Collections.singletonList("Vitaceae"))
@@ -73,7 +73,7 @@ class RareDocumentTest {
             "    \"identifier\": \"doi:10.15454/1.4921785297227607E12\",\n" +
             "    \"name\": \"Syrah\",\n" +
             "    \"description\": \"Syrah is a Vitis vinifera subsp vinifera cv. Syrah accession (number: 150Mtp0, doi:10.15454/1.4921785297227607E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel. This accession has phenotyping data: Doligez_et_al_2013 - Study of the genetic determinism of berry weight and seed traits in a grapevine progeny.\",\n" +
-            "    \"dataURL\": \"https://urgi.versailles.inrae.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==\",\n" +
+            "    \"dataURL\": \"https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==\",\n" +
             "    \"domain\": \"Plantae\",\n" +
             "    \"taxon\": \"Vitis vinifera\",\n" +
             "    \"family\": \"Vitaceae\",\n" +

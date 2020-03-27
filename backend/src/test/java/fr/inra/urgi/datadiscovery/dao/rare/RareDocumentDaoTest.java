@@ -97,7 +97,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                .withPillarName("Plant")
                                .withDatabaseSource("Florilège")
                                .withPortalURL("http://florilege.arcad-project.org/fr/collections")
-                               .withDataURL("https://urgi.versailles.inrae.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
+                               .withDataURL("https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
                                .withDomain("Plantae")
                                .withTaxon(Collections.singletonList("Vitis vinifera"))
                                .withFamily(Collections.singletonList("Vitaceae"))
