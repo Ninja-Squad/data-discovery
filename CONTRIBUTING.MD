@@ -79,6 +79,6 @@
 
 ## Testing recommendations
 
-Behaviour driven development (upon [TDD](https://dannorth.net/2012/05/31/bdd-is-like-tdd-if/)) is recommanded for all new developments.
+Behaviour driven development (upon [TDD](https://dannorth.net/2012/05/31/bdd-is-like-tdd-if/)) is recommended for all new developments.
 
 More information on what is BDD: <https://dannorth.net/introducing-bdd/>
