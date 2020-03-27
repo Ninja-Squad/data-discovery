@@ -2,7 +2,7 @@
 
 If you want your information system to be referenced, you have to provide [TSV](#tsv-tabulation-separated-values) or [JSON](#json-javascript-object-notation) files with metadata only.
 The metadata format must follow the indications below (see [Data Specifications](#data-specifications)).
-We invite you to [contact us](mailto:urgi-contact@inra.fr?subject=%5BRARe%20portal%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
+We invite you to [contact us](mailto:urgi-contact@inrae.fr?subject=%5BRARe%20portal%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, a URL allowing researchers to get more detailed information about the indexed entry directly in your information system is needed.
 

@@ -1,6 +1,6 @@
 # How to join the wheatIS and/or the Plant federations of searchable data?
 
-If you want your information system to be referenced, you have to provide [TSV](#tsv-tabulation-separated-values) or [JSON](#json-javascript-object-notation) files with metadata only. The metadata format must follow the indications below and we invite you to [contact us](mailto:urgi-contact@inra.fr?subject=%5BWheatIS%2FData%20Discovery%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
+If you want your information system to be referenced, you have to provide [TSV](#tsv-tabulation-separated-values) or [JSON](#json-javascript-object-notation) files with metadata only. The metadata format must follow the indications below and we invite you to [contact us](mailto:urgi-contact@inrae.fr?subject=%5BWheatIS%2FData%20Discovery%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers to get detailed information about the indexed entry directly in your information system.
 
@@ -102,7 +102,7 @@ The `url` must be a valid URL so that this backlinks to your information system 
 It is recommended to favor the binomial form without the Author abbreviation (ie `L.`), _e.g._ _Vitis vinifera_, _Quercus robur_, _Triticum aestivum_.
 
 >>>
-Note: for WheatIS federation specifically, the species name must match one of the values below in order to be available through the [WheatIS search tool](https://urgi.versailes.inra.fr/wheatis), otherwise the entry will be filtered out. Note that if you have wheat and non wheat data, you don't have to provide them twice in dedicated files, the loading process will manage to generate the relevant indexes for the general plant search and the WheatIS search.
+Note: for WheatIS federation specifically, the species name must match one of the values below in order to be available through the [WheatIS search tool](https://urgi.versailes.inrae.fr/wheatis), otherwise the entry will be filtered out. Note that if you have wheat and non wheat data, you don't have to provide them twice in dedicated files, the loading process will manage to generate the relevant indexes for the general plant search and the WheatIS search.
 
 - Aegilops*
 - Hordeum*

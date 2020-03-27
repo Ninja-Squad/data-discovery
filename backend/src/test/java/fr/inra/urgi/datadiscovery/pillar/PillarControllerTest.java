@@ -51,8 +51,8 @@ class PillarControllerTest {
                     ))),
                     new MockBucket("CNRGV", 200, new Aggregations(Arrays.asList(
                         new MockTermsAggregation(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME, Arrays.asList(
-                            new MockBucket("https://cnrgv.toulouse.inra.fr/library/genomic_resource/ Aha-B-H25", 799),
-                            new MockBucket("https://cnrgv.toulouse.inra.fr/library/genomic_resource/ Aha-B-H26", 1) // 2 URLS instead of 1
+                            new MockBucket("https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H25", 799),
+                            new MockBucket("https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H26", 1) // 2 URLS instead of 1
                         ))
                     )))
                 ))
@@ -80,7 +80,7 @@ class PillarControllerTest {
                .andExpect(jsonPath("$[0].databaseSources[1].name").value("CNRGV"))
                .andExpect(jsonPath("$[0].databaseSources[1].documentCount").value(200))
                .andExpect(jsonPath("$[0].databaseSources[1].url")
-                              .value("https://cnrgv.toulouse.inra.fr/library/genomic_resource/ Aha-B-H25"))
+                              .value("https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H25"))
                .andExpect(jsonPath("$[1].name").value("Forest"))
                .andExpect(jsonPath("$[1].documentCount").value(500))
                .andExpect(jsonPath("$[1].databaseSources").isArray())

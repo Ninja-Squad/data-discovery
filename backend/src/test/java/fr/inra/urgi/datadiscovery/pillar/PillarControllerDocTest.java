@@ -56,7 +56,7 @@ class PillarControllerDocTest {
                     ))),
                     new MockBucket("CNRGV", 200, new Aggregations(Arrays.asList(
                         new MockTermsAggregation(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME, Arrays.asList(
-                            new MockBucket("https://cnrgv.toulouse.inra.fr/library/genomic_resource/ Aha-B-H25", 800)
+                            new MockBucket("https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H25", 800)
                         ))
                     )))
                 ))
