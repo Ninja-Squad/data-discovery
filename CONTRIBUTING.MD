@@ -6,6 +6,7 @@
     - [Commits & branches merge](#commits--branches-merge)
   - [Data management](#data-management)
   - [Development environment](#development-environment)
+  - [Testing recommendations](#testing-recommendations)
 
 ## Git management
 
@@ -75,3 +76,9 @@
   - Use `ng lint` (for frontend code only)
   - Use [Checkstyle](https://checkstyle.org/) and [PMD](https://pmd.github.io/) (**TODO**: implement) for backend (+frontend?) code
 - All runtime variables should be externalized from the code in order to facilitate the CI management (database host/port, application name, public URL, JSON location...) and the adoption by partners
+
+## Testing recommendations
+
+Behaviour driven development (upon [TDD](https://dannorth.net/2012/05/31/bdd-is-like-tdd-if/)) is recommanded for all new developments.
+
+More information on what is BDD: <https://dannorth.net/introducing-bdd/>
