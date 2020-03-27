@@ -87,7 +87,7 @@ class SearchControllerDocTest {
                                .withDescription(
                                "Syrah is a Vitis vinifera subsp vinifera cv. Syrah accession (number: 150Mtp0, doi:10.15454/1.4921785297227607E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel. This accession has phenotyping data: Doligez_et_al_2013 - Study of the genetic determinism of berry weight and seed traits in a grapevine progeny.")
                                .withDataURL(
-                               "https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==")
+                               "https://urgi.versailles.inrae.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==")
                                .withDomain("Plantae")
                                .withTaxon(Collections.singletonList("Vitis vinifera"))
                                .withFamily(Collections.singletonList("Vitaceae"))
@@ -105,7 +105,7 @@ class SearchControllerDocTest {
                                .withDescription(
                                "Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: 1310Mtp1, doi:10.15454/1.492178535151698E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel")
                                .withDataURL(
-                               "https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
+                               "https://urgi.versailles.inrae.fr/gnpis-core/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
                                .withDomain("Plantae")
                                .withTaxon(Collections.singletonList("Vitis vinifera"))
                                .withFamily(Collections.singletonList("Vitaceae"))

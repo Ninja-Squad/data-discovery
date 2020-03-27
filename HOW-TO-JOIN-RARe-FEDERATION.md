@@ -237,7 +237,7 @@ No double quotes are needed.
 
 ```csv
 pillarName  databaseSource  portalURL   identifier  name    description dataURL domain  taxon   materialType    biotopeType countryOfOrigin originLatitude  originLongitude countryOfCollect    collectLatitude collectLongitude
-Pilier Forêt    Forest Tree GnpIS   https://urgi.versailles.inra.fr/faidare/?germplasmLists=Forest%20BRC    https://doi.org/10.15454/0FZNAO 661300375   661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological status interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans   https://urgi.versailles.inra.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO   Plantae Populus x generosa  Specimen                            
+Pilier Forêt    Forest Tree GnpIS   https://urgi.versailles.inrae.fr/faidare/?germplasmLists=Forest%20BRC    https://doi.org/10.15454/0FZNAO 661300375   661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological status interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans   https://urgi.versailles.inrae.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO   Plantae Populus x generosa  Specimen                            
 Pilier Micro-organisme  CIRM-CF http://139.124.42.231/~davnav/BRFM/search_strain2.php   BRFM 902    BRFM 902    Pycnoporus sanguineus BRFM 902 GUY110 burnt wood, Macouria Polyporaceae Polyporales Basidiomycota   http://139.124.42.231/~davnav/BRFM/fiche.php?BRFM_Number=902    Fungi   Pycnoporus sanguineus       Wood    French Guiana   3.9988889   -53 French Guiana   3.9988889   -53
 ```
 
@@ -250,11 +250,11 @@ The order of the fields does not matter. All entries should be aggregated into a
   {
     "pillarName": "Pilier Forêt",
     "databaseSource": "Forest Tree GnpIS",
-    "portalURL": "https://urgi.versailles.inra.fr/gnpis-core/#form/germplasmLists=Forest+BRC",
+    "portalURL": "https://urgi.versailles.inrae.fr/faidare/#form/germplasmLists=Forest+BRC",
     "identifier": "https://doi.org/10.15454/0FZNAO",
     "name": 661300375,
     "description": "661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological status interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. Its taxon is also known as: P. deltoides x P. trichocarpa, Populus deltoides x Populus trichocarpa, Populus trichocarpa x Populus deltoides, Populus x generosa A. Henry, Populus x interamericana, P. trichocarpa x P. deltoides, P. xgenerosa Henry, P xinteramericana. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B - QTL mapping of bacterial canker resistance, clonal test of mapping pedigree 0504B in nursery - QTL mapping of a list of phenotypic traits. This accession has genotyping data: Popyomics_Orleans",
-    "dataURL": "https://urgi.versailles.inra.fr/gnpis-core/#accessionCard/pui=https://doi.org/10.15454/0FZNAO",
+    "dataURL": "https://urgi.versailles.inrae.fr/faidare/#accessionCard/pui=https://doi.org/10.15454/0FZNAO",
     "domain": "Plantae",
     "taxon": "Populus x generosa",
     "family": "Salicaceae",

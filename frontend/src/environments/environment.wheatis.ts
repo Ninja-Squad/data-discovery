@@ -13,7 +13,7 @@ export const environment = {
     links: [
       { label: 'Home', url: './' },
       { label: 'WheatIS website', url: 'http://wheatis.org/' },
-      { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inra.fr/' }
+      { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inrae.fr/' }
     ]
   },
   searchPlaceholder: 'Examples: yield, fhb',

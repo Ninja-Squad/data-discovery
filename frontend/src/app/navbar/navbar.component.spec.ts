@@ -62,7 +62,7 @@ describe('NavbarComponent', () => {
       logoUrl: 'https://www.agrobrc-rare.org/',
       links: [
         { label: 'INRA', url: 'http://www.inra.fr/' },
-        { label: 'URGI', url: 'https://urgi.versailles.inra.fr/' }
+        { label: 'URGI', url: 'https://urgi.versailles.inrae.fr/' }
       ]
     };
 

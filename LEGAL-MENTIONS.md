@@ -37,7 +37,7 @@ Visitors can configure their web browsers in order to be informed of the setting
 According to the European Regulation on the protection of personal data (EU Regulation 2016/679), you have the right to access, rectify, oppose and delete information about yourself.
 If you wish to exercise this right and obtain information about yourself, please contact us:
 - By [email](mailto:urgi-contact@inra.fr?subject=%5BData%20Discovery%5D%20GPDR%20request)
-- Or via any other way available on our [contact form](https://urgi.versailles.inra.fr/Contact-us)
+- Or via any other way available on our [contact form](https://urgi.versailles.inrae.fr/Contact-us)
 
 ## Modifications
 

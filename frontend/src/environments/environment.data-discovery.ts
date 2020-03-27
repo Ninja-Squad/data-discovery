@@ -9,10 +9,10 @@ export const environment = {
   title: 'DataDiscovery - Genetic and Genomic Information System',
   navbar: {
     title: 'URGI',
-    logoUrl: 'https://urgi.versailles.inra.fr/',
+    logoUrl: 'https://urgi.versailles.inrae.fr/',
     links: [
       { label: 'Home', url: './' },
-      { label: 'GnpIS', url: 'https://urgi.versailles.inra.fr/gnpis' }
+      { label: 'GnpIS', url: 'https://urgi.versailles.inrae.fr/gnpis' }
     ]
   },
   searchPlaceholder: 'Examples: yield, fhb',
