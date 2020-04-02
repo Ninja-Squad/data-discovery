@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GenericDocumentComponent } from './generic-document/generic-document.component';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
+import { I18nModule } from '../i18n/i18n.module';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    I18nModule
   ],
   declarations: [
     TruncatableDescriptionComponent,
@@ -17,4 +19,4 @@ import { TruncatableDescriptionComponent } from '../truncatable-description/trun
     CommonModule
   ]
 })
-export class UrgiCommonModule { }
+export class UrgiCommonModule {}

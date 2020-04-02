@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { speculoosMatchers, ComponentTester } from 'ngx-speculoos';
 
 import { TruncatableDescriptionComponent } from './truncatable-description.component';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 describe('TruncatableDescriptionComponent', () => {
 
@@ -28,6 +29,7 @@ describe('TruncatableDescriptionComponent', () => {
   }
 
   beforeEach(() => TestBed.configureTestingModule({
+    imports: [I18nTestingModule],
     declarations: [TruncatableDescriptionComponent]
   }));
 

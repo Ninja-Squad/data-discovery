@@ -43,5 +43,9 @@
     "only-one-value": "Only one possible value for",
     "several-values": "{{ count }} possible values for",
     "filter-on": "Filter on"
+  },
+  "truncatable-description": {
+    "expand": "... (Expand)",
+    "hide": "Hide"
   }
 }
