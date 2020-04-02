@@ -11,6 +11,7 @@ import { RareDocumentComponent } from '../rare/rare-document/rare-document.compo
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 describe('DocumentsComponent', () => {
 
@@ -35,7 +36,7 @@ describe('DocumentsComponent', () => {
   beforeEach(() => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, I18nTestingModule],
       declarations: [DocumentsComponent, RareDocumentComponent, TruncatableDescriptionComponent],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' }

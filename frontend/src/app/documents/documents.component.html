@@ -1,9 +1,13 @@
 <!-- if there are results to display -->
 <div *ngIf="documents.content.length; else noResults">
   <div id="resume" class="text-muted small mb-3">
-    Results {{ firstResultIndex | number }} to {{ lastResultIndex | number }}
-    from {{ documents.totalElements | number }}
-    <ng-container *ngIf="resultLimited">(limited to {{ documents.maxResults | number }})</ng-container>
+    <span translate="documents.results-range"
+          [translateParams]="{ first: firstResultIndex | number, last: lastResultIndex | number, total: documents.totalElements | number }">
+    </span>
+    <ng-container *ngIf="resultLimited">
+      &ngsp;
+      <span translate="documents.results-limited" [translateParams]="{ total: documents.maxResults | number }"></span>
+    </ng-container>
   </div>
   <div class="mb-4" *ngFor="let document of documents.content">
     <!-- the following component will not be the same depending on the environment.resourceModule value -->

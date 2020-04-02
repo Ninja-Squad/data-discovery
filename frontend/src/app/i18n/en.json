@@ -21,5 +21,9 @@
   "document-count": {
     "one-document": "Only one document matches",
     "several-documents": "{{ count }} documents match"
+  },
+  "documents": {
+    "results-range": "Results {{ first }} to {{ last }} from {{ total}}",
+    "results-limited": "(limited to {{ total}})"
   }
 }
