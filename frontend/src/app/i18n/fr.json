@@ -7,7 +7,7 @@
     "help": "Aide"
   },
   "pillars": {
-    "no-data": "Pas de données trouvées.",
+    "no-data": "Pas de donnée trouvée.",
     "no-data-contact": "Merci de contacter votre administrateur afin de remplir la base de données."
   },
   "search": {
@@ -38,14 +38,14 @@
     "pillars": "Piliers"
   },
   "large-aggregation": {
-    "other-results-available": "D'autres résultat sont disponibles.",
+    "other-results-available": "D'autres résultats sont disponibles.",
     "refine-search": "Précisez votre recherche.",
     "only-one-value": "Une seule valeur possible pour",
     "several-values": "{{ count }} valeurs possibles pour",
     "filter-on": "Filtrer sur"
   },
   "truncatable-description": {
-    "expand": "... (Voir la suite)",
+    "expand": "... (voir la suite)",
     "hide": "Cacher"
   }
 }
