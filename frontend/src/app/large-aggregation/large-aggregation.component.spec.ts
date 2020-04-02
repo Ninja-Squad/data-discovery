@@ -12,6 +12,7 @@ import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { Bucket } from '../models/page';
 import { NULL_VALUE } from '../models/document.model';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 describe('LargeAggregationComponent', () => {
 
@@ -51,7 +52,8 @@ describe('LargeAggregationComponent', () => {
     imports: [
       ReactiveFormsModule,
       NgbTypeaheadModule,
-      NgbTooltipModule
+      NgbTooltipModule,
+      I18nTestingModule
     ],
     declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent]
   }));

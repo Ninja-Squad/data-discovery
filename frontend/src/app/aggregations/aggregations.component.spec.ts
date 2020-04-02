@@ -12,6 +12,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 describe('AggregationsComponent', () => {
 
@@ -33,7 +34,8 @@ describe('AggregationsComponent', () => {
     imports: [
       ReactiveFormsModule,
       NgbTypeaheadModule,
-      NgbTooltipModule
+      NgbTooltipModule,
+      I18nTestingModule
     ],
     declarations: [
       AggregationsComponent,

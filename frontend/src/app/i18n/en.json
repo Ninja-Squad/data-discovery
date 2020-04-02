@@ -36,5 +36,12 @@
     "title": "Search for resources",
     "search": "Search",
     "pillars": "Pillars"
+  },
+  "large-aggregation": {
+    "other-results-available": "Other results are available.",
+    "refine-search": "Refine your search.",
+    "only-one-value": "Only one possible value for",
+    "several-values": "{{ count }} possible values for",
+    "filter-on": "Filter on"
   }
 }
