@@ -11,7 +11,7 @@ import { RareDocumentComponent } from '../rare/rare-document/rare-document.compo
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
-import { I18nTestingModule } from '../i18n/mock-i18n.spec';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('DocumentsComponent', () => {
 
@@ -79,7 +79,7 @@ describe('DocumentsComponent', () => {
     const result2 = tester.results[1].componentInstance as RareDocumentComponent;
     expect(result2.document).toBe(bacteria2);
 
-    expect(tester.resume).toContainText('Results 1 to 2 from 2');
+    expect(tester.resume).toContainText('Results 1 to 2 of 2');
     expect(tester.resume).not.toContainText('limited');
   });
 
@@ -104,6 +104,6 @@ describe('DocumentsComponent', () => {
     // then it should display each result
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(20);
-    expect(tester.resume).toContainText('Results 4\u202f001 to 4\u202f020 from 12\u202f000 (limited to 10\u202f000)');
+    expect(tester.resume).toContainText('Results 4\u202f001 to 4\u202f020 of 12\u202f000 (limited to 10\u202f000)');
   });
 });

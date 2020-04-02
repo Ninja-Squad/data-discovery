@@ -23,8 +23,8 @@
     "several-documents": "{{ count }} documents match"
   },
   "documents": {
-    "results-range": "Results {{ first }} to {{ last }} from {{ total}}",
-    "results-limited": "(limited to {{ total}})"
+    "results-range": "Results {{ first }} to {{ last }} of {{ total }}",
+    "results-limited": "(limited to {{ total }})"
   },
   "error": {
     "title": "Unexpected error occurred.",

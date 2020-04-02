@@ -12,7 +12,7 @@ import { SearchService } from '../search.service';
 import { PillarsComponent } from '../pillars/pillars.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { RareHeaderComponent } from '../rare/rare-header/rare-header.component';
-import { I18nTestingModule } from '../i18n/mock-i18n.spec';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {

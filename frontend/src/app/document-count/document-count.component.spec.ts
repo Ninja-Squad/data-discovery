@@ -6,7 +6,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { DocumentCountComponent } from './document-count.component';
-import { I18nTestingModule } from '../i18n/mock-i18n.spec';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('DocumentCountComponent', () => {
 

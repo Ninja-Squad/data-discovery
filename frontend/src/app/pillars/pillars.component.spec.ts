@@ -11,7 +11,7 @@ import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
 import { DocumentCountComponent } from '../document-count/document-count.component';
-import { I18nTestingModule } from '../i18n/mock-i18n.spec';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 class PillarsComponentTester extends ComponentTester<PillarsComponent> {
   constructor() {
