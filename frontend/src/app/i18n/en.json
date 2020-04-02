@@ -25,5 +25,11 @@
   "documents": {
     "results-range": "Results {{ first }} to {{ last }} from {{ total}}",
     "results-limited": "(limited to {{ total}})"
+  },
+  "error": {
+    "title": "Unexpected error occurred.",
+    "retry": "Try to refresh the page, or retry later.",
+    "status": "Status: {{ status }}",
+    "message": "Message: {{ message }}"
   }
 }

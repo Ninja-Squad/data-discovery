@@ -25,5 +25,11 @@
   "documents": {
     "results-range": "Résultats {{ first }} à {{ last }} sur {{ total}}",
     "results-limited": "(limités à {{ total}})"
+  },
+  "error": {
+    "title": "Une erreur est survenue.",
+    "retry": "Essayez de rafraîchir la page, ou ré-essayez plus tard.",
+    "status": "Statut\u00a0: {{ status }}",
+    "message": "Message\u00a0: {{ message }}"
   }
 }

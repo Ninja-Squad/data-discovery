@@ -4,16 +4,10 @@
       <span class="fa fa-frown-o"></span>
     </div>
     <div>
-      <p>
-        Unexpected error occurred.<br/>
-        Try to refresh the page, or retry later.<br/>
-      </p>
-      <small *ngIf="error.status" id="error-status">
-        Status: {{ error.status }}
-      </small>
-      <small *ngIf="error.message" id="error-message">
-        Message: {{ error.message }}
-      </small>
+      <p translate="error.title"></p>
+      <p translate="error.retry"></p>
+      <small *ngIf="error.status" id="error-status" translate="error.status" [translateParams]="{ status: error.status }"></small>
+      <small *ngIf="error.message" id="error-message" translate="error.message" [translateParams]="{ message: error.message }"></small>
     </div>
   </div>
 </div>

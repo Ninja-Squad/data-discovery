@@ -6,6 +6,7 @@ import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { ErrorComponent } from './error.component';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 class ErrorComponentTester extends ComponentTester<ErrorComponent> {
   constructor() {
@@ -41,7 +42,8 @@ describe('ErrorComponent', () => {
         { provide: Router, useValue: { events: routerEvents }}
       ],
       imports: [
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        I18nTestingModule
       ]
     });
 
