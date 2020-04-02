@@ -5,5 +5,9 @@
     "join-us": "Contactez-nous",
     "legal-mentions": "Mentions légales",
     "help": "Aide"
+  },
+  "pillars": {
+    "no-data": "Pas de données trouvées.",
+    "no-data-contact": "Merci de contacter votre administrateur afin de remplir la base de données."
   }
 }

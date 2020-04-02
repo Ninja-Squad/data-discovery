@@ -5,5 +5,9 @@
     "join-us": "Join us",
     "legal-mentions": "Legal mentions",
     "help": "Help"
+  },
+  "pillars": {
+    "no-data": "No data found.",
+    "no-data-contact": "Please, contact the administrator for him to feed the database."
   }
 }

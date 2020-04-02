@@ -11,6 +11,7 @@ import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
 import { DocumentCountComponent } from '../document-count/document-count.component';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 class PillarsComponentTester extends ComponentTester<PillarsComponent> {
   constructor() {
@@ -48,7 +49,8 @@ describe('PillarsComponent', () => {
       declarations: [PillarsComponent, DocumentCountComponent],
       imports: [
         HttpClientTestingModule,
-        NgbTooltipModule
+        NgbTooltipModule,
+        I18nTestingModule
       ],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' }
