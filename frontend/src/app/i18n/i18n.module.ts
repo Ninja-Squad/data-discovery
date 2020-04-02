@@ -9,9 +9,15 @@ registerLocaleData(localeFr);
 /**
  * This function gets the language of the browser,
  * and the result is used as the default language of the application.
+ * As we only load the French and English locale date,
+ * we use 'fr' if the locale is 'fr-FR' for example,
+ * otherwise we use 'en'.
  */
 function getBrowserLanguage() {
-  return navigator.language || 'en';
+   if (navigator.language && navigator.language.startsWith('fr')) {
+     return 'fr';
+   }
+   return 'en';
 }
 
 @NgModule({
