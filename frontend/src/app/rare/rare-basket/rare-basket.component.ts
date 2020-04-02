@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { environment } from '../../../environments/environment';
 import { LOCATION } from '../rare.module';
+import { rareBasket } from '../../../environments/rare-basket';
 
 @Component({
   // the selector is not a custom element as usual
@@ -34,7 +34,7 @@ export class RareBasketComponent implements OnInit {
         () => {
           // trigger an sendBasket on rare-basket
           this.basketService.sendBasket().subscribe(basketCreated => {
-            this.location.assign(`${environment.rareBasket}/baskets/${basketCreated.reference}`);
+            this.location.assign(`${rareBasket.url}/baskets/${basketCreated.reference}`);
           });
         },
         () => {}

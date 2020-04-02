@@ -61,7 +61,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "900kb",
-                  "maximumError": "1,2mb"
+                  "maximumError": "1.2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -89,6 +89,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
+                },
+                {
+                  "replace": "src/environments/rare-basket.ts",
+                  "with": "src/environments/rare-basket.prod.ts"
                 }
               ],
               "optimization": true,

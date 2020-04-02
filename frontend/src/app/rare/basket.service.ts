@@ -3,7 +3,7 @@ import { RareDocumentModel } from './rare-document.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { rareBasket } from '../../environments/rare-basket';
 
 /**
  * An item of basket command
@@ -99,7 +99,7 @@ export class BasketService {
   }
 
   sendBasket(): Observable<BasketCreated> {
-    return this.http.post<BasketCreated>(`${environment.rareBasket}/api/baskets`, this.basket).pipe(
+    return this.http.post<BasketCreated>(`${rareBasket.url}/api/baskets`, this.basket).pipe(
       tap(() => {
         this.basket.items = [];
         this.saveBasketToLocalStorage();
