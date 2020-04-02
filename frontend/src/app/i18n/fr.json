@@ -17,5 +17,9 @@
     "filters": "Filtres",
     "results": "Résultats",
     "paging": "Pagination"
+  },
+  "document-count": {
+    "one-document": "Seulement un document correspond à",
+    "several-documents": "{{ count }} documents correspondent à"
   }
 }

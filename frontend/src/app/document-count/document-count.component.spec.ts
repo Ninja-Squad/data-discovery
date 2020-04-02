@@ -6,6 +6,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { DocumentCountComponent } from './document-count.component';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 describe('DocumentCountComponent', () => {
 
@@ -35,7 +36,7 @@ describe('DocumentCountComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       declarations: [DocumentCountComponent],
-      imports: [NgbTooltipModule],
+      imports: [NgbTooltipModule, I18nTestingModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
     });
     jasmine.addMatchers(speculoosMatchers);
@@ -104,6 +105,6 @@ describe('DocumentCountComponent', () => {
 
     // then we should have the tooltip displayed with special text for one document
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Only one documents matches Florilège');
+    expect(tester.tooltip.textContent).toBe('Only one document matches Florilège');
   });
 });

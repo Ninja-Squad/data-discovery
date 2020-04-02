@@ -17,5 +17,9 @@
     "filters": "Filters",
     "results": "Results",
     "paging": "Paging"
+  },
+  "document-count": {
+    "one-document": "Only one document matches",
+    "several-documents": "{{ count }} documents match"
   }
 }
