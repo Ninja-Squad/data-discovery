@@ -101,6 +101,8 @@ deploy-synonyms-to-dev-cluster-openstack:
 
 test-and-sonarqube:
  stage: test
+ tags:
+  - openstack
  # the backend tests need an elasticsearch instance
  services:
    # even if that would be ideal
@@ -146,6 +148,8 @@ test-and-sonarqube:
 
 lint:
  stage: test
+ tags:
+  - openstack
  script: ./gradlew :frontend:lint
  only:
   changes:
@@ -156,6 +160,8 @@ lint:
  # Hidden job which serves as a template for following
  # jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
  stage: build
+ tags:
+  - openstack
  script:
   - ./gradlew assemble -Papp=${APP_NAME}
  artifacts:
