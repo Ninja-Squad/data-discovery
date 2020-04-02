@@ -26,6 +26,7 @@ import { environment } from '../environments/environment';
 import { LoadingSkeletonComponent } from './loading-skeleton/loading-skeleton.component';
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
+import { I18nModule } from './i18n/i18n.module';
 
 registerLocaleData(localeFr);
 
@@ -76,13 +77,13 @@ registerLocaleData(localeFr);
         },
       }
     }),
+    I18nModule,
     // the appropriate resource module depending on the `resourceModule` configured in the environment
     // each of the possible modules contains a component with a selector `dd-document`
     // able to display the genetic resource of the application
     environment.resourceModule
   ],
   providers: [
-    {provide: LOCALE_ID, useValue: 'fr-FR'},
     {provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent],

@@ -22,6 +22,19 @@ Use the `yarn build:wheatis` flag for a production build of WheatIS, and `yarn b
 
 Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+## Internationalization
+
+The application is internationalized: 
+it reads the preferred language of the user 
+from its browser, and tries to use it.
+It uses the English language by default if none is found.
+Translations are provided in French and in English,
+in the `fr.json` and `en.json` files.
+These translations are used by the 
+[`ngx-translate` library](https://github.com/ngx-translate/core).
+
+The translation keys usually follow the convention
+`component-name.text-key` to easily find them. 
 
 ## Analyzing Application size
 
