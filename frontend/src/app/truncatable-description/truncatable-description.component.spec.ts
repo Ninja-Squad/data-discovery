@@ -45,7 +45,7 @@ describe('TruncatableDescriptionComponent', () => {
 
     // then we should truncate it
     expect(tester.fullDescriptionButton).not.toBeNull();
-    const linkContent = '... (Expand)';
+    const linkContent = '... (expand)';
     expect(tester.fullDescriptionButton).toContainText(linkContent);
     expect(tester.description.textContent.length).toBeLessThanOrEqual(256 + linkContent.length);
     expect(tester.description.textContent.length).toBeGreaterThanOrEqual(252 + linkContent.length);
