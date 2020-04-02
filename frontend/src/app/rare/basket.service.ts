@@ -6,18 +6,22 @@ import { HttpClient } from '@angular/common/http';
 import { rareBasket } from '../../environments/rare-basket';
 
 /**
+ * A RARe accession, with its name and identifier
+ */
+export interface Accession {
+  identifier: string;
+  name: string;
+}
+
+/**
  * An item of basket command
  */
 export interface BasketItem {
-  /**
-   * The RARe accession name being ordered
-   */
-  accession: string;
 
   /**
-   * The RARe accession identifier being ordered
+   * The RARe accession being ordered
    */
-  identifier: string;
+  accession: Accession;
 
   /**
    * The email of the GRC contact in charge of handling this ordered item
@@ -67,8 +71,10 @@ export class BasketService {
   addToBasket(rareAccession: RareDocumentModel) {
     // TODO contact email (contact1@grc1.fr for demo purposes)
     const basketItem: BasketItem = {
-      accession: rareAccession.name,
-      identifier: rareAccession.identifier,
+      accession: {
+        identifier: rareAccession.identifier,
+        name: rareAccession.name
+      },
       contactEmail: 'contact1@grc1.fr'
     };
     this.basket.items.push(basketItem);
@@ -78,14 +84,14 @@ export class BasketService {
 
   isAccessionInBasket(rareAccession: RareDocumentModel): Observable<boolean> {
     return this.basket$.pipe(
-      map(basket => basket.items.map(item => item.identifier).includes(rareAccession.identifier)),
+      map(basket => basket.items.map(item => item.accession.identifier).includes(rareAccession.identifier)),
       // do not re-emit when value is the same
       distinctUntilChanged()
     );
   }
 
   removeFromBasket(identifier: string) {
-    this.basket.items = this.basket.items.filter(item => identifier !== item.identifier);
+    this.basket.items = this.basket.items.filter(item => identifier !== item.accession.identifier);
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }

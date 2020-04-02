@@ -14,14 +14,15 @@ describe('BasketService', () => {
     });
     // Object.getPrototypeOf is needed to make the test succeed on Firefox
     mockGetItem = spyOn(Object.getPrototypeOf(window.localStorage), 'getItem');
-    mockGetItem.and.returnValue('{ "items": [{ "accession": "a1", "contactEmail": "hello@lab.fr" }] }');
+    mockGetItem.and.returnValue('{ "items": [{ "accession": { "name": "A1" , "identifier": "a1" }, "contactEmail": "hello@lab.fr" }] }');
     service = TestBed.inject(BasketService);
   });
 
   it('should try to restore a basket when created', () => {
     expect(window.localStorage.getItem).toHaveBeenCalledWith('rare-basket');
     expect(service.basket.items.length).toBe(1);
-    expect(service.basket.items[0].accession).toBe('a1');
+    expect(service.basket.items[0].accession.identifier).toBe('a1');
+    expect(service.basket.items[0].accession.name).toBe('A1');
     expect(service.basket.items[0].contactEmail).toBe('hello@lab.fr');
   });
 
@@ -39,22 +40,25 @@ describe('BasketService', () => {
     service.getBasket().subscribe(basket => (actualBasket = basket));
     service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
     expect(actualBasket.items.length).toBe(1);
-    expect(actualBasket.items[0].identifier).toBe('rosa');
-    expect(actualBasket.items[0].accession).toBe('Rosa');
+    expect(actualBasket.items[0].accession.identifier).toBe('rosa');
+    expect(actualBasket.items[0].accession.name).toBe('Rosa');
     expect(actualBasket.items[0].contactEmail).toBe('contact1@grc1.fr');
   });
 
   it('should remove an item from the basket', () => {
-    service.basket.items = [{ identifier: 'rosa' } as BasketItem, { identifier: 'rosa rosae' } as BasketItem];
+    service.basket.items = [
+      { accession: { identifier: 'rosa' } } as BasketItem,
+      { accession: { identifier: 'rosa rosae' } } as BasketItem
+    ];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
     service.removeFromBasket('rosa');
     expect(actualBasket.items.length).toBe(1);
-    expect(actualBasket.items[0].identifier).toBe('rosa rosae');
+    expect(actualBasket.items[0].accession.identifier).toBe('rosa rosae');
   });
 
   it('should notify when accession is in basket', () => {
-    service.basket.items = [{ accession: 'rosa rosae' } as BasketItem];
+    service.basket.items = [{ accession: { identifier: 'rosa rosae' } } as BasketItem];
     let actualIsInBasket: boolean;
     let counter = 0;
     service.isAccessionInBasket({ identifier: 'rosa' } as RareDocumentModel).subscribe(isInBasket => {
@@ -76,7 +80,7 @@ describe('BasketService', () => {
   });
 
   it('should send the basket and clear the items', () => {
-    service.basket = { items: [{ identifier: 'rosa', accession: 'Rosa', contactEmail: 'john@mail.com' }] };
+    service.basket = { items: [{ accession: { identifier: 'rosa', name: 'Rosa' }, contactEmail: 'john@mail.com' }] };
     let actualBasket: BasketCreated;
     service.sendBasket().subscribe(basketCreated => (actualBasket = basketCreated));
     let emittedBasket: Basket;

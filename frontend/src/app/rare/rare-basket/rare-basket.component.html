@@ -33,10 +33,9 @@
   </div>
   <div class="modal-body">
     <ng-container *ngIf="basket.items.length > 0; else emptyBasket">
-      <div *ngFor="let item of basket.items" class="d-flex">
-        <span class="flex-grow-1">{{ item.accession }}</span
-        >&ngsp;
-        <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.identifier)">
+      <div *ngFor="let item of basket.items" class="d-flex align-items-center">
+        <span class="flex-grow-1">{{ item.accession.name }}&ngsp;<small class="text-muted">{{ item.accession.identifier }}</small></span>&ngsp;
+        <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.accession.identifier)">
           <span class="fa fa-fw fa-trash"></span>
         </button>
       </div>

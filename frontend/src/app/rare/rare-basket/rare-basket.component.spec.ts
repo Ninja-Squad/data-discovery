@@ -97,7 +97,7 @@ describe('RareBasketComponent', () => {
     expect(tester.tooltip).toBeNull();
 
     // 1 item
-    basketEvents.next({ items: [{ identifier: 'rosa' } as BasketItem] });
+    basketEvents.next({ items: [{ accession: { identifier: 'rosa' } } as BasketItem] });
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('1');
 
@@ -111,7 +111,12 @@ describe('RareBasketComponent', () => {
     tester.basketCounter.dispatchEventOfType('mouseleave');
 
     // several items
-    basketEvents.next({ items: [{ identifier: 'rosa' } as BasketItem, { identifier: 'rosa rosae' } as BasketItem] });
+    basketEvents.next({
+      items: [
+        { accession: { identifier: 'rosa' } } as BasketItem,
+        { accession: { identifier: 'rosa rosae' } } as BasketItem
+      ]
+    });
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('2');
 
@@ -125,7 +130,7 @@ describe('RareBasketComponent', () => {
 
   it('should open a summary modal on click', () => {
     tester.detectChanges();
-    basketEvents.next({ items: [{ identifier: 'rosa', accession: 'Rosa' } as BasketItem] });
+    basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
 
@@ -152,7 +157,7 @@ describe('RareBasketComponent', () => {
       } as BasketCreated)
     );
     tester.detectChanges();
-    basketEvents.next({ items: [{ identifier: 'rosa', accession: 'Rosa' } as BasketItem] });
+    basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
 
