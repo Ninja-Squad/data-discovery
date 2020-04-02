@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -52,7 +52,7 @@ registerLocaleData(localeFr);
     BrowserModule,
     RouterModule.forRoot(routes, {
       scrollPositionRestoration: 'enabled',
-      anchorScrolling: 'enabled',
+      anchorScrolling: 'enabled'
     }),
     ReactiveFormsModule,
     HttpClientModule,
@@ -74,7 +74,7 @@ registerLocaleData(localeFr);
           sanitize: false,
           smartLists: true,
           smartypants: false
-        },
+        }
       }
     }),
     I18nModule,
@@ -84,7 +84,7 @@ registerLocaleData(localeFr);
     environment.resourceModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true}
+    { provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent],
   exports: [RouterModule]
