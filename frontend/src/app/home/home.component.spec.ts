@@ -12,6 +12,7 @@ import { SearchService } from '../search.service';
 import { PillarsComponent } from '../pillars/pillars.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { RareHeaderComponent } from '../rare/rare-header/rare-header.component';
+import { I18nTestingModule } from '../i18n/mock-i18n.spec';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -38,7 +39,8 @@ describe('HomeComponent', () => {
       RouterTestingModule,
       HttpClientTestingModule,
       NgbTypeaheadModule,
-      NgbTooltipModule
+      NgbTooltipModule,
+      I18nTestingModule
     ],
     declarations: [HomeComponent, PillarsComponent, DocumentCountComponent, RareHeaderComponent],
     providers: [HttpClientTestingModule]

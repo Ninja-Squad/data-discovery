@@ -31,5 +31,10 @@
     "retry": "Try to refresh the page, or retry later.",
     "status": "Status: {{ status }}",
     "message": "Message: {{ message }}"
+  },
+  "home": {
+    "title": "Search for resources",
+    "search": "Search",
+    "pillars": "Pillars"
   }
 }

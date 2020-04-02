@@ -4,10 +4,10 @@
     <!-- for example, if the application is RARe, the component will be a RareHeaderComponent -->
     <dd-header></dd-header>
     <div class="pt-md-5">
-      <h2 class="sr-only">Search for resources</h2>
+      <h2 class="sr-only" translate="home.title"></h2>
 
       <form [formGroup]="searchForm" (ngSubmit)="search()">
-        <label class="sr-only" for="query">Search</label>
+        <label class="sr-only" for="query" translate="home.search"></label>
         <div class="input-group">
           <input id="query"
                  class="form-control form-control-lg"
@@ -16,14 +16,14 @@
                  [ngbTypeahead]="suggesterTypeahead"
                  [focusFirst]="false">
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary">Search</button>
+            <button class="btn btn-outline-secondary" translate="home.search"></button>
           </div>
         </div>
       </form>
     </div>
   </div>
   <div class="col-md-4 col-lg-3 order-md-first mt-5 mt-md-0">
-    <h2 class="sr-only">Pillars</h2>
+    <h2 class="sr-only" translate="home.pillars"></h2>
     <div class="d-flex justify-content-center">
       <div>
         <!--

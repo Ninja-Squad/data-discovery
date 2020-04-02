@@ -31,5 +31,10 @@
     "retry": "Essayez de rafraîchir la page, ou ré-essayez plus tard.",
     "status": "Statut\u00a0: {{ status }}",
     "message": "Message\u00a0: {{ message }}"
+  },
+  "home": {
+    "title": "Rechercher une ressource",
+    "search": "Rechercher",
+    "pillars": "Piliers"
   }
 }
