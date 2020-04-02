@@ -9,5 +9,13 @@
   "pillars": {
     "no-data": "Pas de données trouvées.",
     "no-data-contact": "Merci de contacter votre administrateur afin de remplir la base de données."
+  },
+  "search": {
+    "title": "Résultats de la recherche",
+    "new-search": "Nouvelle recherche",
+    "search": "Rechercher",
+    "filters": "Filtres",
+    "results": "Résultats",
+    "paging": "Pagination"
   }
 }

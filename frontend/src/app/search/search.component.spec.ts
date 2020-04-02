@@ -23,6 +23,7 @@ import {DocumentCountComponent} from '../document-count/document-count.component
 import {TruncatableDescriptionComponent} from '../truncatable-description/truncatable-description.component';
 import {LoadingSkeletonComponent} from '../loading-skeleton/loading-skeleton.component';
 import {delay} from 'rxjs/operators';
+import {I18nTestingModule} from '../i18n/mock-i18n.spec';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -60,7 +61,8 @@ describe('SearchComponent', () => {
       NgbPaginationModule,
       NgbTypeaheadModule,
       NgbTooltipModule,
-      NoopAnimationsModule
+      NoopAnimationsModule,
+      I18nTestingModule
     ],
     declarations: [
       SearchComponent,
