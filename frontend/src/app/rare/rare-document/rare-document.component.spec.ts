@@ -7,6 +7,7 @@ import { TruncatableDescriptionComponent } from '../../truncatable-description/t
 import { BasketService } from '../basket.service';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 describe('RareDocumentComponent', () => {
   class RareDocumentComponentTester extends ComponentTester<RareDocumentComponent> {
@@ -69,7 +70,7 @@ describe('RareDocumentComponent', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [NgbTooltipModule],
+      imports: [NgbTooltipModule, I18nTestingModule],
       declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
       providers: [{ provide: BasketService, useValue: basketService }]
     })

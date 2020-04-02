@@ -6,6 +6,7 @@ import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.serv
 import { of, Subject } from 'rxjs';
 import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LOCATION } from '../rare.module';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   constructor() {
@@ -64,7 +65,7 @@ describe('RareBasketComponent', () => {
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
-      imports: [NgbTooltipModule, NgbModalModule],
+      imports: [NgbTooltipModule, NgbModalModule, I18nTestingModule],
       declarations: [RareBasketComponent],
       providers: [
         { provide: BasketService, useValue: service },
@@ -128,7 +129,7 @@ describe('RareBasketComponent', () => {
     tester.detectChanges();
     tester.basketCounter.click();
 
-    expect(tester.modalTitle.textContent).toBe('Basket summary');
+    expect(tester.modalTitle.textContent).toBe('Order summary');
     expect(tester.modalBody.textContent).toContain('Rosa');
 
     // remove item from basket
@@ -137,7 +138,7 @@ describe('RareBasketComponent', () => {
     basketEvents.next({ items: [] });
     tester.detectChanges();
     expect(tester.modalBody.textContent).not.toContain('Rosa');
-    expect(tester.modalBody.textContent).toContain('Aucune accession');
+    expect(tester.modalBody.textContent).toContain('No item');
 
     tester.modalClose.click();
     expect(tester.modalTitle).toBeNull();

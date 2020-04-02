@@ -47,5 +47,16 @@
   "truncatable-description": {
     "expand": "... (voir la suite)",
     "hide": "Cacher"
+  },
+  "rare-document": {
+    "add-to-basket": "Ajouter au panier",
+    "remove-from-basket": "Supprimer du panier"
+  },
+  "rare-basket": {
+    "no-accession": "Aucune accession",
+    "complete-order": "Poursuivre la commande",
+    "modal-title": "Résumé de la commande",
+    "one-item": "Cliquez pour voir l'accession",
+    "several-items": "Cliquez pour voir les {{ itemCounter }} accessions"
   }
 }

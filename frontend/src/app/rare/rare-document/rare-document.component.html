@@ -12,7 +12,7 @@
         type="button"
         class="btn btn-sm btn-outline-dark"
         (click)="addToBasket()"
-        ngbTooltip="Add to basket"
+        [ngbTooltip]="'rare-document.add-to-basket' | translate"
         container="body"
       >
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
@@ -23,7 +23,7 @@
         type="button"
         class="btn btn-sm btn-success"
         (click)="removeFromBasket()"
-        ngbTooltip="Remove from basket"
+        [ngbTooltip]="'rare-document.remove-from-basket' | translate"
         container="body"
       >
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;

@@ -14,6 +14,7 @@ import { DocumentModel } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
 import { of } from 'rxjs';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('DocumentsComponent', () => {
 
@@ -41,7 +42,7 @@ describe('DocumentsComponent', () => {
   beforeEach(() => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, I18nTestingModule],
+      imports: [ReactiveFormsModule, NgbTooltipModule, I18nTestingModule],
       declarations: [DocumentsComponent, RareDocumentComponent, TruncatableDescriptionComponent],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' },

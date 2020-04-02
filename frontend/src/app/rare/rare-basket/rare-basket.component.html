@@ -5,7 +5,7 @@
 <ng-template #navbarButton>
   <button
     class="basket-counter btn"
-    ngbTooltip="Click to view the {{ itemCounter | i18nPlural: itemMessageMapping }}"
+    [ngbTooltip]="buttonTooltip"
     (click)="viewItems(basketModal)"
   >
     <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
@@ -13,9 +13,20 @@
   </button>
 </ng-template>
 
+<ng-template #buttonTooltip>
+  <ng-container [ngPlural]="itemCounter">
+    <ng-template ngPluralCase="=1">
+      <span translate="rare-basket.one-item"></span>
+    </ng-template>
+    <ng-template ngPluralCase="other">
+      <span translate="rare-basket.several-items" [translateParams]="{ itemCounter: itemCounter | number }"></span>
+    </ng-template>
+  </ng-container>
+</ng-template>
+
 <ng-template #basketModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Basket summary</h4>
+    <h4 class="modal-title" id="modal-title" translate="rare-basket.modal-title"></h4>
     <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -31,10 +42,13 @@
       </div>
     </ng-container>
     <ng-template #emptyBasket>
-      <p>Aucune accession</p>
+      <p translate="rare-basket.no-accession"></p>
     </ng-template>
   </div>
   <div class="modal-footer" *ngIf="basket.items.length > 0">
-    <button type="button" id="send-basket" class="btn btn-outline-dark" (click)="modal.close('order')">Terminer ma demande</button>
+    <button type="button" id="send-basket" class="btn btn-outline-dark"
+            (click)="modal.close('order')"
+            translate="rare-basket.complete-order">
+    </button>
   </div>
 </ng-template>

@@ -47,5 +47,16 @@
   "truncatable-description": {
     "expand": "... (expand)",
     "hide": "Hide"
+  },
+  "rare-document": {
+    "add-to-basket": "Add to basket",
+    "remove-from-basket": "Remove from basket"
+  },
+  "rare-basket": {
+    "no-accession": "No item",
+    "complete-order": "Complete the order",
+    "modal-title": "Order summary",
+    "one-item": "Click to view the item",
+    "several-items": "Click to view the {{ itemCounter }} items"
   }
 }

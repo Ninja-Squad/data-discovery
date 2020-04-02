@@ -17,8 +17,6 @@ export class RareBasketComponent implements OnInit {
   itemCounter = 0;
   basket: Basket;
 
-  itemMessageMapping = { '=1': 'item', other: '# items' };
-
   constructor(private basketService: BasketService, private modalService: NgbModal, @Inject(LOCATION) private location: Location) {}
 
   ngOnInit(): void {
