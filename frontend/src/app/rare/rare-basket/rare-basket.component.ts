@@ -43,4 +43,8 @@ export class RareBasketComponent implements OnInit {
   removeItemFromBasket(item: string) {
     this.basketService.removeFromBasket(item);
   }
+
+  clearBasket() {
+    this.basketService.clearBasket();
+  }
 }

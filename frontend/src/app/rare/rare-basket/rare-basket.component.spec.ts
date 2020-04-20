@@ -45,6 +45,10 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
     return document.querySelector('#send-basket');
   }
 
+  get clearBasket(): HTMLElement {
+    return document.querySelector('#clear-basket');
+  }
+
   get removeItemFromBasket(): HTMLElement {
     return document.querySelector('.fa-trash');
   }
@@ -61,7 +65,7 @@ describe('RareBasketComponent', () => {
   const basketEvents = new Subject<Basket>();
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', ['getBasket', 'removeFromBasket', 'sendBasket']);
+    service = jasmine.createSpyObj<BasketService>('BasketService', ['getBasket', 'removeFromBasket', 'sendBasket', 'clearBasket']);
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
@@ -74,6 +78,7 @@ describe('RareBasketComponent', () => {
     });
     jasmine.addMatchers(speculoosMatchers);
     tester = new RareBasketComponentTester();
+    tester.detectChanges();
   });
 
   afterEach(() => {
@@ -87,7 +92,6 @@ describe('RareBasketComponent', () => {
 
   it('should display the number of items', () => {
     // no item
-    tester.detectChanges();
     expect(tester.basketCounterAsText).toContainText('0');
 
     // when hovering the navbar
@@ -112,10 +116,7 @@ describe('RareBasketComponent', () => {
 
     // several items
     basketEvents.next({
-      items: [
-        { accession: { identifier: 'rosa' } } as BasketItem,
-        { accession: { identifier: 'rosa rosae' } } as BasketItem
-      ]
+      items: [{ accession: { identifier: 'rosa' } } as BasketItem, { accession: { identifier: 'rosa rosae' } } as BasketItem]
     });
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('2');
@@ -129,7 +130,6 @@ describe('RareBasketComponent', () => {
   });
 
   it('should open a summary modal on click', () => {
-    tester.detectChanges();
     basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
@@ -156,7 +156,6 @@ describe('RareBasketComponent', () => {
         reference
       } as BasketCreated)
     );
-    tester.detectChanges();
     basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
@@ -168,4 +167,13 @@ describe('RareBasketComponent', () => {
     expect(tester.modalTitle).toBeNull();
     expect(location.assign).toHaveBeenCalledWith(`http://localhost:4201/baskets/${reference}`);
   }));
+
+  it('should clear the basket', () => {
+    basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
+    tester.detectChanges();
+    tester.basketCounter.click();
+
+    tester.clearBasket.click();
+    expect(service.clearBasket).toHaveBeenCalled();
+  });
 });

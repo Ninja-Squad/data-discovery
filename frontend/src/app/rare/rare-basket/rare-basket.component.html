@@ -3,11 +3,7 @@
   <span class="badge badge-pill badge-light">0</span>
 </div>
 <ng-template #navbarButton>
-  <button
-    class="basket-counter btn"
-    [ngbTooltip]="buttonTooltip"
-    (click)="viewItems(basketModal)"
-  >
+  <button class="basket-counter btn" [ngbTooltip]="buttonTooltip" (click)="viewItems(basketModal)">
     <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
     <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
   </button>
@@ -34,7 +30,9 @@
   <div class="modal-body">
     <ng-container *ngIf="basket.items.length > 0; else emptyBasket">
       <div *ngFor="let item of basket.items" class="d-flex align-items-center">
-        <span class="flex-grow-1">{{ item.accession.name }}&ngsp;<small class="text-muted">{{ item.accession.identifier }}</small></span>&ngsp;
+        <span class="flex-grow-1"
+          >{{ item.accession.name }}&ngsp;<small class="text-muted">{{ item.accession.identifier }}</small></span
+        >&ngsp;
         <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.accession.identifier)">
           <span class="fa fa-fw fa-trash"></span>
         </button>
@@ -45,9 +43,19 @@
     </ng-template>
   </div>
   <div class="modal-footer" *ngIf="basket.items.length > 0">
-    <button type="button" id="send-basket" class="btn btn-outline-dark"
-            (click)="modal.close('order')"
-            translate="rare-basket.complete-order">
-    </button>
+    <button
+      type="button"
+      id="send-basket"
+      class="btn btn-outline-dark"
+      (click)="modal.close('order')"
+      translate="rare-basket.complete-order"
+    ></button>
+    <button
+      type="button"
+      id="clear-basket"
+      class="btn btn-outline-danger"
+      (click)="clearBasket()"
+      translate="rare-basket.clear-basket"
+    ></button>
   </div>
 </ng-template>

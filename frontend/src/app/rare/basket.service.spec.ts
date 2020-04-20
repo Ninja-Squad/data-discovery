@@ -110,4 +110,12 @@ describe('BasketService', () => {
     expect(actualBasket.reference).toBe(reference);
     expect(emittedBasket.items.length).toBe(0);
   });
+
+  it('should clear the basket', () => {
+    service.basket.items = [{ accession: { identifier: 'rosa' } } as BasketItem, { accession: { identifier: 'rosa rosae' } } as BasketItem];
+    let actualBasket: Basket;
+    service.getBasket().subscribe(basket => (actualBasket = basket));
+    service.clearBasket();
+    expect(actualBasket.items.length).toBe(0);
+  });
 });

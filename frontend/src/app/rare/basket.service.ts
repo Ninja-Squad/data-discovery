@@ -108,12 +108,12 @@ export class BasketService {
   }
 
   sendBasket(): Observable<BasketCreated> {
-    return this.http.post<BasketCreated>(`${rareBasket.url}/api/baskets`, this.basket).pipe(
-      tap(() => {
-        this.basket.items = [];
-        this.saveBasketToLocalStorage();
-        this.emitNewBasket();
-      })
-    );
+    return this.http.post<BasketCreated>(`${rareBasket.url}/api/baskets`, this.basket).pipe(tap(() => this.clearBasket()));
+  }
+
+  clearBasket() {
+    this.basket.items = [];
+    this.saveBasketToLocalStorage();
+    this.emitNewBasket();
   }
 }
