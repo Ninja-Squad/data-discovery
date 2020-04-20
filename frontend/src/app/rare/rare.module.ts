@@ -7,6 +7,7 @@ import { RareDocumentComponent } from './rare-document/rare-document.component';
 import { RareHeaderComponent } from './rare-header/rare-header.component';
 import { RareBasketComponent } from './rare-basket/rare-basket.component';
 import { I18nModule } from '../i18n/i18n.module';
+import { RareSelectAllResultsComponent } from './rare-select-all-results/rare-select-all-results.component';
 
 export const LOCATION = new InjectionToken<Location>('Location');
 
@@ -21,7 +22,8 @@ export const LOCATION = new InjectionToken<Location>('Location');
   declarations: [
     RareDocumentComponent,
     RareHeaderComponent,
-    RareBasketComponent
+    RareBasketComponent,
+    RareSelectAllResultsComponent
   ],
   providers: [
     { provide: LOCATION, useValue: window.location }
@@ -29,7 +31,8 @@ export const LOCATION = new InjectionToken<Location>('Location');
   exports: [
     RareDocumentComponent,
     RareHeaderComponent,
-    RareBasketComponent
+    RareBasketComponent,
+    RareSelectAllResultsComponent
   ]
 })
 export class RareModule {}

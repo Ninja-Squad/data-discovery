@@ -45,11 +45,21 @@ describe('BasketService', () => {
     expect(actualBasket.items[0].contactEmail).toBe('contact1@grc1.fr');
   });
 
+  it('should not add an item to the basket twice', () => {
+    service.basket.items = [];
+    let actualBasket: Basket;
+    service.getBasket().subscribe(basket => (actualBasket = basket));
+    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
+    // second time with same item
+    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
+    expect(actualBasket.items.length).toBe(1);
+    expect(actualBasket.items[0].accession.identifier).toBe('rosa');
+    expect(actualBasket.items[0].accession.name).toBe('Rosa');
+    expect(actualBasket.items[0].contactEmail).toBe('contact1@grc1.fr');
+  });
+
   it('should remove an item from the basket', () => {
-    service.basket.items = [
-      { accession: { identifier: 'rosa' } } as BasketItem,
-      { accession: { identifier: 'rosa rosae' } } as BasketItem
-    ];
+    service.basket.items = [{ accession: { identifier: 'rosa' } } as BasketItem, { accession: { identifier: 'rosa rosae' } } as BasketItem];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
     service.removeFromBasket('rosa');

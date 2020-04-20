@@ -1,0 +1,16 @@
+<div *ngIf="counter">
+  <a *ngIf="!allSelectedForOrdering" class="btn btn-sm btn-link" (click)="addAllToBasket()">
+    <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+    <ng-container [ngSwitch]="counter">
+      <span *ngSwitchCase="1" translate="rare-add-all-button.add-one-to-basket"></span>
+      <span *ngSwitchDefault translate="rare-add-all-button.add-all-to-basket" [translateParams]="{ itemCounter: counter }"></span>
+    </ng-container>
+  </a>
+  <a *ngIf="allSelectedForOrdering" class="btn btn-sm btn-link" (click)="removeAllFromBasket()">
+    <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+    <ng-container [ngSwitch]="counter">
+      <span *ngSwitchCase="1" translate="rare-add-all-button.remove-one-from-basket"></span>
+      <span *ngSwitchDefault translate="rare-add-all-button.remove-all-from-basket" [translateParams]="{ itemCounter: counter }"></span>
+    </ng-container>
+  </a>
+</div>

@@ -28,7 +28,7 @@ export class RareBasketComponent implements OnInit {
 
   viewItems(basket: any) {
     if (this.itemCounter > 0) {
-      this.modalService.open(basket, { ariaLabelledBy: 'modal-title', scrollable: true }).result.then(
+      this.modalService.open(basket, { ariaLabelledBy: 'modal-title', size: 'lg', scrollable: true }).result.then(
         () => {
           // trigger an sendBasket on rare-basket
           this.basketService.sendBasket().subscribe(basketCreated => {

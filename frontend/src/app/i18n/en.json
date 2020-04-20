@@ -52,6 +52,12 @@
     "add-to-basket": "Add to basket",
     "remove-from-basket": "Remove from basket"
   },
+  "rare-add-all-button": {
+    "add-all-to-basket": "Add the {{ itemCounter }} items to the basket",
+    "add-one-to-basket": "Add the item to the basket",
+    "remove-all-from-basket": "Remove the {{ itemCounter }} items from the basket",
+    "remove-one-from-basket": "Remove the item from the basket"
+  },
   "rare-basket": {
     "no-accession": "No item",
     "complete-order": "Complete the order",

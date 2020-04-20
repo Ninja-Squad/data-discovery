@@ -15,6 +15,7 @@ import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
 import { of } from 'rxjs';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 
 describe('DocumentsComponent', () => {
 
@@ -43,7 +44,7 @@ describe('DocumentsComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, NgbTooltipModule, I18nTestingModule],
-      declarations: [DocumentsComponent, RareDocumentComponent, TruncatableDescriptionComponent],
+      declarations: [DocumentsComponent, RareDocumentComponent, GenericSelectAllResultsComponent, TruncatableDescriptionComponent],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' },
         { provide: BasketService, useValue: basketService }

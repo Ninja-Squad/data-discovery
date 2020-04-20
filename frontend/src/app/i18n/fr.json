@@ -50,7 +50,13 @@
   },
   "rare-document": {
     "add-to-basket": "Ajouter au panier",
-    "remove-from-basket": "Supprimer du panier"
+    "remove-from-basket": "Enlever du panier"
+  },
+  "rare-add-all-button": {
+    "add-one-to-basket": "Ajouter l'accession au panier",
+    "add-all-to-basket": "Ajouter les {{ itemCounter }} accessions au panier",
+    "remove-one-from-basket": "Enlever l'accession du panier",
+    "remove-all-from-basket": "Enlever les {{ itemCounter }} accessions du panier"
   },
   "rare-basket": {
     "no-accession": "Aucune accession",

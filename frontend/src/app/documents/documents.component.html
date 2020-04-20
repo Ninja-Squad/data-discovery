@@ -1,13 +1,22 @@
 <!-- if there are results to display -->
 <div *ngIf="documents.content.length; else noResults">
-  <div id="resume" class="text-muted small mb-3">
-    <span translate="documents.results-range"
-          [translateParams]="{ first: firstResultIndex | number, last: lastResultIndex | number, total: documents.totalElements | number }">
-    </span>
-    <ng-container *ngIf="resultLimited">
-      &ngsp;
-      <span translate="documents.results-limited" [translateParams]="{ total: documents.maxResults | number }"></span>
-    </ng-container>
+  <div class="d-flex align-items-center mb-3">
+    <div id="resume" class="text-muted small flex-grow-1">
+      <span translate="documents.results-range"
+            [translateParams]="{ first: firstResultIndex | number, last: lastResultIndex | number, total: documents.totalElements | number }">
+      </span>
+      <ng-container *ngIf="resultLimited">
+        &ngsp;
+        <span translate="documents.results-limited" [translateParams]="{ total: documents.maxResults | number }"></span>
+      </ng-container>
+    </div>
+    <div class="select-all-rare-basket">
+      <!-- the following component will not be the same depending on the environment.resourceModule value -->
+      <!-- for example, if the module is `RareModule` it will be a `RareSelectAllResultsComponent` -->
+      <!-- For others it will be an empty component -->
+      <!-- As Ivy has a stricter type checking, we need to cast the documents as any -->
+      <dd-select-all-results [documents]="$any(documents)"></dd-select-all-results>
+    </div>
   </div>
   <div class="mb-4" *ngFor="let document of documents.content">
     <!-- the following component will not be the same depending on the environment.resourceModule value -->

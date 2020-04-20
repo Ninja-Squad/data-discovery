@@ -17,7 +17,6 @@ export interface Accession {
  * An item of basket command
  */
 export interface BasketItem {
-
   /**
    * The RARe accession being ordered
    */
@@ -69,6 +68,10 @@ export class BasketService {
   }
 
   addToBasket(rareAccession: RareDocumentModel) {
+    if (this.basket.items.some(item => item.accession.identifier === rareAccession.identifier)) {
+      // already in basket
+      return;
+    }
     // TODO contact email (contact1@grc1.fr for demo purposes)
     const basketItem: BasketItem = {
       accession: {

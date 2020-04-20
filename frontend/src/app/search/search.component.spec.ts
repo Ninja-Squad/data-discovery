@@ -25,6 +25,7 @@ import {LoadingSkeletonComponent} from '../loading-skeleton/loading-skeleton.com
 import {delay} from 'rxjs/operators';
 import {I18nTestingModule} from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
+import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -77,7 +78,8 @@ describe('SearchComponent', () => {
       AggregationNamePipe,
       DocumentCountComponent,
       LoadingSkeletonComponent,
-      TruncatableDescriptionComponent
+      TruncatableDescriptionComponent,
+      GenericSelectAllResultsComponent
     ],
     providers: [{ provide: BasketService, useValue: basketService }]
   }));
