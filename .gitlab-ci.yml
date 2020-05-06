@@ -664,6 +664,8 @@ data-integration-wheatis-beta-openstack:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - branches
  except:
@@ -679,6 +681,8 @@ data-integration-wheatis-staging-openstack:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - branches
  except:
@@ -693,6 +697,8 @@ data-integration-wheatis-prod-proxmox:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - master
 
@@ -706,6 +712,8 @@ data-integration-wheatis-prod-openstack:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - master
 
@@ -718,6 +726,8 @@ data-integration-data-discovery-beta-openstack:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - branches
  except:
@@ -733,6 +743,8 @@ data-integration-data-discovery-staging-openstack:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - branches
  except:
@@ -747,6 +759,8 @@ data-integration-data-discovery-prod-proxmox:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - master
 
@@ -760,5 +774,7 @@ data-integration-data-discovery-prod-openstack:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - master
