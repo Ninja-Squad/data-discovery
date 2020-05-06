@@ -60,7 +60,7 @@ while [ -n "$1" ]; do
 		-port) [ "$LOCAL" -eq "1" ] || ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
 		-env) [ "$LOCAL" -eq "1" ] || APP_ENV=$2;shift 2;;
-		--local) LOCAL=1 ; [ -z "$APP_NAME" ] && APP_NAME="rare" ; APP_ENV="dev"; ES_HOSTS="localhost"; ES_HOST="localhost" ; ES_PORT="9200"; echo "Working in local mode, ignoring all Elasticsearch related options (env, host, port)" ;shift; break;;
+		--local) LOCAL=1 ; echo "Working in local mode, ignoring all Elasticsearch related options (env, host, port)" ;shift;;
 		--no-data) INDEX=0;shift 1;;
 		--clean) CLEAN=1;shift 1;;
 		--) shift;break;;
@@ -68,6 +68,8 @@ while [ -n "$1" ]; do
 		*) break;;
 	esac
 done
+
+[ $LOCAL == 1 ] && { [ -z "$APP_NAME" ] && APP_NAME="rare" ; APP_ENV="dev"; ES_HOSTS="localhost"; ES_HOST="localhost" ; ES_PORT="9200" ; }
 
 if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
     echo "ERROR: host, port, app and env parameters are mandatory!"
