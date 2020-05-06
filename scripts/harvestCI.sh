@@ -99,6 +99,12 @@ if [ -z "$ES_HOST" ]; then
     echo && help
 	exit 4
 fi
+if [ "$APP_NAME" == "rare" ] ; then
+    ID_FIELD=identifier
+else
+    ID_FIELD=""
+fi
+export ID_FIELD
 
 DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 [ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
@@ -135,7 +141,7 @@ mkdir -p "$OUTDIR"
     echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
     parallel -j${HOST_NB} --bar --link --halt now,fail=1 "
             gunzip -c {1} \
-            | ID_FIELD=name jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
+            | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
             | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{1/.}.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \

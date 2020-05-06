@@ -10,19 +10,27 @@
 #   - 1 if the ID_FIELD variable is not assigned
 #   - 2 if the input is not a JSON array
 
-def to_bulk(identifier):
+def to_string:
+    if ((. | type) == "array" and (.|length) <= 1) then
+        .[0]?|tostring
+    else
+        .|tostring
+    end
+    | if(. == "null") then
+        ""
+    else
+        .
+    end
+;
+
+def to_bulk($identifier):
     .[] |
-        if (( .databaseName? + "__" + .entryType? + "__" + (.species?|tostring) + "__" + (.name?|tostring) + "__" + .identifier? | tostring) != "________") then
-            . |= { "index": { "_id": ( .databaseName? + "__" + .entryType? + "__" +
-                if ((.species | type) == "array"
-                    and (.species|length) <= 1) then
-                    .species?[0]|tostring
-                else
-                    .species|tostring
-                end
-                + "__" + (.name?|tostring) +  "__" + .identifier? | tostring)}}, . | del(.identifier?) # add a bulk header with custom _id to the object
+        if has($identifier) then
+            . |= { "index": { "_id": ( .[$identifier] | to_string)}}, . # add a bulk header with value of field 'identifier' to the object
+        elif (( .databaseName? + "#" + .entryType? + "#" + (.species?|to_string) + "#" + (.name?|to_string) + "#" + .identifier? | to_string) != "####") then
+            . |= { "index": { "_id": ( .databaseName? + "#" + .entryType? + "#" + (.species?|to_string) + "#" + (.name?|to_string) +  "#" + .identifier? | to_string)}}, . # add a bulk header with custom _id to the object
         else
-            . |= { "index": { }}, . | del(.identifier?) # add a default bulk header to the object
+            . |= { "index": { }}, . # add a default bulk header to the object
         end
 ;
 

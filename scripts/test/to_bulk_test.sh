@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 curdir=$(dirname $0)
 JQ_SCRIPT=$(dirname $curdir)/to_bulk.jq
@@ -12,11 +12,11 @@ for fixture in $curdir/fixture*.json ; do
 
     # Compare stdout
     diff --color=always "$fixture.stdout" $result_out > $result_out.diff
-    [ $? != 0 ] && { echo -e "FAILED processing $(basename $fixture) stdout: \n\t" $(cat $result_out.diff); ((nb_fail++)) ; }
+    [ $? != 0 ] && { echo -e "FAILED processing $(basename $fixture) stdout: \n\t" $(cat $result_out.diff); nb_fail=$((nb_fail+1)) ; }
 
     # Compare stderr
     diff --color=always "$fixture.stderr" $result_err > $result_err.diff
-    [ $? != 0 ] && { echo -e "FAILED processing $(basename $fixture) stderr: \n\t" $(cat $result_err.diff) ; ((nb_fail++)) ; }
+    [ $? != 0 ] && { echo -e "FAILED processing $(basename $fixture) stderr: \n\t" $(cat $result_err.diff) ; nb_fail=$((nb_fail+1)) ; }
 done
 
 if [ $nb_fail != 0 ]; then
