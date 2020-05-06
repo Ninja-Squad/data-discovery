@@ -39,6 +39,7 @@ build-es-synonyms:
   - docker:19.03.1-dind
  script:
   - cd data/synonyms
+  - gzip -d all_*.txt*gz
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
   # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
@@ -52,13 +53,13 @@ deploy-synonyms-to-prod-cluster-proxmox:
  script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-  - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
-  - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /etc/elasticsearch/analysis/synonyms/ ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
+  - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt* ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
+  - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
   changes:
-   - data/synonyms/all_autophrases.txt
-   - data/synonyms/all_synonyms.txt
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - master
 
@@ -69,13 +70,13 @@ deploy-synonyms-to-dev-cluster-openstack:
  script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-  - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
-  - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
+  - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt* ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
+  - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
   changes:
-   - data/synonyms/all_autophrases.txt
-   - data/synonyms/all_synonyms.txt
+   - data/synonyms/all_autophrases.txt*
+   - data/synonyms/all_synonyms.txt*
   refs:
    - branches
  except:
@@ -88,13 +89,13 @@ deploy-synonyms-to-dev-cluster-openstack:
 #  script:
 #   - eval $(ssh-agent -s)
 #   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-#   - for ES_HOST in $ES_PROD_HOSTS_OPENSTACK $ES_PROD_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
-#   - for ES_HOST in $ES_PROD_HOSTS_OPENSTACK $ES_PROD_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
+#   - for ES_HOST in $ES_PROD_HOSTS_OPENSTACK $ES_PROD_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt* ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
+#   - for ES_HOST in $ES_PROD_HOSTS_OPENSTACK $ES_PROD_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
 #   - eval $(ssh-agent -k)
 #  only:
 #   changes:
-#    - data/synonyms/all_autophrases.txt
-#    - data/synonyms/all_synonyms.txt
+#    - data/synonyms/all_autophrases.txt*
+#    - data/synonyms/all_synonyms.txt*
 #   refs:
 #    - master
 
