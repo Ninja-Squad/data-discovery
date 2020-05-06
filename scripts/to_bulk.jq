@@ -24,11 +24,11 @@ def to_string:
 def to_bulk($identifier):
     .[] |
         if has($identifier) then
-            . |= { "index": { "_id": ( .[$identifier] | to_string)}}, . # add a bulk header with value of field 'identifier' to the object
+            . |= { "create": { "_id": ( .[$identifier] | to_string)}}, . # add a bulk header with value of field 'identifier' to the object
         elif ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + (.species?|to_string) + "#" + .entryType? + "#" +  .databaseName? != "####") then
-            . |= { "index": { "_id": ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + (.species?|to_string) + "#" + .entryType? + "#" +  .databaseName?) }}, . # add a bulk header with custom _id to the object
+            . |= { "create": { "_id": ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + (.species?|to_string) + "#" + .entryType? + "#" +  .databaseName?) }}, . # add a bulk header with custom _id to the object
         else
-            . |= { "index": { }}, . # add a default bulk header to the object
+            . |= { "create": { }}, . # add a default bulk header to the object
         end
 ;
 
