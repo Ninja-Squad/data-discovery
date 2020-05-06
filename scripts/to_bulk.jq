@@ -10,11 +10,11 @@
 
 def to_string:
     if ((. | type) == "array") then
-        .?|join("|")
+        .|join("|")|tostring
     else
         .|tostring
     end
-    | if(. == "null") then
+    | if(. == "null" or . == null) then
         ""
     else
         .
@@ -35,5 +35,10 @@ def to_bulk($identifier):
 if (type != "array") then
     "[ERROR]: the input is expected to be an array in order to produce JSON lines bulk file.\n" | halt_error(2)
 else
-    to_bulk($ENV.ID_FIELD)
+    to_bulk($ENV.ID_FIELD) |
+    if ($ENV.APP_NAME != "rare") then
+        del (.identifier) # remove identifier field for some documents having it
+    else
+        .
+    end
 end

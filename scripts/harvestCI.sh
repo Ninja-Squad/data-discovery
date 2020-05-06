@@ -104,7 +104,7 @@ if [ "$APP_NAME" == "rare" ] ; then
 else
     ID_FIELD=""
 fi
-export ID_FIELD
+export ID_FIELD APP_NAME
 
 DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 [ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
