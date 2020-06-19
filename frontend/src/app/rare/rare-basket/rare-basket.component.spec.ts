@@ -165,7 +165,7 @@ describe('RareBasketComponent', () => {
     expect(service.sendBasket).toHaveBeenCalled();
 
     expect(tester.modalTitle).toBeNull();
-    expect(location.assign).toHaveBeenCalledWith(`http://localhost:4201/baskets/${reference}`);
+    expect(location.assign).toHaveBeenCalledWith(`http://localhost:4201/rare-basket/baskets/${reference}`);
   }));
 
   it('should clear the basket', () => {

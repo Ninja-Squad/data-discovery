@@ -99,7 +99,7 @@ describe('BasketService', () => {
     const http = TestBed.inject(HttpTestingController);
     const testRequest = http.expectOne({
       method: 'POST',
-      url: 'http://localhost:4201/api/baskets'
+      url: 'http://localhost:4201/rare-basket/api/baskets'
     });
     expect(testRequest.request.body).toBe(service.basket);
     const reference = 'ABCDEFGH';

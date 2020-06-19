@@ -6,5 +6,5 @@
  * See angular.json for more details.
  */
 export const rareBasket = {
-  url: 'http://localhost:4201' // TODO update to proper URL
+  url: 'http://localhost:4201/rare-basket' // TODO update to proper URL
 };
