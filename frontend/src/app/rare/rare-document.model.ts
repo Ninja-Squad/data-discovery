@@ -11,6 +11,7 @@ export interface RareDocumentModel extends DocumentModel {
   portalURL: string;
   dataURL: string;
   domain: string;
+  accessionHolder: string;
   taxon: Array<string>;
   family: Array<string>;
   genus: Array<string>;

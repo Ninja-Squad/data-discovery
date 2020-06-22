@@ -23,9 +23,9 @@ export interface BasketItem {
   accession: Accession;
 
   /**
-   * The email of the GRC contact in charge of handling this ordered item
+   * The accession holder in charge of handling this ordered item
    */
-  contactEmail: string;
+  accessionHolder: string;
 }
 
 export interface Basket {
@@ -72,13 +72,12 @@ export class BasketService {
       // already in basket
       return;
     }
-    // TODO contact email (contact1@grc1.fr for demo purposes)
     const basketItem: BasketItem = {
       accession: {
         identifier: rareAccession.identifier,
         name: rareAccession.name
       },
-      contactEmail: 'contact1@grc1.fr'
+      accessionHolder: rareAccession.accessionHolder
     };
     this.basket.items.push(basketItem);
     this.saveBasketToLocalStorage();

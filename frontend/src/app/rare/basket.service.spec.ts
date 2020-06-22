@@ -14,7 +14,7 @@ describe('BasketService', () => {
     });
     // Object.getPrototypeOf is needed to make the test succeed on Firefox
     mockGetItem = spyOn(Object.getPrototypeOf(window.localStorage), 'getItem');
-    mockGetItem.and.returnValue('{ "items": [{ "accession": { "name": "A1" , "identifier": "a1" }, "contactEmail": "hello@lab.fr" }] }');
+    mockGetItem.and.returnValue('{ "items": [{ "accession": { "name": "A1" , "identifier": "a1" }, "accessionHolder": "AH1" }] }');
     service = TestBed.inject(BasketService);
   });
 
@@ -23,7 +23,7 @@ describe('BasketService', () => {
     expect(service.basket.items.length).toBe(1);
     expect(service.basket.items[0].accession.identifier).toBe('a1');
     expect(service.basket.items[0].accession.name).toBe('A1');
-    expect(service.basket.items[0].contactEmail).toBe('hello@lab.fr');
+    expect(service.basket.items[0].accessionHolder).toBe('AH1');
   });
 
   it('should not fail on badly stored basket', () => {
@@ -38,24 +38,25 @@ describe('BasketService', () => {
     service.basket.items = [];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
-    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
+    service.addToBasket({ identifier: 'rosa', name: 'Rosa', accessionHolder: 'AH1' } as RareDocumentModel);
     expect(actualBasket.items.length).toBe(1);
     expect(actualBasket.items[0].accession.identifier).toBe('rosa');
     expect(actualBasket.items[0].accession.name).toBe('Rosa');
-    expect(actualBasket.items[0].contactEmail).toBe('contact1@grc1.fr');
+    expect(actualBasket.items[0].accessionHolder).toBe('AH1');
   });
 
   it('should not add an item to the basket twice', () => {
     service.basket.items = [];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
-    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
+    const item = { identifier: 'rosa', name: 'Rosa', accessionHolder: 'AH1' } as RareDocumentModel;
+    service.addToBasket(item);
     // second time with same item
-    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
+    service.addToBasket(item);
     expect(actualBasket.items.length).toBe(1);
     expect(actualBasket.items[0].accession.identifier).toBe('rosa');
     expect(actualBasket.items[0].accession.name).toBe('Rosa');
-    expect(actualBasket.items[0].contactEmail).toBe('contact1@grc1.fr');
+    expect(actualBasket.items[0].accessionHolder).toBe('AH1');
   });
 
   it('should remove an item from the basket', () => {
@@ -90,7 +91,7 @@ describe('BasketService', () => {
   });
 
   it('should send the basket and clear the items', () => {
-    service.basket = { items: [{ accession: { identifier: 'rosa', name: 'Rosa' }, contactEmail: 'john@mail.com' }] };
+    service.basket = { items: [{ accession: { identifier: 'rosa', name: 'Rosa' }, accessionHolder: 'AH1' }] };
     let actualBasket: BasketCreated;
     service.sendBasket().subscribe(basketCreated => (actualBasket = basketCreated));
     let emittedBasket: Basket;

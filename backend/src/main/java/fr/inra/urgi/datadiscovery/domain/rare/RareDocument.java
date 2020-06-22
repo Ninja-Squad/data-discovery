@@ -1,17 +1,17 @@
 package fr.inra.urgi.datadiscovery.domain.rare;
 
+import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.Location;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-
-import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
 /**
  * A document of the Rare app, as loaded from a JSON file, and stored in ElasticSearch.
@@ -44,6 +44,7 @@ public class RareDocument implements SearchDocument {
     private final String portalURL;
     private final String dataURL;
     private final String domain;
+    private final String accessionHolder;
     private final List<String> taxon;
     private final List<String> family;
     private final List<String> genus;
@@ -64,6 +65,7 @@ public class RareDocument implements SearchDocument {
                         String portalURL,
                         String dataURL,
                         String domain,
+                        String accessionHolder,
                         List<String> taxon,
                         List<String> family,
                         List<String> genus,
@@ -82,6 +84,7 @@ public class RareDocument implements SearchDocument {
         this.portalURL = portalURL;
         this.dataURL = dataURL;
         this.domain = domain;
+        this.accessionHolder = accessionHolder;
         this.taxon = nullSafeUnmodifiableCopy(taxon);
         this.family = nullSafeUnmodifiableCopy(family);
         this.genus = nullSafeUnmodifiableCopy(genus);
@@ -103,6 +106,7 @@ public class RareDocument implements SearchDocument {
              builder.portalURL,
              builder.dataURL,
              builder.domain,
+             builder.accessionHolder,
              builder.taxon,
              builder.family,
              builder.genus,
@@ -145,6 +149,10 @@ public class RareDocument implements SearchDocument {
 
     public String getDomain() {
         return domain;
+    }
+
+    public String getAccessionHolder() {
+        return accessionHolder;
     }
 
     public List<String> getTaxon() {
@@ -204,6 +212,7 @@ public class RareDocument implements SearchDocument {
             Objects.equals(portalURL, that.portalURL) &&
             Objects.equals(dataURL, that.dataURL) &&
             Objects.equals(domain, that.domain) &&
+            Objects.equals(accessionHolder, that.accessionHolder) &&
             Objects.equals(taxon, that.taxon) &&
             Objects.equals(family, that.family) &&
             Objects.equals(genus, that.genus) &&
@@ -226,6 +235,7 @@ public class RareDocument implements SearchDocument {
                             portalURL,
                             dataURL,
                             domain,
+                            accessionHolder,
                             taxon,
                             family,
                             genus,
@@ -249,6 +259,7 @@ public class RareDocument implements SearchDocument {
             ", portalURL='" + portalURL + '\'' +
             ", dataURL='" + dataURL + '\'' +
             ", domain='" + domain + '\'' +
+            ", accessionHolder='" + accessionHolder + '\'' +
             ", taxon='" + taxon + '\'' +
             ", family='" + family + '\'' +
             ", genus='" + genus + '\'' +
@@ -281,6 +292,7 @@ public class RareDocument implements SearchDocument {
         private String portalURL;
         private String dataURL;
         private String domain;
+        private String accessionHolder;
         private List<String> taxon = Collections.emptyList();
         private List<String> family = Collections.emptyList();
         private List<String> genus = Collections.emptyList();
@@ -304,6 +316,7 @@ public class RareDocument implements SearchDocument {
             this.portalURL = document.getPortalURL();
             this.dataURL = document.getDataURL();
             this.domain = document.getDomain();
+            this.accessionHolder = document.getAccessionHolder();
             this.taxon = document.getTaxon();
             this.family = document.getFamily();
             this.genus = document.getGenus();
@@ -353,6 +366,11 @@ public class RareDocument implements SearchDocument {
 
         public Builder withDomain(String domain) {
             this.domain = domain;
+            return this;
+        }
+
+        public Builder withAccessionHolder(String accessionHolder) {
+            this.accessionHolder = accessionHolder;
             return this;
         }
 

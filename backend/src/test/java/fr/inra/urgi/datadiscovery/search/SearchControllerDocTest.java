@@ -1,5 +1,13 @@
 package fr.inra.urgi.datadiscovery.search;
 
+import static fr.inra.urgi.datadiscovery.doc.DocUtils.docGet;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -27,16 +35,6 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static fr.inra.urgi.datadiscovery.doc.DocUtils.docGet;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * REST-Docs tests for {@link SearchController}
@@ -88,6 +86,7 @@ class SearchControllerDocTest {
                                "Syrah is a Vitis vinifera subsp vinifera cv. Syrah accession (number: 150Mtp0, doi:10.15454/1.4921785297227607E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel. This accession has phenotyping data: Doligez_et_al_2013 - Study of the genetic determinism of berry weight and seed traits in a grapevine progeny.")
                                .withDataURL(
                                "https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==")
+                               .withAccessionHolder("AH1")
                                .withDomain("Plantae")
                                .withTaxon(Collections.singletonList("Vitis vinifera"))
                                .withFamily(Collections.singletonList("Vitaceae"))
@@ -106,6 +105,7 @@ class SearchControllerDocTest {
                                "Grecanico dorato is a Vitis vinifera subsp vinifera cv. Garganega accession (number: 1310Mtp1, doi:10.15454/1.492178535151698E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel")
                                .withDataURL(
                                "https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTM1MTUxNjk4RTEy")
+                               .withAccessionHolder("AH1")
                                .withDomain("Plantae")
                                .withTaxon(Collections.singletonList("Vitis vinifera"))
                                .withFamily(Collections.singletonList("Vitaceae"))

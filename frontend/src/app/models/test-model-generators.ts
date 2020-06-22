@@ -54,6 +54,7 @@ export function toRareDocument(name: string): RareDocumentModel {
     portalURL: 'http://brc4env.fr',
     dataURL: `http://brc4env.fr/${name}`,
     domain: 'Plantae',
+    accessionHolder: 'AH1',
     taxon: [`${name} taxon1`, `${name} taxon2`],
     family: [`${name} family`],
     genus: [`${name} genus`],

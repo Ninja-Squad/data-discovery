@@ -66,6 +66,10 @@
                 }
             }
         },
+        "accessionHolder": {
+            "type": "text",
+            "index": false
+        },
         "taxon": {
             "type": "text",
             "fields": {
