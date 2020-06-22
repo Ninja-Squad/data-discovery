@@ -6,7 +6,7 @@
       </a>
       <small> - {{ document.pillarName }}</small>&ngsp;
     </div>
-    <div>
+    <div *ngIf="document.accessionHolder">
       <button
         *ngIf="!selectedForOrdering"
         type="button"
