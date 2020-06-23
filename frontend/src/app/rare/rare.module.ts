@@ -1,5 +1,6 @@
 import { InjectionToken, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
@@ -14,6 +15,7 @@ export const LOCATION = new InjectionToken<Location>('Location');
 @NgModule({
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     UrgiCommonModule,
     NgbTooltipModule,
     NgbModalModule,

@@ -64,6 +64,11 @@
     "clear-basket": "Clear the basket",
     "modal-title": "Order summary",
     "one-item": "Click to view the item",
-    "several-items": "Click to view the {{ itemCounter }} items"
+    "several-items": "Click to view the {{ itemCounter }} items",
+    "eula-beginning": "You need to agree to the",
+    "eula-link": "End-User License Agreement",
+    "eula-end": "before completing your order.",
+    "eula-agreement": "I read and I agree to the EULA",
+    "eula-agreement-required": "You must check this box in order to complete your order"
   }
 }

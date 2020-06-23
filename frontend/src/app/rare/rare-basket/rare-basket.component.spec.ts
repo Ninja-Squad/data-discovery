@@ -7,6 +7,7 @@ import { of, Subject } from 'rxjs';
 import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LOCATION } from '../rare.module';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { ReactiveFormsModule } from '@angular/forms';
 
 class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   constructor() {
@@ -45,6 +46,14 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
     return document.querySelector('#send-basket');
   }
 
+  get eulaAgreement(): HTMLElement {
+    return document.querySelector('#eula-agreement');
+  }
+
+  get eulaAgreementError(): HTMLElement {
+    return document.querySelector('#eula-agreement-error');
+  }
+
   get clearBasket(): HTMLElement {
     return document.querySelector('#clear-basket');
   }
@@ -69,7 +78,7 @@ describe('RareBasketComponent', () => {
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
-      imports: [NgbTooltipModule, NgbModalModule, I18nTestingModule],
+      imports: [NgbTooltipModule, NgbModalModule, I18nTestingModule, ReactiveFormsModule],
       declarations: [RareBasketComponent],
       providers: [
         { provide: BasketService, useValue: service },
@@ -158,8 +167,17 @@ describe('RareBasketComponent', () => {
     );
     basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
+    expect(tester.eulaAgreementError).toBeNull();
     tester.basketCounter.click();
 
+    tester.sendBasket.click();
+    tick(400); // to resolve the animation
+    tester.detectChanges();
+
+    // EULA agreement is required
+    expect(tester.eulaAgreementError).not.toBeNull();
+    // agree
+    tester.eulaAgreement.click();
     tester.sendBasket.click();
     tick();
     expect(service.sendBasket).toHaveBeenCalled();

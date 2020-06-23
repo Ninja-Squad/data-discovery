@@ -1,8 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LOCATION } from '../rare.module';
 import { rareBasket } from '../../../environments/rare-basket';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { timer } from 'rxjs';
 
 @Component({
   // the selector is not a custom element as usual
@@ -16,14 +18,23 @@ import { rareBasket } from '../../../environments/rare-basket';
 export class RareBasketComponent implements OnInit {
   itemCounter = 0;
   basket: Basket;
+  eulaAgreementControl: FormControl;
+  submitted = false;
+  confirmForbidden = false;
 
-  constructor(private basketService: BasketService, private modalService: NgbModal, @Inject(LOCATION) private location: Location) {}
+  constructor(
+    private basketService: BasketService,
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    @Inject(LOCATION) private location: Location
+  ) {}
 
   ngOnInit(): void {
     this.basketService.getBasket().subscribe((basket: Basket) => {
       this.itemCounter = basket.items.length;
       this.basket = basket;
     });
+    this.eulaAgreementControl = this.fb.control(false, Validators.requiredTrue);
   }
 
   viewItems(basket: any) {
@@ -42,6 +53,17 @@ export class RareBasketComponent implements OnInit {
 
   removeItemFromBasket(item: string) {
     this.basketService.removeFromBasket(item);
+  }
+
+  sendBasket(modal: NgbModalRef) {
+    this.submitted = true;
+    // the EULA agreement is mandatory
+    if (this.eulaAgreementControl.invalid) {
+      this.confirmForbidden = true;
+      timer(350).subscribe(() => (this.confirmForbidden = false));
+    } else {
+      modal.close('order');
+    }
   }
 
   clearBasket() {

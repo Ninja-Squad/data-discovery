@@ -37,6 +37,22 @@
           <span class="fa fa-fw fa-trash"></span>
         </button>
       </div>
+      <div class="mt-2">
+        <div class="border rounded p-2 bg-light small">
+          <div>
+            <span translate="rare-basket.eula-beginning"></span>&ngsp;
+            <a href="./eula" target="_blank" translate="rare-basket.eula-link"></a>&ngsp;
+            <span translate="rare-basket.eula-end"></span>
+          </div>
+          <div class="form-group form-check mb-0">
+            <input [formControl]="eulaAgreementControl" type="checkbox" class="form-check-input" id="eula-agreement" />
+            <label class="form-check-label" for="eula-agreement" translate="rare-basket.eula-agreement"></label>
+            <div *ngIf="eulaAgreementControl.invalid && submitted" class="invalid-feedback d-block" id="eula-agreement-error">
+              <span translate="rare-basket.eula-agreement-required"></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </ng-container>
     <ng-template #emptyBasket>
       <p translate="rare-basket.no-accession"></p>
@@ -47,7 +63,8 @@
       type="button"
       id="send-basket"
       class="btn btn-outline-dark"
-      (click)="modal.close('order')"
+      [class.confirm-forbidden]="confirmForbidden"
+      (click)="sendBasket(modal)"
       translate="rare-basket.complete-order"
     ></button>
     <button
