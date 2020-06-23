@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -10,11 +10,13 @@ export class MarkdownPageComponent implements OnInit {
 
   mdFile: string;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, @Inject(LOCALE_ID) private locale: 'en' | 'fr') {
   }
 
   ngOnInit() {
-      this.route.data.subscribe(value => this.mdFile = value.mdFile);
+    // we extract the markdown file to display from the route data
+    // and suffix it with the local (either 'en' or 'fr') to get the localized version.
+    this.route.data.subscribe(value => this.mdFile = value.mdFile.replace('.md', `-${this.locale}.md`));
   }
 
 }

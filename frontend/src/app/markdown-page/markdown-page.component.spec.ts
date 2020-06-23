@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { markedOptionsFactory } from '../app.module';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeRoute } from 'ngx-speculoos';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('MarkdownPageComponent', () => {
   let component: MarkdownPageComponent;
@@ -17,7 +18,7 @@ describe('MarkdownPageComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     declarations: [MarkdownPageComponent],
-    imports: [HttpClientTestingModule, MarkdownModule.forRoot({
+    imports: [I18nTestingModule, HttpClientTestingModule, MarkdownModule.forRoot({
       loader: HttpClient, // optional, only if you use [src] attribute
       markedOptions: {
         provide: MarkedOptions,
@@ -46,13 +47,13 @@ describe('MarkdownPageComponent', () => {
     const http = TestBed.inject(HttpTestingController);
 
     // the markdown file is extracted from the route data by our component
-    expect(component.mdFile).toEqual('assets/help.md');
+    expect(component.mdFile).toEqual('assets/help-en.md');
 
     // the markdown component requests the server for the file
     // we return a fake markdown with just a title
     http.expectOne({
       method: 'GET',
-      url: 'assets/help.md'
+      url: 'assets/help-en.md'
     }).flush('# Help section');
 
     // the markdown component should render the title
