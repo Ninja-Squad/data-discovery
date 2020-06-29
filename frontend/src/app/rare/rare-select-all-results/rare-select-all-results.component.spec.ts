@@ -31,8 +31,9 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('RareSelectAllResultsComponent', () => {
   let tester: TestComponentTester;
   let service: jasmine.SpyObj<BasketService>;
-  const rosa = { name: 'Rosa', identifier: 'rosa' } as RareDocumentModel;
-  const rosa2 = { name: 'Rosa2', identifier: 'rosa2' } as RareDocumentModel;
+  const rosa = { name: 'Rosa', identifier: 'rosa', accessionHolder: 'AH1' } as RareDocumentModel;
+  const rosa2 = { name: 'Rosa2', identifier: 'rosa2', accessionHolder: 'AH1' } as RareDocumentModel;
+  const rosaWithoutAccessionHolder = { name: 'Rosa3', identifier: 'rosa3' } as RareDocumentModel;
 
   beforeEach(() => {
     service = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket', 'removeFromBasket', 'addToBasket']);
@@ -105,6 +106,27 @@ describe('RareSelectAllResultsComponent', () => {
     tester.link.dispatchEventOfType('click');
     expect(service.addToBasket).toHaveBeenCalledWith(rosa);
     expect(service.addToBasket).toHaveBeenCalledWith(rosa2);
+
+    // several results, but one without an accession holder
+    tester.componentInstance.documents = toSinglePage([rosa, rosa2, rosaWithoutAccessionHolder]);
+    tester.detectChanges();
+    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
+    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
+    expect(service.isAccessionInBasket).not.toHaveBeenCalledWith(rosaWithoutAccessionHolder);
+    // counter does not count the item without accession holders
+    expect(tester.link).toContainText('Add the 2 items to the basket');
+    tester.link.dispatchEventOfType('click');
+    expect(service.addToBasket).toHaveBeenCalledWith(rosa);
+    expect(service.addToBasket).toHaveBeenCalledWith(rosa2);
+    expect(service.addToBasket).not.toHaveBeenCalledWith(rosaWithoutAccessionHolder);
+
+    // only one result without accession holder
+    service.isAccessionInBasket.calls.reset();
+    tester.componentInstance.documents = toSinglePage([rosaWithoutAccessionHolder]);
+    tester.detectChanges();
+    expect(service.isAccessionInBasket).not.toHaveBeenCalled();
+    // counter is O, so no link
+    expect(tester.link).toBeNull();
 
     // several pages of results
     tester.componentInstance.documents = toSecondPage([rosa, rosa2]);

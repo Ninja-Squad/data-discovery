@@ -21,8 +21,10 @@ export class RareSelectAllResultsComponent {
   @Input()
   set documents(documents: Page<RareDocumentModel>) {
     if (documents) {
-      this.counter = documents.content.length;
-      this.accessions = documents.content;
+      this.accessions = documents.content
+        // we only keep the accession with an accession holder
+        .filter(accession => accession.accessionHolder);
+      this.counter = this.accessions.length;
       combineLatest(this.accessions.map(document => this.basketService.isAccessionInBasket(document)))
         .pipe(map(areAccessionsInBasket => areAccessionsInBasket.every(isAccessionInBasket => isAccessionInBasket)))
         .subscribe(areInBasket => {

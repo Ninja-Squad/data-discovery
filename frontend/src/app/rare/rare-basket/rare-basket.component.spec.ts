@@ -74,7 +74,13 @@ describe('RareBasketComponent', () => {
   const basketEvents = new Subject<Basket>();
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'getBasket', 'removeFromBasket', 'sendBasket', 'clearBasket']);
+    service = jasmine.createSpyObj<BasketService>('BasketService', [
+      'isEnabled',
+      'getBasket',
+      'removeFromBasket',
+      'sendBasket',
+      'clearBasket'
+    ]);
     service.isEnabled.and.returnValue(true);
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
