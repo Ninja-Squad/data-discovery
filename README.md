@@ -17,6 +17,7 @@
   - [Indices and aliases](#indices-and-aliases)
   - [Spring Cloud config](#spring-cloud-config)
   - [Building other apps](#building-other-apps)
+  - [Configuration](#configuration)
 
 ## Contribute
 
@@ -113,6 +114,7 @@ Then run `yarn start` to start the app, using the proxy conf to reroute calls to
 The application will be available on:
 
 - <http://localhost:4000/rare-dev> for RARe (runs with: `yarn start:rare` or simply `yarn start`)
+- <http://localhost:4000/rare-dev> for RARe with basket (runs with: `yarn start:rare-with-basket`)
 - <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `yarn start:wheatis`)
 - <http://localhost:4200/data-discovery-dev> for DataDiscovery (runs with: `yarn start:data-discovery`)
 
@@ -134,20 +136,21 @@ or
 or
 
 ```sh
-./gradlew assemble -Papp=rare-no-basket
+./gradlew assemble -Papp=rare-with-basket
 ```
 
 This will build a standalone jar at `backend/build/libs/`, that you can run with either:
 
 ```sh
 java -jar backend/build/libs/rare.jar
-java -jar backend/build/libs/rare-no-basket.jar
+java -jar backend/build/libs/rare-with-basket.jar
 java -jar backend/build/libs/wheatis.jar
 java -jar backend/build/libs/data-discovery.jar
 ```
 
 And the full app running on:
 
+- <http://localhost:8080/rare-dev>
 - <http://localhost:8080/rare-dev>
 - <http://localhost:8180/wheatis-dev>
 - <http://localhost:8280/data-discovery-dev>
@@ -217,7 +220,7 @@ The -app parameter will trigger a harvest of the resources stored in the Git LFS
 The application uses several physical indices:
 
 - one to store physical resources, containing the main content
-- one to store suggestions, use for the search type-ahead feature only
+- one to store suggestions, used for the search type-ahead feature only
 
 Both indices must be created explicitly before using the application. If not, requests to the web services will return errors.
 
@@ -252,8 +255,10 @@ In case of testing configuration from the config server, one may use a dedicated
 
 ## Building other apps
 
-By default, the built application is RARe. But this project actually allows building other
-applications (WheatIS, for the moment, but more could come).
+By default, the built application is RARe (without basket, i.e. without the possibility to add accessions to a basket
+and create an accession order on the rare-basket application). 
+But this project actually allows building other
+applications (RARe with basket and WheatIS, for the moment, but more could come).
 
 To build a different app, specify an `app` property when building. For example, to assemble
 the WheatIS app, run the following command
@@ -268,14 +273,28 @@ You can also run the backend WheatIS application using
 ./gradlew bootRun -Papp=wheatis
 ```
 
+To assemble the RARe app with support for adding accessions to a basket, run the following command
+
+```sh
+./gradlew assemble -Papp=rare-with-basket
+```
+
+You can also run the backend RARe application with basket support using
+
+```sh
+./gradlew bootRun -Papp=rare-with-basket
+```
+
 Adding this property has the following consequences:
 
-- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` instead of `rare.jar`;
-- the Spring active profile in `bootstrap.yml` is `wheatis-app` instead of `rare-app`;
-- the frontend application built and embedded inside the jar file is the WheatIS frontend application instead of the  RARe frontend application, i.e. the frontend command `yarn build:wheatis` is executed instead of the command `yarn:rare`.
+- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `rare-with-basket.jar` instead of `rare.jar`;
+- the Spring active profile in `bootstrap.yml` is `wheatis-app` (resp. `rare-with-basket-app`) instead of `rare-app`;
+- the frontend application built and embedded inside the jar file is the WheatIS frontend application 
+(resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command 
+`yarn build:wheatis` (resp. `yarn build:rare-with-basket`) is executed instead of the command `yarn:rare`.
 
 Since the active Spring profile is different, all the properties specific to this profile
-are applies. In particular:
+are applied. In particular:
 
 - the context path of the application is `/wheatis-dev` instead of `/rare-dev`;
 - the Elasticsearch prefix used for the index aliases is different.
@@ -287,3 +306,20 @@ You can adapt the elasticsearch index used with the following parameter
 ```sh
 java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
 ```
+
+## Configuration
+
+The RARe and RARe with basket applications can be configured to apply an implicit filtering on the searches,
+aggregations, and pillar list. There is currently only one implicit filter that can be added, which is a filter on the 
+pillar name.
+
+To activate it, add the following YAML configuration under the appropriate profile:
+
+```yaml
+rare:
+  implicit-terms:
+    PILLAR:
+      - Pilier Forêt
+      - Pilier Micro-organisme
+```
+
