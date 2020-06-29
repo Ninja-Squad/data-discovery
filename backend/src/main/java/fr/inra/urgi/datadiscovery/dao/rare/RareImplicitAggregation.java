@@ -5,10 +5,15 @@ import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.LARGE;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 
 /**
- * Enum listing the terms aggregations used by RARe, and their corresponding name and field.
+ * Enum listing the implicit terms aggregations used by RARe, and their corresponding name and field.
+ * These terms and their values are automatically added to any search, aggregation and pillar requests.
  *
- * The order of the elements here is also the order of the aggregations in the UI. So don't change the order
- * unless you want to change the UI.
+ * Their values are specified via the application.yml, for example:
+ * rare:
+ *   implicit-terms:
+ *     PILLAR:
+ *       - Pilier Forêt
+ *       - Pilier Micro-organisme
  *
  * @author JB Nizet
  */
