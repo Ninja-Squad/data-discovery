@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LOCATION } from '../rare.module';
-import { rareBasket } from '../../../environments/rare-basket';
+import { rareBasket } from '../../../environments/rare-no-basket';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { timer } from 'rxjs';
 

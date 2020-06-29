@@ -3,7 +3,7 @@ import { RareDocumentModel } from './rare-document.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { rareBasket } from '../../environments/rare-basket';
+import { rareBasket } from '../../environments/rare-no-basket';
 
 /**
  * A RARe accession, with its name and identifier

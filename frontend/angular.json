@@ -89,10 +89,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
-                },
-                {
-                  "replace": "src/environments/rare-basket.ts",
-                  "with": "src/environments/rare-basket.prod.ts"
                 }
               ],
               "optimization": true,
@@ -116,7 +112,7 @@
                 }
               ]
             },
-            "rare-no-basket": {
+            "rare-with-basket": {
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -129,21 +125,21 @@
                   "with": "src/environments/environment.rare.ts"
                 },
                 {
-                  "replace": "src/environments/rare-basket.ts",
-                  "with": "src/environments/no-basket.ts"
+                  "replace": "src/environments/rare-no-basket.ts",
+                  "with": "src/environments/rare-with-basket.ts"
                 }
               ],
               "baseHref": "/rare-dev/"
             },
-            "rare-no-basket-production": {
+            "rare-with-basket-production": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
                 },
                 {
-                  "replace": "src/environments/rare-basket.ts",
-                  "with": "src/environments/no-basket.ts"
+                  "replace": "src/environments/rare-no-basket.ts",
+                  "with": "src/environments/rare-with-basket.prod.ts"
                 }
               ],
               "optimization": true,
@@ -315,11 +311,11 @@
             "rare-production": {
               "browserTarget": "data-discovery-frontend:build:rare-production"
             },
-            "rare-no-basket": {
-              "browserTarget": "data-discovery-frontend:build:rare-no-basket"
+            "rare-with-basket": {
+              "browserTarget": "data-discovery-frontend:build:rare-with-basket"
             },
-            "rare-no-basket-production": {
-              "browserTarget": "data-discovery-frontend:build:rare-no-basket-production"
+            "rare-with-basket-production": {
+              "browserTarget": "data-discovery-frontend:build:rare-with-basket-production"
             },
             "wheatis": {
               "browserTarget": "data-discovery-frontend:build:wheatis"

@@ -1,6 +1,6 @@
 import org.gradle.api.*
 
-private val acceptableValues = setOf("rare", "rare-no-basket", "wheatis", "data-discovery")
+private val acceptableValues = setOf("rare", "rare-with-basket", "wheatis", "data-discovery")
 
 val Project.app: String
     get() = findProperty("app")
