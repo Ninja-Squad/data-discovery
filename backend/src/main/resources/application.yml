@@ -53,6 +53,29 @@ server:
 
 ---
 spring:
+  profiles: rare-with-basket-app
+  cloud.config.name: rare
+  security.user:
+    name: rare
+    password: f01a7031fc17
+
+rare:
+  implicit-terms:
+    PILLAR:
+      - Pilier Forêt
+      - Pilier Micro-organisme
+
+data-discovery:
+  elasticsearch-prefix: 'rare-dev-'
+  resource-dir: /tmp/rare-dev/resources
+
+server:
+  port: 8080
+  servlet:
+    context-path: /rare-dev
+
+---
+spring:
   profiles: wheatis-app
   cloud.config.name: wheatis
   security.user:

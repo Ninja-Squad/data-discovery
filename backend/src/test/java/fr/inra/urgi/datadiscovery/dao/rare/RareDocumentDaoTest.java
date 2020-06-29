@@ -1,5 +1,7 @@
 package fr.inra.urgi.datadiscovery.dao.rare;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,14 +37,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-rare.properties")
 @Import(ElasticSearchConfig.class)
 @JsonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles(AppProfile.RARE)
+@ActiveProfiles({AppProfile.RARE, AppProfile.RARE_WITH_BASKET})
 class RareDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-rare-resource-physical-index";

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @author JB Nizet
  */
 @Component
-@Profile(AppProfile.RARE)
+@Profile({AppProfile.RARE, AppProfile.RARE_WITH_BASKET})
 public class RareAggregationAnalyzer implements AggregationAnalyzer {
     private static final List<AppAggregation> AGGREGATIONS =
         Collections.unmodifiableList(Arrays.asList(RareAggregation.values()));

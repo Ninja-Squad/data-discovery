@@ -1,13 +1,29 @@
 package fr.inra.urgi.datadiscovery.dao;
 
-import fr.inra.urgi.datadiscovery.domain.SearchDocument;
+import static fr.inra.urgi.datadiscovery.dao.DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME;
+import static fr.inra.urgi.datadiscovery.dao.DocumentDao.PORTAL_URL_AGGREGATION_NAME;
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
@@ -28,15 +44,11 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.query.*;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static fr.inra.urgi.datadiscovery.dao.DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME;
-import static fr.inra.urgi.datadiscovery.dao.DocumentDao.PORTAL_URL_AGGREGATION_NAME;
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import org.springframework.data.elasticsearch.core.query.DeleteQuery;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SourceFilter;
 
 /**
  * Base class for implementations of {@link DocumentDao}
@@ -121,6 +133,11 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
             refinementQuery.must(createRefinementQuery(refinements, term));
         }
 
+        SearchRefinements implicitRefinements = getImplicitSearchRefinements();
+        for (AppAggregation term : implicitRefinements.getTerms()) {
+            refinementQuery.must(createRefinementQuery(implicitRefinements, term));
+        }
+
         // this allows avoiding to get back the suggestions field in the found documents, since we don't care
         // about them, and they're large
         SourceFilter sourceFilter = new FetchSourceFilterBuilder().withExcludes(SUGGESTIONS_FIELD).build();
@@ -152,6 +169,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
             if (!term.equals(appAggregation)) {
                 refinementQuery.must(createRefinementQuery(refinements, term));
             }
+        }
+        SearchRefinements implicitRefinements = getImplicitSearchRefinements();
+        for (AppAggregation term : implicitRefinements.getTerms()) {
+            refinementQuery.must(createRefinementQuery(implicitRefinements, term));
         }
         return refinementQuery;
     }
@@ -314,8 +335,13 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         }
         pillar.subAggregation(databaseSource);
 
+        BoolQueryBuilder refinementQuery = boolQuery();
+        SearchRefinements implicitRefinements = getImplicitSearchRefinements();
+        for (AppAggregation term : implicitRefinements.getTerms()) {
+            refinementQuery.must(createRefinementQuery(implicitRefinements, term));
+        }
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
-            .withQuery(new MatchAllQueryBuilder())
+            .withQuery(refinementQuery)
             .addAggregation(pillar)
             .withPageable(NoPage.INSTANCE);
 
@@ -368,6 +394,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
      * Gets the descriptor allowing to create the pillars aggregation
      */
     protected abstract PillarAggregationDescriptor getPillarAggregationDescriptor();
+
+    protected SearchRefinements getImplicitSearchRefinements() {
+        return SearchRefinements.EMPTY;
+    };
 
     /**
      * A Pageable implementation allowing to avoid loading any page (i.e. with a size equal to 0), because we

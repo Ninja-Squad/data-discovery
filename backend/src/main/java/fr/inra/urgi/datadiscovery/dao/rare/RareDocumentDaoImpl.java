@@ -7,9 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import fr.inra.urgi.datadiscovery.config.RareImplicitRefinementsProperties;
 import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareIndexedDocument;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -20,8 +22,8 @@ import org.springframework.data.elasticsearch.core.EntityMapper;
  * @author JB Nizet
  */
 public class RareDocumentDaoImpl
-    extends AbstractDocumentDaoImpl<RareDocument, RareIndexedDocument>
-    implements RareDocumentDaoCustom {
+        extends AbstractDocumentDaoImpl<RareDocument, RareIndexedDocument>
+        implements RareDocumentDaoCustom {
 
     /**
      * Contains the fields searchable on a {@link RareDocument}.
@@ -29,30 +31,35 @@ public class RareDocumentDaoImpl
      * and the ones containing a URL or a numeric value.
      */
     private static final Set<String> SEARCHABLE_FIELDS = Collections.unmodifiableSet(Stream.of(
-        "name",
-        "description",
-        "description.synonyms",
-        "pillarName",
-        "databaseSource",
-        "domain",
-        "taxon",
-        "family",
-        "genus",
-        "species",
-        "materialType",
-        "biotopeType",
-        "countryOfOrigin",
-        "countryOfCollect"
+            "name",
+            "description",
+            "description.synonyms",
+            "pillarName",
+            "databaseSource",
+            "domain",
+            "taxon",
+            "family",
+            "genus",
+            "species",
+            "materialType",
+            "biotopeType",
+            "countryOfOrigin",
+            "countryOfCollect"
     ).collect(Collectors.toSet()));
 
     private static final PillarAggregationDescriptor PILLAR_AGGREGATION_DESCRIPTOR =
-        new PillarAggregationDescriptor("pillarName.keyword",
-                                        "databaseSource.keyword",
-                                        "portalURL.keyword");
+            new PillarAggregationDescriptor("pillarName.keyword",
+                                            "databaseSource.keyword",
+                                            "portalURL.keyword");
+    private final SearchRefinements implicitSearchRefinements;
 
     public RareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
-                               EntityMapper entityMapper) {
+                               EntityMapper entityMapper,
+                               RareImplicitRefinementsProperties refinementsProperties) {
         super(elasticsearchTemplate, new RareDocumentHighlightMapper(entityMapper));
+        SearchRefinements.Builder builder = SearchRefinements.builder();
+        refinementsProperties.getImplicitTerms().forEach(builder::withTerm);
+        this.implicitSearchRefinements = builder.build();
     }
 
     @Override
@@ -78,5 +85,10 @@ public class RareDocumentDaoImpl
     @Override
     protected PillarAggregationDescriptor getPillarAggregationDescriptor() {
         return PILLAR_AGGREGATION_DESCRIPTOR;
+    }
+
+    @Override
+    protected SearchRefinements getImplicitSearchRefinements() {
+        return implicitSearchRefinements;
     }
 }

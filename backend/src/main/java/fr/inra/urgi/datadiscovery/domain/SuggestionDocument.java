@@ -1,11 +1,9 @@
 package fr.inra.urgi.datadiscovery.domain;
 
-import fr.inra.urgi.datadiscovery.config.AppProfile;
-import org.springframework.context.annotation.Profile;
+import java.util.Objects;
+
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-
-import java.util.*;
 
 /**
  * The Suggestion document for any DataDiscovery application.
@@ -17,7 +15,6 @@ import java.util.*;
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json")
-@Profile({AppProfile.DATADISCOVERY, AppProfile.RARE, AppProfile.WHEATIS})
 public final class SuggestionDocument implements fr.inra.urgi.datadiscovery.domain.Document {
 
 
