@@ -64,16 +64,19 @@ describe('RareDocumentComponent', () => {
     }
   }
 
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket', 'addToBasket', 'removeFromBasket']);
+  let basketService: jasmine.SpyObj<BasketService>;
   const basketEvents = new Subject<boolean>();
-  basketService.isAccessionInBasket.and.returnValue(basketEvents);
 
-  beforeEach(() =>
+  beforeEach(() => {
+    basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'isAccessionInBasket', 'addToBasket', 'removeFromBasket']);
+    basketService.isEnabled.and.returnValue(true);
+    basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({
       imports: [NgbTooltipModule, I18nTestingModule],
       declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
       providers: [{ provide: BasketService, useValue: basketService }]
-    })
+    });
+    }
   );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
@@ -132,6 +135,18 @@ describe('RareDocumentComponent', () => {
 
     // then we should list them
     expect(tester.type).toContainText('type1, type2');
+  });
+
+  it('should not have the basket button if the feature is disabled', () => {
+    basketService.isEnabled.and.returnValue(false);
+    const tester = new RareDocumentComponentTester();
+    const component = tester.componentInstance;
+
+    // given a resource with several types
+    component.document = toRareDocument('Bacteria');
+    tester.detectChanges();
+    // then the button should not be displayed
+    expect(tester.addToBasketButton).toBeNull();
   });
 
   it('should add/remove to/from basket', () => {

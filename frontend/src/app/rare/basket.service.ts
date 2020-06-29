@@ -48,6 +48,10 @@ export class BasketService {
     this.restoreBasketFromLocalStorage();
   }
 
+  isEnabled() {
+    return rareBasket.isBasketEnabled;
+  }
+
   restoreBasketFromLocalStorage() {
     const rareBasketStringified = window.localStorage.getItem('rare-basket');
     if (rareBasketStringified) {

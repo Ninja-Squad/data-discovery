@@ -74,7 +74,8 @@ describe('RareBasketComponent', () => {
   const basketEvents = new Subject<Basket>();
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', ['getBasket', 'removeFromBasket', 'sendBasket', 'clearBasket']);
+    service = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'getBasket', 'removeFromBasket', 'sendBasket', 'clearBasket']);
+    service.isEnabled.and.returnValue(true);
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
@@ -87,7 +88,6 @@ describe('RareBasketComponent', () => {
     });
     jasmine.addMatchers(speculoosMatchers);
     tester = new RareBasketComponentTester();
-    tester.detectChanges();
   });
 
   afterEach(() => {
@@ -100,6 +100,7 @@ describe('RareBasketComponent', () => {
   });
 
   it('should display the number of items', () => {
+    tester.detectChanges();
     // no item
     expect(tester.basketCounterAsText).toContainText('0');
 
@@ -139,6 +140,7 @@ describe('RareBasketComponent', () => {
   });
 
   it('should open a summary modal on click', () => {
+    tester.detectChanges();
     basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
@@ -159,6 +161,7 @@ describe('RareBasketComponent', () => {
   });
 
   it('should send the basket', fakeAsync(() => {
+    tester.detectChanges();
     const reference = 'ABCDEFGH';
     service.sendBasket.and.returnValue(
       of({
@@ -187,11 +190,19 @@ describe('RareBasketComponent', () => {
   }));
 
   it('should clear the basket', () => {
+    tester.detectChanges();
     basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
     tester.detectChanges();
     tester.basketCounter.click();
 
     tester.clearBasket.click();
     expect(service.clearBasket).toHaveBeenCalled();
+  });
+
+  it('should not display if the basket feature is disabled', () => {
+    service.isEnabled.and.returnValue(false);
+    tester.detectChanges();
+    expect(tester.basketCounter).toBeNull();
+    expect(tester.basketCounterAsText).toBeNull();
   });
 });

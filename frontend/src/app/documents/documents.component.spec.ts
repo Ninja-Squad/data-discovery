@@ -37,7 +37,8 @@ describe('DocumentsComponent', () => {
     }
   }
 
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket']);
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'isAccessionInBasket']);
+  basketService.isEnabled.and.returnValue(true);
   basketService.isAccessionInBasket.and.returnValue(of(false));
 
   beforeEach(() => {

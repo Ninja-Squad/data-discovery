@@ -10,7 +10,7 @@
         <span translate="documents.results-limited" [translateParams]="{ total: documents.maxResults | number }"></span>
       </ng-container>
     </div>
-    <div class="select-all-rare-basket">
+    <div class="select-all-rare-basket" *ngIf="isBasketEnabled">
       <!-- the following component will not be the same depending on the environment.resourceModule value -->
       <!-- for example, if the module is `RareModule` it will be a `RareSelectAllResultsComponent` -->
       <!-- For others it will be an empty component -->

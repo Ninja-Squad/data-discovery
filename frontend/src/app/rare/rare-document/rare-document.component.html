@@ -6,7 +6,7 @@
       </a>
       <small> - {{ document.pillarName }}</small>&ngsp;
     </div>
-    <div *ngIf="document.accessionHolder">
+    <div *ngIf="isBasketEnabled && document.accessionHolder">
       <button
         *ngIf="!selectedForOrdering"
         type="button"

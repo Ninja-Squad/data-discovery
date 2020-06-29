@@ -55,7 +55,8 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
 }
 
 describe('SearchComponent', () => {
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket']);
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'isAccessionInBasket']);
+  basketService.isEnabled.and.returnValue(true);
   basketService.isAccessionInBasket.and.returnValue(of(false));
   beforeEach(() => TestBed.configureTestingModule({
     imports: [

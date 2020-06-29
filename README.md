@@ -131,17 +131,17 @@ or
 ```sh
 ./gradlew assemble -Papp=wheatis
 ```
-
-which is a shortcut for
+or
 
 ```sh
-./gradlew assemble -Papp=wheatis && java -jar path/to/wheatis.jar
+./gradlew assemble -Papp=rare-no-basket
 ```
 
 This will build a standalone jar at `backend/build/libs/`, that you can run with either:
 
 ```sh
 java -jar backend/build/libs/rare.jar
+java -jar backend/build/libs/rare-no-basket.jar
 java -jar backend/build/libs/wheatis.jar
 java -jar backend/build/libs/data-discovery.jar
 ```

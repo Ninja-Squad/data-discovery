@@ -116,6 +116,57 @@
                 }
               ]
             },
+            "rare-no-basket": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.rare.ts"
+                },
+                {
+                  "replace": "src/environments/rare-basket.ts",
+                  "with": "src/environments/no-basket.ts"
+                }
+              ],
+              "baseHref": "/rare-dev/"
+            },
+            "rare-no-basket-production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.rare.prod.ts"
+                },
+                {
+                  "replace": "src/environments/rare-basket.ts",
+                  "with": "src/environments/no-basket.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "900kb",
+                  "maximumError": "1.2mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ]
+            },
             "wheatis": {
               "budgets": [
                 {
@@ -263,6 +314,12 @@
             },
             "rare-production": {
               "browserTarget": "data-discovery-frontend:build:rare-production"
+            },
+            "rare-no-basket": {
+              "browserTarget": "data-discovery-frontend:build:rare-no-basket"
+            },
+            "rare-no-basket-production": {
+              "browserTarget": "data-discovery-frontend:build:rare-no-basket-production"
             },
             "wheatis": {
               "browserTarget": "data-discovery-frontend:build:wheatis"

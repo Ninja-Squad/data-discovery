@@ -7,5 +7,6 @@
  * the build takes care of replacing it by the production one.
  */
 export const rareBasket = {
+  isBasketEnabled: true,
   url: 'http://localhost:4201/rare-basket'
 };

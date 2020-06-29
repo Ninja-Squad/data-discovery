@@ -21,6 +21,7 @@ export class RareBasketComponent implements OnInit {
   eulaAgreementControl: FormControl;
   submitted = false;
   confirmForbidden = false;
+  isEnabled: boolean;
 
   constructor(
     private basketService: BasketService,
@@ -30,11 +31,14 @@ export class RareBasketComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.basketService.getBasket().subscribe((basket: Basket) => {
-      this.itemCounter = basket.items.length;
-      this.basket = basket;
-    });
-    this.eulaAgreementControl = this.fb.control(false, Validators.requiredTrue);
+    this.isEnabled = this.basketService.isEnabled();
+    if (this.isEnabled) {
+      this.basketService.getBasket().subscribe((basket: Basket) => {
+        this.itemCounter = basket.items.length;
+        this.basket = basket;
+      });
+      this.eulaAgreementControl = this.fb.control(false, Validators.requiredTrue);
+    }
   }
 
   viewItems(basket: any) {

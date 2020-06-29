@@ -1,13 +1,11 @@
-<div class="basket-counter navbar-text" *ngIf="itemCounter === 0; else navbarButton">
+<div class="basket-counter navbar-text" *ngIf="isEnabled && itemCounter === 0">
   <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
   <span class="badge badge-pill badge-light">0</span>
 </div>
-<ng-template #navbarButton>
-  <button class="basket-counter btn" [ngbTooltip]="buttonTooltip" (click)="viewItems(basketModal)">
-    <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-    <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
-  </button>
-</ng-template>
+<button class="basket-counter btn" *ngIf="isEnabled && itemCounter" [ngbTooltip]="buttonTooltip" (click)="viewItems(basketModal)">
+  <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+  <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
+</button>
 
 <ng-template #buttonTooltip>
   <ng-container [ngPlural]="itemCounter">

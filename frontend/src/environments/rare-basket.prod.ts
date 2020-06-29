@@ -6,5 +6,6 @@
  * See angular.json for more details.
  */
 export const rareBasket = {
+  isBasketEnabled: true,
   url: 'http://localhost:4201/rare-basket' // TODO update to proper URL
 };

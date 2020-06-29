@@ -11,14 +11,18 @@ import { BasketService } from '../basket.service';
 export class RareDocumentComponent implements OnInit {
   selectedForOrdering = false;
   @Input() document: RareDocumentModel;
+  isBasketEnabled: boolean;
 
   constructor(private changeDetectorRef: ChangeDetectorRef, private basketService: BasketService) {}
 
   ngOnInit(): void {
-    this.basketService.isAccessionInBasket(this.document).subscribe(isInBasket => {
-      this.selectedForOrdering = isInBasket;
-      this.changeDetectorRef.markForCheck();
-    });
+    this.isBasketEnabled = this.basketService.isEnabled();
+    if (this.isBasketEnabled) {
+      this.basketService.isAccessionInBasket(this.document).subscribe(isInBasket => {
+        this.selectedForOrdering = isInBasket;
+        this.changeDetectorRef.markForCheck();
+      });
+    }
   }
 
   addToBasket() {
