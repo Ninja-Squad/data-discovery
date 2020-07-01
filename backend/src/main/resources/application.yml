@@ -30,6 +30,9 @@ server:
 
 logging.level:
   root: ERROR
+    # tracer: TRACE
+    # Above allows for logging curl queries and responses to/from ES.
+    # Need to add this header to curl: `-H "Content-Type: application/json"`
   org.springframework:
     boot.web.embedded.tomcat.TomcatWebServer: INFO
     web.client.RestTemplate: DEBUG
