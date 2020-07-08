@@ -61,7 +61,7 @@ public class ElasticSearchConfig {
                             public Builder customizeRequestConfig(Builder requestConfigBuilder) {
                                 return requestConfigBuilder.setConnectTimeout(5000).setSocketTimeout(60000);
                             }
-                        }).setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
+                        }).setMaxRetryTimeoutMillis(60000).setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
                         .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
                                 .setDefaultIOReactorConfig(IOReactorConfig.custom().setIoThreadCount(2)
                                         .setSoTimeout(60000).setConnectTimeout(5000).build())));
