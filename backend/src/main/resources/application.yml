@@ -57,7 +57,7 @@ server:
 ---
 spring:
   profiles: rare-with-basket-app
-  cloud.config.name: rare
+  cloud.config.name: rare-with-basket
   security.user:
     name: rare
     password: f01a7031fc17
@@ -72,7 +72,7 @@ data-discovery:
   resource-dir: /tmp/rare-dev/resources
 
 server:
-  port: 8080
+  port: 8580
   servlet:
     context-path: /rare-dev
 
