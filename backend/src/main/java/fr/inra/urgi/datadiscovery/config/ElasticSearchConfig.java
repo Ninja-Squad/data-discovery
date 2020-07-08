@@ -3,9 +3,11 @@ package fr.inra.urgi.datadiscovery.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.datadiscovery.dao.DocumentDao;
 import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -52,14 +54,17 @@ public class ElasticSearchConfig {
         String host = System.getenv("CI") != null ? "elasticsearch" : esHost;
 
         RestHighLevelClient client = new RestHighLevelClient(
-                RestClient.builder(
-                        new HttpHost(host, esPort, HttpHost.DEFAULT_SCHEME_NAME)
-                ).setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
-                        .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultIOReactorConfig(
-                                IOReactorConfig.custom()
-                                        .setIoThreadCount(2)
-                                        .build()))
-        );
+                RestClient.builder(new HttpHost(host, esPort, HttpHost.DEFAULT_SCHEME_NAME))
+                        .setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
+
+                            @Override
+                            public Builder customizeRequestConfig(Builder requestConfigBuilder) {
+                                return requestConfigBuilder.setConnectTimeout(5000).setSocketTimeout(60000);
+                            }
+                        }).setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
+                        .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                                .setDefaultIOReactorConfig(IOReactorConfig.custom().setIoThreadCount(2)
+                                        .setSoTimeout(60000).setConnectTimeout(5000).build())));
         return client;
     }
 
