@@ -188,6 +188,11 @@ build-rare:
   APP_NAME: ${RARE_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
+build-rare-with-basket:
+ variables:
+  APP_NAME: "rare-with-basket"
+ <<: *build_app           # Merge the contents of the 'build_app' alias
+
 build-wheatis:
  variables:
   APP_NAME: ${WHEATIS_APP_NAME}
@@ -247,6 +252,17 @@ build-data-discovery:
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}-${ENV}
 
+.variables-rare-with-basket-beta-openstack: &variables-rare-with-basket-beta-openstack
+ variables:
+  ENV: beta
+  APP_NAME: rare-with-basket
+  APP_PORT: ${BETA_RARE_WITH_BASKET_PORT}
+  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_USER: ${SERVER_USER_OPENSTACK}
+  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+  ES_PORT: ${ES_DEV_PORT}
+  APP_CONTEXT: ${APP_NAME}
 
 .variables-rare-staging-openstack: &variables-rare-staging-openstack
  variables:
@@ -385,6 +401,23 @@ deploy-rare-to-beta-openstack:
  tags:
   - openstack
  <<: *variables-rare-beta-openstack
+ <<: *deploy_to_vm_openstack
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ allow_failure: false # mandatory to block the execution of the pipeline
+
+deploy-rare-with-basket-to-beta-openstack:
+ stage: deploy-beta
+ tags:
+  - openstack
+ <<: *variables-rare-with-basket-beta-openstack
  <<: *deploy_to_vm_openstack
  only:
   changes:

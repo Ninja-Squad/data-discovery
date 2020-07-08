@@ -7,5 +7,5 @@
  */
 export const rareBasket = {
   isBasketEnabled: true,
-  url: 'http://localhost:4201/rare-basket' // TODO update to proper URL
+  url: 'https://beta-urgi.versailles.inrae.fr/rare-basket/' // TODO update to proper URL for production
 };
