@@ -62,10 +62,13 @@ spring:
     name: rare
     password: f01a7031fc17
 
-rare:
-  implicit-terms:
-    PILLAR:
-      - Pilier Environnement
+## Below properties should not be enabled here because it makes tests failing.
+## But they may be enabled in cloud-config server if relevant to apply the 
+## filter (for rare-with-basket) or not (for main rare application)
+# rare:
+#   implicit-terms:
+#     PILLAR:
+#       - Pilier Environnement
 
 data-discovery:
   elasticsearch-prefix: 'rare-dev-'
