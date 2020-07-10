@@ -125,6 +125,10 @@
                   "with": "src/environments/environment.rare.ts"
                 },
                 {
+                  "replace": "src/assets/rare/band.jpg",
+                  "with": "src/assets/rare/Bandeau-BRC4env.jpg"
+                },
+                {
                   "replace": "src/environments/rare-no-basket.ts",
                   "with": "src/environments/rare-with-basket.ts"
                 }
@@ -136,6 +140,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
+                },
+                {
+                  "replace": "src/assets/rare/band.jpg",
+                  "with": "src/assets/rare/Bandeau-BRC4env.jpg"
                 },
                 {
                   "replace": "src/environments/rare-no-basket.ts",
