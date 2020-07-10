@@ -251,7 +251,7 @@ If you want to use the Spring Cloud config app locally, see <https://forgemia.in
 The configuration is currently only read on startup, meaning the application has to be reboot if the configuration is changed on the Spring Cloud server. For a dynamic reload without restarting the application, see <http://cloud.spring.io/spring-cloud-static/Finchley.SR1/single/spring-cloud.html#refresh-scope>
 to check what has to be changed.
 
-In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar. More info on [how to pass a parameter to a Spring Boot app](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config).
+In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar, or use the corresponding Spring [env variable](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-relaxed-binding-from-environment-variables). More info on [how to pass a parameter to a Spring Boot app](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config).
 
 ## Building other apps
 
