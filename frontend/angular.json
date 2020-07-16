@@ -122,7 +122,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.rare.ts"
+                  "with": "src/environments/environment.rare-with-basket.ts"
                 },
                 {
                   "replace": "src/assets/rare/band.jpg",
@@ -139,7 +139,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.rare.prod.ts"
+                  "with": "src/environments/environment.rare-with-basket.prod.ts"
                 },
                 {
                   "replace": "src/assets/rare/band.jpg",
