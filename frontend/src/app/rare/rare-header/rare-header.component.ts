@@ -1,4 +1,5 @@
 import { Component  } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'dd-header',
@@ -6,5 +7,11 @@ import { Component  } from '@angular/core';
   styleUrls: ['./rare-header.component.scss']
 })
 export class RareHeaderComponent {
+
+  isRareApp: boolean;
+
+  constructor() {
+    this.isRareApp = environment.title.startsWith('RARe') ;
+  }
 
 }

@@ -7,7 +7,7 @@ export const environment = {
     title: 'BRC4Env Search',
     logoUrl: '',
     links: [
-      { label: 'BRC4env Home', url: 'https://www.brc4env.fr/' }
+      { label: 'BRC4Env Home', url: 'https://www.brc4env.fr/' }
     ]
   },
   searchPlaceholder: 'e.g. salmo, chlamydomonas, phytomyzinae',
