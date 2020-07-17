@@ -15,6 +15,7 @@ services:
       - xpack.security.enabled=false
       - xpack.ml.enabled=false
       - xpack.watcher.enabled=false
+      - http.max_content_length=500mb
       - indices.lifecycle.poll_interval=10s
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g -XX:ParallelGCThreads=2"
     ports:
