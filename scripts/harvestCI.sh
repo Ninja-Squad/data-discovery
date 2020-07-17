@@ -99,8 +99,12 @@ if [ -z "$ES_HOST" ]; then
     echo && help
 	exit 4
 fi
-if [ "$APP_NAME" == "rare" ] ; then
+if [ "$APP_NAME" == "rare" ]; then
     ID_FIELD=identifier
+    DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/$APP_NAME/")
+elif [ "$APP_NAME" == "rare-with-basket"  ] ; then
+    ID_FIELD=identifier
+    DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
 else
     ID_FIELD=""
 fi
@@ -174,7 +178,7 @@ EOF
             curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
                 --data-binary '@{1}' > ${OUTDIR}/{1/.}.log.gz" \
-        ::: ${DATADIR}/suggestions/bulk_*.gz ::: ${ES_HOSTS}
+        ::: ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
 	echo -e "${RED}A problem occurred (code=$code) when trying to index suggestions \n"\

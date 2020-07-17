@@ -87,14 +87,22 @@ if  [ -z "${APP_NAME}" ] ; then
 fi
 
 BASEDIR=$(dirname "$0")
+SCRIPT_DIR=$(readlink -f "$BASEDIR")
 DATADIR=$(readlink -f "$BASEDIR/../data/$APP_NAME")
 
+DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
+BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
+FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
 
 WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
 RARE_FIELDS_TO_EXTRACT=".pillar , .databaseSource , .name , .domain, .taxon, .family, .genus, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect, [.species]"
 
 if [ "${APP_NAME}" == "rare" ] ; then
     FIELDS_TO_EXTRACT="${RARE_FIELDS_TO_EXTRACT}"
+elif [ "${APP_NAME}" == "rare-with-basket" ]; then
+    FIELDS_TO_EXTRACT="${RARE_FIELDS_TO_EXTRACT}"
+    FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
+    DATADIR=$(readlink -f "$BASEDIR/../data/rare")
 elif [ "${APP_NAME}" == "wheatis" ]; then
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
 elif [ "${APP_NAME}" == "data-discovery" ]; then
@@ -106,7 +114,8 @@ fi
 [ ! -d "${DATADIR}/suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/suggestions"
 
 time parallel --bar \
-    "gunzip -c {} |                                                 # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
+    "gunzip -c {} |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for rare-with-basket)
+    jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
     tee \
         >(
             jq -r '.[]| [ ${FIELDS_TO_EXTRACT} ] | flatten' |
@@ -155,5 +164,5 @@ parallel --pipe -k \
     "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
             s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
 " | \
-parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/bulk_{#}.gz"
+parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
 

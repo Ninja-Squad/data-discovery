@@ -91,6 +91,11 @@ DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
 
 TMP_FILE=$(mktemp)
+if [ "${APP_NAME}" == "rare-with-basket" ]; then
+    APP_SETTINGS_NAME="rare"
+else
+    APP_SETTINGS_NAME="${APP_NAME}"
+fi
 
 CODE=0
 
@@ -111,10 +116,10 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-
   \"order\": 101,
   \"mappings\": {
     \"${APP_NAME}-${APP_ENV}-resource\":
-        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
+        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
     },
   \"settings\":
-    $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/${APP_NAME}/settings.json )
+    $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/${APP_SETTINGS_NAME}/settings.json )
 }
 "\
 > ${TMP_FILE}
