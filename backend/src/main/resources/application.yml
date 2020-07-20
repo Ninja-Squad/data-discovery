@@ -71,7 +71,7 @@ spring:
 #       - Pilier Environnement
 
 data-discovery:
-  elasticsearch-prefix: 'rare-dev-'
+  elasticsearch-prefix: 'rare-with-basket-dev-'
   resource-dir: /tmp/rare-dev/resources
 
 server:
