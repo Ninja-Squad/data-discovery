@@ -252,18 +252,6 @@ build-data-discovery:
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}-${ENV}
 
-.variables-rare-with-basket-beta-openstack: &variables-rare-with-basket-beta-openstack
- variables:
-  ENV: beta
-  APP_NAME: rare-with-basket
-  APP_PORT: ${BETA_RARE_WITH_BASKET_PORT}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
-  SERVER_USER: ${SERVER_USER_OPENSTACK}
-  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-  ES_PORT: ${ES_DEV_PORT}
-  APP_CONTEXT: ${APP_NAME}
-
 .variables-rare-staging-openstack: &variables-rare-staging-openstack
  variables:
   ENV: staging
@@ -296,8 +284,45 @@ build-data-discovery:
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  APP_CONTEXT: ${APP_NAME}
+
+.variables-rare-with-basket-beta-openstack: &variables-rare-with-basket-beta-openstack
+ variables:
+  ENV: beta
+  APP_NAME: rare-with-basket
+  APP_PORT: ${BETA_RARE_WITH_BASKET_PORT}
+  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_USER: ${SERVER_USER_OPENSTACK}
+  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
   ES_PORT: ${ES_DEV_PORT}
+  APP_CONTEXT: ${APP_NAME}
+
+.variables-rare-with-basket-staging-openstack: &variables-rare-with-basket-staging-openstack
+ variables:
+  ENV: staging
+  APP_NAME: rare-with-basket
+  APP_PORT: ${STAGING_RARE_WITH_BASKET_PORT}
+  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_USER: ${SERVER_USER_OPENSTACK}
+  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+  ES_PORT: ${ES_DEV_PORT}
+  APP_CONTEXT: ${APP_NAME}
+
+# ALPHA
+.variables-rare-with-basket-prod-openstack: &variables-rare-with-basket-prod-openstack
+ variables:
+  ENV: prod
+  APP_NAME: rare-with-basket
+  APP_PORT: ${PROD_RARE_WITH_BASKET_PORT}
+  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_USER: ${SERVER_USER_OPENSTACK}
+  ES_HOST: ${ES_PROD_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_HOSTS: ${ES_PROD_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: ${APP_NAME}
 
 .variables-wheatis-beta-openstack: &variables-wheatis-beta-openstack
@@ -343,9 +368,9 @@ build-data-discovery:
   APP_PORT: ${PROD_WHEATIS_PORT}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
-  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-  ES_PORT: ${ES_DEV_PORT}
+  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: ${APP_NAME}
 
 .variables-data-discovery-beta-openstack: &variables-data-discovery-beta-openstack
@@ -391,9 +416,9 @@ build-data-discovery:
   APP_PORT: ${PROD_DATADISCOVERY_PORT}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
-  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-  ES_PORT: ${ES_DEV_PORT}
+  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_PORT: ${ES_PROD_PORT}
   APP_CONTEXT: data-discovery
 
 deploy-rare-to-beta-openstack:
@@ -401,23 +426,6 @@ deploy-rare-to-beta-openstack:
  tags:
   - openstack
  <<: *variables-rare-beta-openstack
- <<: *deploy_to_vm_openstack
- only:
-  changes:
-   - backend/src/**/*
-   - frontend/**/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
- allow_failure: false # mandatory to block the execution of the pipeline
-
-deploy-rare-with-basket-to-beta-openstack:
- stage: deploy-beta
- tags:
-  - openstack
- <<: *variables-rare-with-basket-beta-openstack
  <<: *deploy_to_vm_openstack
  only:
   changes:
@@ -466,6 +474,56 @@ deploy-rare-to-prod-openstack:
  tags: 
   - openstack
  <<: *variables-rare-prod-openstack
+ <<: *deploy_to_vm_openstack
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - master
+ when: manual
+ allow_failure: false
+
+deploy-rare-with-basket-to-beta-openstack:
+ stage: deploy-beta
+ tags:
+  - openstack
+ <<: *variables-rare-with-basket-beta-openstack
+ <<: *deploy_to_vm_openstack
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ allow_failure: false # mandatory to block the execution of the pipeline
+
+deploy-rare-with-basket-to-staging-openstack:
+ stage: deploy-staging
+ tags: 
+  - openstack
+ <<: *variables-rare-with-basket-staging-openstack
+ <<: *deploy_to_vm_openstack
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ when: manual
+
+# ALPHA
+deploy-rare-with-basket-to-prod-openstack:
+ stage: deploy-production
+ tags: 
+  - openstack
+ <<: *variables-rare-with-basket-prod-openstack
  <<: *deploy_to_vm_openstack
  only:
   changes:
@@ -635,7 +693,7 @@ deploy-data-discovery-to-prod-openstack:
   - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
   # Deleting old indexes before reindexing from scratch
   #  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/*${APP_NAME}-${ENV}-* ; echo
-  - ./scripts/index.sh -host "${ES_DEV_HOSTS_OPENSTACK}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
+  - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are
   # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
@@ -655,6 +713,7 @@ data-integration-rare-beta-openstack:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/rare/suggestions/rare_bulk*.json.gz
   refs:
    - branches
  except:
@@ -670,6 +729,7 @@ data-integration-rare-staging-openstack:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/rare/suggestions/rare_bulk*.json.gz
   refs:
    - branches
  except:
@@ -684,6 +744,7 @@ data-integration-rare-prod-proxmox:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/rare/suggestions/rare_bulk*.json.gz
   refs:
    - master
 
@@ -697,6 +758,54 @@ data-integration-rare-prod-openstack:
  only:
   changes:
    - data/rare/*.json.gz
+   - data/rare/suggestions/rare_bulk*.json.gz
+  refs:
+   - master
+
+data-integration-rare-with-basket-beta-openstack:
+ stage: data-integration-beta
+ tags: 
+  - openstack
+ <<: *variables-rare-with-basket-beta-openstack
+ <<: *data-integration-openstack
+ only:
+  changes:
+   - data/rare/*.json.gz
+   - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+
+data-integration-rare-with-basket-staging-openstack:
+ stage: data-integration-staging
+ tags: 
+  - openstack
+ <<: *variables-rare-with-basket-staging-openstack
+ <<: *data-integration-openstack
+ only:
+  changes:
+   - data/rare/*.json.gz
+   - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ when: manual
+
+# ALPHA
+data-integration-rare-with-basket-prod-openstack:
+ stage: data-integration-production
+ tags: 
+  - openstack
+ <<: *variables-rare-with-basket-prod-openstack
+ <<: *data-integration-openstack
+ only:
+  changes:
+   - data/rare/*.json.gz
+   - data/rare/suggestions/rare-with-basket_bulk*.json.gz
   refs:
    - master
 
@@ -709,6 +818,7 @@ data-integration-wheatis-beta-openstack:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -726,6 +836,7 @@ data-integration-wheatis-staging-openstack:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -742,6 +853,7 @@ data-integration-wheatis-prod-proxmox:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -757,6 +869,7 @@ data-integration-wheatis-prod-openstack:
  only:
   changes:
    - data/wheatis/*.json.gz
+   - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -771,6 +884,7 @@ data-integration-data-discovery-beta-openstack:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -788,6 +902,7 @@ data-integration-data-discovery-staging-openstack:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -804,6 +919,7 @@ data-integration-data-discovery-prod-proxmox:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
@@ -819,6 +935,7 @@ data-integration-data-discovery-prod-openstack:
  only:
   changes:
    - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
   refs:
