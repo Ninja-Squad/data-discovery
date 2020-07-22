@@ -1,1 +1,1 @@
-../../../../LEGAL-MENTIONS.md
+../../../../LEGAL-MENTIONS-fr.md
