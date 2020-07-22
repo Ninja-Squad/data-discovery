@@ -61,7 +61,7 @@ describe('NavbarComponent', () => {
       title: 'RARe',
       logoUrl: 'https://www.agrobrc-rare.org/',
       links: [
-        { label: 'INRAE', url: 'http://www.inrae.fr/' },
+        { label: 'INRAE', url: 'https://www.inrae.fr/' },
         { label: 'URGI', url: 'https://urgi.versailles.inrae.fr/' }
       ]
     };
@@ -75,7 +75,7 @@ describe('NavbarComponent', () => {
     // minus 1 because of More section (containing Help, About, Join and Legal links) added automatically
 
     expect(tester.firstLink.textContent).toBe('INRAE');
-    expect(tester.firstLink.attr('href')).toBe('http://www.inrae.fr/');
+    expect(tester.firstLink.attr('href')).toBe('https://www.inrae.fr/');
     expect(tester.firstLink.attr('target')).toBe('_blank');
   });
 });

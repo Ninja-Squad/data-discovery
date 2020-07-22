@@ -6,6 +6,8 @@ services:
       - /bin/sh
       - -c
       - "export PATH=/usr/share/elasticsearch/bin:$PATH ;
+         gzip -cd /usr/share/elasticsearch/config/analysis/synonyms/all_autophrases.txt.gz > /usr/share/elasticsearch/config/analysis/synonyms/all_autophrases.txt ;
+         gzip -cd /usr/share/elasticsearch/config/analysis/synonyms/all_synonyms.txt.gz > /usr/share/elasticsearch/config/analysis/synonyms/all_synonyms.txt ;
          /usr/local/bin/docker-entrypoint.sh"
     container_name: elasticsearch
     environment:

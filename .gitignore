@@ -40,3 +40,4 @@ nbdist/
 
 classes
 .java-version
+data/synonyms/all_*.txt
