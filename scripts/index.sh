@@ -116,7 +116,7 @@ CODE=$?
 }
 [ $CLEAN == 0 ] &&
 {
-    echo -e "If a clean of indices had been triggered, following timestamps would have been deleted: ${PREVIOUS_TIMESTAMPS}."
+    echo -e "If a clean of indices had been triggered, following timestamps would have been deleted:\n${PREVIOUS_TIMESTAMPS}."
 }
 
 exit 0

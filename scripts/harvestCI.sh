@@ -139,17 +139,30 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 [ -d "$OUTDIR" ] && rm -rf "$OUTDIR"
 mkdir -p "$OUTDIR"
 
-{
-#    set -x
-    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
-    parallel -j${HOST_NB} --bar --link --halt now,fail=1 "
-            gunzip -c {1} \
-            | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/{1/.}.jq.err \
-            | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/{1/.}.jq.err \
+export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP
+
+index_resources() {
+    bash -c "set -o pipefail; gunzip -c $1 \
+            | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
+            | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/$2.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
-                --data-binary '@-' > ${OUTDIR}/{1/.}.log.gz" \
+                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
+                --data-binary '@-' > ${OUTDIR}/$2.log.gz "
+}
+
+index_suggestions() {
+    bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
+                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
+                --data-binary '@$1' > ${OUTDIR}/$2.log.gz"
+}
+
+export -f index_resources index_suggestions
+
+{
+    # set -x
+    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
+    parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_resources {1} {1/.} {2} \
         ::: ${DATADIR}/*.json.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
@@ -171,12 +184,9 @@ curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/$
 EOF
 
 {
-#    set -x
+    # set -x
     echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
-    parallel -j${HOST_NB} --bar --link --halt now,fail=1 "
-            curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"{2}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
-                --data-binary '@{1}' > ${OUTDIR}/{1/.}.log.gz" \
+    parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
         ::: ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz ::: ${ES_HOSTS}
 } || {
 	code=$?
@@ -185,7 +195,7 @@ EOF
 	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
 	exit $code
 }
-#set -x
+# set -x
 PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -2 | tail -1) # current timestamp index has already been created so looking for the 2nd last one
 {
     echo -e "Updating aliases for latest resources and suggestions indices with timestamp ${TIMESTAMP} instead of previous ${PREVIOUS_TIMESTAMP}..."

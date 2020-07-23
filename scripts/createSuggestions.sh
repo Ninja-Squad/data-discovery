@@ -113,8 +113,10 @@ fi
 
 [ ! -d "${DATADIR}/suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/suggestions"
 
-time parallel --bar \
-    "gunzip -c {} |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for rare-with-basket)
+export FILTER_DATA_SCRIPT FIELDS_TO_EXTRACT
+
+extract_suggestions() {
+    bash -c "set -o pipefail; gunzip -c $1 |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for rare-with-basket)
     jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
     tee \
         >(
@@ -157,7 +159,11 @@ time parallel --bar \
             tr '[:upper:]' '[:lower:]' |
             LC_ALL=C sort -u
         ) |
-    LC_ALL=C sort -u" \
+    LC_ALL=C sort -u"
+}
+export -f extract_suggestions
+
+time parallel --bar extract_suggestions \
 ::: ${DATADIR}/*.gz | \
 LC_ALL=C sort -u | \
 parallel --pipe -k \
