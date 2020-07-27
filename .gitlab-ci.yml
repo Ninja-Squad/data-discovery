@@ -26,20 +26,21 @@ variables:
  ELASTIC_VERSION: "6.6.2"
  IMAGE_TAG: $CI_COMMIT_REF_SLUG
 
-build-es-synonyms:
+build-es-synonyms-docker-image:
  # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
  # (more details here: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html)
  # docker-in-docker (dind) approach is used here.
  # https://stackoverflow.com/questions/47280922/role-of-docker-in-docker-dind-service-in-gitlab-ci
  # The runner should be executed in privileged mode.
  # It is recommended to use dind with TLS enabled.
- image: docker:19.03.1
+ image: urgi/docker-git:latest
  stage: es-synonyms
  services:
-  - docker:19.03.1-dind
+  - docker:19.03.12-dind
  script:
+  - git lfs pull -I "data/synonyms"
   - cd data/synonyms
-  - gzip -d all_*.txt*gz
+  - gzip -fd all_*.txt.gz
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
   # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
@@ -53,7 +54,8 @@ deploy-synonyms-to-prod-cluster-proxmox:
  script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-  - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt* ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
+  - git lfs pull -I "data/synonyms"
+  - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
   - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${ES_HOST} "mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
@@ -70,7 +72,8 @@ deploy-synonyms-to-dev-cluster-openstack:
  script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-  - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt* ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
+  - git lfs pull -I "data/synonyms"
+  - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
   - for ES_HOST in $ES_DEV_HOSTS_OPENSTACK $ES_DEV_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
@@ -89,6 +92,7 @@ deploy-synonyms-to-dev-cluster-openstack:
 #  script:
 #   - eval $(ssh-agent -s)
 #   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
+#  - git lfs pull -I "data/synonyms"
 #   - for ES_HOST in $ES_PROD_HOSTS_OPENSTACK $ES_PROD_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.txt* ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null; done ;
 #   - for ES_HOST in $ES_PROD_HOSTS_OPENSTACK $ES_PROD_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
 #   - eval $(ssh-agent -k)
