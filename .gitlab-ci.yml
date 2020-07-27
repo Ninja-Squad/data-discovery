@@ -13,7 +13,7 @@ stages:
 # Image source available on https://forgemia.inra.fr/urgi-is/docker-rare
 # It contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
-image: urgi/docker-browsers:latest
+image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-browsers:latest
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -33,7 +33,7 @@ build-es-synonyms-docker-image:
  # https://stackoverflow.com/questions/47280922/role-of-docker-in-docker-dind-service-in-gitlab-ci
  # The runner should be executed in privileged mode.
  # It is recommended to use dind with TLS enabled.
- image: urgi/docker-git:latest
+ image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
  stage: es-synonyms
  services:
   - docker:19.03.12-dind
