@@ -226,7 +226,7 @@ build-data-discovery:
   - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
 
 .deploy-to-vm-openstack: &deploy_to_vm_openstack
- tags: 
+ tags:
   - openstack
  # Hidden job which serves as template for executed jobs below.
  # See https://docs.gitlab.com/ee/ci/yaml/#anchors
@@ -459,7 +459,7 @@ deploy-rare-to-beta-openstack:
 
 deploy-rare-to-staging-openstack:
  stage: deploy-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-staging-openstack
  <<: *deploy_to_vm_openstack
@@ -490,7 +490,7 @@ deploy-rare-to-prod-proxmox:
 # ALPHA
 deploy-rare-to-prod-openstack:
  stage: deploy-production
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-prod-openstack
  <<: *deploy_to_vm_openstack
@@ -522,7 +522,7 @@ deploy-rare-with-basket-to-beta-openstack:
 
 deploy-rare-with-basket-to-staging-openstack:
  stage: deploy-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-with-basket-staging-openstack
  <<: *deploy_to_vm_openstack
@@ -540,7 +540,7 @@ deploy-rare-with-basket-to-staging-openstack:
 # ALPHA
 deploy-rare-with-basket-to-prod-openstack:
  stage: deploy-production
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-with-basket-prod-openstack
  <<: *deploy_to_vm_openstack
@@ -572,7 +572,7 @@ deploy-wheatis-to-beta-openstack:
 
 deploy-wheatis-to-staging-openstack:
  stage: deploy-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-wheatis-staging-openstack
  <<: *deploy_to_vm_openstack
@@ -603,7 +603,7 @@ deploy-wheatis-to-prod-proxmox:
 # ALPHA
 deploy-wheatis-to-prod-openstack:
  stage: deploy-production
- tags: 
+ tags:
   - openstack
  <<: *variables-wheatis-prod-openstack
  <<: *deploy_to_vm_openstack
@@ -635,7 +635,7 @@ deploy-data-discovery-to-beta-openstack:
 
 deploy-data-discovery-to-staging-openstack:
  stage: deploy-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-data-discovery-staging-openstack
  <<: *deploy_to_vm_openstack
@@ -666,7 +666,7 @@ deploy-data-discovery-to-prod-proxmox:
 # ALPHA
 deploy-data-discovery-to-prod-openstack:
  stage: deploy-production
- tags: 
+ tags:
   - openstack
  <<: *variables-data-discovery-prod-openstack
  <<: *deploy_to_vm_openstack
@@ -684,8 +684,8 @@ deploy-data-discovery-to-prod-openstack:
  retry: 0
  script:
   # Do fetch of GIT LFS files only for data integration steps for given app
-  - git checkout $CI_COMMIT_REF_NAME
-  - git pull
+  - git checkout -f origin/$CI_COMMIT_REF_NAME
+  - git pull origin $CI_COMMIT_REF_NAME
   - git lfs pull -I "data/${DATA_DIR}/*.gz"
   - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
   - ./scripts/index.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
@@ -704,8 +704,8 @@ deploy-data-discovery-to-prod-openstack:
  retry: 0
  script:
   # Do fetch of GIT LFS files only for data integration steps for given app
-  - git checkout $CI_COMMIT_REF_NAME
-  - git pull
+  - git checkout -f origin/$CI_COMMIT_REF_NAME
+  - git pull origin $CI_COMMIT_REF_NAME
   - git lfs pull -I "data/${DATA_DIR}/*.gz"
   - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
   - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
@@ -721,7 +721,7 @@ deploy-data-discovery-to-prod-openstack:
 
 data-integration-rare-beta-openstack:
  stage: data-integration-beta
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-beta-openstack
  <<: *data-integration-openstack
@@ -737,7 +737,7 @@ data-integration-rare-beta-openstack:
 
 data-integration-rare-staging-openstack:
  stage: data-integration-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-staging-openstack
  <<: *data-integration-openstack
@@ -766,7 +766,7 @@ data-integration-rare-prod-proxmox:
 # ALPHA
 data-integration-rare-prod-openstack:
  stage: data-integration-production
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-prod-openstack
  <<: *data-integration-openstack
@@ -779,7 +779,7 @@ data-integration-rare-prod-openstack:
 
 data-integration-rare-with-basket-beta-openstack:
  stage: data-integration-beta
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-with-basket-beta-openstack
  <<: *data-integration-openstack
@@ -795,7 +795,7 @@ data-integration-rare-with-basket-beta-openstack:
 
 data-integration-rare-with-basket-staging-openstack:
  stage: data-integration-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-with-basket-staging-openstack
  <<: *data-integration-openstack
@@ -813,7 +813,7 @@ data-integration-rare-with-basket-staging-openstack:
 # ALPHA
 data-integration-rare-with-basket-prod-openstack:
  stage: data-integration-production
- tags: 
+ tags:
   - openstack
  <<: *variables-rare-with-basket-prod-openstack
  <<: *data-integration-openstack
@@ -826,7 +826,7 @@ data-integration-rare-with-basket-prod-openstack:
 
 data-integration-wheatis-beta-openstack:
  stage: data-integration-beta
- tags: 
+ tags:
   - openstack
  <<: *variables-wheatis-beta-openstack
  <<: *data-integration-openstack
@@ -844,7 +844,7 @@ data-integration-wheatis-beta-openstack:
 
 data-integration-wheatis-staging-openstack:
  stage: data-integration-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-wheatis-staging-openstack
  <<: *data-integration-openstack
@@ -877,7 +877,7 @@ data-integration-wheatis-prod-proxmox:
 # ALPHA
 data-integration-wheatis-prod-openstack:
  stage: data-integration-production
- tags: 
+ tags:
   - openstack
  <<: *variables-wheatis-prod-openstack
  <<: *data-integration-openstack
@@ -892,7 +892,7 @@ data-integration-wheatis-prod-openstack:
 
 data-integration-data-discovery-beta-openstack:
  stage: data-integration-beta
- tags: 
+ tags:
   - openstack
  <<: *variables-data-discovery-beta-openstack
  <<: *data-integration-openstack
@@ -910,7 +910,7 @@ data-integration-data-discovery-beta-openstack:
 
 data-integration-data-discovery-staging-openstack:
  stage: data-integration-staging
- tags: 
+ tags:
   - openstack
  <<: *variables-data-discovery-staging-openstack
  <<: *data-integration-openstack
@@ -943,7 +943,7 @@ data-integration-data-discovery-prod-proxmox:
 # ALPHA
 data-integration-data-discovery-prod-openstack:
  stage: data-integration-production
- tags: 
+ tags:
   - openstack
  <<: *variables-data-discovery-prod-openstack
  <<: *data-integration-openstack
