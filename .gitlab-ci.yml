@@ -249,6 +249,7 @@ build-data-discovery:
   ENV: beta
   APP_NAME: rare
   APP_PORT: ${BETA_RARE_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -261,6 +262,7 @@ build-data-discovery:
   ENV: staging
   APP_NAME: rare
   APP_PORT: ${STAGING_RARE_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -273,6 +275,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: rare
   APP_PORT: ${PROD_RARE_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_HOSTS: ${ES_PROD_HOSTS}
@@ -285,6 +288,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: rare
   APP_PORT: ${PROD_RARE_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -297,6 +301,7 @@ build-data-discovery:
   ENV: beta
   APP_NAME: rare-with-basket
   APP_PORT: ${BETA_RARE_WITH_BASKET_PORT}
+  DATA_DIR: rare
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -309,6 +314,7 @@ build-data-discovery:
   ENV: staging
   APP_NAME: rare-with-basket
   APP_PORT: ${STAGING_RARE_WITH_BASKET_PORT}
+  DATA_DIR: rare
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -322,6 +328,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: rare-with-basket
   APP_PORT: ${PROD_RARE_WITH_BASKET_PORT}
+  DATA_DIR: rare
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_PROD_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -334,6 +341,7 @@ build-data-discovery:
   ENV: beta
   APP_NAME: wheatis
   APP_PORT: ${BETA_WHEATIS_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -346,6 +354,7 @@ build-data-discovery:
   ENV: staging
   APP_NAME: wheatis
   APP_PORT: ${STAGING_WHEATIS_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -358,6 +367,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_HOSTS: ${ES_PROD_HOSTS}
@@ -370,6 +380,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -382,6 +393,7 @@ build-data-discovery:
   ENV: beta
   APP_NAME: data-discovery
   APP_PORT: ${BETA_DATADISCOVERY_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -394,6 +406,7 @@ build-data-discovery:
   ENV: staging
   APP_NAME: data-discovery
   APP_PORT: ${STAGING_DATADISCOVERY_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
@@ -406,6 +419,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: data-discovery
   APP_PORT: ${PROD_DATADISCOVERY_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP}
   ES_HOST: ${ES_PROD_HOST}
   ES_HOSTS: ${ES_PROD_HOSTS}
@@ -418,6 +432,7 @@ build-data-discovery:
   ENV: prod
   APP_NAME: data-discovery
   APP_PORT: ${PROD_DATADISCOVERY_PORT}
+  DATA_DIR: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -671,8 +686,8 @@ deploy-data-discovery-to-prod-openstack:
   # Do fetch of GIT LFS files only for data integration steps for given app
   - git checkout $CI_COMMIT_REF_NAME
   - git pull
-  - git lfs pull -I "data/${APP_NAME}/*.gz"
-  - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
+  - git lfs pull -I "data/${DATA_DIR}/*.gz"
+  - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
   - ./scripts/index.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are
@@ -691,8 +706,8 @@ deploy-data-discovery-to-prod-openstack:
   # Do fetch of GIT LFS files only for data integration steps for given app
   - git checkout $CI_COMMIT_REF_NAME
   - git pull
-  - git lfs pull -I "data/${APP_NAME}/*.gz"
-  - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
+  - git lfs pull -I "data/${DATA_DIR}/*.gz"
+  - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
   - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are
