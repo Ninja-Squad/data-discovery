@@ -161,7 +161,7 @@ export -f index_resources index_suggestions
 
 {
     # set -x
-    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
+    echo "Indexing files into ${DATADIR} towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
     parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_resources {1} {1/.} {2} \
         ::: ${DATADIR}/*.json.gz ::: ${ES_HOSTS}
 } || {
@@ -185,7 +185,7 @@ EOF
 
 {
     # set -x
-    echo "Indexing suggestions from ${DATADIR}/suggestions/*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
+    echo "Indexing suggestions into ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
     parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
         ::: ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz ::: ${ES_HOSTS}
 } || {
