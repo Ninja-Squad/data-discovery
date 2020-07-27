@@ -673,8 +673,6 @@ deploy-data-discovery-to-prod-openstack:
   - git pull
   - git lfs pull -I "data/${APP_NAME}/*.gz"
   - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
-  # Deleting old indexes before reindexing from scratch
-  #  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/*${APP_NAME}-${ENV}-* ; echo
   - ./scripts/index.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are
@@ -695,8 +693,6 @@ deploy-data-discovery-to-prod-openstack:
   - git pull
   - git lfs pull -I "data/${APP_NAME}/*.gz"
   - git lfs pull -I "data/${APP_NAME}/suggestions/*.gz"
-  # Deleting old indexes before reindexing from scratch
-  #  - curl -s -XDELETE ${ES_HOST}:${ES_PORT}/*${APP_NAME}-${ENV}-* ; echo
   - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are

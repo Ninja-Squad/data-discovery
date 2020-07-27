@@ -22,6 +22,14 @@ const PROXY_CONFIG = [
     ],
     target: "http://localhost:8280",
     secure: false
+  },
+  {
+    context: [
+      "/rare-with-basket-dev/api",
+      "/rare-with-basket-dev/actuator"
+    ],
+    target: "http://localhost:8580",
+    secure: false
   }
 ];
 

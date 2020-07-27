@@ -133,6 +133,7 @@ or
 ```sh
 ./gradlew assemble -Papp=wheatis
 ```
+
 or
 
 ```sh
@@ -151,9 +152,9 @@ java -jar backend/build/libs/data-discovery.jar
 And the full app running on:
 
 - <http://localhost:8080/rare-dev>
-- <http://localhost:8080/rare-dev>
 - <http://localhost:8180/wheatis-dev>
 - <http://localhost:8280/data-discovery-dev>
+- <http://localhost:8580/rare-with-basket-dev>
 
 ## CI
 
@@ -251,14 +252,11 @@ If you want to use the Spring Cloud config app locally, see <https://forgemia.in
 The configuration is currently only read on startup, meaning the application has to be reboot if the configuration is changed on the Spring Cloud server. For a dynamic reload without restarting the application, see <http://cloud.spring.io/spring-cloud-static/Finchley.SR1/single/spring-cloud.html#refresh-scope>
 to check what has to be changed.
 
-In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar, or use the corresponding Spring [env variable](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-relaxed-binding-from-environment-variables). More info on [how to pass a parameter to a Spring Boot app](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config).
+In case of testing configuration from the config server, one may use a dedicated branch on `data-discovery-config` project and append the `--spring.cloud.config.label=<branch name to test>` parameter when starting the application's executable jar, or use the corresponding Spring [env variable](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-relaxed-binding-from-environment-variables) (_ie._ `SPRING_CLOUD_CONFIG_LABEL`). More info on [how to pass a parameter to a Spring Boot app](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config).
 
 ## Building other apps
 
-By default, the built application is RARe (without basket, i.e. without the possibility to add accessions to a basket
-and create an accession order on the rare-basket application). 
-But this project actually allows building other
-applications (RARe with basket and WheatIS, for the moment, but more could come).
+By default, the built application is RARe (without basket, i.e. without the possibility to add accessions to a basket and create an accession order on the rare-basket application). But this project actually allows building other applications (RARe with basket and WheatIS, for the moment, but more could come).
 
 To build a different app, specify an `app` property when building. For example, to assemble
 the WheatIS app, run the following command
@@ -289,9 +287,7 @@ Adding this property has the following consequences:
 
 - the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `rare-with-basket.jar` instead of `rare.jar`;
 - the Spring active profile in `bootstrap.yml` is `wheatis-app` (resp. `rare-with-basket-app`) instead of `rare-app`;
-- the frontend application built and embedded inside the jar file is the WheatIS frontend application 
-(resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command 
-`yarn build:wheatis` (resp. `yarn build:rare-with-basket`) is executed instead of the command `yarn:rare`.
+- the frontend application built and embedded inside the jar file is the WheatIS frontend application (resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command `yarn build:wheatis` (resp. `yarn build:rare-with-basket`) is executed instead of the command `yarn:rare`.
 
 Since the active Spring profile is different, all the properties specific to this profile
 are applied. In particular:
@@ -310,8 +306,7 @@ java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-p
 ## Configuration
 
 The RARe and RARe with basket applications can be configured to apply an implicit filtering on the searches,
-aggregations, and pillar list. There is currently only one implicit filter that can be added, which is a filter on the 
-pillar name.
+aggregations, and pillar list. There is currently only one implicit filter that can be added, which is a filter on the pillar name.
 
 To activate it, add the following YAML configuration under the appropriate profile:
 
@@ -322,4 +317,3 @@ rare:
       - Pilier Forêt
       - Pilier Micro-organisme
 ```
-

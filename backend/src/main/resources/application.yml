@@ -77,7 +77,7 @@ data-discovery:
 server:
   port: 8580
   servlet:
-    context-path: /rare-dev
+    context-path: /rare-with-basket-dev
 
 ---
 spring:

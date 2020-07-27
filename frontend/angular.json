@@ -133,7 +133,7 @@
                   "with": "src/environments/rare-with-basket.ts"
                 }
               ],
-              "baseHref": "/rare-dev/"
+              "baseHref": "/rare-with-basket-dev/"
             },
             "rare-with-basket-production": {
               "fileReplacements": [
