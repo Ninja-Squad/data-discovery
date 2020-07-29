@@ -223,6 +223,25 @@ Elle doit prendre la forme de degré décimal (par ex. `-53` pour les coordonné
 | :---: | :---: | :---: |
 | Optionnel | 1 | -180 < Long. < 180 |
 
+### accessionHolder
+
+Le nom du CRB responsable de distribuer les ressources, si disponible. Dans certains cas, ça sera la même valeur que le champ `databaseSource`. Dans d'autres cas, cela peut différer, en particulier lorsque les gestionnaires d'accessions d'un même BRC sont réparties sur des sites géographiques distincts.
+Ce champ optionel est principalement utilisé pour commander des ressources génétiques, il permet de savoir quel est le gestionnaire de l'accession à contacter.
+
+Puisque cette valeur est utilisée pour faire le lien avec le gestionnaire de l'accession, il est contrôlé. Vous devriez utiliser l'une des valeurs ci-dessous. Si la valeur est absente, veuillez nous contacter pour qu'on puisse l'ajouter :
+
+- CBGP
+- Colisa
+- EP-Coll
+- TCC
+- Forest BRC - Avignon
+- Forest BRC - Pierroton
+- Forest BRC - Orléans
+
+| Statut | Cardinalité | Contraintes |
+| :---: | :---: | :---: |
+| Optionnel | 1 | L'un de ceux de la liste fournie |
+
 [&#8593;](#top)
 
 ## Format des données
@@ -239,11 +258,13 @@ Prenez soin de retirer toute tabulation ou tout caractère de nouvelle ligne des
 Aucun caractère de citation n'est attendu.
 L'en-tête n'est pas nécessaire, il est simplement affiché ici pour les besoin de documentation.
 
+<!-- markdownlint-disable MD009 MD010 -->
 ```csv
-#pillarName  databaseSource  portalURL   identifier  name    description dataURL domain  taxon   materialType    biotopeType countryOfOrigin originLatitude  originLongitude countryOfCollect    collectLatitude collectLongitude
-Pilier Forêt    Forest Tree GnpIS   https://urgi.versailles.inra.fr/faidare/?germplasmLists=Forest%20BRC    https://doi.org/10.15454/0FZNAO 661300375   661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological Statut interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans   https://urgi.versailles.inra.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO   Plantae Populus x generosa  Specimen                            
-Pilier Micro-organisme  CIRM-CF http://139.124.42.231/~davnav/BRFM/search_strain2.php   BRFM 902    BRFM 902    Pycnoporus sanguineus BRFM 902 GUY110 burnt wood, Macouria Polyporaceae Polyporales Basidiomycota   http://139.124.42.231/~davnav/BRFM/fiche.php?BRFM_Number=902    Fungi   Pycnoporus sanguineus       Wood    French Guiana   3.9988889   -53 French Guiana   3.9988889   -53
+#pillarName	databaseSource	portalURL	identifier	name	description	dataURL	domain	taxon	materialType	biotopeType	countryOfOrigin	originLatitude	originLongitude	countryOfCollect	collectLatitude	collectLongitude	accessionHolder
+Pilier Forêt	Forest Tree GnpIS	https://urgi.versailles.inra.fr/faidare/?germplasmLists=Forest%20BRC	https://doi.org/10.15454/0FZNAO	661300375	661300375 is a Populus x generosa accession (number: 661300375, https://doi.org/10.15454/0FZNAO) maintained by the Forest BRC (managed by INRA) and held by INRA-ONF. It is a clone/clone of biological Statut interspecific cross/croisement interspécifique. This accession is also known as: 0054B165. This accession is part of collection(s): breeding_gispeuplier, mapping_pedigree_0504B. This accession has phenotyping data: bacterial canker resistance test of mapping pedigree 0504B, clonal test of mapping pedigree 0504B in nursery. This accession has genotyping data: Popyomics_Orleans	https://urgi.versailles.inrae.fr/faidare/germplasm?pui=https://doi.org/10.15454/0FZNAO	Plantae	Populus x generosa	Specimen							Forest BRC - Orléans
+Pilier Micro-organisme	CIRM-CF	http://139.124.42.231/~davnav/BRFM/search_strain2.php	BRFM 902	BRFM 902	Pycnoporus sanguineus BRFM 902 GUY110 burnt wood, Macouria Polyporaceae Polyporales Basidiomycota	http://139.124.42.231/~davnav/BRFM/fiche.php?BRFM_Number=902	Fungi	Pycnoporus sanguineus		Wood	French Guiana	3.9988889	-53	French Guiana	3.9988889	-53	
 ```
+<!-- markdownlint-enable MD009 MD010 -->
 
 ### JSON (JavaScript Object Notation)
 
@@ -271,7 +292,8 @@ L'ordre de déclaration des champs n'est pas important. Toutes les entités d'un
     "longitudeOfOrigin": null,
     "countryOfCollect": null,
     "latitudeOfCollect": null,
-    "longitudeOfCollect": null
+    "longitudeOfCollect": null,
+    "accessionHolder": "Forest BRC - Orléans"
   },
   {
     "pillarName": "Pilier Micro-organisme",
@@ -293,7 +315,8 @@ L'ordre de déclaration des champs n'est pas important. Toutes les entités d'un
     "longitudeOfOrigin": "-53",
     "countryOfCollect": "French Guiana",
     "latitudeOfCollect": "3.9988889",
-    "longitudeOfCollect": "-53"
+    "longitudeOfCollect": "-53",
+    "accessionHolder": null
   }
 ]
 ```
