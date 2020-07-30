@@ -19,6 +19,7 @@ plugins {
     id("com.gorylenko.gradle-git-properties") version "1.5.2"
     id("org.asciidoctor.convert") version "1.5.9.2"
     id("io.spring.dependency-management") version "1.0.6.RELEASE"
+    id("org.sonarqube")
 }
 
 

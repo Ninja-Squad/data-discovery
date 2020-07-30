@@ -4,6 +4,7 @@ import org.codehaus.groovy.ast.tools.GeneralUtils
 plugins {
   base
   id("com.moowork.node") version "1.2.0"
+  id("org.sonarqube")
 }
 
 val isCi = System.getenv("CI") != null
