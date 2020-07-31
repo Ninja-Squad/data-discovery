@@ -18,6 +18,10 @@
     "results": "Results",
     "paging": "Paging"
   },
+  "descendants-checkbox": {
+    "expand-search":"Expand search",
+    "tooltips": "Search for results with associated ontology terms."
+  },
   "document-count": {
     "one-document": "Only one document matches",
     "several-documents": "{{ count }} documents match"
