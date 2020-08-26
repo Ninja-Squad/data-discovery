@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DescendantsCheckboxComponent } from './descendants-checkbox.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('DescendantsCheckboxComponent', () => {
   let component: DescendantsCheckboxComponent;
@@ -8,7 +9,8 @@ describe('DescendantsCheckboxComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DescendantsCheckboxComponent ]
+      declarations: [ DescendantsCheckboxComponent ],
+      imports: [TranslateModule.forRoot()]
     })
     .compileComponents();
   }));
