@@ -49,6 +49,7 @@ export class SearchComponent implements OnInit {
   aggregationCriteria: Array<AggregationCriterion> = [];
   // hide or show the filters on small devices
   filters: 'show' | 'hide' = 'hide';
+  searchDescendants = false ;
 
   constructor(private route: ActivatedRoute, private router: Router, private searchService: SearchService) {
     this.searchForm = new FormGroup({
@@ -75,16 +76,18 @@ export class SearchComponent implements OnInit {
           // extract the page if present
           const page = this.extractPageFromParameters(params);
           // extract the aggregations if there are some
-          // we consider all parameters as potential aggregations, except `query` and `page`
+          // we consider all parameters as potential aggregations, except `query` and `page` and `descendants`
           this.aggregationCriteria = this.extractCriteriaFromParameters(params);
+          // Handle descendants param
+          this.searchDescendants = this.extractDescendantsFromParameters(params);
           // launch the search and handle a potential error, by returning no result
           // but allow to trigger a new search
           return merge(
-            this.searchService.search(this.query, this.aggregationCriteria, page)
+            this.searchService.search(this.query, this.aggregationCriteria, page, this.searchDescendants)
               .pipe(
                 catchError(() => EMPTY),
               ),
-            this.searchService.aggregate(this.query, this.aggregationCriteria)
+            this.searchService.aggregate(this.query, this.aggregationCriteria, this.searchDescendants)
               .pipe(
                 catchError(() => EMPTY)
               )
@@ -113,8 +116,21 @@ export class SearchComponent implements OnInit {
     return page;
   }
 
+  /*extractDescendantsFromParameters(): boolean {
+    const descendantsParam = this.route.snapshot.queryParamMap.get('descendants');
+    return this.searchDescendants = descendantsParam === 'true';
+  }*/
+
+  extractDescendantsFromParameters(params: ParamMap): boolean {
+    let descendantsParam = false;
+    if (params.get('descendants') && params.get('descendants') === 'true') {
+      descendantsParam = true;
+    }
+    return descendantsParam;
+  }
+
   extractCriteriaFromParameters(params: ParamMap): Array<AggregationCriterion> {
-    const aggregations = params.keys.filter(key => key !== 'query' && key !== 'page');
+    const aggregations = params.keys.filter(key => key !== 'query' && key !== 'page' && key !== 'descendants');
     return aggregations.map(aggregationName => ({
       name: aggregationName,
       values: params.getAll(aggregationName)
@@ -127,6 +143,7 @@ export class SearchComponent implements OnInit {
    */
   newSearch() {
     const query = this.searchForm.get('search').value;
+    // const descendants = this.extractDescendantsFromParameters();
     if (!(query === this.query)) {
       // Add the following conditions if we don't reset aggregations on new search anymore && (
       //       (options.criteria === this.aggregationCriteria)
@@ -144,7 +161,7 @@ export class SearchComponent implements OnInit {
    */
   navigateToPage(requestedPage: number) {
     this.setPleaseWaitWidgetsOn();
-    this.search({query: this.query, page: requestedPage, criteria: this.aggregationCriteria});
+    this.search({query: this.query, page: requestedPage, criteria: this.aggregationCriteria, descendants: this.searchDescendants});
   }
 
   collectionSize() {
@@ -159,7 +176,12 @@ export class SearchComponent implements OnInit {
   updateSearchWithAggregation(criteria: Array<AggregationCriterion>) {
     this.aggregationCriteria = criteria;
     this.setPleaseWaitWidgetsOn(true);
-    this.search({query: this.query, criteria: this.aggregationCriteria});
+    this.search({query: this.query, criteria: this.aggregationCriteria, descendants: this.searchDescendants});
+  }
+
+  updateSearchWithDescendants(event: boolean) {
+    this.searchDescendants = event;
+    this.search({query: this.query, criteria: this.aggregationCriteria, descendants: this.searchDescendants});
   }
 
   toggleFilters() {
@@ -170,11 +192,11 @@ export class SearchComponent implements OnInit {
    * Internal method called to update the URL with the new parameters (query, page, criteria).
    * It accepts a search options object with one mandatory field (the query) and optional ones (page, criteria)
    */
-  private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion> }) {
-
+  private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion>, descendants?: boolean }) {
     const queryParams: { [key: string]: string | Array<string> } = {
       query: options.query,
-      page: options.page ? options.page.toString() : undefined
+      page: options.page ? options.page.toString() : undefined,
+      descendants: options.descendants ? options.descendants.toString() : 'false'
     };
     // we iterate over each criteria if necessary
     if (options.criteria) {

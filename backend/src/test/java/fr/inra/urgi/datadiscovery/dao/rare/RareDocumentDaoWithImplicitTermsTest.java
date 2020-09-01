@@ -91,10 +91,10 @@ class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
+            documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(2);
 
-        result = documentDao.search("bing", false, SearchRefinements.EMPTY, firstPage);
+        result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
     }
 
@@ -140,7 +140,7 @@ class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.aggregate("foo", SearchRefinements.EMPTY);
+            documentDao.aggregate("foo", SearchRefinements.EMPTY, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());

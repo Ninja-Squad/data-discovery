@@ -14,9 +14,11 @@ import { NULL_VALUE } from '../models/document.model';
 export class SmallAggregationComponent implements OnInit {
 
   @Input() aggregation: Aggregation;
+  @Input() searchDescendants: boolean;
   private _selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or remove a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  @Output() searchDescendantsChange = new EventEmitter<boolean>();
 
   aggregationForm: FormGroup = new FormGroup({});
 
@@ -87,5 +89,10 @@ export class SmallAggregationComponent implements OnInit {
 
   displayableKey(key: string): string {
     return key === NULL_VALUE ? 'Aucun' : key;
+  }
+
+  onSearchDescendants(event: boolean) {
+    this.searchDescendants = event;
+    this.searchDescendantsChange.emit(event);
   }
 }

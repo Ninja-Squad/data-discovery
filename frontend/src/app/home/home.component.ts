@@ -29,7 +29,8 @@ export class HomeComponent implements OnInit {
   search() {
     this.router.navigate(['/search'], {
       queryParams: {
-        query: this.searchForm.get('search').value
+        query: this.searchForm.get('search').value,
+        descendants: false
       }
     });
   }

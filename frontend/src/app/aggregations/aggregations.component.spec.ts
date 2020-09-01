@@ -12,6 +12,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('AggregationsComponent', () => {
@@ -43,7 +44,8 @@ describe('AggregationsComponent', () => {
       LargeAggregationComponent,
       AggregationNamePipe,
       DocumentCountComponent,
-      LoadingSkeletonComponent
+      LoadingSkeletonComponent,
+      DescendantsCheckboxComponent
     ]
   }));
 

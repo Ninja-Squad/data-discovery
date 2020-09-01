@@ -57,10 +57,10 @@ class SearchControllerTest {
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
-        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
-        mockMvc.perform(get("/api/search").param("query", query))
+        mockMvc.perform(get("/api/search").param("query", query).param("descendants", "false"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
                .andExpect(jsonPath("$.maxResults").value(SearchController.MAX_RESULTS))
@@ -94,7 +94,7 @@ class SearchControllerTest {
         // return aggregations in a random order
         Collections.shuffle(aggregations);
 
-        when(mockDocumentDao.aggregate(query,  SearchRefinements.EMPTY))
+        when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, false))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(resource),
                 pageRequest,
@@ -118,7 +118,8 @@ class SearchControllerTest {
         ResultActions resultActions =
             mockMvc.perform(get("/api/aggregate")
                                                           .param("query", query)
-                                                          .param("aggregate", "true"))
+                                                          .param("aggregate", "true")
+                                                          .param("descendants", "false"))
                    .andExpect(status().isOk())
                    .andExpect(jsonPath("$.number").value(0))
                    .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
@@ -152,12 +153,13 @@ class SearchControllerTest {
                              .withTerm(RareAggregation.MATERIAL, Arrays.asList("m1"))
                              .build();
 
-        when(mockDocumentDao.search(query, false, expectedRefinements, pageRequest))
+        when(mockDocumentDao.search(query, false, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
         mockMvc.perform(get("/api/search")
                             .param("query", query)
                             .param("page", "1")
+                            .param("descendants", "false")
                             .param(RareAggregation.DOMAIN.getName(), "d1")
                             .param(RareAggregation.BIOTOPE.getName(), "b2", "b1")
                             .param(RareAggregation.MATERIAL.getName(), "m1"))
@@ -171,7 +173,8 @@ class SearchControllerTest {
 
         mockMvc.perform(get("/api/search")
                             .param("query", query)
-                            .param("page", Integer.toString(page)))
+                            .param("page", Integer.toString(page))
+                            .param("descendants", "false"))
                .andExpect(status().isBadRequest());
     }
 }

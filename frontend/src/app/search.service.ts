@@ -19,11 +19,12 @@ export class SearchService {
    */
   search(query: string,
          aggregationCriteria: Array<AggregationCriterion>,
-         pageAsNumber: number): Observable<AggregatedPage<DocumentModel>> {
+         pageAsNumber: number,
+         descendants: boolean): Observable<AggregatedPage<DocumentModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = (pageAsNumber - 1).toString();
     // we built the search parameters
-    const params: { [key: string]: string | Array<string> } = { query, page, highlight: 'true' };
+    const params: { [key: string]: string | Array<string> } = { query, page, highlight: 'true', descendants: String(descendants) };
 
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {
@@ -38,11 +39,11 @@ export class SearchService {
    * Aggregates documents for the given query (full-text search), and return an Aggregated page with aggregations and without results
    */
   aggregate(query: string,
-         aggregationCriteria: Array<AggregationCriterion>): Observable<AggregatedPage<DocumentModel>> {
+         aggregationCriteria: Array<AggregationCriterion>,
+            descendants: boolean): Observable<AggregatedPage<DocumentModel>> {
 
     // we built the search parameters
-    const params: { [key: string]: string | Array<string> } = { query };
-
+    const params: { [key: string]: string | Array<string> } = { query, descendants: String(descendants) };
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {
       aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);

@@ -18,6 +18,7 @@ import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
 public enum WheatisAggregation implements AppAggregation {
     SPECIES("species", "species.keyword", LARGE),
     ENTRY_TYPE("entry", "entryType.keyword", LARGE),
+    GO_ANNOTATION("annot", "annotationName.keyword", LARGE),
     DATABASE_NAME("db", "databaseName.keyword", LARGE),
     NODE("node", "node.keyword", SMALL);
 

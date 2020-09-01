@@ -32,10 +32,12 @@ public final class WheatisDocument implements SearchDocument {
     private final String entryType;
     private final String databaseName;
     private final String url;
-
     private final List<String> species;
     private final String node;
     private final String description;
+    private final List<String> annotationId;
+    private final List<String> annotationName;
+    private final List<String> ancestors;
 
     @JsonCreator
     public WheatisDocument(String id,
@@ -45,7 +47,10 @@ public final class WheatisDocument implements SearchDocument {
 						   String url,
 						   List<String> species,
 						   String node,
-						   String description) {
+						   String description,
+                           List<String> annotationId,
+                           List<String> annotationName,
+                           List<String> ancestors) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -54,6 +59,9 @@ public final class WheatisDocument implements SearchDocument {
         this.species = nullSafeUnmodifiableCopy(species);
         this.node = node;
         this.description = description;
+        this.annotationId = annotationId;
+        this.annotationName = annotationName;
+        this.ancestors = ancestors;
     }
 
     public WheatisDocument(Builder builder) {
@@ -64,7 +72,10 @@ public final class WheatisDocument implements SearchDocument {
              builder.url,
              builder.species,
              builder.node,
-             builder.description);
+             builder.description,
+             builder.annotationId,
+             builder.annotationName,
+             builder.ancestors);
     }
 
     @Override
@@ -100,6 +111,12 @@ public final class WheatisDocument implements SearchDocument {
     public String getDescription() {
         return description;
     }
+
+    public List<String> getAnnotationId() {return annotationId; }
+
+    public List<String> getAnnotationName() {return annotationName; }
+
+    public List<String> getAncestors() {return ancestors; }
 
     @Override
     public boolean equals(Object o) {
@@ -157,6 +174,10 @@ public final class WheatisDocument implements SearchDocument {
         private List<String> species = Collections.emptyList();
         private String node;
         private String description;
+        private List<String> annotationId;
+        private List<String> annotationName;
+        public List<String> ancestors;
+
         private Builder() {
         }
 
@@ -169,6 +190,9 @@ public final class WheatisDocument implements SearchDocument {
             this.species = document.getSpecies();
             this.node = document.getNode();
             this.description = document.getDescription();
+            this.annotationId = document.getAnnotationId();
+            this.annotationName = document.getAnnotationName();
+            this.ancestors = document.getAncestors();
         }
 
         public Builder withId(String id) {
@@ -208,6 +232,21 @@ public final class WheatisDocument implements SearchDocument {
 
         public Builder withDescription(String description) {
             this.description = description;
+            return this;
+        }
+
+        public Builder withAnnotationName(List<String> annotationName) {
+            this.annotationName = annotationName;
+            return this;
+        }
+
+        public Builder withAnnotationId(List<String> annotationId) {
+            this.annotationId = annotationId;
+            return this;
+        }
+
+        public Builder withAncestors(List<String> ancestors) {
+            this.ancestors = ancestors;
             return this;
         }
 

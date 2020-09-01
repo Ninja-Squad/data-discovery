@@ -15,6 +15,8 @@ export class AggregationsComponent {
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
   @Input() aggLoading = false;
   @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
+  @Output() searchDescendantsChange = new EventEmitter<boolean>();
+  @Input() searchDescendants: boolean;
 
   /**
    * Extracts the selected criteria for the aggregation.
@@ -24,6 +26,7 @@ export class AggregationsComponent {
    */
   selectedKeysForAggregation(name: string): Array<string> {
     if (this.selectedCriteria.length) {
+      this.searchDescendantsChange.emit(this.searchDescendants);
       const matchingCriteria = this.selectedCriteria.find(criteria => criteria.name === name);
       if (matchingCriteria) {
         return matchingCriteria.values;
@@ -58,4 +61,5 @@ export class AggregationsComponent {
     }
     this.aggregationsChange.emit(this.selectedCriteria);
   }
+
 }

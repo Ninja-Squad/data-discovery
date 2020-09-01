@@ -38,10 +38,12 @@
     <h2 class="sr-only" translate="search.filters">Filters</h2>
     <dd-aggregations *ngIf="aggregations"
                      [aggregations]="aggregations"
+                     [searchDescendants]="searchDescendants"
                      [aggLoading]="aggLoading"
                      [selectedCriteria]="aggregationCriteria"
-                     (aggregationsChange)="updateSearchWithAggregation($event)">
-    </dd-aggregations>
+                     (aggregationsChange)="updateSearchWithAggregation($event)"
+                     (searchDescendantsChange)="updateSearchWithDescendants($event)"
+    ></dd-aggregations>
   </div>
   <div class="col-12 col-md-8 col-lg-9">
 

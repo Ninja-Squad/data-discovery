@@ -57,6 +57,9 @@ class SearchControllerDocTest {
     private static final ParameterDescriptor AGGREGATE_PARAM =
         parameterWithName("aggregate")
             .description("If true, aggregations are computed and returned.");
+    private static final ParameterDescriptor DESCENDANTS_PARAM =
+        parameterWithName("descendants")
+            .description("If true, a query searching in the children of the node (of an ontology, ie. GO) is launched and the results are returned.");
 
     @MockBean
     private RareDocumentDao mockDocumentDao;
@@ -131,13 +134,16 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, 2));
 
-        mockMvc.perform(docGet("/api/search").param("query", query))
+        mockMvc.perform(docGet("/api/search").param("query", query).param("descendants", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/fulltext",
-                               requestParameters(QUERY_PARAM),
+                               requestParameters(
+                                       QUERY_PARAM,
+                                       DESCENDANTS_PARAM
+                               ),
                                responseFields(
                                    fieldWithPath("number").description("The number of the page, starting at 0"),
                                    fieldWithPath("size").description("The size of the page"),
@@ -155,15 +161,16 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(page, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(syrah, dorato), pageRequest, SearchController.PAGE_SIZE * page + 2));
 
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
-                            .param("page", Integer.toString(page)))
+                            .param("page", Integer.toString(page))
+                            .param("descendants", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/page",
-                               requestParameters(QUERY_PARAM, PAGE_PARAM)));
+                               requestParameters(QUERY_PARAM, PAGE_PARAM, DESCENDANTS_PARAM)));
     }
 
     @Test
@@ -171,15 +178,16 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, true, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, true, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(highlightedSyrah, highlightedDorato), pageRequest, 2));
 
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
-                            .param("highlight", "true"))
+                            .param("highlight", "true")
+                            .param("descendants", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/highlight",
-                               requestParameters(QUERY_PARAM, HIGHLIGHT_PARAM)));
+                               requestParameters(QUERY_PARAM, HIGHLIGHT_PARAM, DESCENDANTS_PARAM)));
     }
 
     @Test
@@ -188,7 +196,7 @@ class SearchControllerDocTest {
         PageRequest pageRequest = PageRequest.of(page, SearchController.PAGE_SIZE);
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(syrah, dorato),
                 pageRequest,
@@ -214,10 +222,11 @@ class SearchControllerDocTest {
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
                             .param("page", Integer.toString(page))
-                            .param("aggregate", "true"))
+                            .param("aggregate", "true")
+                            .param("descendants", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/aggregate",
-                               requestParameters(QUERY_PARAM, PAGE_PARAM, AGGREGATE_PARAM),
+                               requestParameters(QUERY_PARAM, PAGE_PARAM, AGGREGATE_PARAM, DESCENDANTS_PARAM),
                                responseFields(
                                    fieldWithPath("number").ignored(),
                                    fieldWithPath("size").ignored(),
@@ -248,17 +257,18 @@ class SearchControllerDocTest {
                              .withTerm(RareAggregation.COUNTRY_OF_ORIGIN, Arrays.asList("France", "Italy"))
                              .build();
 
-        when(mockDocumentDao.search(query, false, expectedRefinements, pageRequest))
+        when(mockDocumentDao.search(query, false, false, expectedRefinements, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Collections.emptyList(), pageRequest, 1));
 
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
+                            .param("descendants", "false")
                             .param(RareAggregation.DOMAIN.getName(), "Plantae")
                             .param(RareAggregation.COUNTRY_OF_ORIGIN.getName(), "France", "Italy"))
                .andExpect(status().isOk())
                .andDo(document("search/filter",
                                requestParameters(
-                                   QUERY_PARAM,
+                                   QUERY_PARAM, DESCENDANTS_PARAM,
                                    parameterWithName(RareAggregation.DOMAIN.getName()).description("The accepted values for the " + RareAggregation.DOMAIN.getName() + " aggregation's corresponding property (`domain`)"),
                                    parameterWithName(RareAggregation.COUNTRY_OF_ORIGIN.getName()).description("The accepted values for the " + RareAggregation.COUNTRY_OF_ORIGIN.getName() + " aggregation's corresponding property (`countryOfOrigin`)"))));
     }

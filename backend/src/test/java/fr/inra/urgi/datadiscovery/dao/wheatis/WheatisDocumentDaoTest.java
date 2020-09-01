@@ -140,8 +140,9 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
         assertThat(documentDao.search("bar",
                 false,
-                                             SearchRefinements.EMPTY,
-                                             firstPage).getContent()).isEmpty();
+                false,
+                SearchRefinements.EMPTY,
+                firstPage).getContent()).isEmpty();
     }
 
     @Test
@@ -163,11 +164,11 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.search("bar", false, SearchRefinements.EMPTY, firstPage);
+            documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getAggregations()).isNull();
 
-        result = documentDao.search("bing", false, SearchRefinements.EMPTY, firstPage);
+        result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
     }
 
@@ -195,7 +196,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.aggregate("foo",  SearchRefinements.EMPTY);
+            documentDao.aggregate("foo", SearchRefinements.EMPTY, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms databaseName = result.getAggregations().get(WheatisAggregation.DATABASE_NAME.getName());
@@ -241,7 +242,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.aggregate("bar",  SearchRefinements.EMPTY);
+            documentDao.aggregate("bar",  SearchRefinements.EMPTY, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms aggregation = result.getAggregations().get(wheatisAggregation.getName());
@@ -330,8 +331,9 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
         AggregatedPage<WheatisDocument> result = documentDao.search("comes sun",
                 true,
-                                                                                  SearchRefinements.EMPTY,
-                                                                                  firstPage);
+                false,
+                SearchRefinements.EMPTY,
+                firstPage);
 
         assertThat(result.getContent())
             .extracting(WheatisDocument::getDescription)
@@ -359,6 +361,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
         AggregatedPage<WheatisDocument> result = documentDao.search("blé",
                 true,
+                true,
                 SearchRefinements.EMPTY,
                 firstPage);
 
@@ -369,34 +372,42 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
     }
 
     @Nested
+    @DisplayName("Test group for refinement / aggregations")
     class RefinementTest {
         @BeforeEach
         void prepare() {
             WheatisDocument document1 = WheatisDocument.builder()
-                                                                            .withId("r1")
-                                                                            .withNode("URGI")
-                                                                            .withDatabaseName("Evoltree")
-                                                                            .withEntryType("Marker")
-                                                                            .withSpecies(Collections.singletonList("Pinus banksiana"))
-                                                                            .withDescription("hello world")
-                                                                            .build();
+                                                                 .withId("r1")
+                                                                 .withNode("URGI")
+                                                                 .withDatabaseName("Evoltree")
+                                                                 .withEntryType("Marker")
+                                                                 .withSpecies(Collections.singletonList("Pinus banksiana"))
+                                                                 .withDescription("hello world")
+                                                                 .withAnnotationId(Collections.singletonList("GO:1234567"))
+                                                                 .withAnnotationName(Collections.singletonList("blah (GO:1234567)"))
+                                                                 .build();
 
             WheatisDocument document2 = WheatisDocument.builder()
-                                                                            .withId("r2")
-                                                                            .withNode("URGI")
-                                                                            .withDatabaseName("GnpIS")
-                                                                            .withEntryType("QTL")
-                                                                            .withSpecies(Collections.singletonList("Quercus robur"))
-                                                                            .withDescription("hello world")
-                                                                            .build();
+                                                                 .withId("r2")
+                                                                 .withNode("URGI")
+                                                                 .withDatabaseName("GnpIS")
+                                                                 .withEntryType("QTL")
+                                                                 .withSpecies(Collections.singletonList("Quercus robur"))
+                                                                 .withDescription("hello world")
+                                                                 .withAnnotationId(Collections.singletonList("GO:1234567"))
+                                                                 .withAnnotationName(Collections.singletonList("blah (GO:1234567)"))
+                                                                 .build();
 
             WheatisDocument document3 = WheatisDocument.builder()
-                                                                            .withId("r3")
-                                                                            .withNode("URGI")
-                                                                            .withDatabaseName("GnpIS")
-                                                                            .withEntryType("QTL")
-                                                                            .withDescription("hello world")
-                                                                            .build();
+                                                                 .withId("r3")
+                                                                 .withNode("URGI")
+                                                                 .withDatabaseName("GnpIS")
+                                                                 .withEntryType("QTL")
+                                                                  .withDescription("hello world")
+                                                                 .withAnnotationId(Collections.singletonList("GO:8888"))
+                                                                 .withAnnotationName(Collections.singletonList("bad blah (GO:8888888)"))
+                                                                 .withAncestors(Collections.singletonList("GO:1234567/GO:8888888"))
+                                                                 .build();
 
             documentDao.saveAll(Arrays.asList(document1, document2, document3));
             documentDao.refresh();
@@ -410,7 +421,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<WheatisDocument> result =
-                documentDao.search("hello", false, refinements, firstPage);
+                documentDao.search("hello", false, false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r1");
 
@@ -418,14 +429,14 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                            .withTerm(WheatisAggregation.DATABASE_NAME, Arrays.asList("unexisting", "GnpIS"))
                                            .build();
             result =
-                documentDao.search("hello", false, refinements, firstPage);
+                documentDao.search("hello", false, false, refinements, firstPage);
             assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r2", "r3");
 
             refinements = SearchRefinements.builder()
                                            .withTerm(WheatisAggregation.NODE, Arrays.asList("unexisting"))
                                            .build();
             result =
-                documentDao.search("hello", false, refinements, firstPage);
+                documentDao.search("hello", false, false, refinements, firstPage);
             assertThat(result.getContent()).extracting(WheatisDocument::getId).isEmpty();
         }
 
@@ -437,10 +448,30 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<WheatisDocument> result =
-                documentDao.search("hello", false, refinements, firstPage);
+                documentDao.search("hello", false, false, refinements, firstPage);
 
             assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r3");
         }
+
+
+        @Test
+        void shouldApplyRefinementsOnAnnotationWithOrWithoutDescendants() {
+
+            SearchRefinements refinements =
+                    SearchRefinements.builder()
+                            .withTerm(WheatisAggregation.GO_ANNOTATION, Arrays.asList("blah (GO:1234567)"))
+                            .build();
+
+            AggregatedPage<WheatisDocument> result =
+                    documentDao.search("hello", false, false, refinements, firstPage);
+
+            assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r1", "r2");
+
+            result =
+                    documentDao.search("hello", false, true, refinements, firstPage);
+            assertThat(result.getContent()).extracting(WheatisDocument::getId).containsOnly("r1", "r2", "r3");
+        }
+
     }
 
 }
