@@ -47,7 +47,6 @@ The indexing process depends on the following tools, you need to have them insta
 - GNU GZIP: <https://git.savannah.gnu.org/cgit/gzip.git>
 - GNU Bash v4+: <https://www.gnu.org/software/bash/>
 
-To set up a develepoment enviroment using docker-compose, you need to install docker-compose 1.19+: <https://docs.docker.com/compose/install/>
 
 ### Data handling
 
