@@ -25,8 +25,8 @@ def to_bulk($identifier):
     .[] |
         if has($identifier) then
             . |= { "index": { "_id": ( .[$identifier] | to_string)}}, . # add a bulk header with value of field 'identifier' to the object
-        elif ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + (.species?|to_string) + "#" + .entryType? + "#" + .databaseName? + "#" + (.url?|to_string) != "#####") then
-            . |= { "index": { "_id": ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + (.species?|to_string) + "#" + .entryType? + "#" +  .databaseName? + "#" + (.url?|to_string)) }}, . # add a bulk header with custom _id to the object
+        elif ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + .entryType? + "#" + .databaseName? + "#" + (.url?|to_string) + "#" + (.species?|to_string) != "#####") then
+            . |= { "index": { "_id": ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + .entryType? + "#" +  .databaseName? + "#" + (.url?|to_string) + "#" + (.species?|to_string)) | .[:511] }}, . # add a bulk header with custom _id to the object but truncate up to 511 characters to avoid ES exception ID too long, limited to 512
         else
             . |= { "index": { }}, . # add a default bulk header to the object
         end
