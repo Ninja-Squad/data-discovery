@@ -168,7 +168,8 @@ export -f index_resources index_suggestions
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
 		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment"
-	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '\033[0;31mERROR found indexing in {}' ;" ::: ${OUTDIR}/*.log.gz
+	parallel "gunzip -c {} | jq '.errors' | grep -q true && echo -e '\033[0;31mERROR related to data found when indexing {}' ;" ::: ${OUTDIR}/*.log.gz
+	parallel "gunzip -c {} | jq '.error? | length == 0' | grep -q false && echo -e '\033[0;31mERROR related to Elasticsearch API usage found when indexing {}' ;" ::: ${OUTDIR}/*.log.gz
 	exit $code
 }
 # check all JQ err files...
