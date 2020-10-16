@@ -8,4 +8,4 @@ The current version has been developed in the frame of several projets: [**trans
 In particular, it has been upgraded by [INRAE-URGI](https://urgi.versailles.inrae.fr/) with the help of the [Ninja Squad](https://ninja-squad.com/) team using up-to-date technologies, improved code and packaging.
 
 The web portal indexes and makes findable any kind of data from any species.
-If you want your information system to be referenced, please read the JOIN section and [contact us](mailto:urgi-contact@inrae.fr?subject=%5BData%20Discovery%5D).
+If you want your information system to be referenced, please read the JOIN section and [contact us](mailto:urgi-data@inrae.fr?subject=%5BData%20Discovery%5D).

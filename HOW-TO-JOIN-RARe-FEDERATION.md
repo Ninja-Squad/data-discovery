@@ -2,7 +2,7 @@
 
 If you want your information system to be referenced, you have to provide [TSV](#tsv-tabulation-separated-values) or [JSON](#json-javascript-object-notation) files with metadata only.
 The metadata format must follow the indications below (see [Data Specifications](#data-specifications)).
-We invite you to [contact us](mailto:urgi-contact@inrae.fr?subject=%5BRARe%20portal%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
+We invite you to [contact us](mailto:urgi-data@inrae.fr?subject=%5BRARe%20portal%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, a URL allowing researchers to get more detailed information about the indexed entry directly in your information system is needed.
 
@@ -41,7 +41,7 @@ It can differ from one entry to another if you handle several information system
 
 ### portalURL
 
-URL to access to the website of the `databaseSource` (information system from which the entry was extracted).
+URL to access to the website of the information system from which the entry was extracted (`databaseSource`).
 It must be a valid URL that backlinks to your own information system.
 
 | Status | Cardinality | Constraints |
@@ -87,7 +87,7 @@ It is therefore not necessary to add them explicitly in the description.
 
 ### dataURL
 
-URL to access to the entity information on the website of the `databaseSource` (database from which the entry was extracted).
+URL to access to the entity information on the website of the database from which the entry was extracted (`databaseSource`).
 It must be a valid URL that backlinks to the entry in your own information system.
 
 | Status | Cardinality | Constraints |
@@ -116,7 +116,7 @@ The value is constrained. You must use one of the following values, the one fitt
 
 ### taxon
 
-Genus or species (in the binomial form) of the entity, without the author abbreviation (_e.g._ Populus, Vitis vinifera).
+Genus or species (in the binomial form) of the entity, without the author abbreviation (_e.g._ _Populus_, _Vitis vinifera_).
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -226,10 +226,11 @@ It must be part of a decimal degrees format (_e.g._ `-53` for `3.9988889,-53` co
 
 ### accessionHolder
 
-The name of the BRC responsible to distribute the resource, if available. In some cases, it can be the same as the `databaseSource`. In other cases, it can differ, epecially when the holders of a same BRC are distributed in geographically distinct sites.
-This optional field is used mainly for ordering genetic resources, it allows to know the holder of the accession to contact.
+The name of the BRC in charge of the resource distribution. In some cases, it can be the same as the `databaseSource`. In other cases, it can differ, epecially when the holders of a same BRC are distributed in geographically distinct sites.
+This optional field is used to order genetic resources, it allows us to know the holder of the accession to contact.
 
-Since the value is used to link with the accession holder, it is constrained. You should use one of the following values. If your accession holder is missing, please ask us to add it:
+Since the value is used to link the accession to its holder, it is constrained. You should use one of the following values.
+If your BRC is missing, please ask us to add it:
 
 - CBGP
 - Colisa
