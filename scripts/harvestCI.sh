@@ -143,18 +143,18 @@ export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
+            | jq -c '.[] | .name = (.name|tostring) | [.]' 2>> ${OUTDIR}/$2.jq.err \
             | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
-            | jq -c '.name = (.name|tostring)' 2>> ${OUTDIR}/$2.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
-                --data-binary '@-' > ${OUTDIR}/$2.log.gz "
+                --data-binary '@-' > ${OUTDIR}/$2-resources.log.gz "
 }
 
 index_suggestions() {
     bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
-                --data-binary '@$1' > ${OUTDIR}/$2.log.gz"
+                --data-binary '@$1' > ${OUTDIR}/$2-suggestions.log.gz"
 }
 
 export -f index_resources index_suggestions
