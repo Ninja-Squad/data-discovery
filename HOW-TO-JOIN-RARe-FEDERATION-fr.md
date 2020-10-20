@@ -32,7 +32,7 @@ Cette valeur est contrainte. Vous devez utiliser l'une des valeurs suivantes :
 
 ### databaseSource
 
-Nom de la base de données à patir de laquelle les entités sont extraites.
+Nom de la base de données à partir de laquelle les entités sont extraites.
 Ce nom peut différer d'une entité à l'autre au sein de vos données si vous les extrayez de systèmes d'information différents.
 
 | Statut | Cardinalité | Contraintes |
@@ -42,7 +42,7 @@ Ce nom peut différer d'une entité à l'autre au sein de vos données si vous l
 ### portalURL
 
 L'URL permettant d'accéder au site web du système d'information source duquel l'entité a été extraite (`databaseSource`).
-L'URL doit être valide car elle permet de revoyer vers votre système d'information.
+L'URL doit être valide car elle permet de renvoyer vers votre système d'information.
 
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
