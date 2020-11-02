@@ -47,6 +47,7 @@ The indexing process depends on the following tools, you need to have them insta
 - GNU GZIP: <https://git.savannah.gnu.org/cgit/gzip.git>
 - GNU Bash v4+: <https://www.gnu.org/software/bash/>
 
+
 ### Data handling
 
 At the moment, all data is located next to the code in the `data` directory. If you want to have a look at the code only, you can ignore this directory at git clone step by setting the variable `GIT_LFS_SKIP_SMUDGE=1`, ie.:

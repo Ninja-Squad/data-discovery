@@ -66,12 +66,13 @@
 
 - Git LFS is used to store with the application the JSON data ready to be loaded in elasticsearch. If you clone the repository without installing git LFS, the data will not be cloned. To get the JSON data, you must install git LFS (look at [how to install](https://git-lfs.github.com/)).
 - Another dedicated Git LFS project (internal only) will be created to handle all private + public JSON files
-- the JSON files generation is handled by an external ET (extract/transform) tool, only per-app suggestions are generated here using `./scripts/createSuggestions.sh`.
+- The JSON files generation is handled by an external ET (extract/transform) tool, only per-app suggestions are generated here using `./scripts/createSuggestions.sh`.
+- To use docker-compose for indexing the JSONs locally, you need to install docker-compose 1.19+: <https://docs.docker.com/compose/install/>
 
 ## Development environment
 
 - Look at the [README.md](README.md) for installation and execution instructions.
-- Recommanded IDE are [Visual Studio Code](https://code.visualstudio.com/) or [Intellij IDEA](https://www.jetbrains.com/idea/)
+- Recommanded IDE is [Intellij IDEA](https://www.jetbrains.com/idea/)
 - Use linting to apply code standards within the team:
   - Use `ng lint` (for frontend code only)
   - Use [Checkstyle](https://checkstyle.org/) and [PMD](https://pmd.github.io/) (**TODO**: implement) for backend (+frontend?) code
