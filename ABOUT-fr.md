@@ -9,4 +9,4 @@ En particulier, il a été adapté par les équipes de l'[INRAE-URGI](http://urg
 
 Le portail web indexe et rend trouvables n'importe quel type de données associées à n'importe quelle espèce.
 
-Si vous souhaitez que votre système d'information soit référencé, veuillez lire la section JOIN et nous [contacter](mailto:urgi-contact@inrae.fr?subject=%5BData%20Discovery%5D).
+Si vous souhaitez que votre système d'information soit référencé, veuillez lire la section JOIN et nous [contacter](mailto:urgi-data@inrae.fr?subject=%5BData%20Discovery%5D).

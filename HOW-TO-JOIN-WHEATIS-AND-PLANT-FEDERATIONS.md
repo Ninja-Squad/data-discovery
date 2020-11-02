@@ -1,6 +1,6 @@
 # How to join the wheatIS and/or the Plant federations of searchable data?
 
-If you want your information system to be referenced, you have to provide [TSV](#tsv-tabulation-separated-values) or [JSON](#json-javascript-object-notation) files with metadata only. The metadata format must follow the indications below and we invite you to [contact us](mailto:urgi-contact@inrae.fr?subject=%5BWheatIS%2FData%20Discovery%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
+If you want your information system to be referenced, you have to provide [TSV](#tsv-tabulation-separated-values) or [JSON](#json-javascript-object-notation) files with metadata only. The metadata format must follow the indications below and we invite you to [contact us](mailto:urgi-data@inrae.fr?subject=%5BWheatIS%2FData%20Discovery%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 Note that since the tool makes a backlink to your information system, we need a URL allowing researchers to get detailed information about the indexed entry directly in your information system.
 

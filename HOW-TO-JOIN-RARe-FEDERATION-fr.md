@@ -2,22 +2,23 @@
 
 Si vous souhaitez que votre système d'information soit référencé, vous devez fournir des fichiers [TSV](#tsv-tabulation-separated-values) ou [JSON](#json-javascript-object-notation) avec uniquement les métadonnées nécessaires.
 Le format des métadonnées doit suivre les indications ci-dessous (voir [Specifications des données](#spécifications-de-données)).
-Nous vous invitons à [nous contacter](mailto:urgi-contact@inrae.fr?subject=%5BRARe%20portal%5D) dès que possible pour que l'on puisse vous guider et discuter du meilleur moyen d'avancer.
-Veuillez noter que puisque l'outil présente des hyperliens vers votre système d'information, une URL, permettant aux utilisateurs d'obtenir des informations détaillées sur les données indexées, est nécessaire.
+Nous vous invitons à [nous contacter](mailto:urgi-data@inrae.fr?subject=%5BRARe%20portal%5D) dès que possible pour que nous puissions vous aider et discuter ensemble du meilleur moyen d'avancer.
+
+Veuillez noter que puisque l'outil affiche des liens vers votre système d'information, une URL permettant aux utilisateurs d'obtenir des informations détaillées sur les données indexées est nécessaire.
 
 ## Spécifications de données
 
 Soyez conscient que toutes les données que vous nous fournissez doivent être en accès libre.
 
-Une entité (document) doit être créé pour chaque objet recherchable.
+Une entité (document) doit être créée pour chaque objet recherchable.
 Chaque entité (document) est décrite avec les champs suivants :
 
 ### pillarName
 
 Nom de votre pilier.
-Il doit être le même pour toutes les entités que vous gérez.
+Il doit être identique pour toutes les entités que vous gérez.
 
-Cette valeur est contrôlée. Vous devez utiliser l'une de ces valeurs :
+Cette valeur est contrainte. Vous devez utiliser l'une des valeurs suivantes :
 
 - Pilier Animal
 - Pilier Environnement
@@ -31,8 +32,8 @@ Cette valeur est contrôlée. Vous devez utiliser l'une de ces valeurs :
 
 ### databaseSource
 
-Nom de la base de données de laquelle les entités sont extraites.
-Ce nom peut différer d'une entité à l'autre parmi vos données si vous les extrayez de systèmes d'information différents.
+Nom de la base de données à partir de laquelle les entités sont extraites.
+Ce nom peut différer d'une entité à l'autre au sein de vos données si vous les extrayez de systèmes d'information différents.
 
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
@@ -40,8 +41,8 @@ Ce nom peut différer d'une entité à l'autre parmi vos données si vous les ex
 
 ### portalURL
 
-L'URL permettant d'accéder au site web du système d'information source duquel l'entité a été extraite (``databaseSource``).
-Ce doit être une URL valide qui permet de retourner vers votre système d'information.
+L'URL permettant d'accéder au site web du système d'information source duquel l'entité a été extraite (`databaseSource`).
+L'URL doit être valide car elle permet de renvoyer vers votre système d'information.
 
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
@@ -50,7 +51,7 @@ Ce doit être une URL valide qui permet de retourner vers votre système d'infor
 ### identifier
 
 L'identifiant de votre entité.
-Il est utilisé pour identifier précisément l'entité parmi toutes les données ; il n'est pas affiché dans l'interface de recherche. Vous devez vous assurer qu'il est unique dans vos données et il sera complété lors de l'indexation pour le rendre unique au sein de toutes les données du portail web.
+Il est utilisé pour identifier précisément et de manière unique l'entité parmi toutes les données ; il n'est pas affiché dans l'interface de recherche. Vous devez vous assurer qu'il est unique au sein de votre jeu de données et il sera complété lors de l'indexation pour être rendu unique parmi l'ensemble des données du portail.
 
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
@@ -59,7 +60,7 @@ Il est utilisé pour identifier précisément l'entité parmi toutes les donnée
 ### name
 
 Le nom de l'entité.
-Cette valeur doit être unique au sein de votre jeu de données, et suffisamment claire pour aider les utilisateurs à identifier en un coup d'œil cette entité parmi les autres.
+Cette valeur doit être unique au sein de votre jeu de données et suffisamment claire pour aider les utilisateurs à identifier en un coup d'œil cette entité parmi les autres.
 
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
@@ -68,16 +69,16 @@ Cette valeur doit être unique au sein de votre jeu de données, et suffisamment
 ### description
 
 Description de l'entité.
-Ce champ doit contenir tous les mots pertinents permettant de trouver votre entité et pour savoir à quoi elle correspond.
+Ce champ doit contenir tous les mots clés pertinents pour pouvoir trouver votre entité et pour savoir à quoi elle correspond.
 
 C'est le champ le plus important pour la découvrabilité des données puisque c'est le principal champ utilisé pour rechercher les termes entrés par les utilisateurs.
-Il vous revient de fournir la description la plus pertinente pour permettre de trouver l'entité, mais gardez en tête que la plus précise et concise est la description, meilleur sera le classement dans les résultats de recherche.
+Il vous revient de fournir la description la plus pertinente pour trouver l'entité, mais gardez en tête que plus la description sera précise et concise, meilleur sera le classement dans les résultats de recherche.
 
 L'outil de recherche repose sur Elasticsearch. Ce dernier s'appuie sur des index Apache Lucene dont le classement est fonction d'un ratio entre la fréquence des termes recherchés par rapport à la fréquence inverse des documents (l'algorithme utilisé à ce jour est le BM25).
-Cela signifie qu'une entité ayant une description avec le terme recherché apparaissant plusieurs fois dans la description mais dont le même terme est rare dans le reste du corpus, sera très probablement retourné avec un meilleur score.
-Vous pourrez obtenir de plus amples informations sur le fonctionnement de la [similarité dans Elasticsearch (EN)](https://www.elastic.co/blog/found-similarity-in-elasticsearch).
+Cela signifie que si le terme recherché est contenu plusieurs fois dans la description d'une entité mais qu'il est rare dans le reste du corpus, cette entité sera très probablement retournée avec un meilleur score.
+Vous pouvez obtenir de plus amples informations sur ce fonctionnement en suivant le lien suivant : [similarité dans Elasticsearch (EN)](https://www.elastic.co/blog/found-similarity-in-elasticsearch).
 
-Cependant, soyez conscient que le contenu des autres champs peuvent aussi être utilisés pour la recherche.
+Cependant, soyez conscient que le contenu des autres champs (nom de l'entrée, espèce etc...) peuvent également être utilisés pour la recherche.
 Il n'est donc pas nécessaire de les ajouter explicitement dans la description.
 
 | Statut | Cardinalité | Contraintes |
@@ -86,8 +87,8 @@ Il n'est donc pas nécessaire de les ajouter explicitement dans la description.
 
 ### dataURL
 
-L'URL permettant d'accéder à l'entité sur le site web de la `databaseSource` (base de données de laquelle d'entité a été extraite).
-Ce doit être une URL valide qui est un hyperlien de retour vers votre système d'information.
+L'URL permettant d'accéder à l'entité sur le site web de la base de données de laquelle d'entité a été extraite (`databaseSource`).
+Ce doit être une URL valide qui permet de renvoyer vers votre système d'information.
 
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
@@ -123,7 +124,7 @@ Le genre ou l'espèce (dans la forme binomiale) de l'entité, sans l'abbrévatio
 
 ### materialType
 
-Le type de matériel biologique de cette entité.
+Le type de matériel biologique disponible pour cette entité.
 
 Cette valeur est contrôlée. Vous devez utiliser l'une des valeurs suivantes, celle se rapprochant le mieux de vos données :
 
@@ -225,10 +226,11 @@ Elle doit prendre la forme de degré décimal (par ex. `-53` pour les coordonné
 
 ### accessionHolder
 
-Le nom du CRB responsable de distribuer les ressources, si disponible. Dans certains cas, ça sera la même valeur que le champ `databaseSource`. Dans d'autres cas, cela peut différer, en particulier lorsque les gestionnaires d'accessions d'un même BRC sont réparties sur des sites géographiques distincts.
-Ce champ optionel est principalement utilisé pour commander des ressources génétiques, il permet de savoir quel est le gestionnaire de l'accession à contacter.
+Le nom du CRB responsable de distribuer les ressources. Dans certains cas, ça sera la même valeur que le champ `databaseSource`. Dans d'autres cas, cela peut différer, en particulier lorsque les gestionnaires d'un même CRB sont répartis sur des sites géographiques distincts.
+Ce champ optionel est utilisé pour commander des ressources génétiques, il nous permet de savoir qui est le gestionnaire à contacter pour distribuer l'accession.
 
-Puisque cette valeur est utilisée pour faire le lien avec le gestionnaire de l'accession, il est contrôlé. Vous devriez utiliser l'une des valeurs ci-dessous. Si la valeur est absente, veuillez nous contacter pour qu'on puisse l'ajouter :
+Puisque cette valeur est utilisée pour lier une accession à son gestionnaire, elle est contrôlée. Vous devriez utiliser l'une des valeurs ci-dessous.
+Si votre CRB est absent, veuillez nous contacter pour que nous puissions l'ajouter :
 
 - CBGP
 - Colisa
@@ -249,14 +251,13 @@ Puisque cette valeur est utilisée pour faire le lien avec le gestionnaire de l'
 Comment formater les données à nous envoyer ?
 
 Vous pouvez utiliser un fichier au format [TSV](#tsv-tabulation-separated-values) ou [JSON](#json-javascript-object-notation).
-Le(s) fichier(s) peuvent soit nous être envoyés, soit être publiés sur un site web où il sera(-ont) régulièrement mis à jour (voir la section [Disponibilité des données et mises à jour](#disponibilité-des-données-et-mises-à-jour)).
+Les fichiers peuvent soit nous être envoyés, soit être publiés sur un site web où ils seront régulièrement mis à jour (voir la section [Disponibilité des données et mises à jour](#disponibilité-des-données-et-mises-à-jour)).
 
 ### TSV (Tabulation Separated Values)
 
 L'ordre des champs importe, comme dans tout fichier tabulé.
-Prenez soin de retirer toute tabulation ou tout caractère de nouvelle ligne des différents champs de sorte à rester compatible avec le format attendu.
+Prenez soin de retirer toute tabulation ou tout caractère de nouvelle ligne éventuelement contenus dans les différents champs afin de rester compatible avec le format attendu.
 Aucun caractère de citation n'est attendu.
-L'en-tête n'est pas nécessaire, il est simplement affiché ici pour les besoin de documentation.
 
 <!-- markdownlint-disable MD009 MD010 -->
 ```csv
@@ -327,6 +328,6 @@ L'ordre de déclaration des champs n'est pas important. Toutes les entités d'un
 
 Vous pouvez générer un ou plusieurs fichiers contenant vos données publiques dés lors qu'elles sont compatibles avec le format défini ci-dessus.
 
-Une fois générés, vous devrez nous fournir un moyen de les récupérer sur une base régulière. Nous pouvons vous accompagner pour décider le meilleur moyen d'y parvenir. Utiliser un simple serveur web (ou FTP) est une possibilité intéressante puisqu'elle nous permet de tester si un nouvelle version de vos fichiers a été produite.
+Une fois générés, vous devrez nous fournir un moyen de récupérer ces fichiers sur une base régulière. Nous pouvons vous accompagner pour décider le meilleur moyen d'y parvenir. Utiliser un simple serveur web (ou FTP) est une possibilité intéressante puisqu'elle nous permet de tester si un nouvelle version de vos fichiers a été produite.
 
 [&#8593;](#top)

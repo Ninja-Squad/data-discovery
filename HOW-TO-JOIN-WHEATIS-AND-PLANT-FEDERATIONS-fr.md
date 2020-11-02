@@ -3,7 +3,7 @@
 
 Si vous souhaitez que votre système d'information soit référencé, vous devez fournir des fichiers [TSV](#tsv-tabulation-separated-values) ou [JSON](#json-javascript-object-notation) avec uniquement les métadonnées nécessaires.
 Le format des métadonnées doit suivre les indications ci-dessous (voir [Specifications des données](#spécifications-de-données)).
-Nous vous invitons à [nous contacter](mailto:urgi-contact@inrae.fr?subject=%5BRARe%20portal%5D) dès que possible pour que l'on puisse vous guider et discuter du meilleur moyen d'avancer.
+Nous vous invitons à [nous contacter](mailto:urgi-data@inrae.fr?subject=%5BRARe%20portal%5D) dès que possible pour que l'on puisse vous guider et discuter du meilleur moyen d'avancer.
 Veuillez noter que puisque l'outil présente des hyperliens vers votre système d'information, une URL, permettant aux utilisateurs d'obtenir des informations détaillées sur les données indexées, est nécessaire.
 
 ## Aperçu des métadonnées associées à chaque entité recherchable
