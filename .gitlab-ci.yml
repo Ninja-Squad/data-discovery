@@ -729,6 +729,7 @@ data-integration-rare-beta-openstack:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
+   - scripts/*
   refs:
    - branches
  except:
@@ -745,6 +746,7 @@ data-integration-rare-staging-openstack:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
+   - scripts/*
   refs:
    - branches
  except:
@@ -760,6 +762,7 @@ data-integration-rare-prod-proxmox:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
+   - scripts/*
   refs:
    - master
 
@@ -774,6 +777,7 @@ data-integration-rare-prod-openstack:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
+   - scripts/*
   refs:
    - master
 
@@ -787,6 +791,7 @@ data-integration-rare-with-basket-beta-openstack:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+   - scripts/*
   refs:
    - branches
  except:
@@ -803,6 +808,7 @@ data-integration-rare-with-basket-staging-openstack:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+   - scripts/*
   refs:
    - branches
  except:
@@ -821,6 +827,7 @@ data-integration-rare-with-basket-prod-openstack:
   changes:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+   - scripts/*
   refs:
    - master
 
@@ -836,6 +843,7 @@ data-integration-wheatis-beta-openstack:
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - branches
  except:
@@ -854,6 +862,7 @@ data-integration-wheatis-staging-openstack:
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - branches
  except:
@@ -871,6 +880,7 @@ data-integration-wheatis-prod-proxmox:
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - master
 
@@ -887,6 +897,7 @@ data-integration-wheatis-prod-openstack:
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - master
 
@@ -902,6 +913,7 @@ data-integration-data-discovery-beta-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - branches
  except:
@@ -920,6 +932,7 @@ data-integration-data-discovery-staging-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - branches
  except:
@@ -937,6 +950,7 @@ data-integration-data-discovery-prod-proxmox:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - master
 
@@ -953,5 +967,6 @@ data-integration-data-discovery-prod-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_autophrases.txt*
    - data/synonyms/all_synonyms.txt*
+   - scripts/*
   refs:
    - master
