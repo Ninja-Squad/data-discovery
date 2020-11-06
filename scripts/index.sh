@@ -84,7 +84,7 @@ curl -s -m 5 ${ES_HOST}:${ES_PORT} > /dev/null
 }
 
 # Get previous existing timestamps
-PREVIOUS_TIMESTAMPS=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | grep -v "$TIMESTAMP")
+PREVIOUS_TIMESTAMPS=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}-${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | grep -v "$TIMESTAMP")
 
 # Create index, aliases with their mapping
 $SHELL "${BASEDIR}"/createIndexAndAliases4CI.sh -host "$ES_HOST" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
