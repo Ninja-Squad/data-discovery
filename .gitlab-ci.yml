@@ -60,8 +60,7 @@ deploy-synonyms-to-prod-cluster-proxmox:
   - eval $(ssh-agent -k)
  only:
   changes:
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
   refs:
    - master
 
@@ -78,8 +77,7 @@ deploy-synonyms-to-dev-cluster-openstack:
   - eval $(ssh-agent -k)
  only:
   changes:
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
   refs:
    - branches
  except:
@@ -841,8 +839,7 @@ data-integration-wheatis-beta-openstack:
   changes:
    - data/wheatis/*.json.gz
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - branches
@@ -860,8 +857,7 @@ data-integration-wheatis-staging-openstack:
   changes:
    - data/wheatis/*.json.gz
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - branches
@@ -878,8 +874,7 @@ data-integration-wheatis-prod-proxmox:
   changes:
    - data/wheatis/*.json.gz
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - master
@@ -895,8 +890,7 @@ data-integration-wheatis-prod-openstack:
   changes:
    - data/wheatis/*.json.gz
    - data/wheatis/suggestions/wheatis_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - master
@@ -911,8 +905,7 @@ data-integration-data-discovery-beta-openstack:
   changes:
    - data/data-discovery/*.json.gz
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - branches
@@ -930,8 +923,7 @@ data-integration-data-discovery-staging-openstack:
   changes:
    - data/data-discovery/*.json.gz
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - branches
@@ -948,8 +940,7 @@ data-integration-data-discovery-prod-proxmox:
   changes:
    - data/data-discovery/*.json.gz
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - master
@@ -965,8 +956,7 @@ data-integration-data-discovery-prod-openstack:
   changes:
    - data/data-discovery/*.json.gz
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
-   - data/synonyms/all_autophrases.txt*
-   - data/synonyms/all_synonyms.txt*
+   - data/synonyms/all_*
    - scripts/*
   refs:
    - master
