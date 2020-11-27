@@ -25,6 +25,7 @@ variables:
  GIT_LFS_SKIP_SMUDGE: "1"
  ELASTIC_VERSION: "6.6.2"
  IMAGE_TAG: $CI_COMMIT_REF_SLUG
+ GIT_DEPTH: 0
 
 build-es-synonyms-docker-image:
  # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
@@ -126,11 +127,12 @@ test-and-sonarqube:
          exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch"
  variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=true"
+  SONAR_BRANCH_OPTS: "-Dsonar.pullrequest.key=$CI_MERGE_REQUEST_ID -Dsonar.pullrequest.branch=$CI_COMMIT_REF_NAME"
  script:
   - ./gradlew --parallel test
   - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
   - export PATH="/tmp/node/:$PATH"
-  - ./gradlew sonarqube -x test
+  - ./gradlew sonarqube -x test $SONAR_BRANCH_OPTS
  cache:
    key: "$CI_COMMIT_REF_NAME"
    policy: pull-push
@@ -144,9 +146,20 @@ test-and-sonarqube:
     - ./backend/build/test-results/test/TEST-*.xml
     - ./frontend/karma-junit-tests-report/TEST*.xml
  only:
+  refs:
+   - merge_requests
   changes:
    - backend/src/**/*
    - frontend/**/*
+   - .gitlab-ci.yml
+
+test-and-sonarqube-master:
+ extends: test-and-sonarqube
+ variables:
+  SONAR_BRANCH_OPTS: ""
+ only:
+  refs:
+   - master
 
 lint:
  stage: test
