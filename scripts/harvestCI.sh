@@ -162,8 +162,9 @@ export -f index_resources index_suggestions
 {
     # set -x
     echo "Indexing files into ${DATADIR} towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
-    parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_resources {1} {1/.} {2} \
-        ::: ${DATADIR}/*.json.gz ::: ${ES_HOSTS}
+    find ${DATADIR} -maxdepth 1 -name "*.json.gz" | \
+        parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} {1/.} {2} \
+        :::: - ::: ${ES_HOSTS}
 } || {
 	code=$?
 	echo -e "A problem occured (code=$code) when trying to index data \n"\
@@ -187,8 +188,9 @@ EOF
 {
     # set -x
     echo "Indexing suggestions into ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
-    parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
-        ::: ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz ::: ${ES_HOSTS}
+    find ${DATADIR}/suggestions/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
+        parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
+        :::: - ::: ${ES_HOSTS}
 } || {
 	code=$?
 	echo -e "${RED}A problem occurred (code=$code) when trying to index suggestions \n"\
