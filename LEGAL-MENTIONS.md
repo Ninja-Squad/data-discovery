@@ -10,9 +10,10 @@ The logo is the property of INRAE and you are not allowed to re-use it for your 
 
 ## Content
 
-The portal is maintained by URGI, an INRAE unit, and its data management plan follows the one defined for the Plant Bioinformatics Facility (PlantBioinfoPF) that hosts it: [Data Management Plan (DOI: 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI).
+The portal is maintained by URGI, an INRAE unit, and its [Data Management Plan (DOI: 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI) has been defined in the frame of the [Plant Bioinformatics Facility (PlantBioinfoPF, DOI: 10.15454/1.5572414581735654E12)](https://doi.org/10.15454/1.5572414581735654E12) that hosts the portal.
 
-The access to the web site can be interrupted at any moment and without prior warning in case of force majeure or if the editor decides to terminate its provision of service.
+Access to this web site can be interrupted at any time and without prior warning in case of force majeure.
+In case of a planned service interruption, users will be notified in advance by the editor as far as possible.
 
 The portal allows to find public data across a federation of databases.
 The licences associated to data are therefore defined by the institutes in charge of them.
