@@ -10,9 +10,10 @@ Le logo est la propriété d'INRAE et vous n'êtes pas autorisé à le réutilis
 
 ## Contenu
 
-Le portail est maintenu par l'URGI, une unité INRAE, et son plan de gestion de données suit celui défini pour la plateforme de bioinformatique des plantes (PlantBioinfoPF) qui l'héberge : [Plan de Gestion de Données (DOI : 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI).
+Le portail est maintenu par l'URGI, une unité INRAE, et son [Plan de Gestion de Données (DOI : 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI) a été défini dans le cadre de la [plateforme de bioinformatique des plantes (PlantBioinfoPF, DOI: 10.15454/1.5572414581735654E12)](https://doi.org/10.15454/1.5572414581735654E12) qui héberge le portail.
 
-L'accès à ce site web peut être interrompu à tout moment et sans notification préalable en cas de force majeure ou si l'éditeur dédide d'arrêter la fourniture du service.
+L'accès à ce site web peut être interrompu à tout moment et sans notification préalable en cas de force majeure.
+En cas d'arrêt de service prévu, les utilisateurs seront prévenus au préalable par l'éditeur dans la mesure du possible.
 
 Le portail permet de trouver des données publiques à travers une fédération de bases de données.
 Les licences associées aux données sont de ce fait définies par les instituts en charge de celles-ci.
