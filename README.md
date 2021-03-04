@@ -1,23 +1,6 @@
 # Rare project - Data discovery
 
-- [Rare project - Data discovery](#rare-project---data-discovery)
-  - [Contribute](#contribute)
-    - [Data](#data)
-    - [Code](#code)
-  - [Setup](#setup)
-    - [Requirements](#requirements)
-    - [Data handling](#data-handling)
-    - [Backend](#backend)
-    - [Frontend](#frontend)
-  - [Build](#build)
-  - [CI](#ci)
-  - [Documentation](#documentation)
-  - [Harvest](#harvest)
-    - [Portability](#portability)
-  - [Indices and aliases](#indices-and-aliases)
-  - [Spring Cloud config](#spring-cloud-config)
-  - [Building other apps](#building-other-apps)
-  - [Configuration](#configuration)
+[[_TOC_]]
 
 ## Contribute
 

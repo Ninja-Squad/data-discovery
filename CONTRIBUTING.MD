@@ -1,12 +1,6 @@
 # How to contribute to DataDiscovery
 
-- [How to contribute to DataDiscovery](#how-to-contribute-to-datadiscovery)
-  - [Git management](#git-management)
-    - [Branches](#branches)
-    - [Commits & branches merge](#commits--branches-merge)
-  - [Data management](#data-management)
-  - [Development environment](#development-environment)
-  - [Testing recommendations](#testing-recommendations)
+[[_TOC_]]
 
 ## Git management
 
