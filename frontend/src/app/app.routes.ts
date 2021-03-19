@@ -11,5 +11,6 @@ export const routes: Routes = [
   { path: 'join', component: MarkdownPageComponent, data: { mdFile: environment.joinUsMdFile } },
   { path: 'legal', component: MarkdownPageComponent, data: { mdFile: environment.legalMentionsMdFile } },
   { path: 'help', component: MarkdownPageComponent, data: { mdFile: environment.helpMdFile } },
+  { path: 'news', component: MarkdownPageComponent, data: { mdFile: environment.newsMdFile } },
   { path: 'eula', component: MarkdownPageComponent, data: { mdFile: environment.eulaMdFile } }
 ];

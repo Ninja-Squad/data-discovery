@@ -17,6 +17,7 @@ export const environment = {
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
+  newsMdFile: 'assets/news.md',
   eulaMdFile: 'assets/eula.md',
   dataProvider: 'Data providers',
   /**
