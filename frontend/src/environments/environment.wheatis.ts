@@ -23,6 +23,7 @@ export const environment = {
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md',
+  newsMdFile: 'assets/news.md',
   dataProvider: 'Data providers',
   /**
    * Map containing the list of the aggregations and their displayed name.

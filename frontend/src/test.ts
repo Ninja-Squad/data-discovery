@@ -6,7 +6,7 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-
+import { ɵDomSharedStylesHost } from '@angular/platform-browser';
 declare const require: any;
 
 // First, initialize the Angular testing environment.
@@ -14,6 +14,10 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
+// https://github.com/angular/angular/issues/31834
+afterEach(() => {
+  getTestBed().inject(ɵDomSharedStylesHost).ngOnDestroy();
+});
 // Then we find all the tests.
 const context = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
