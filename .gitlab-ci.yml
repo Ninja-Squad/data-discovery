@@ -43,9 +43,11 @@ build-es-synonyms-docker-image:
   - cd data/synonyms
   - gzip -fd all_*.txt.gz
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
+  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest .
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
   # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
   - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
+  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest
  only:
   changes:
    - data/synonyms/*
@@ -113,7 +115,7 @@ test-and-sonarqube:
    # because we need to pass some variables, but they are passed to _all_ containers
    # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
+   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest
      alias: elasticsearch
      # discovery.type=single-node
      # single-node is necessary to start in development mode
