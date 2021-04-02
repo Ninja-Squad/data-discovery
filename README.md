@@ -102,7 +102,7 @@ Then run `yarn start` to start the app, using the proxy conf to reroute calls to
 The application will be available on:
 
 - <http://localhost:4000/rare-dev> for RARe (runs with: `yarn start:rare` or simply `yarn start`)
-- <http://localhost:4000/rare-dev> for RARe with basket (runs with: `yarn start:rare-with-basket`)
+- <http://localhost:4000/rare-dev> for RARe with basket (runs with: `yarn start:brc4env`)
 - <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `yarn start:wheatis`)
 - <http://localhost:4200/data-discovery-dev> for DataDiscovery (runs with: `yarn start:data-discovery`)
 
@@ -125,14 +125,14 @@ or
 or
 
 ```sh
-./gradlew assemble -Papp=rare-with-basket
+./gradlew assemble -Papp=brc4env
 ```
 
 This will build a standalone jar at `backend/build/libs/`, that you can run with either:
 
 ```sh
 java -jar backend/build/libs/rare.jar
-java -jar backend/build/libs/rare-with-basket.jar
+java -jar backend/build/libs/brc4env.jar
 java -jar backend/build/libs/wheatis.jar
 java -jar backend/build/libs/data-discovery.jar
 ```
@@ -142,7 +142,7 @@ And the full app running on:
 - <http://localhost:8080/rare-dev>
 - <http://localhost:8180/wheatis-dev>
 - <http://localhost:8280/data-discovery-dev>
-- <http://localhost:8580/rare-with-basket-dev>
+- <http://localhost:8580/brc4env-dev>
 
 ## CI
 
@@ -264,20 +264,20 @@ You can also run the backend WheatIS application using
 To assemble the RARe app with support for adding accessions to a basket, run the following command
 
 ```sh
-./gradlew assemble -Papp=rare-with-basket
+./gradlew assemble -Papp=brc4env
 ```
 
 You can also run the backend RARe application with basket support using
 
 ```sh
-./gradlew bootRun -Papp=rare-with-basket
+./gradlew bootRun -Papp=brc4env
 ```
 
 Adding this property has the following consequences:
 
-- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `rare-with-basket.jar` instead of `rare.jar`;
-- the Spring active profile in `bootstrap.yml` is `wheatis-app` (resp. `rare-with-basket-app`) instead of `rare-app`;
-- the frontend application built and embedded inside the jar file is the WheatIS frontend application (resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command `yarn build:wheatis` (resp. `yarn build:rare-with-basket`) is executed instead of the command `yarn:rare`.
+- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `brc4env.jar` instead of `rare.jar`;
+- the Spring active profile in `bootstrap.yml` is `wheatis-app` (resp. `brc4env-app`) instead of `rare-app`;
+- the frontend application built and embedded inside the jar file is the WheatIS frontend application (resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command `yarn build:wheatis` (resp. `yarn build:brc4env`) is executed instead of the command `yarn:rare`.
 
 Since the active Spring profile is different, all the properties specific to this profile
 are applied. In particular:

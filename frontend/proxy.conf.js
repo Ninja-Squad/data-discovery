@@ -25,8 +25,8 @@ const PROXY_CONFIG = [
   },
   {
     context: [
-      "/rare-with-basket-dev/api",
-      "/rare-with-basket-dev/actuator"
+      "/brc4env-dev/api",
+      "/brc4env-dev/actuator"
     ],
     target: "http://localhost:8580",
     secure: false

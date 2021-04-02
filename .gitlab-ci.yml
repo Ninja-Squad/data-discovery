@@ -205,9 +205,9 @@ build-rare:
   APP_NAME: ${RARE_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
-build-rare-with-basket:
+build-brc4env:
  variables:
-  APP_NAME: "rare-with-basket"
+  APP_NAME: "brc4env"
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-wheatis:
@@ -309,11 +309,11 @@ build-data-discovery:
   ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
   APP_CONTEXT: ${APP_NAME}
 
-.variables-rare-with-basket-beta-openstack: &variables-rare-with-basket-beta-openstack
+.variables-brc4env-beta-openstack: &variables-brc4env-beta-openstack
  variables:
   ENV: beta
-  APP_NAME: rare-with-basket
-  APP_PORT: ${BETA_RARE_WITH_BASKET_PORT}
+  APP_NAME: brc4env
+  APP_PORT: ${BETA_BRC4ENV_PORT}
   DATA_DIR: rare
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
@@ -322,11 +322,11 @@ build-data-discovery:
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}
 
-.variables-rare-with-basket-staging-openstack: &variables-rare-with-basket-staging-openstack
+.variables-brc4env-staging-openstack: &variables-brc4env-staging-openstack
  variables:
   ENV: staging
-  APP_NAME: rare-with-basket
-  APP_PORT: ${STAGING_RARE_WITH_BASKET_PORT}
+  APP_NAME: brc4env
+  APP_PORT: ${STAGING_BRC4ENV_PORT}
   DATA_DIR: rare
   SERVER_IP: ${SERVER_IP_OPENSTACK}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
@@ -336,13 +336,13 @@ build-data-discovery:
   APP_CONTEXT: ${APP_NAME}
 
 # ALPHA
-.variables-rare-with-basket-prod-openstack: &variables-rare-with-basket-prod-openstack
+.variables-brc4env-prod-openstack: &variables-brc4env-prod-openstack
  variables:
   ENV: prod
-  APP_NAME: rare-with-basket
-  APP_PORT: ${PROD_RARE_WITH_BASKET_PORT}
+  APP_NAME: brc4env
+  APP_PORT: ${PROD_BRC4ENV_PORT}
   DATA_DIR: rare
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_PROD_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
   ES_HOSTS: ${ES_PROD_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -516,11 +516,11 @@ deploy-rare-to-prod-openstack:
  when: manual
  allow_failure: false
 
-deploy-rare-with-basket-to-beta-openstack:
+deploy-brc4env-to-beta-openstack:
  stage: deploy-beta
  tags:
   - openstack
- <<: *variables-rare-with-basket-beta-openstack
+ <<: *variables-brc4env-beta-openstack
  <<: *deploy_to_vm_openstack
  only:
   changes:
@@ -533,11 +533,11 @@ deploy-rare-with-basket-to-beta-openstack:
    - master
  allow_failure: false # mandatory to block the execution of the pipeline
 
-deploy-rare-with-basket-to-staging-openstack:
+deploy-brc4env-to-staging-openstack:
  stage: deploy-staging
  tags:
   - openstack
- <<: *variables-rare-with-basket-staging-openstack
+ <<: *variables-brc4env-staging-openstack
  <<: *deploy_to_vm_openstack
  only:
   changes:
@@ -551,11 +551,11 @@ deploy-rare-with-basket-to-staging-openstack:
  when: manual
 
 # ALPHA
-deploy-rare-with-basket-to-prod-openstack:
+deploy-brc4env-to-prod-openstack:
  stage: deploy-production
  tags:
   - openstack
- <<: *variables-rare-with-basket-prod-openstack
+ <<: *variables-brc4env-prod-openstack
  <<: *deploy_to_vm_openstack
  only:
   changes:
@@ -794,16 +794,16 @@ data-integration-rare-prod-openstack:
   refs:
    - master
 
-data-integration-rare-with-basket-beta-openstack:
+data-integration-brc4env-beta-openstack:
  stage: data-integration-beta
  tags:
   - openstack
- <<: *variables-rare-with-basket-beta-openstack
+ <<: *variables-brc4env-beta-openstack
  <<: *data-integration-openstack
  only:
   changes:
    - data/rare/*.json.gz
-   - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+   - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
   refs:
    - branches
@@ -811,16 +811,16 @@ data-integration-rare-with-basket-beta-openstack:
   refs:
    - master
 
-data-integration-rare-with-basket-staging-openstack:
+data-integration-brc4env-staging-openstack:
  stage: data-integration-staging
  tags:
   - openstack
- <<: *variables-rare-with-basket-staging-openstack
+ <<: *variables-brc4env-staging-openstack
  <<: *data-integration-openstack
  only:
   changes:
    - data/rare/*.json.gz
-   - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+   - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
   refs:
    - branches
@@ -830,16 +830,16 @@ data-integration-rare-with-basket-staging-openstack:
  when: manual
 
 # ALPHA
-data-integration-rare-with-basket-prod-openstack:
+data-integration-brc4env-prod-openstack:
  stage: data-integration-production
  tags:
   - openstack
- <<: *variables-rare-with-basket-prod-openstack
+ <<: *variables-brc4env-prod-openstack
  <<: *data-integration-openstack
  only:
   changes:
    - data/rare/*.json.gz
-   - data/rare/suggestions/rare-with-basket_bulk*.json.gz
+   - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
   refs:
    - master

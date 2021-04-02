@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 /**
  * DAO for {@link RareDocument}
  */
-@Profile({AppProfile.RARE, AppProfile.RARE_WITH_BASKET})
+@Profile({AppProfile.RARE, AppProfile.BRC4ENV})
 public interface RareDocumentDao
     extends DocumentDao<RareDocument, RareIndexedDocument>, RareDocumentDaoCustom {
 }

@@ -42,7 +42,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Import(ElasticSearchConfig.class)
 @JsonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles({AppProfile.RARE, AppProfile.RARE_WITH_BASKET})
+@ActiveProfiles({AppProfile.RARE, AppProfile.BRC4ENV})
 class RareDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-rare-resource-physical-index";
