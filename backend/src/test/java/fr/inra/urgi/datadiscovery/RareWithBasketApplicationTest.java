@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource("/test-rare.properties")
-@ActiveProfiles(AppProfile.RARE_WITH_BASKET)
+@ActiveProfiles(AppProfile.BRC4ENV)
 public class RareWithBasketApplicationTest {
     @Test
     public void shouldLoadContext() {}

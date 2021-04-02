@@ -91,7 +91,7 @@ DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
 
 TMP_FILE=$(mktemp)
-if [ "${APP_NAME}" == "rare-with-basket" ]; then
+if [ "${APP_NAME}" == "brc4env" ]; then
     APP_SETTINGS_NAME="rare"
 else
     APP_SETTINGS_NAME="${APP_NAME}"

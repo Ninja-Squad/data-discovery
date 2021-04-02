@@ -101,7 +101,7 @@ if [ -z "$ES_HOST" ]; then
 fi
 if [ "$APP_NAME" == "rare" ]; then
     ID_FIELD=identifier
-elif [ "$APP_NAME" == "rare-with-basket"  ] ; then
+elif [ "$APP_NAME" == "brc4env"  ] ; then
     ID_FIELD=identifier
     DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
 else

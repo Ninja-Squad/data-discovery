@@ -8,7 +8,7 @@ import fr.inra.urgi.datadiscovery.dao.rare.RareImplicitAggregation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 
-@Profile({AppProfile.RARE, AppProfile.RARE_WITH_BASKET})
+@Profile({AppProfile.RARE, AppProfile.BRC4ENV})
 @ConfigurationProperties(prefix = "rare")
 public class RareImplicitRefinementsProperties {
     private Map<RareImplicitAggregation, Set<String>> implicitTerms = new HashMap<>();

@@ -48,7 +48,6 @@ spring:
 
 data-discovery:
   elasticsearch-prefix: 'rare-dev-'
-  resource-dir: /tmp/rare-dev/resources
 
 server:
   port: 8080
@@ -57,28 +56,27 @@ server:
 
 ---
 spring:
-  profiles: rare-with-basket-app
-  cloud.config.name: rare-with-basket
+  profiles: brc4env-app
+  cloud.config.name: brc4env
   security.user:
     name: rare
     password: f01a7031fc17
 
 ## Below properties should not be enabled here because it makes tests failing.
 ## But they may be enabled in cloud-config server if relevant to apply the 
-## filter (for rare-with-basket) or not (for main rare application)
+## filter (for brc4env) or not (for main rare application)
 # rare:
 #   implicit-terms:
 #     PILLAR:
 #       - Pilier Environnement
 
 data-discovery:
-  elasticsearch-prefix: 'rare-with-basket-dev-'
-  resource-dir: /tmp/rare-dev/resources
+  elasticsearch-prefix: 'brc4env-dev-'
 
 server:
   port: 8580
   servlet:
-    context-path: /rare-with-basket-dev
+    context-path: /brc4env-dev
 
 ---
 spring:
@@ -90,7 +88,6 @@ spring:
 
 data-discovery:
   elasticsearch-prefix: 'wheatis-dev-'
-  resource-dir: /tmp/wheatis-dev/resources
 
 server:
   port: 8180
@@ -107,7 +104,6 @@ spring:
 
 data-discovery:
   elasticsearch-prefix: 'data-discovery-dev-'
-  resource-dir: /tmp/data-discovery-dev/resources
 
 server:
   port: 8280
