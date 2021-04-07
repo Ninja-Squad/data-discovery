@@ -241,21 +241,7 @@ build-data-discovery:
 .deploy-to-vm-openstack: &deploy_to_vm_openstack
  tags:
   - openstack
- # Hidden job which serves as template for executed jobs below.
- # See https://docs.gitlab.com/ee/ci/yaml/#anchors
- retry: 2
- script:
-  # SSH initialization
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "${SSH_PRIVATE_KEY}")
-  - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
-  # Copy jar to the server
-  - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}.jar
-  - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/"
-  # Restarting service with the updated jar and the according Spring profiles enabled
-  - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
-  - eval $(ssh-agent -k)
-  - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
+ <<: *deploy_to_vm_proxmox
 
 .variables-rare-beta-openstack: &variables-rare-beta-openstack
  variables:
@@ -558,7 +544,6 @@ deploy-brc4env-to-staging-openstack:
  when: manual
  needs: ["build-brc4env"]
 
-# ALPHA
 deploy-brc4env-to-prod-openstack:
  stage: deploy-production
  tags:
