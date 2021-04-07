@@ -241,21 +241,7 @@ build-data-discovery:
 .deploy-to-vm-openstack: &deploy_to_vm_openstack
  tags:
   - openstack
- # Hidden job which serves as template for executed jobs below.
- # See https://docs.gitlab.com/ee/ci/yaml/#anchors
- retry: 2
- script:
-  # SSH initialization
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "${SSH_PRIVATE_KEY}")
-  - ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${SERVER_IP_OPENSTACK} 'echo "Successfully connected on $(hostname)"'
-  # Copy jar to the server
-  - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER_OPENSTACK}@${SERVER_IP_OPENSTACK}:/tmp/${APP_NAME}-${ENV}.jar
-  - ssh ${SERVER_USER_OPENSTACK}@${SERVER_IP_OPENSTACK} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/"
-  # Restarting service with the updated jar and the according Spring profiles enabled
-  - ssh ${SERVER_USER_OPENSTACK}@${SERVER_IP_OPENSTACK} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
-  - eval $(ssh-agent -k)
-  - echo "Deploy and index done. Application should be available at http://${SERVER_IP_OPENSTACK}:${APP_PORT}/${APP_CONTEXT}"
+ <<: *deploy_to_vm_proxmox
 
 .variables-rare-beta-openstack: &variables-rare-beta-openstack
  variables:
@@ -263,7 +249,7 @@ build-data-discovery:
   APP_NAME: rare
   APP_PORT: ${BETA_RARE_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -276,7 +262,7 @@ build-data-discovery:
   APP_NAME: rare
   APP_PORT: ${STAGING_RARE_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -289,7 +275,8 @@ build-data-discovery:
   APP_NAME: rare
   APP_PORT: ${PROD_RARE_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP}
+  SERVER_IP: ${SERVER_IP_PROXMOX}
+  SERVER_USER: ${SERVER_USER_PROXMOX}
   ES_HOST: ${ES_PROD_HOST}
   ES_HOSTS: ${ES_PROD_HOSTS}
   ES_PORT: ${ES_PROD_PORT}
@@ -302,7 +289,7 @@ build-data-discovery:
   APP_NAME: rare
   APP_PORT: ${PROD_RARE_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -315,7 +302,7 @@ build-data-discovery:
   APP_NAME: brc4env
   APP_PORT: ${BETA_BRC4ENV_PORT}
   DATA_DIR: rare
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -328,14 +315,13 @@ build-data-discovery:
   APP_NAME: brc4env
   APP_PORT: ${STAGING_BRC4ENV_PORT}
   DATA_DIR: rare
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
   ES_PORT: ${ES_DEV_PORT}
   APP_CONTEXT: ${APP_NAME}
 
-# ALPHA
 .variables-brc4env-prod-openstack: &variables-brc4env-prod-openstack
  variables:
   ENV: prod
@@ -344,9 +330,9 @@ build-data-discovery:
   DATA_DIR: rare
   SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
-  ES_HOST: ${ES_PROD_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-  ES_HOSTS: ${ES_PROD_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-  ES_PORT: ${ES_PROD_PORT}
+  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+  ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
   APP_CONTEXT: ${APP_NAME}
 
 .variables-wheatis-beta-openstack: &variables-wheatis-beta-openstack
@@ -355,7 +341,7 @@ build-data-discovery:
   APP_NAME: wheatis
   APP_PORT: ${BETA_WHEATIS_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -368,7 +354,7 @@ build-data-discovery:
   APP_NAME: wheatis
   APP_PORT: ${STAGING_WHEATIS_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -381,7 +367,8 @@ build-data-discovery:
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP}
+  SERVER_IP: ${SERVER_IP_PROXMOX}
+  SERVER_USER: ${SERVER_USER_PROXMOX}
   ES_HOST: ${ES_PROD_HOST}
   ES_HOSTS: ${ES_PROD_HOSTS}
   ES_PORT: ${ES_PROD_PORT}
@@ -394,7 +381,7 @@ build-data-discovery:
   APP_NAME: wheatis
   APP_PORT: ${PROD_WHEATIS_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -407,7 +394,7 @@ build-data-discovery:
   APP_NAME: data-discovery
   APP_PORT: ${BETA_DATADISCOVERY_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -420,7 +407,7 @@ build-data-discovery:
   APP_NAME: data-discovery
   APP_PORT: ${STAGING_DATADISCOVERY_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
@@ -433,7 +420,8 @@ build-data-discovery:
   APP_NAME: data-discovery
   APP_PORT: ${PROD_DATADISCOVERY_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP}
+  SERVER_IP: ${SERVER_IP_PROXMOX}
+  SERVER_USER: ${SERVER_USER_PROXMOX}
   ES_HOST: ${ES_PROD_HOST}
   ES_HOSTS: ${ES_PROD_HOSTS}
   ES_PORT: ${ES_PROD_PORT}
@@ -446,7 +434,7 @@ build-data-discovery:
   APP_NAME: data-discovery
   APP_PORT: ${PROD_DATADISCOVERY_PORT}
   DATA_DIR: ${APP_NAME}
-  SERVER_IP: ${SERVER_IP_OPENSTACK}
+  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
   SERVER_USER: ${SERVER_USER_OPENSTACK}
   ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
@@ -469,6 +457,7 @@ deploy-rare-to-beta-openstack:
   refs:
    - master
  allow_failure: false # mandatory to block the execution of the pipeline
+ needs: ["build-rare"]
 
 deploy-rare-to-staging-openstack:
  stage: deploy-staging
@@ -486,6 +475,7 @@ deploy-rare-to-staging-openstack:
   refs:
    - master
  when: manual
+ needs: ["build-rare"]
 
 deploy-rare-to-prod-proxmox:
  stage: deploy-production
@@ -499,6 +489,7 @@ deploy-rare-to-prod-proxmox:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-rare"]
 
 # ALPHA
 deploy-rare-to-prod-openstack:
@@ -515,6 +506,7 @@ deploy-rare-to-prod-openstack:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-rare"]
 
 deploy-brc4env-to-beta-openstack:
  stage: deploy-beta
@@ -532,6 +524,7 @@ deploy-brc4env-to-beta-openstack:
   refs:
    - master
  allow_failure: false # mandatory to block the execution of the pipeline
+ needs: ["build-brc4env"]
 
 deploy-brc4env-to-staging-openstack:
  stage: deploy-staging
@@ -549,8 +542,8 @@ deploy-brc4env-to-staging-openstack:
   refs:
    - master
  when: manual
+ needs: ["build-brc4env"]
 
-# ALPHA
 deploy-brc4env-to-prod-openstack:
  stage: deploy-production
  tags:
@@ -565,6 +558,7 @@ deploy-brc4env-to-prod-openstack:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-brc4env"]
 
 deploy-wheatis-to-beta-openstack:
  stage: deploy-beta
@@ -582,6 +576,7 @@ deploy-wheatis-to-beta-openstack:
   refs:
    - master
  allow_failure: false
+ needs: ["build-wheatis"]
 
 deploy-wheatis-to-staging-openstack:
  stage: deploy-staging
@@ -599,6 +594,7 @@ deploy-wheatis-to-staging-openstack:
   refs:
    - master
  when: manual
+ needs: ["build-wheatis"]
 
 deploy-wheatis-to-prod-proxmox:
  stage: deploy-production
@@ -612,6 +608,7 @@ deploy-wheatis-to-prod-proxmox:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-wheatis"]
 
 # ALPHA
 deploy-wheatis-to-prod-openstack:
@@ -628,6 +625,7 @@ deploy-wheatis-to-prod-openstack:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-wheatis"]
 
 deploy-data-discovery-to-beta-openstack:
  stage: deploy-beta
@@ -645,6 +643,7 @@ deploy-data-discovery-to-beta-openstack:
   refs:
    - master
  allow_failure: false
+ needs: ["build-data-discovery"]
 
 deploy-data-discovery-to-staging-openstack:
  stage: deploy-staging
@@ -662,6 +661,7 @@ deploy-data-discovery-to-staging-openstack:
   refs:
    - master
  when: manual
+ needs: ["build-data-discovery"]
 
 deploy-data-discovery-to-prod-proxmox:
  stage: deploy-production
@@ -675,6 +675,7 @@ deploy-data-discovery-to-prod-proxmox:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-data-discovery"]
 
 # ALPHA
 deploy-data-discovery-to-prod-openstack:
@@ -691,6 +692,7 @@ deploy-data-discovery-to-prod-openstack:
    - master
  when: manual
  allow_failure: false
+ needs: ["build-data-discovery"]
 
 .data-integration-proxmox: &data-integration-proxmox
  # do not retry to avoid overloading the Elasticsearch cluster
