@@ -6,6 +6,7 @@ ORANGE='\033[0;33m'
 BOLD='\033[1m'
 RED_BOLD="${RED}${BOLD}"
 NC='\033[0m' # No format
+export SHELL=/bin/bash
 
 help() {
 		cat <<EOF

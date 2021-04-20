@@ -1,0 +1,6 @@
+data/
+.git/
+frontend/node_modules/
+backend/out
+frontend/.gradle
+.gradle/
