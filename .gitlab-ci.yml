@@ -1,6 +1,6 @@
 ---
 stages:
- - es-synonyms
+ - pre-build
  - test
  - build
  - deploy-beta
@@ -35,7 +35,7 @@ build-es-synonyms-docker-image:
  # The runner should be executed in privileged mode.
  # It is recommended to use dind with TLS enabled.
  image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
- stage: es-synonyms
+ stage: pre-build
  services:
   - docker:19.03.12-dind
  script:
@@ -52,8 +52,31 @@ build-es-synonyms-docker-image:
   changes:
    - data/synonyms/*
 
+build-loader-docker-image:
+ image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
+ stage: pre-build
+ services:
+  - docker:19.03.12-dind
+ script:
+  # build the image
+  - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG} .
+  - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest .
+  # Login before pushing the image
+  - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
+  # push the built image
+  - docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG}
+  # only push latest tag on master branch
+  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
+ only:
+  changes:
+   - scripts/*
+   - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
+   - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/*/*.mapping.json
+   - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
+   - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
+
 deploy-synonyms-to-prod-cluster-proxmox:
- stage: es-synonyms
+ stage: pre-build
  script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
@@ -68,7 +91,7 @@ deploy-synonyms-to-prod-cluster-proxmox:
    - master
 
 deploy-synonyms-to-dev-cluster-openstack:
- stage: es-synonyms
+ stage: pre-build
  tags:
   - openstack
  script:
@@ -87,7 +110,7 @@ deploy-synonyms-to-dev-cluster-openstack:
   - master
 
 # deploy-synonyms-to-prod-cluster-openstack: # does not exist at the moment of committing
-#  stage: es-synonyms
+#  stage: pre-build
 #  tags:
 #   - openstack
 #  script:
