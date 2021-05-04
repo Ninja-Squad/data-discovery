@@ -139,10 +139,12 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 [ -d "$OUTDIR" ] && rm -rf "$OUTDIR"
 mkdir -p "$OUTDIR"
 
-export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP
+FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
+export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
+            | jq --argjson fields '${FIELDS}' -f ${BASEDIR}/clean_fields.jq \
             | jq -c '.[] | .name = (.name|tostring) | [.]' 2>> ${OUTDIR}/$2.jq.err \
             | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
             | gzip -c \
