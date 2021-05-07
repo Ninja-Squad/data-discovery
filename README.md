@@ -185,7 +185,7 @@ Before all, if you have cloned the repository without fetching the data (see [Da
 
 ### TL;DR
 
-Run the dockerized script for indexing data in your local Elasticsearch that you are expected to have already launched with `docker-compose up`:
+Data indexing to your local Elasticsearch is done using the following command. Note that your local Elasticsearch instance should be already runing using `docker-compose up`:
 
 ```sh
 docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest --help
@@ -209,7 +209,7 @@ Output logs should be available in directory `/tmp/bulk/rare-dev`.
 
 #### Docker
 
-[TL;DR](#TLDR) section above expects to have built the docker image as follow:
+[TL;DR](#TLDR) section above expects to have an available docker image on the forgemia docker registry. You can update or push such an image using the following:
 
 ```sh
 # build the image
