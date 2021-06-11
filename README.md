@@ -183,7 +183,48 @@ by these tests. The documentation is generated in the folder `backend/build/asci
 
 Before all, if you have cloned the repository without fetching the data (see [Data handling](#data-handling) section), take care to get it before running any indexing script.
 
+### TL;DR
+
+Data indexing to your local Elasticsearch is done using the following command. Note that your local Elasticsearch instance should be already runing using `docker-compose up`:
+
+```sh
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest --help
+```
+
+Example for indexing RARe data:
+
+```sh
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest -host elasticsearch -app rare -env dev
+```
+
+If you need to spread the load on several CPUs, duplicate the value of `host` argument to simulate several Elasticsearch nodes, ie. below to use 4 CPUs:
+
+```sh
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
+```
+
+Output logs should be available in directory `/tmp/bulk/rare-dev`.
+
 ### Portability
+
+#### Docker
+
+[TL;DR](#TLDR) section above expects to have an available docker image on the forgemia docker registry. You can update or push such an image using the following:
+
+```sh
+# build the image
+docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest .
+
+# Login before pushing the image
+docker login registry.forgemia.inra.fr/urgi-is/docker-rare -u <your ForgeMIA username>
+
+# push the built image
+docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest
+```
+
+That should ease the indexing of data without having to craft a dedicated environment, which is explained below.
+
+#### UNIX/BSD
 
 Feedback related to portability on MacOS and other GNU/Linux distro is really welcomed.
 
