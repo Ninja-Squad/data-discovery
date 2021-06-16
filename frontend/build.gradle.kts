@@ -71,6 +71,19 @@ tasks {
     dependsOn(yarnLint)
   }
 
+  val yarnE2e by registering(YarnTask::class){
+    args.set(listOf("e2e:standalone"))
+    dependsOn(prepare)
+    inputs.dir("src")
+    inputs.dir("cypress")
+    inputs.file("cypress.json")
+    outputs.file("$buildDir/cypress-result.json")
+  }
+
+  val e2e by registering {
+    dependsOn(yarnE2e)
+  }
+
   val test by registering {
     if (isCi) {
       dependsOn(yarnTestMultiBrowsers)
@@ -82,6 +95,7 @@ tasks {
   check {
     dependsOn(lint)
     dependsOn(test)
+    dependsOn(e2e)
   }
 
   assemble {
@@ -91,6 +105,7 @@ tasks {
   val clean by getting {
     dependsOn("cleanYarnBuild")
     dependsOn("cleanYarnTest")
+    dependsOn("cleanYarnE2e")
   }
 }
 

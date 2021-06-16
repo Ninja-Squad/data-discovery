@@ -1,0 +1,7 @@
+{
+  "video": false,
+  "reporter": "mocha-spec-json-output-reporter",
+  "reporterOptions": {
+    "fileName": "cypress-result.json"
+  }
+}
