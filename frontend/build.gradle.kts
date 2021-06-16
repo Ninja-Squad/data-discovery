@@ -1,78 +1,96 @@
-import com.moowork.gradle.node.yarn.YarnTask
-import org.codehaus.groovy.ast.tools.GeneralUtils
+import com.github.gradle.node.yarn.task.YarnInstallTask
+import com.github.gradle.node.yarn.task.YarnTask
 
 plugins {
   base
-  id("com.moowork.node") version "1.2.0"
+  id("com.github.node-gradle.node") version "3.0.1"
   id("org.sonarqube")
 }
 
 val isCi = System.getenv("CI") != null
 
 node {
-  version = "12.14.1"
-  npmVersion = "6.13.4"
-  yarnVersion = "1.21.1"
+  version.set("14.17.0")
+  npmVersion.set("6.14.10")
+  yarnVersion.set("1.22.10")
+
   if (isCi) {
     // we specify a custom installation directory because of permission issues on Docker
-    workDir = file("/tmp/node")
-    yarnWorkDir = file("/tmp/yarn")
+    workDir.set(file("/tmp/node"))
+    yarnWorkDir.set(file("/tmp/yarn"))
   }
-  download = true
+  download.set(true)
 }
 
 tasks {
-  val npmInstall by getting {
+  npmInstall {
     enabled = false
   }
 
-  val yarn_install by getting {
-    inputs.file("package.json")
-    inputs.file("yarn.lock")
-    outputs.dir("node_modules")
+  named<YarnInstallTask>(YarnInstallTask.NAME) {
+    ignoreExitValue.set(true)
   }
 
-  val yarn_build by creating(YarnTask::class) {
+  val prepare by registering {
+    dependsOn(YarnInstallTask.NAME)
+  }
+
+  val yarnBuild by registering(YarnTask::class) {
     inputs.property("app", project.app)
 
-    args = listOf("build:${project.app}")
-    dependsOn(yarn_install)
+    args.set(listOf("build:${project.app}"))
+    dependsOn(prepare)
     inputs.dir("src")
     outputs.dir("dist")
   }
 
-  val yarn_run_test by getting {
+  val yarnTest by registering(YarnTask::class) {
+    args.set(listOf("test"))
+    dependsOn(prepare)
     inputs.dir("src")
     outputs.dir("coverage")
   }
 
-  val yarn_lint by getting(YarnTask::class){
-    dependsOn(yarn_install)
+  val yarnTestMultiBrowsers by registering(YarnTask::class) {
+    args.set(listOf("test-multi-browsers"))
+    dependsOn(prepare)
+    inputs.dir("src")
+    outputs.dir("coverage")
   }
 
-  // Lint
-  val lint by creating {
-    dependsOn(yarn_lint)
+  val yarnLint by registering(YarnTask::class){
+    args.set(listOf("lint"))
+    dependsOn(prepare)
+    inputs.dir("src")
+    inputs.file(".eslintrc.json")
+    inputs.file(".prettierrc")
+    outputs.file("$buildDir/eslint-result.txt")
   }
 
-  val test by creating {
+  val lint by registering {
+    dependsOn(yarnLint)
+  }
+
+  val test by registering {
     if (isCi) {
-      dependsOn("yarn_run_test-multi-browsers")
+      dependsOn(yarnTestMultiBrowsers)
     } else {
-      dependsOn(yarn_run_test)
+      dependsOn(yarnTest)
     }
   }
 
-  val check by getting {
+  check {
+    dependsOn(lint)
     dependsOn(test)
   }
 
-  val assemble by getting {
-    dependsOn(yarn_build)
+  assemble {
+    dependsOn(yarnBuild)
   }
 
   val clean by getting {
-    dependsOn("cleanYarn_build")
-    dependsOn("cleanYarn_run_test")
+    dependsOn("cleanYarnBuild")
+    dependsOn("cleanYarnTest")
   }
 }
+
