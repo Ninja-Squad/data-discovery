@@ -5,9 +5,9 @@ import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { BasketService } from '../basket.service';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
 
 describe('RareDocumentComponent', () => {
   class RareDocumentComponentTester extends ComponentTester<RareDocumentComponent> {
@@ -72,12 +72,11 @@ describe('RareDocumentComponent', () => {
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({
-      imports: [NgbTooltipModule, I18nTestingModule],
+      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule],
       declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
       providers: [{ provide: BasketService, useValue: basketService }]
     });
-    }
-  );
+  });
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 

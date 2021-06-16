@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { HomeComponent } from './home.component';
 import { SearchService } from '../search.service';
@@ -13,6 +12,7 @@ import { PillarsComponent } from '../pillars/pillars.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { RareHeaderComponent } from '../rare/rare-header/rare-header.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -38,8 +38,7 @@ describe('HomeComponent', () => {
       ReactiveFormsModule,
       RouterTestingModule,
       HttpClientTestingModule,
-      NgbTypeaheadModule,
-      NgbTooltipModule,
+      DataDiscoveryNgbTestingModule,
       I18nTestingModule
     ],
     declarations: [HomeComponent, PillarsComponent, DocumentCountComponent, RareHeaderComponent],

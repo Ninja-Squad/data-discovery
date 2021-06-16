@@ -6,7 +6,6 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { NgbModule, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { routes } from './app.routes';
 import { AppComponent } from './app.component';
@@ -28,6 +27,7 @@ import { MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
 import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
 import { DescendantsCheckboxComponent } from './descendants-checkbox/descendants-checkbox.component';
 import { I18nModule } from './i18n/i18n.module';
+import { DataDiscoveryNgbModule } from './data-discovery-ngb.module';
 
 registerLocaleData(localeFr);
 
@@ -57,11 +57,7 @@ registerLocaleData(localeFr);
       anchorScrolling: 'enabled'
     }),
     ReactiveFormsModule,
-    HttpClientModule,
-    NgbPaginationModule,
-    NgbTypeaheadModule,
-    NgbTooltipModule,
-    NgbModule,
+    DataDiscoveryNgbModule,
     HttpClientModule,
     MarkdownModule.forRoot({
       loader: HttpClient, // optional, only if you use [src] attribute

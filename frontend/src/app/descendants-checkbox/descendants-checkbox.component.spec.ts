@@ -1,18 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DescendantsCheckboxComponent } from './descendants-checkbox.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('DescendantsCheckboxComponent', () => {
   let component: DescendantsCheckboxComponent;
   let fixture: ComponentFixture<DescendantsCheckboxComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DescendantsCheckboxComponent ],
-      imports: [TranslateModule.forRoot()]
-    })
-    .compileComponents();
+  beforeEach(() => TestBed.configureTestingModule({
+    declarations: [DescendantsCheckboxComponent],
+    imports: [DataDiscoveryNgbTestingModule, TranslateModule.forRoot()]
   }));
 
   beforeEach(() => {

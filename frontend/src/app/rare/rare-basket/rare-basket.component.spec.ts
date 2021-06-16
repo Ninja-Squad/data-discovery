@@ -4,10 +4,10 @@ import { RareBasketComponent } from './rare-basket.component';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
 import { of, Subject } from 'rxjs';
-import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { LOCATION } from '../rare.module';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
 
 class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   constructor() {
@@ -85,7 +85,7 @@ describe('RareBasketComponent', () => {
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
-      imports: [NgbTooltipModule, NgbModalModule, I18nTestingModule, ReactiveFormsModule],
+      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule, ReactiveFormsModule],
       declarations: [RareBasketComponent],
       providers: [
         { provide: BasketService, useValue: service },

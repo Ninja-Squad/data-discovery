@@ -4,7 +4,6 @@ import { EMPTY, of } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { PillarsComponent } from './pillars.component';
@@ -12,6 +11,7 @@ import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 class PillarsComponentTester extends ComponentTester<PillarsComponent> {
   constructor() {
@@ -49,7 +49,7 @@ describe('PillarsComponent', () => {
       declarations: [PillarsComponent, DocumentCountComponent],
       imports: [
         HttpClientTestingModule,
-        NgbTooltipModule,
+        DataDiscoveryNgbTestingModule,
         I18nTestingModule
       ],
       providers: [

@@ -14,8 +14,8 @@ import { DocumentModel } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
 import { of } from 'rxjs';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('DocumentsComponent', () => {
 
@@ -44,7 +44,7 @@ describe('DocumentsComponent', () => {
   beforeEach(() => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, NgbTooltipModule, I18nTestingModule],
+      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
       declarations: [DocumentsComponent, RareDocumentComponent, GenericSelectAllResultsComponent, TruncatableDescriptionComponent],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' },

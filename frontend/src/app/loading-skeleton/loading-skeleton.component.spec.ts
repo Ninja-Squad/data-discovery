@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {LoadingSkeletonComponent} from './loading-skeleton.component';
 
@@ -6,11 +6,8 @@ describe('LoadingSkeletonComponent', () => {
   let component: LoadingSkeletonComponent;
   let fixture: ComponentFixture<LoadingSkeletonComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [LoadingSkeletonComponent]
-    })
-      .compileComponents();
+  beforeEach(() => TestBed.configureTestingModule({
+    declarations: [LoadingSkeletonComponent]
   }));
 
   beforeEach(() => {

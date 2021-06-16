@@ -64,7 +64,7 @@
     "no-import-side-effect": [
       true,
       {
-        "ignore-module": "(core-js/.*|zone\\.js/.*|@angular/localize/.*)$"
+        "ignore-module": "(core-js/.*|zone\\.js|zone\\.js/.*|@angular/localize/.*)$"
       }
     ],
     "no-inferrable-types": [
