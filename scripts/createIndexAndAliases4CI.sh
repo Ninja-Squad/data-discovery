@@ -114,10 +114,9 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-
 {
   \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-tmstp*-resource*\"],
   \"order\": 101,
-  \"mappings\": {
-    \"${APP_NAME}-${APP_ENV}-resource\":
+  \"mappings\":
         $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
-    },
+    ,
   \"settings\":
     $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/${APP_SETTINGS_NAME}/settings.json )
 }
@@ -139,10 +138,9 @@ echo ; echo "Create index aiming to store all suggestions: ${APP_NAME}-${APP_ENV
 curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions?pretty"\
  -H 'Content-Type: application/json' -d"
 {
-    \"mappings\": {
-        \"${APP_NAME}-${APP_ENV}-suggestions\":
-            $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
-        },
+    \"mappings\":
+        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
+        ,
     \"settings\":
             $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
 }

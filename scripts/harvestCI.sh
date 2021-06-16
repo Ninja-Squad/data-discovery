@@ -160,13 +160,13 @@ index_resources() {
             | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/${APP_NAME}-${APP_ENV}-resource/_bulk\"\
+                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/_bulk\"\
                 --data-binary '@-' > ${OUTDIR}/$2-resources.log.gz "
 }
 
 index_suggestions() {
     bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/${APP_NAME}-${APP_ENV}-suggestions/_bulk\"\
+                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/_bulk\"\
                 --data-binary '@$1' > ${OUTDIR}/$2-suggestions.log.gz"
 }
 
