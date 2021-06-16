@@ -397,29 +397,39 @@
           "options": {
             "lintFilePatterns": [
               "src/**/*.ts",
-              "src/**/*.html"
+              "src/**/*.html",
+              "cypress/**/*.ts"
             ]
           }
-        }
-      }
-    },
-    "data-discovery-frontend-e2e": {
-      "root": "e2e/",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+        },
+        "cypress-run": {
+          "builder": "@cypress/schematic:cypress",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "data-discovery-frontend:serve"
+            "devServerTarget": "data-discovery-frontend:serve:data-discovery"
           },
           "configurations": {
-            "served": {
-              "devServerTarget": ""
-            },
             "production": {
-              "devServerTarget": "data-discovery-frontend:serve:rare-production"
+              "devServerTarget": "data-discovery-frontend:serve:data-discovery-production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": true,
+            "headless": false
+          }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "data-discovery-frontend:serve:data-discovery",
+            "watch": true,
+            "headless": false
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "data-discovery-frontend:serve:data-discovery-production"
             }
           }
         }
