@@ -37,14 +37,9 @@ describe('ErrorComponent', () => {
     httpErrors = new Subject<HttpError>();
 
     TestBed.configureTestingModule({
-      declarations: [ ErrorComponent ],
-      providers: [
-        { provide: Router, useValue: { events: routerEvents }}
-      ],
-      imports: [
-        HttpClientTestingModule,
-        I18nTestingModule
-      ]
+      declarations: [ErrorComponent],
+      providers: [{ provide: Router, useValue: { events: routerEvents } }],
+      imports: [HttpClientTestingModule, I18nTestingModule]
     });
 
     const errorInterceptorService = TestBed.inject(ErrorInterceptorService);

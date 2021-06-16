@@ -16,7 +16,6 @@ import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('AggregationsComponent', () => {
-
   class AggregationsComponentTester extends ComponentTester<AggregationsComponent> {
     constructor() {
       super(AggregationsComponent);
@@ -31,22 +30,20 @@ describe('AggregationsComponent', () => {
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      ReactiveFormsModule,
-      DataDiscoveryNgbTestingModule,
-      I18nTestingModule
-    ],
-    declarations: [
-      AggregationsComponent,
-      SmallAggregationComponent,
-      LargeAggregationComponent,
-      AggregationNamePipe,
-      DocumentCountComponent,
-      LoadingSkeletonComponent,
-      DescendantsCheckboxComponent
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
+      declarations: [
+        AggregationsComponent,
+        SmallAggregationComponent,
+        LargeAggregationComponent,
+        AggregationNamePipe,
+        DocumentCountComponent,
+        LoadingSkeletonComponent,
+        DescendantsCheckboxComponent
+      ]
+    })
+  );
 
   it('should display no aggregations if null', () => {
     const tester = new AggregationsComponentTester();
@@ -72,7 +69,10 @@ describe('AggregationsComponent', () => {
 
   it('should extract the selected criteria for the aggregation', () => {
     const component = new AggregationsComponent();
-    component.selectedCriteria = [{ name: 'coo', values: ['France', 'Italy'] }, { name: 'domain', values: ['Plant'] }];
+    component.selectedCriteria = [
+      { name: 'coo', values: ['France', 'Italy'] },
+      { name: 'domain', values: ['Plant'] }
+    ];
     const cooCriteria = component.selectedKeysForAggregation('coo');
     expect(cooCriteria).toEqual(['France', 'Italy']);
 
@@ -111,8 +111,18 @@ describe('AggregationsComponent', () => {
     // given a few aggregations
     const domain = toAggregation('domain', ['Plant']);
     // country of origin as a large aggregation with 10 options to keep being large
-    const coo = toAggregation('coo', ['France', 'Italy', 'Japan', 'Indonesia', 'New Zealand',
-      'Chile', 'Bolivia', 'Argentina', 'Antarctica', 'Canada']);
+    const coo = toAggregation('coo', [
+      'France',
+      'Italy',
+      'Japan',
+      'Indonesia',
+      'New Zealand',
+      'Chile',
+      'Bolivia',
+      'Argentina',
+      'Antarctica',
+      'Canada'
+    ]);
     coo.type = 'LARGE';
     component.aggregations = [domain, coo];
     component.selectedCriteria = [{ name: 'coo', values: ['France'] }];
@@ -165,7 +175,8 @@ describe('AggregationsComponent', () => {
     tester.detectChanges();
 
     // when the aggregation emits an event
-    const aggregationComponent = tester.aggregations[0].componentInstance as SmallAggregationComponent;
+    const aggregationComponent = tester.aggregations[0]
+      .componentInstance as SmallAggregationComponent;
     const criteria = { name: 'coo', values: ['France'] };
     aggregationComponent.aggregationChange.emit(criteria);
 
@@ -206,10 +217,13 @@ describe('AggregationsComponent', () => {
 
     // then it should emit an event
     let emittedEvent: Array<AggregationCriterion> = [];
-    component.aggregationsChange.subscribe((event: Array<AggregationCriterion>) => emittedEvent = event);
+    component.aggregationsChange.subscribe(
+      (event: Array<AggregationCriterion>) => (emittedEvent = event)
+    );
 
     // when an event is emitted by an aggregation
-    const aggregationComponent = tester.aggregations[0].componentInstance as SmallAggregationComponent;
+    const aggregationComponent = tester.aggregations[0]
+      .componentInstance as SmallAggregationComponent;
     aggregationComponent.aggregationChange.emit({
       name: 'coo',
       values: ['France']

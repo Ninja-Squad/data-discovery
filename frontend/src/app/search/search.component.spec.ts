@@ -14,7 +14,12 @@ import { DocumentsComponent } from '../documents/documents.component';
 import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
 import { SearchService } from '../search.service';
 import { DocumentModel } from '../models/document.model';
-import { toAggregation, toRareDocument, toSecondPage, toSinglePage } from '../models/test-model-generators';
+import {
+  toAggregation,
+  toRareDocument,
+  toSecondPage,
+  toSinglePage
+} from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
@@ -56,34 +61,39 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
 }
 
 describe('SearchComponent', () => {
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'isAccessionInBasket']);
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', [
+    'isEnabled',
+    'isAccessionInBasket'
+  ]);
   basketService.isEnabled.and.returnValue(true);
   basketService.isAccessionInBasket.and.returnValue(of(false));
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      ReactiveFormsModule,
-      RouterTestingModule,
-      HttpClientTestingModule,
-      DataDiscoveryNgbTestingModule,
-      NoopAnimationsModule,
-      I18nTestingModule
-    ],
-    declarations: [
-      SearchComponent,
-      DocumentsComponent,
-      RareDocumentComponent,
-      AggregationsComponent,
-      SmallAggregationComponent,
-      LargeAggregationComponent,
-      AggregationNamePipe,
-      DocumentCountComponent,
-      LoadingSkeletonComponent,
-      TruncatableDescriptionComponent,
-      DescendantsCheckboxComponent,
-      GenericSelectAllResultsComponent
-    ],
-    providers: [{ provide: BasketService, useValue: basketService }]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        DataDiscoveryNgbTestingModule,
+        NoopAnimationsModule,
+        I18nTestingModule
+      ],
+      declarations: [
+        SearchComponent,
+        DocumentsComponent,
+        RareDocumentComponent,
+        AggregationsComponent,
+        SmallAggregationComponent,
+        LargeAggregationComponent,
+        AggregationNamePipe,
+        DocumentCountComponent,
+        LoadingSkeletonComponent,
+        TruncatableDescriptionComponent,
+        DescendantsCheckboxComponent,
+        GenericSelectAllResultsComponent
+      ],
+      providers: [{ provide: BasketService, useValue: basketService }]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
@@ -208,7 +218,12 @@ describe('SearchComponent', () => {
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
     const domainCriteria = { name: 'domain', values: ['Plant'] };
-    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3, false);
+    expect(searchService.search).toHaveBeenCalledWith(
+      query,
+      [domainCriteria, cooCriteria],
+      3,
+      false
+    );
     // and the results fetched
     expect(component.results).toEqual(results);
     expect(component.aggregations).toEqual([]);
@@ -249,7 +264,12 @@ describe('SearchComponent', () => {
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
     const domainCriteria = { name: 'domain', values: ['Plant'] };
-    expect(searchService.search).toHaveBeenCalledWith(query, [domainCriteria, cooCriteria], 3, false);
+    expect(searchService.search).toHaveBeenCalledWith(
+      query,
+      [domainCriteria, cooCriteria],
+      3,
+      false
+    );
     // and the results fetched
     expect(component.results).toEqual(expectedResults);
     expect(component.aggregations).toEqual([aggregation]);

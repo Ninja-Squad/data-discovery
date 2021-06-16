@@ -45,15 +45,18 @@ export class RareBasketComponent implements OnInit {
 
   viewItems(basket: any) {
     if (this.itemCounter > 0) {
-      this.modalService.open(basket, { ariaLabelledBy: 'modal-title', size: 'lg', scrollable: true }).result.then(
-        () => {
-          // trigger an sendBasket on rare-basket
-          this.basketService.sendBasket().subscribe(basketCreated => {
-            this.location.assign(`${rareBasket.url}/baskets/${basketCreated.reference}`);
-          });
-        },
-        () => {}
-      );
+      this.modalService
+        .open(basket, { ariaLabelledBy: 'modal-title', size: 'lg', scrollable: true })
+        .result.then(
+          () => {
+            // trigger an sendBasket on rare-basket
+            this.basketService.sendBasket().subscribe(basketCreated => {
+              this.location.assign(`${rareBasket.url}/baskets/${basketCreated.reference}`);
+            });
+          },
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {}
+        );
     }
   }
 

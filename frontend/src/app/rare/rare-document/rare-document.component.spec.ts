@@ -68,7 +68,12 @@ describe('RareDocumentComponent', () => {
   const basketEvents = new Subject<boolean>();
 
   beforeEach(() => {
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'isAccessionInBasket', 'addToBasket', 'removeFromBasket']);
+    basketService = jasmine.createSpyObj<BasketService>('BasketService', [
+      'isEnabled',
+      'isAccessionInBasket',
+      'addToBasket',
+      'removeFromBasket'
+    ]);
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({

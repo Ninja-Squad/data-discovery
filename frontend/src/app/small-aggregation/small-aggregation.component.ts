@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
@@ -12,7 +19,6 @@ import { NULL_VALUE } from '../models/document.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SmallAggregationComponent implements OnInit {
-
   @Input() aggregation!: Aggregation;
   @Input() searchDescendants = false;
   private _selectedKeys: Array<string> = [];
@@ -30,9 +36,12 @@ export class SmallAggregationComponent implements OnInit {
    * [ 'France' ]
    */
   static extractKeys(formValues: { [key: string]: boolean | null }) {
-    return Object.entries<boolean | null>(formValues)
-      .filter(([key, value]) => value)
-      .map(([key]) => key);
+    return (
+      Object.entries<boolean | null>(formValues)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .filter(([key, value]) => value)
+        .map(([key]) => key)
+    );
   }
 
   static sameSelectedKeys(a: Array<string>, b: Array<string>) {
@@ -78,7 +87,7 @@ export class SmallAggregationComponent implements OnInit {
     if (!SmallAggregationComponent.sameSelectedKeys(this._selectedKeys, newSelectedKeys)) {
       this._selectedKeys = newSelectedKeys;
       for (const [key, control] of Object.entries(this.aggregationForm.controls)) {
-        control.setValue(newSelectedKeys.includes(key), {emitEvent: false});
+        control.setValue(newSelectedKeys.includes(key), { emitEvent: false });
       }
     }
   }

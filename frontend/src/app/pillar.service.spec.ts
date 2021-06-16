@@ -10,9 +10,7 @@ describe('PillarService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ]
+      imports: [HttpClientTestingModule]
     });
 
     service = TestBed.inject(PillarService);
@@ -21,7 +19,7 @@ describe('PillarService', () => {
 
   it('should list pillars', () => {
     let actualResults: Array<PillarModel>;
-    service.list().subscribe(results => actualResults = results);
+    service.list().subscribe(results => (actualResults = results));
 
     const expectedResults = [
       {

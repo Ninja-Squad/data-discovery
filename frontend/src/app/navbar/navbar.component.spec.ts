@@ -34,10 +34,11 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 }
 
 describe('NavbarComponent', () => {
-
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [NavbarComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      declarations: [NavbarComponent]
+    })
+  );
 
   it('should toggle the class on click', () => {
     const tester = new NavbarComponentTester();

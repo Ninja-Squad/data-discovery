@@ -14,7 +14,9 @@ describe('BasketService', () => {
     });
     // Object.getPrototypeOf is needed to make the test succeed on Firefox
     mockGetItem = spyOn(Object.getPrototypeOf(window.localStorage), 'getItem');
-    mockGetItem.and.returnValue('{ "items": [{ "accession": { "name": "A1" , "identifier": "a1" }, "accessionHolder": "AH1" }] }');
+    mockGetItem.and.returnValue(
+      '{ "items": [{ "accession": { "name": "A1" , "identifier": "a1" }, "accessionHolder": "AH1" }] }'
+    );
     service = TestBed.inject(BasketService);
   });
 
@@ -38,7 +40,11 @@ describe('BasketService', () => {
     service.basket.items = [];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
-    service.addToBasket({ identifier: 'rosa', name: 'Rosa', accessionHolder: 'AH1' } as RareDocumentModel);
+    service.addToBasket({
+      identifier: 'rosa',
+      name: 'Rosa',
+      accessionHolder: 'AH1'
+    } as RareDocumentModel);
     expect(actualBasket.items.length).toBe(1);
     expect(actualBasket.items[0].accession.identifier).toBe('rosa');
     expect(actualBasket.items[0].accession.name).toBe('Rosa');
@@ -60,7 +66,10 @@ describe('BasketService', () => {
   });
 
   it('should remove an item from the basket', () => {
-    service.basket.items = [{ accession: { identifier: 'rosa' } } as BasketItem, { accession: { identifier: 'rosa rosae' } } as BasketItem];
+    service.basket.items = [
+      { accession: { identifier: 'rosa' } } as BasketItem,
+      { accession: { identifier: 'rosa rosae' } } as BasketItem
+    ];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
     service.removeFromBasket('rosa');
@@ -72,10 +81,12 @@ describe('BasketService', () => {
     service.basket.items = [{ accession: { identifier: 'rosa rosae' } } as BasketItem];
     let actualIsInBasket: boolean;
     let counter = 0;
-    service.isAccessionInBasket({ identifier: 'rosa' } as RareDocumentModel).subscribe(isInBasket => {
-      counter++;
-      actualIsInBasket = isInBasket;
-    });
+    service
+      .isAccessionInBasket({ identifier: 'rosa' } as RareDocumentModel)
+      .subscribe(isInBasket => {
+        counter++;
+        actualIsInBasket = isInBasket;
+      });
     expect(actualIsInBasket).toBe(false);
     expect(counter).toBe(1);
     service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as RareDocumentModel);
@@ -91,7 +102,9 @@ describe('BasketService', () => {
   });
 
   it('should send the basket and clear the items', () => {
-    service.basket = { items: [{ accession: { identifier: 'rosa', name: 'Rosa' }, accessionHolder: 'AH1' }] };
+    service.basket = {
+      items: [{ accession: { identifier: 'rosa', name: 'Rosa' }, accessionHolder: 'AH1' }]
+    };
     let actualBasket: BasketCreated;
     service.sendBasket().subscribe(basketCreated => (actualBasket = basketCreated));
     let emittedBasket: Basket;
@@ -113,7 +126,10 @@ describe('BasketService', () => {
   });
 
   it('should clear the basket', () => {
-    service.basket.items = [{ accession: { identifier: 'rosa' } } as BasketItem, { accession: { identifier: 'rosa rosae' } } as BasketItem];
+    service.basket.items = [
+      { accession: { identifier: 'rosa' } } as BasketItem,
+      { accession: { identifier: 'rosa rosae' } } as BasketItem
+    ];
     let actualBasket: Basket;
     service.getBasket().subscribe(basket => (actualBasket = basket));
     service.clearBasket();

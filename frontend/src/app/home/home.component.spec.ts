@@ -33,17 +33,19 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
 }
 
 describe('HomeComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      ReactiveFormsModule,
-      RouterTestingModule,
-      HttpClientTestingModule,
-      DataDiscoveryNgbTestingModule,
-      I18nTestingModule
-    ],
-    declarations: [HomeComponent, PillarsComponent, DocumentCountComponent, RareHeaderComponent],
-    providers: [HttpClientTestingModule]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        DataDiscoveryNgbTestingModule,
+        I18nTestingModule
+      ],
+      declarations: [HomeComponent, PillarsComponent, DocumentCountComponent, RareHeaderComponent],
+      providers: [HttpClientTestingModule]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
@@ -64,7 +66,9 @@ describe('HomeComponent', () => {
     component.search();
 
     // then it should redirect to the search with correct parameters
-    expect(router.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { query, descendants } });
+    expect(router.navigate).toHaveBeenCalledWith(['/search'], {
+      queryParams: { query, descendants }
+    });
   });
 
   it('should display a search bar and trigger a search', () => {

@@ -6,16 +6,8 @@ import { WheatisHeaderComponent } from './wheatis-header/wheatis-header.componen
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 
 @NgModule({
-  imports: [
-    UrgiCommonModule
-  ],
-  declarations: [
-    WheatisHeaderComponent
-  ],
-  exports: [
-    GenericDocumentComponent,
-    GenericSelectAllResultsComponent,
-    WheatisHeaderComponent
-  ]
+  imports: [UrgiCommonModule],
+  declarations: [WheatisHeaderComponent],
+  exports: [GenericDocumentComponent, GenericSelectAllResultsComponent, WheatisHeaderComponent]
 })
 export class WheatisModule {}

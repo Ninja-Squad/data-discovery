@@ -11,12 +11,14 @@
     <form class="flex-fill" [formGroup]="searchForm" (ngSubmit)="newSearch()">
       <label class="sr-only" for="query" translate="search.search"></label>
       <div class="input-group">
-        <input id="query"
-               class="form-control"
-               placeholder="{{ placeholder }}"
-               formControlName="search"
-               [ngbTypeahead]="suggesterTypeahead"
-               [focusFirst]="false">
+        <input
+          id="query"
+          class="form-control"
+          placeholder="{{ placeholder }}"
+          formControlName="search"
+          [ngbTypeahead]="suggesterTypeahead"
+          [focusFirst]="false"
+        />
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" translate="search.search"></button>
         </div>
@@ -25,34 +27,37 @@
   </div>
 </div>
 
-
 <div class="mt-3 mb-3 d-md-none">
   <button class="btn btn-outline-secondary" (click)="toggleFilters()">
     <i class="fa fa-sliders" aria-hidden="true"></i>&ngsp;{{ 'search.filters' | translate }}&ngsp;
-    <i class="fa" [class.fa-caret-up]="filters === 'show'" [class.fa-caret-down]="filters === 'hide'"
-       aria-hidden="true"></i>
+    <i
+      class="fa"
+      [class.fa-caret-up]="filters === 'show'"
+      [class.fa-caret-down]="filters === 'hide'"
+      aria-hidden="true"
+    ></i>
   </button>
 </div>
 <div class="row mt-sm-2 mt-md-5">
   <div class="col-12 col-md-4 col-lg-3 filters" [@showHide]="filters">
     <h2 class="sr-only" translate="search.filters">Filters</h2>
-    <dd-aggregations *ngIf="aggregations"
-                     [aggregations]="aggregations"
-                     [searchDescendants]="searchDescendants"
-                     [aggLoading]="aggLoading"
-                     [selectedCriteria]="aggregationCriteria"
-                     (aggregationsChange)="updateSearchWithAggregation($event)"
-                     (searchDescendantsChange)="updateSearchWithDescendants($event)"
+    <dd-aggregations
+      *ngIf="aggregations"
+      [aggregations]="aggregations"
+      [searchDescendants]="searchDescendants"
+      [aggLoading]="aggLoading"
+      [selectedCriteria]="aggregationCriteria"
+      (aggregationsChange)="updateSearchWithAggregation($event)"
+      (searchDescendantsChange)="updateSearchWithDescendants($event)"
     ></dd-aggregations>
   </div>
   <div class="col-12 col-md-8 col-lg-9">
-
     <!-- Loading skeleton aka PleaseWaitWidget -->
     <div class="text-center">
       <dd-loading-skeleton [loading]="searchLoading"></dd-loading-skeleton>
     </div>
 
-    <div *ngIf=" ! searchLoading">
+    <div *ngIf="!searchLoading">
       <h2 class="sr-only" translate="search.results"></h2>
       <div *ngIf="results">
         <dd-documents [documents]="results"></dd-documents>
@@ -61,13 +66,17 @@
       <div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">
         <h2 class="sr-only" translate="search.paging"></h2>
         <!-- we add 1 to the page because ngb-pagination is 1 based -->
-        <ngb-pagination *ngIf="results" [page]="results.number + 1" (pageChange)="navigateToPage($event)"
-                        [collectionSize]="collectionSize()"
-                        [pageSize]="results.size"
-                        [maxSize]="5"
-                        [boundaryLinks]="true"
-                        [ellipses]="false"
-                        size="sm">
+        <ngb-pagination
+          *ngIf="results"
+          [page]="results.number + 1"
+          (pageChange)="navigateToPage($event)"
+          [collectionSize]="collectionSize()"
+          [pageSize]="results.size"
+          [maxSize]="5"
+          [boundaryLinks]="true"
+          [ellipses]="false"
+          size="sm"
+        >
         </ngb-pagination>
       </div>
     </div>

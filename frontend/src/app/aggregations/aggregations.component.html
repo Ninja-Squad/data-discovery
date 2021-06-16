@@ -1,26 +1,30 @@
-
 <!-- Loading skeleton aka PleaseWaitWidget -->
 <div class="text-center">
   <dd-loading-skeleton [loading]="aggLoading" [aggregationStyle]="true"></dd-loading-skeleton>
 </div>
 
-<div *ngIf="aggregations?.length && ! aggLoading">
+<div *ngIf="aggregations?.length && !aggLoading">
   <div *ngFor="let aggregation of aggregations">
     <!-- we display checkboxes if there are only a few options -->
     <ng-template #smallAggregation>
-      <dd-small-aggregation [aggregation]="aggregation"
-                              [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-                              (aggregationChange)="onAggregationChange($event)"></dd-small-aggregation>
+      <dd-small-aggregation
+        [aggregation]="aggregation"
+        [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+        (aggregationChange)="onAggregationChange($event)"
+      ></dd-small-aggregation>
     </ng-template>
     <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
     <dd-large-aggregation
-      *ngIf="aggregation.type === 'LARGE' && aggregation.buckets.length >= 10; else smallAggregation"
+      *ngIf="
+        aggregation.type === 'LARGE' && aggregation.buckets.length >= 10;
+        else smallAggregation
+      "
       [aggregation]="aggregation"
       [searchDescendants]="searchDescendants"
       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
       (aggregationChange)="onAggregationChange($event)"
-      (searchDescendantsChange)="searchDescendants=$event"
+      (searchDescendantsChange)="searchDescendants = $event"
     ></dd-large-aggregation>
   </div>
 </div>

@@ -7,16 +7,15 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./markdown-page.component.scss']
 })
 export class MarkdownPageComponent implements OnInit {
-
   mdFile = '';
 
-  constructor(private route: ActivatedRoute, @Inject(LOCALE_ID) private locale: 'en' | 'fr') {
-  }
+  constructor(private route: ActivatedRoute, @Inject(LOCALE_ID) private locale: 'en' | 'fr') {}
 
   ngOnInit() {
     // we extract the markdown file to display from the route data
     // and suffix it with the local (either 'en' or 'fr') to get the localized version.
-    this.route.data.subscribe(value => this.mdFile = value.mdFile.replace('.md', `-${this.locale}.md`));
+    this.route.data.subscribe(
+      value => (this.mdFile = value.mdFile.replace('.md', `-${this.locale}.md`))
+    );
   }
-
 }

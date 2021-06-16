@@ -7,10 +7,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentCountComponent {
-
   @Input() name = '';
   @Input() url = '';
   @Input() count = 0;
   @Input() muted = true;
-
 }

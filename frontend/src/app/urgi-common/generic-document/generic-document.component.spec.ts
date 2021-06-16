@@ -6,7 +6,6 @@ import { toWheatisDocument } from '../../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
 describe('DataDiscoveryDocumentComponent', () => {
-
   class DataDiscoveryDocumentComponentTester extends ComponentTester<GenericDocumentComponent> {
     constructor() {
       super(GenericDocumentComponent);
@@ -45,9 +44,11 @@ describe('DataDiscoveryDocumentComponent', () => {
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [GenericDocumentComponent, TruncatableDescriptionComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      declarations: [GenericDocumentComponent, TruncatableDescriptionComponent]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 

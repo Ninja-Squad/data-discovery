@@ -10,7 +10,6 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AggregationsComponent {
-
   @Input() aggregations: Array<Aggregation> = [];
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
   @Input() aggLoading = false;
@@ -42,7 +41,9 @@ export class AggregationsComponent {
    * then emits the updated criteria.
    */
   onAggregationChange(criterionChanged: AggregationCriterion): void {
-    const index = this.selectedCriteria.findIndex(criterion => criterion.name === criterionChanged.name);
+    const index = this.selectedCriteria.findIndex(
+      criterion => criterion.name === criterionChanged.name
+    );
     // if it already exists in the criteria
     if (index !== -1) {
       // and the new criterion has values
@@ -61,5 +62,4 @@ export class AggregationsComponent {
     }
     this.aggregationsChange.emit(this.selectedCriteria);
   }
-
 }

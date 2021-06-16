@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
@@ -50,11 +50,7 @@ describe('PillarsComponent', () => {
     pillarService.list.and.returnValue(pillars$);
     TestBed.configureTestingModule({
       declarations: [PillarsComponent, DocumentCountComponent],
-      imports: [
-        HttpClientTestingModule,
-        DataDiscoveryNgbTestingModule,
-        I18nTestingModule
-      ],
+      imports: [HttpClientTestingModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' },
         { provide: PillarService, useValue: pillarService }
@@ -106,8 +102,9 @@ describe('PillarsComponent', () => {
     expect(tester.databaseSourceItem(0, 1)).toContainText('CNRGV');
     expect(tester.databaseSourceItem(0, 1)).toContainText('[200]');
 
-    expect(tester.databaseSourceLink(0, 0).attr('href'))
-      .toBe('http://florilege.arcad-project.org/fr/collections');
+    expect(tester.databaseSourceLink(0, 0).attr('href')).toBe(
+      'http://florilege.arcad-project.org/fr/collections'
+    );
     expect(tester.databaseSourceLink(0, 1)).toBeNull();
   });
 

@@ -14,7 +14,5 @@ import { Page } from '../../models/page';
   styleUrls: ['./generic-select-all-results.component.scss']
 })
 export class GenericSelectAllResultsComponent {
-
   @Input() documents!: Page<GenericDocumentModel>;
-
 }

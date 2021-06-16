@@ -8,10 +8,12 @@ describe('DescendantsCheckboxComponent', () => {
   let component: DescendantsCheckboxComponent;
   let fixture: ComponentFixture<DescendantsCheckboxComponent>;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [DescendantsCheckboxComponent],
-    imports: [DataDiscoveryNgbTestingModule, TranslateModule.forRoot()]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      declarations: [DescendantsCheckboxComponent],
+      imports: [DataDiscoveryNgbTestingModule, TranslateModule.forRoot()]
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DescendantsCheckboxComponent);

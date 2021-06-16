@@ -1,5 +1,10 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
-import { MissingTranslationHandler, MissingTranslationHandlerParams, TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  MissingTranslationHandler,
+  MissingTranslationHandlerParams,
+  TranslateModule,
+  TranslateService
+} from '@ngx-translate/core';
 import EN_TRANSLATIONS from './en.json';
 
 export class CustomMissingTranslationHandler implements MissingTranslationHandler {
@@ -12,7 +17,10 @@ export class CustomMissingTranslationHandler implements MissingTranslationHandle
   imports: [
     TranslateModule.forRoot({
       useDefaultLang: false,
-      missingTranslationHandler: { provide: MissingTranslationHandler, useClass: CustomMissingTranslationHandler }
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler
+      }
     })
   ],
   exports: [TranslateModule],

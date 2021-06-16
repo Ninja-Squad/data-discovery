@@ -8,7 +8,5 @@ import { GenericDocumentModel } from '../generic-document.model';
   styleUrls: ['./generic-document.component.scss']
 })
 export class GenericDocumentComponent {
-
   @Input() document!: GenericDocumentModel;
-
 }

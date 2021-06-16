@@ -9,7 +9,6 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
   constructor(title: Title) {
     title.setTitle(environment.title);
   }

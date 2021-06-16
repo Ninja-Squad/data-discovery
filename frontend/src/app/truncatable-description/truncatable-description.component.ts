@@ -8,14 +8,13 @@ import { HighlightService } from '../highlight.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TruncatableDescriptionComponent implements OnInit {
-
   @Input() description = '';
 
   descriptionCollapsed = true;
 
   truncatedDescription = '';
 
-  constructor(private highlightService: HighlightService) { }
+  constructor(private highlightService: HighlightService) {}
 
   toggleDescription() {
     this.descriptionCollapsed = !this.descriptionCollapsed;
@@ -24,5 +23,4 @@ export class TruncatableDescriptionComponent implements OnInit {
   ngOnInit() {
     this.truncatedDescription = this.highlightService.truncate(this.description, 256, 100);
   }
-
 }

@@ -13,18 +13,15 @@ import { filter, map } from 'rxjs/operators';
   styleUrls: ['./error.component.scss']
 })
 export class ErrorComponent {
-
   error$: Observable<HttpError | null>;
 
-  constructor(private router: Router,
-              private errorInterceptor: ErrorInterceptorService) {
-    this.error$ =
-      merge(
-        this.errorInterceptor.getErrors(),
-        this.router.events.pipe(
-          filter(event => event instanceof NavigationEnd),
-          map(() => null)
-        )
-      );
+  constructor(private router: Router, private errorInterceptor: ErrorInterceptorService) {
+    this.error$ = merge(
+      this.errorInterceptor.getErrors(),
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => null)
+      )
+    );
   }
 }

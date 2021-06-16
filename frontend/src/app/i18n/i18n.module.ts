@@ -14,10 +14,10 @@ registerLocaleData(localeFr);
  * otherwise we use 'en'.
  */
 function getBrowserLanguage() {
-   if (navigator.language && navigator.language.startsWith('fr')) {
-     return 'fr';
-   }
-   return 'en';
+  if (navigator.language && navigator.language.startsWith('fr')) {
+    return 'fr';
+  }
+  return 'en';
 }
 
 @NgModule({

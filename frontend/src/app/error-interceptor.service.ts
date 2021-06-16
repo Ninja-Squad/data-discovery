@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 
 export interface HttpError {
@@ -16,15 +22,10 @@ export interface HttpError {
   providedIn: 'root'
 })
 export class ErrorInterceptorService implements HttpInterceptor {
-
   private errorSubject = new Subject<HttpError>();
 
-  constructor() {}
-
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      tap({ error: err => this.errorSubject.next(this.toError(err)) })
-    );
+    return next.handle(req).pipe(tap({ error: err => this.errorSubject.next(this.toError(err)) }));
   }
 
   private toError(errorResponse: HttpErrorResponse) {

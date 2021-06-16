@@ -25,8 +25,14 @@ export class RareSelectAllResultsComponent {
         // we only keep the accession with an accession holder
         .filter(accession => accession.accessionHolder);
       this.counter = this.accessions.length;
-      combineLatest(this.accessions.map(document => this.basketService.isAccessionInBasket(document)))
-        .pipe(map(areAccessionsInBasket => areAccessionsInBasket.every(isAccessionInBasket => isAccessionInBasket)))
+      combineLatest(
+        this.accessions.map(document => this.basketService.isAccessionInBasket(document))
+      )
+        .pipe(
+          map(areAccessionsInBasket =>
+            areAccessionsInBasket.every(isAccessionInBasket => isAccessionInBasket)
+          )
+        )
         .subscribe(areInBasket => {
           this.allSelectedForOrdering = areInBasket;
           this.changeDetectorRef.markForCheck();

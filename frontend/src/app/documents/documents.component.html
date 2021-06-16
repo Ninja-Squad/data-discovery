@@ -2,12 +2,21 @@
 <div *ngIf="documents.content.length; else noResults">
   <div class="d-flex align-items-center mb-3">
     <div id="resume" class="text-muted small flex-grow-1">
-      <span translate="documents.results-range"
-            [translateParams]="{ first: firstResultIndex | number, last: lastResultIndex | number, total: documents.totalElements | number }">
+      <span
+        translate="documents.results-range"
+        [translateParams]="{
+          first: firstResultIndex | number,
+          last: lastResultIndex | number,
+          total: documents.totalElements | number
+        }"
+      >
       </span>
       <ng-container *ngIf="resultLimited">
         &ngsp;
-        <span translate="documents.results-limited" [translateParams]="{ total: documents.maxResults | number }"></span>
+        <span
+          translate="documents.results-limited"
+          [translateParams]="{ total: documents.maxResults | number }"
+        ></span>
       </ng-container>
     </div>
     <div class="select-all-rare-basket" *ngIf="isBasketEnabled">

@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ErrorInterceptorService, HttpError } from './error-interceptor.service';
-import { HttpClientTestingModule, HttpTestingController } from '../../node_modules/@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 
 describe('ErrorInterceptorService', () => {
   let service: ErrorInterceptorService;
   let http: HttpTestingController;
   let httpClient: HttpClient;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const noop = () => {};
 
   beforeEach(() => {
@@ -47,7 +48,7 @@ describe('ErrorInterceptorService', () => {
     });
 
     httpClient.get('/test').subscribe({ error: noop });
-    http.expectOne('/test').flush(null, {status: 500, statusText: 'Server Error'});
+    http.expectOne('/test').flush(null, { status: 500, statusText: 'Server Error' });
 
     expect(error.status).toBe(500);
     expect(error.message).toBe('Http failure response for /test: 500 Server Error');

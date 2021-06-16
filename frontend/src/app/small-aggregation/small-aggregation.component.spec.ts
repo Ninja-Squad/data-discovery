@@ -12,7 +12,6 @@ import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendant
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('SmallAggregationComponent', () => {
-
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
 
   class SmallAggregationComponentTester extends ComponentTester<SmallAggregationComponent> {
@@ -33,13 +32,17 @@ describe('SmallAggregationComponent', () => {
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      ReactiveFormsModule,
-      DataDiscoveryNgbTestingModule
-    ],
-    declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent, DescendantsCheckboxComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule],
+      declarations: [
+        SmallAggregationComponent,
+        AggregationNamePipe,
+        DocumentCountComponent,
+        DescendantsCheckboxComponent
+      ]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
@@ -51,7 +54,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should display a title
-    expect(tester.title).toHaveText('Pays d\'origine');
+    expect(tester.title).toContainText("Pays d'origine");
     // and the buckets with their name and count
     expect(tester.labels.length).toBe(4);
     expect(tester.labels[0]).toContainText('France');
@@ -80,9 +83,9 @@ describe('SmallAggregationComponent', () => {
   it('should extract keys from selected values', () => {
     // given a few selected values among a bucket
     const values: { [key: string]: boolean | null } = {
-      'France': true,
-      'England': false,
-      'Italy': true,
+      France: true,
+      England: false,
+      Italy: true,
       'New Zealand': null,
       [NULL_VALUE]: true
     };
@@ -136,7 +139,7 @@ describe('SmallAggregationComponent', () => {
 
     // then it should emit an event
     let emittedEvent: AggregationCriterion;
-    component.aggregationChange.subscribe((event: AggregationCriterion) => emittedEvent = event);
+    component.aggregationChange.subscribe((event: AggregationCriterion) => (emittedEvent = event));
 
     // when a value is checked
     tester.firstCheckbox.check();
@@ -155,7 +158,7 @@ describe('SmallAggregationComponent', () => {
     component.selectedKeys = [];
 
     let eventEmitted = false;
-    component.aggregationChange.subscribe(() => eventEmitted = true);
+    component.aggregationChange.subscribe(() => (eventEmitted = true));
 
     // when initializing the component
     component.ngOnInit();

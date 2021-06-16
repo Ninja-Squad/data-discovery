@@ -1,7 +1,12 @@
 <nav class="navbar navbar-expand-md navbar-dark py-0">
   <div class="container px-0">
     <a class="navbar-brand d-flex align-items-center mr-0 px" href="{{ navbar.logoUrl }}">
-      <img src="assets/logo.png" alt="Logo" title="Logo with {{ navbar.title }} link" height="56px"/>
+      <img
+        src="assets/logo.png"
+        alt="Logo"
+        title="Logo with {{ navbar.title }} link"
+        height="56px"
+      />
     </a>
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
@@ -9,16 +14,34 @@
     <div id="navbar" class="collapse navbar-collapse" [class.collapse]="navbarCollapsed">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let link of navbar.links">
-          <div *ngIf="!$any(link).subMenu" >
-            <a class="nav-link d-flex align-items-center" [href]="link.url" title="{{ link.label }} link" target="_blank">{{ link.label }}</a>
+          <div *ngIf="!$any(link).subMenu">
+            <a
+              class="nav-link d-flex align-items-center"
+              [href]="link.url"
+              title="{{ link.label }} link"
+              target="_blank"
+              >{{ link.label }}</a
+            >
           </div>
           <div *ngIf="$any(link).subMenu">
             <!-- Dropdown -->
             <div ngbDropdown class="d-inline-block dropdown">
-              <a ngbDropdownToggle class="nav-link d-flex align-items-center" title="{{ link.label }} link" [href]="link.url">{{ link.label }}</a>
+              <a
+                ngbDropdownToggle
+                class="nav-link d-flex align-items-center"
+                title="{{ link.label }} link"
+                [href]="link.url"
+                >{{ link.label }}</a
+              >
               <div ngbDropdownMenu class="dropdown-menu">
                 <div *ngFor="let subItem of $any(link).subMenu">
-                  <a class="dropdown-item" href="{{ subItem.url }}" title="{{ subItem.label }} link" target="_blank">{{ subItem.label }}</a>
+                  <a
+                    class="dropdown-item"
+                    href="{{ subItem.url }}"
+                    title="{{ subItem.label }} link"
+                    target="_blank"
+                    >{{ subItem.label }}</a
+                  >
                 </div>
               </div>
             </div>
@@ -26,18 +49,47 @@
         </li>
         <li class="nav-item">
           <div ngbDropdown class="d-inline-block dropdown">
-            <span ngbDropdownToggle class="nav-link d-flex align-items-center" translate="navbar.more"></span>
+            <span
+              ngbDropdownToggle
+              class="nav-link d-flex align-items-center"
+              translate="navbar.more"
+            ></span>
             <div ngbDropdownMenu class="dropdown-menu">
               <!-- About link -->
-              <a class="dropdown-item" routerLink="/about" routerLinkActive="true" translate="navbar.about"></a>
+              <a
+                class="dropdown-item"
+                routerLink="/about"
+                routerLinkActive="true"
+                translate="navbar.about"
+              ></a>
               <!-- Join link -->
-              <a class="dropdown-item" routerLink="/join" routerLinkActive="true" translate="navbar.join-us"></a>
+              <a
+                class="dropdown-item"
+                routerLink="/join"
+                routerLinkActive="true"
+                translate="navbar.join-us"
+              ></a>
               <!-- Legal mentions link -->
-              <a class="dropdown-item" routerLink="/legal" routerLinkActive="true" translate="navbar.legal-mentions"></a>
+              <a
+                class="dropdown-item"
+                routerLink="/legal"
+                routerLinkActive="true"
+                translate="navbar.legal-mentions"
+              ></a>
               <!-- Help link -->
-              <a class="dropdown-item" routerLink="/help" routerLinkActive="true" translate="navbar.help"></a>
+              <a
+                class="dropdown-item"
+                routerLink="/help"
+                routerLinkActive="true"
+                translate="navbar.help"
+              ></a>
               <!-- News link -->
-              <a class="dropdown-item" routerLink="/news" routerLinkActive="true" translate="navbar.news"></a>
+              <a
+                class="dropdown-item"
+                routerLink="/news"
+                routerLinkActive="true"
+                translate="navbar.news"
+              ></a>
             </div>
           </div>
         </li>

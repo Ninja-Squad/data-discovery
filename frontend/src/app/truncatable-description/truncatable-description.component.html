@@ -1,16 +1,25 @@
 <div class="description" *ngIf="descriptionCollapsed; else expandedDescription">
   <span class="highlight" [innerHTML]="truncatedDescription"></span>
-  <button class="btn btn-link btn-inline"
-          (click)="toggleDescription()"
-          *ngIf="truncatedDescription !== description"
-          translate="truncatable-description.expand"
+  <button
+    class="btn btn-link btn-inline"
+    (click)="toggleDescription()"
+    *ngIf="truncatedDescription !== description"
+    translate="truncatable-description.expand"
   ></button>
 </div>
 <ng-template #expandedDescription>
   <div class="full-description">
-    <button class="btn btn-link btn-inline" (click)="toggleDescription()" translate="truncatable-description.hide"></button>
-    <br/>
+    <button
+      class="btn btn-link btn-inline"
+      (click)="toggleDescription()"
+      translate="truncatable-description.hide"
+    ></button>
+    <br />
     <span class="highlight" [innerHTML]="description"></span>
-    <button class="btn btn-link btn-inline" (click)="toggleDescription()" translate="truncatable-description.hide"></button>
+    <button
+      class="btn btn-link btn-inline"
+      (click)="toggleDescription()"
+      translate="truncatable-description.hide"
+    ></button>
   </div>
 </ng-template>

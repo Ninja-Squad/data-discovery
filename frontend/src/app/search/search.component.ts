@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {FormControl, FormGroup} from '@angular/forms';
-import {EMPTY, merge, Observable} from 'rxjs';
-import {catchError, switchMap} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
+import { EMPTY, merge, Observable } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 
-import {SearchService} from '../search.service';
-import {DocumentModel} from '../models/document.model';
-import {Aggregation, Page} from '../models/page';
-import {AggregationCriterion} from '../models/aggregation-criterion';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {environment} from '../../environments/environment';
+import { SearchService } from '../search.service';
+import { DocumentModel } from '../models/document.model';
+import { Aggregation, Page } from '../models/page';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-search',
@@ -21,18 +21,20 @@ import {environment} from '../../environments/environment';
      * on small devices.
      */
     trigger('showHide', [
-      state('show', style({
-        height: '*'
-      })),
-      state('hide', style({
-        height: 0
-      })),
-      transition('show => hide', [
-        animate('500ms ease-out')
-      ]),
-      transition('hide => show', [
-        animate('500ms ease-in')
-      ])
+      state(
+        'show',
+        style({
+          height: '*'
+        })
+      ),
+      state(
+        'hide',
+        style({
+          height: 0
+        })
+      ),
+      transition('show => hide', [animate('500ms ease-out')]),
+      transition('hide => show', [animate('500ms ease-in')])
     ])
   ]
 })
@@ -50,16 +52,19 @@ export class SearchComponent implements OnInit {
   aggregationCriteria: Array<AggregationCriterion> = [];
   // hide or show the filters on small devices
   filters: 'show' | 'hide' = 'hide';
-  searchDescendants = false ;
+  searchDescendants = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, private searchService: SearchService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private searchService: SearchService
+  ) {
     this.searchCtrl = new FormControl();
     this.searchForm = new FormGroup({
       search: this.searchCtrl
     });
     this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
   }
-
 
   ngOnInit(): void {
     this.route.queryParamMap
@@ -86,23 +91,21 @@ export class SearchComponent implements OnInit {
           // launch the search and handle a potential error, by returning no result
           // but allow to trigger a new search
           return merge(
-            this.searchService.search(this.query, this.aggregationCriteria, page, this.searchDescendants)
-              .pipe(
-                catchError(() => EMPTY),
-              ),
-            this.searchService.aggregate(this.query, this.aggregationCriteria, this.searchDescendants)
-              .pipe(
-                catchError(() => EMPTY)
-              )
+            this.searchService
+              .search(this.query, this.aggregationCriteria, page, this.searchDescendants)
+              .pipe(catchError(() => EMPTY)),
+            this.searchService
+              .aggregate(this.query, this.aggregationCriteria, this.searchDescendants)
+              .pipe(catchError(() => EMPTY))
           );
-        }))
+        })
+      )
       .subscribe(results => {
         // this.loading = false;
         if (results.aggregations.length) {
           this.aggLoading = false;
           // sets the aggregations if there are some
           this.aggregations = results.aggregations;
-
         } else {
           this.searchLoading = false;
           this.results = results;
@@ -128,7 +131,9 @@ export class SearchComponent implements OnInit {
   }
 
   extractCriteriaFromParameters(params: ParamMap): Array<AggregationCriterion> {
-    const aggregations = params.keys.filter(key => key !== 'query' && key !== 'page' && key !== 'descendants');
+    const aggregations = params.keys.filter(
+      key => key !== 'query' && key !== 'page' && key !== 'descendants'
+    );
     return aggregations.map(aggregationName => ({
       name: aggregationName,
       values: params.getAll(aggregationName)
@@ -150,7 +155,7 @@ export class SearchComponent implements OnInit {
       // )
       this.setPleaseWaitWidgetsOn();
     }
-    this.search({query});
+    this.search({ query });
   }
 
   /**
@@ -159,7 +164,12 @@ export class SearchComponent implements OnInit {
    */
   navigateToPage(requestedPage: number) {
     this.setPleaseWaitWidgetsOn();
-    this.search({query: this.query, page: requestedPage, criteria: this.aggregationCriteria, descendants: this.searchDescendants});
+    this.search({
+      query: this.query,
+      page: requestedPage,
+      criteria: this.aggregationCriteria,
+      descendants: this.searchDescendants
+    });
   }
 
   collectionSize() {
@@ -174,12 +184,20 @@ export class SearchComponent implements OnInit {
   updateSearchWithAggregation(criteria: Array<AggregationCriterion>) {
     this.aggregationCriteria = criteria;
     this.setPleaseWaitWidgetsOn(true);
-    this.search({query: this.query, criteria: this.aggregationCriteria, descendants: this.searchDescendants});
+    this.search({
+      query: this.query,
+      criteria: this.aggregationCriteria,
+      descendants: this.searchDescendants
+    });
   }
 
   updateSearchWithDescendants(event: boolean) {
     this.searchDescendants = event;
-    this.search({query: this.query, criteria: this.aggregationCriteria, descendants: this.searchDescendants});
+    this.search({
+      query: this.query,
+      criteria: this.aggregationCriteria,
+      descendants: this.searchDescendants
+    });
   }
 
   toggleFilters() {
@@ -190,7 +208,12 @@ export class SearchComponent implements OnInit {
    * Internal method called to update the URL with the new parameters (query, page, criteria).
    * It accepts a search options object with one mandatory field (the query) and optional ones (page, criteria)
    */
-  private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion>, descendants?: boolean }) {
+  private search(options: {
+    query: string;
+    page?: number;
+    criteria?: Array<AggregationCriterion>;
+    descendants?: boolean;
+  }) {
     const queryParams: { [key: string]: string | number | undefined | Array<string> } = {
       query: options.query,
       page: options.page,
@@ -198,15 +221,13 @@ export class SearchComponent implements OnInit {
     };
     // we iterate over each criteria if necessary
     if (options.criteria) {
-      options.criteria
-        .forEach(criteria => queryParams[criteria.name] = criteria.values);
+      options.criteria.forEach(criteria => (queryParams[criteria.name] = criteria.values));
     }
 
     this.router.navigate(['.'], {
       relativeTo: this.route,
       queryParams
     });
-
   }
 
   private setPleaseWaitWidgetsOn(searchOnly: boolean = false) {

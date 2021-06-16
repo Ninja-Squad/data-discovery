@@ -9,7 +9,11 @@ export const routes: Routes = [
   { path: 'search', component: SearchComponent },
   { path: 'about', component: MarkdownPageComponent, data: { mdFile: environment.aboutUsMdFile } },
   { path: 'join', component: MarkdownPageComponent, data: { mdFile: environment.joinUsMdFile } },
-  { path: 'legal', component: MarkdownPageComponent, data: { mdFile: environment.legalMentionsMdFile } },
+  {
+    path: 'legal',
+    component: MarkdownPageComponent,
+    data: { mdFile: environment.legalMentionsMdFile }
+  },
   { path: 'help', component: MarkdownPageComponent, data: { mdFile: environment.helpMdFile } },
   { path: 'news', component: MarkdownPageComponent, data: { mdFile: environment.newsMdFile } },
   { path: 'eula', component: MarkdownPageComponent, data: { mdFile: environment.eulaMdFile } }

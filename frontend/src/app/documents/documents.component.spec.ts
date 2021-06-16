@@ -18,7 +18,6 @@ import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('DocumentsComponent', () => {
-
   class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
     constructor() {
       super(DocumentsComponent);
@@ -37,7 +36,10 @@ describe('DocumentsComponent', () => {
     }
   }
 
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', ['isEnabled', 'isAccessionInBasket']);
+  const basketService = jasmine.createSpyObj<BasketService>('BasketService', [
+    'isEnabled',
+    'isAccessionInBasket'
+  ]);
   basketService.isEnabled.and.returnValue(true);
   basketService.isAccessionInBasket.and.returnValue(of(false));
 
@@ -45,7 +47,12 @@ describe('DocumentsComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [DocumentsComponent, RareDocumentComponent, GenericSelectAllResultsComponent, TruncatableDescriptionComponent],
+      declarations: [
+        DocumentsComponent,
+        RareDocumentComponent,
+        GenericSelectAllResultsComponent,
+        TruncatableDescriptionComponent
+      ],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' },
         { provide: BasketService, useValue: basketService }
@@ -113,6 +120,8 @@ describe('DocumentsComponent', () => {
     // then it should display each result
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(20);
-    expect(tester.resume).toContainText('Results 4\u202f001 to 4\u202f020 of 12\u202f000 (limited to 10\u202f000)');
+    expect(tester.resume).toContainText(
+      'Results 4\u202f001 to 4\u202f020 of 12\u202f000 (limited to 10\u202f000)'
+    );
   });
 });
