@@ -35,6 +35,7 @@ yarn-error.log
 testem.log
 /typings
 /karma-junit-tests-report
+eslint-result.txt
 
 # System Files
 .DS_Store
