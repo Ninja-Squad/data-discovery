@@ -233,16 +233,19 @@ build-rare:
  variables:
   APP_NAME: ${RARE_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-brc4env:
  variables:
   APP_NAME: "brc4env"
  <<: *build_app           # Merge the contents of the 'build_app' alias
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-wheatis:
  variables:
   APP_NAME: ${WHEATIS_APP_NAME}
  <<: *build_app           # Merge the contents of the 'build_app' alias
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-data-discovery:
  variables:
@@ -510,6 +513,7 @@ deploy-rare-to-beta-openstack:
    - master
  allow_failure: false # mandatory to block the execution of the pipeline
  needs: ["build-rare"]
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 deploy-rare-to-staging-openstack:
  stage: deploy-staging
@@ -577,6 +581,7 @@ deploy-brc4env-to-beta-openstack:
    - master
  allow_failure: false # mandatory to block the execution of the pipeline
  needs: ["build-brc4env"]
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 deploy-brc4env-to-staging-openstack:
  stage: deploy-staging
@@ -629,6 +634,7 @@ deploy-wheatis-to-beta-openstack:
    - master
  allow_failure: false
  needs: ["build-wheatis"]
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 deploy-wheatis-to-staging-openstack:
  stage: deploy-staging
@@ -696,6 +702,7 @@ deploy-data-discovery-to-beta-openstack:
    - master
  allow_failure: false
  needs: ["build-data-discovery"]
+ when: manual # for speeding up pipelines during Ninja Squad devs
 
 deploy-data-discovery-to-staging-openstack:
  stage: deploy-staging
