@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
@@ -20,13 +22,11 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
  */
 @org.springframework.data.elasticsearch.annotations.Document(
     indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource-alias",
-    type = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json")
 public final class WheatisDocument implements SearchDocument {
     @Id
-    @JsonIgnore
     private final String id;
     private final String name;
     private final String entryType;
@@ -40,6 +40,7 @@ public final class WheatisDocument implements SearchDocument {
     private final List<String> ancestors;
 
     @JsonCreator
+    @PersistenceConstructor
     public WheatisDocument(String id,
 						   String name,
 						   String entryType,

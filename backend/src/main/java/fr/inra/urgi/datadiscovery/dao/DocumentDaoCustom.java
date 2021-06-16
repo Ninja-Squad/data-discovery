@@ -3,12 +3,13 @@ package fr.inra.urgi.datadiscovery.dao;
 import java.util.Collection;
 import java.util.List;
 
-import fr.inra.urgi.datadiscovery.domain.SearchDocument;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.SearchPage;
 
 /**
  * Base custom interface for document DAOs
@@ -29,8 +30,7 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
      * documents, and returns the requested page (results are sorted by score, in descending order).
      * Separation from the search method for performances reasons
      */
-    AggregatedPage<D> aggregate(String query,
-            SearchRefinements refinements, boolean descendants);
+    AggregatedPage<D> aggregate(String query, SearchRefinements refinements, boolean descendants);
 
     /**
      * Suggests completions for the given term. It typically autocompletes all the fields except the identifier, the URL and
@@ -76,4 +76,6 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
      */
     @Deprecated
     void putMapping();
+
+    void refresh();
 }

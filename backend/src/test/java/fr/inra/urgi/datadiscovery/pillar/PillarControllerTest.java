@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Unit tests for {@link PillarController}
  * @author JB Nizet
  */
-@ExtendWith(SpringExtension.class)
 @Import(SecurityConfig.class)
 @WebMvcTest(controllers = PillarController.class)
 class PillarControllerTest {

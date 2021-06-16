@@ -13,7 +13,6 @@ import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
 import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisIndexedDocument;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
 
 /**
  * Implementation of {@link WheatisDocumentDaoCustom}
@@ -42,9 +41,8 @@ public class WheatisDocumentDaoImpl
                                         "databaseName.keyword",
                                         null);
 
-    public WheatisDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
-                                  EntityMapper entityMapper) {
-        super(elasticsearchTemplate, new WheatisDocumentHighlightMapper(entityMapper));
+    public WheatisDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate) {
+        super(elasticsearchTemplate, new WheatisDocumentHighlighter());
     }
 
     @Override

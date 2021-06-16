@@ -1,5 +1,4 @@
 {
-    "dynamic": "strict",
     "properties": {
         "suggestions": {
             "type" : "completion",

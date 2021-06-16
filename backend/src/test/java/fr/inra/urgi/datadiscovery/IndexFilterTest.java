@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Unit tests for {@link IndexFilter}
  * @author JB Nizet
  */
-@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = SearchController.class)
 @Import(SecurityConfig.class)
 class IndexFilterTest {

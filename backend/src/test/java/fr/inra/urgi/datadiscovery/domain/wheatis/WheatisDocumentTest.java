@@ -2,7 +2,6 @@ package fr.inra.urgi.datadiscovery.domain.wheatis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import fr.inra.urgi.datadiscovery.config.HarvestConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author JB Nizet
  */
 @JsonTest
-@Import(HarvestConfig.class)
-@ExtendWith(SpringExtension.class)
 class WheatisDocumentTest {
 
     @Autowired

@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 
 /**
  * DTO for a page containing additional aggregations

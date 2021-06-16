@@ -14,10 +14,10 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "2.1.1.RELEASE"
+    id("org.springframework.boot") version "2.5.1"
     id("com.gorylenko.gradle-git-properties") version "2.3.1"
     id("org.asciidoctor.convert") version "1.5.9.2"
-    id("io.spring.dependency-management") version "1.0.6.RELEASE"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.sonarqube")
 }
 
@@ -28,15 +28,16 @@ java {
 
 repositories {
     mavenCentral()
-    maven("https://repo.spring.io/libs-snapshot")
 }
+
+extra["springCloudVersion"] = "2020.0.3"
 
 val snippetsDir = file("build/generated-snippets")
 
 tasks {
 
     withType(JavaCompile::class.java) {
-        // make sur the parameter names are writtn in the byte code and available using reflection.
+        // make sur the parameter names are written in the byte code and available using reflection.
         // this is useful for Jackson and Spring to automatically deduce propert names or path variable names
         // based on the name of the parameter
         options.compilerArgs.add("-parameters")
@@ -104,7 +105,7 @@ tasks {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
 }
 
@@ -113,23 +114,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
-    implementation("org.springframework.data:spring-data-commons")
-    implementation("org.springframework.data:spring-data-elasticsearch:3.2.0.M1") // to replace by GA version in June 2019
-    implementation("org.elasticsearch:elasticsearch:${project.ext["ELASTIC_VERSION"]}")
-    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:${project.ext["ELASTIC_VERSION"]}")
+    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
+    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "junit")
-    }
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("org.mockito:mockito-junit-jupiter:2.23.0")
-    testImplementation("org.junit-pioneer:junit-pioneer:0.3.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.2.RELEASE")
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE")
 }
 

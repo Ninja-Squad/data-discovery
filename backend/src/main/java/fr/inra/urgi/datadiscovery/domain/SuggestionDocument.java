@@ -11,7 +11,6 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
  */
 @Document(
     indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}suggestions-alias",
-    type = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}suggestions",
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json")

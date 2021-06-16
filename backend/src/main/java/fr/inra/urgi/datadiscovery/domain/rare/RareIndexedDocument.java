@@ -25,7 +25,6 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
  */
 @Document(
     indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource-harvest-index",
-    type = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json")

@@ -1,22 +1,16 @@
 package fr.inra.urgi.datadiscovery.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.datadiscovery.dao.DocumentDao;
 import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-
-import java.net.UnknownHostException;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackageClasses = DocumentDao.class)
@@ -32,45 +26,34 @@ public class ElasticSearchConfig {
     public DataDiscoveryProperties dataDiscoveryProperties() {
         return new DataDiscoveryProperties();
     }
-
-    /**
-     * Creates a custom entity mapper for ES with the Jackson {@link ObjectMapper}
-     * This avoids to annotate every parameter of the constructor of our documents with JsonProperty
-     *
-     * @param objectMapper - the Jackson {@link ObjectMapper}
-     */
-    @Bean
-    public EntityMapper customElasticSearchEntityMapper(ObjectMapper objectMapper) {
-        return new CustomElasticSearchEntityMapper(objectMapper);
-    }
-
     /**
      * Creates an Elasticsearch instance using the configuration provided.
      * It relies on {@link RestHighLevelClient}.
      */
     @Bean
-    public RestHighLevelClient client() throws UnknownHostException {
+    public RestHighLevelClient client() {
         // if we are on CI, we use a hardcoded host, else we use the injected value
         String host = System.getenv("CI") != null ? "elasticsearch" : esHost;
 
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(new HttpHost(host, esPort, HttpHost.DEFAULT_SCHEME_NAME))
-                        .setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
-
-                            @Override
-                            public Builder customizeRequestConfig(Builder requestConfigBuilder) {
-                                return requestConfigBuilder.setConnectTimeout(5000).setSocketTimeout(60000);
-                            }
-                        }).setMaxRetryTimeoutMillis(60000).setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
-                        .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
-                                .setDefaultIOReactorConfig(IOReactorConfig.custom().setIoThreadCount(2)
-                                        .setSoTimeout(60000).setConnectTimeout(5000).build())));
+                          .setRequestConfigCallback(requestConfigBuilder ->
+                                                        requestConfigBuilder.setConnectTimeout(5000)
+                                                                            .setSocketTimeout(60000))
+                          .setNodeSelector(NodeSelector.SKIP_DEDICATED_MASTERS)
+                          .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                                .setDefaultIOReactorConfig(
+                                    IOReactorConfig.custom()
+                                                   .setIoThreadCount(2)
+                                                   .setSoTimeout(60000)
+                                                   .setConnectTimeout(5000)
+                                                   .build())));
         return client;
     }
 
     @Bean
-    public ElasticsearchRestTemplate elasticsearchTemplate(RestHighLevelClient client, EntityMapper customElasticSearchEntityMapper) {
-        return new ElasticsearchRestTemplate(client, customElasticSearchEntityMapper);
+    public ElasticsearchRestTemplate elasticsearchTemplate(RestHighLevelClient client) {
+        return new ElasticsearchRestTemplate(client);
     }
 }
 
