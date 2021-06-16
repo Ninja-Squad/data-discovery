@@ -9,6 +9,10 @@ spring:
         host: 127.0.0.1
         port: 9200
 
+  jackson:
+    deserialization:
+      accept-single-value-as-array: true
+
 management:
   endpoint:
     health:
@@ -40,7 +44,9 @@ logging.level:
 
 ---
 spring:
-  profiles: rare-app
+  config:
+    activate:
+      on-profile: rare-app
   cloud.config.name: rare
   security.user:
       name: rare
@@ -56,7 +62,10 @@ server:
 
 ---
 spring:
-  profiles: brc4env-app
+  spring:
+    config:
+      activate:
+        on-profile: brc4env-app
   cloud.config.name: brc4env
   security.user:
     name: rare
@@ -80,7 +89,10 @@ server:
 
 ---
 spring:
-  profiles: wheatis-app
+  spring:
+    config:
+      activate:
+        on-profile: wheatis-app
   cloud.config.name: wheatis
   security.user:
       name: wheatis
@@ -96,7 +108,10 @@ server:
 
 ---
 spring:
-  profiles: data-discovery-app
+  spring:
+    config:
+      activate:
+        on-profile: data-discovery-app
   cloud.config.name: data-discovery
   security.user:
       name: data-discovery

@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
@@ -27,7 +29,6 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
  */
 @org.springframework.data.elasticsearch.annotations.Document(
     indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource-alias",
-    type = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource",
     createIndex = false
 )
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json")
@@ -35,6 +36,7 @@ public class RareDocument implements SearchDocument {
 
     @Id
     @JsonProperty("identifier")
+    @Field(name = "identifier")
     private final String id;
 
     private final String name;
@@ -57,6 +59,7 @@ public class RareDocument implements SearchDocument {
     private final Location locationOfCollect;
 
     @JsonCreator
+    @PersistenceConstructor
     public RareDocument(@JsonProperty("identifier") String id,
                         String name,
                         String description,

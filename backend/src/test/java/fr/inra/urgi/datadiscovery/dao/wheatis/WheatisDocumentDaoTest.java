@@ -1,39 +1,50 @@
 package fr.inra.urgi.datadiscovery.dao.wheatis;
 
-import fr.inra.urgi.datadiscovery.config.AppProfile;
-import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
-import fr.inra.urgi.datadiscovery.dao.DocumentDao;
-import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
-import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
-import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
-import fr.inra.urgi.datadiscovery.domain.SearchDocument;
-import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
-import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
-import org.assertj.core.util.Lists;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.query.AliasBuilder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import fr.inra.urgi.datadiscovery.config.AppProfile;
+import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
+import fr.inra.urgi.datadiscovery.dao.DocumentDao;
+import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
+import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
+import fr.inra.urgi.datadiscovery.domain.SearchDocument;
+import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
+import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
+import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
+import org.assertj.core.util.Lists;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.index.AliasAction;
+import org.springframework.data.elasticsearch.core.index.AliasActionParameters;
+import org.springframework.data.elasticsearch.core.index.AliasActions;
+import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-wheatis.properties")
 @Import(ElasticSearchConfig.class)
 @JsonTest
@@ -51,35 +62,44 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
     @BeforeAll
     void prepareIndex() {
-        ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
-                WheatisDocument.class);
-        ElasticsearchPersistentEntity suggestionDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
-                SuggestionDocument.class);
-        elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
-        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings(AppProfile.WHEATIS));
-        elasticsearchTemplate.deleteIndex(SUGGESTION_INDEX);
-        elasticsearchTemplate.createIndex(SUGGESTION_INDEX, DocumentIndexSettings.createSuggestionsSettings());
-        elasticsearchTemplate.addAlias(
-            new AliasBuilder().withAliasName(documentEntity.getIndexName())
-                    .withIndexName(PHYSICAL_INDEX)
-                    .build()
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).delete();
+        elasticsearchTemplate.execute(
+            client -> {
+                Settings settings = DocumentIndexSettings.createSettings(AppProfile.WHEATIS);
+                CreateIndexRequest createIndexRequest = new CreateIndexRequest(PHYSICAL_INDEX).settings(settings);
+                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+                return null;
+            }
         );
-        elasticsearchTemplate.addAlias(
-            new AliasBuilder().withAliasName(suggestionDocumentEntity.getIndexName())
-                    .withIndexName(SUGGESTION_INDEX)
-                    .build()
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(SUGGESTION_INDEX)).delete();
+        elasticsearchTemplate.execute(
+            client -> {
+                Settings settings = DocumentIndexSettings.createSuggestionsSettings();
+                CreateIndexRequest createIndexRequest = new CreateIndexRequest(SUGGESTION_INDEX).settings(settings);
+                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+                return null;
+            }
         );
-        elasticsearchTemplate.putMapping(WheatisDocument.class);
-        elasticsearchTemplate.putMapping(SuggestionDocument.class);
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).alias(
+            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
+                elasticsearchTemplate.getIndexCoordinatesFor(RareDocument.class).getIndexName()
+            ).withIndices(PHYSICAL_INDEX).build()))
+        );
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(SUGGESTION_INDEX)).alias(
+            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
+                elasticsearchTemplate.getIndexCoordinatesFor(SuggestionDocument.class).getIndexName()
+            ).withIndices(SUGGESTION_INDEX).build()))
+        );
+
+        elasticsearchTemplate.indexOps(WheatisDocument.class).putMapping();
+        elasticsearchTemplate.indexOps(SuggestionDocument.class).putMapping();
     }
 
     @BeforeEach
     void prepare() {
         documentDao.deleteAll();
         documentDao.deleteAllSuggestions();
-
-        ElasticsearchPersistentEntity persistentEntity = elasticsearchTemplate.getPersistentEntityFor(SuggestionDocument.class);
-        elasticsearchTemplate.refresh(persistentEntity.getIndexName());
+        elasticsearchTemplate.indexOps(elasticsearchTemplate.getIndexCoordinatesFor(SuggestionDocument.class)).refresh();
     }
 
     @Test
@@ -98,7 +118,8 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
 
-//        assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
+        // TODO JBN why is this commented out?
+        // assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
     }
 
     @Test
@@ -346,7 +367,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         WheatisDocument resource1 =
                 WheatisDocument.builder()
                         .withId("r1")
-                        .withDescription("wheat is good for your health, <p>or maybe not</p>, I don't know.")
+                        .withDescription("wheat is good for your health, <p>or maybe not</p>, I don't know. In French, le blé est bon.")
                         .build();
 
 
@@ -367,7 +388,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
         assertThat(result.getContent())
                 .extracting(WheatisDocument::getDescription)
-                .containsOnly("<em>wheat</em> is good for your health, &lt;p&gt;or maybe not&lt;&#x2F;p&gt;, I don&#x27;t know.",
+                .containsOnly("<em>wheat</em> is good for your health, &lt;p&gt;or maybe not&lt;&#x2F;p&gt;, I don&#x27;t know. In French, le <em>blé</em> est bon.",
                         "<em>Triticum</em> is very diverse and it includes diploid, tetraploid and hexaploid");
     }
 

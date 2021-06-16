@@ -32,9 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * REST-Docs tests for {@link PillarController}
  * @author JB Nizet
  */
-@ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @Import(DocumentationConfig.class)
-@WebMvcTest(controllers = PillarController.class, secure = false)
+@WebMvcTest(controllers = PillarController.class)
 @AutoConfigureRestDocs
 class PillarControllerDocTest {
 

@@ -10,13 +10,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -35,9 +36,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.*;
 
 /**
@@ -63,14 +62,14 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     private int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
     protected final ElasticsearchRestTemplate elasticsearchTemplate;
-    private final AbstractDocumentHighlightMapper<D> documentHighlightMapper;
+    private final AbstractDocumentHighlighter<D> documentHighlighter;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public AbstractDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
-                                   AbstractDocumentHighlightMapper<D> documentHighlightMapper) {
+                                   AbstractDocumentHighlighter<D> documentHighlighter) {
         this.elasticsearchTemplate = elasticsearchTemplate;
-        this.documentHighlightMapper = documentHighlightMapper;
+        this.documentHighlighter = documentHighlighter;
     }
 
     @Override
@@ -89,23 +88,30 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         }
 
         logger.debug(builder.build().toString());
-        return elasticsearchTemplate.queryForPage(builder.build(),getDocumentClass(),
-                documentHighlightMapper);
+        return AggregatedPage.fromSearchHits(
+            elasticsearchTemplate.search(builder.build(), getDocumentClass()),
+            page,
+            documentHighlighter
+        );
     }
 
 
     @Override
     public AggregatedPage<D> aggregate(String query, SearchRefinements refinements, boolean descendants) {
 
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, PageRequest.of(0,1), descendants);
+        PageRequest page = PageRequest.of(0, 1);
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
 
         getAppAggregations().forEach(appAggregation -> {
             FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements, descendants);
             builder.addAggregation(filterAggregation);
         });
 
-        AggregatedPage<D> result = elasticsearchTemplate
-                .queryForPage(builder.build(), getDocumentClass(), documentHighlightMapper);
+        AggregatedPage<D> result = AggregatedPage.fromSearchHits(
+            elasticsearchTemplate.search(builder.build(), getDocumentClass()),
+            page,
+            documentHighlighter
+        );
 
         // the page contains filter aggregations, each containing a sub terms aggregation.
         // we actually want the terms aggregation directly in the page
@@ -194,12 +200,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
                 .map(aggregation -> (Terms) ((Filter) aggregation).getAggregations().get(aggregation.getName()))
                 .collect(Collectors.toList());
 
-        return new AggregatedPageImpl<>(page.getContent(),
-                                        page.getPageable(),
-                                        page.getTotalElements(),
-                                        new Aggregations(termsAggregations),
-                                        page.getScrollId(),
-                                        page.getMaxScore());
+        return new AggregatedPageImpl<>(page, new Aggregations(termsAggregations));
     }
 
     /**
@@ -257,42 +258,43 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
 
     @Override
     public List<String> suggest(String term) {
-        SuggestBuilder suggestion =
-            new SuggestBuilder().addSuggestion(
-                COMPLETION,
-                SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
-                               .text(term)
-                               .size(MAX_RETURNED_SUGGESTION_COUNT * 2) // because we deduplicate case-differing
-                               // suggestions after
-                               .skipDuplicates(true));
+        return elasticsearchTemplate.execute(client -> {
+            SuggestBuilder suggestion =
+                new SuggestBuilder().addSuggestion(
+                    COMPLETION,
+                    SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
+                                   .text(term)
+                                   .size(MAX_RETURNED_SUGGESTION_COUNT * 2) // because we deduplicate case-differing
+                                   // suggestions after
+                                   .skipDuplicates(true));
 
-        RestHighLevelClient client = elasticsearchTemplate.getClient();
-        String index = elasticsearchTemplate.getPersistentEntityFor(getSuggestionDocumentClass()).getIndexName();
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().suggest(suggestion);
-        sourceBuilder.fetchSource(false);
-        SearchRequest req = new SearchRequest(new String[]{index}, sourceBuilder);
-        SearchResponse response = null;
-        try {
-            response = client.search(req, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            logger.warn("Could not fetch suggestions for  term: '" + term + "'." + e);
-            return Collections.emptyList();
-        }
+            String index = elasticsearchTemplate.getIndexCoordinatesFor(getSuggestionDocumentClass()).getIndexName();
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().suggest(suggestion);
+            sourceBuilder.fetchSource(false);
+            SearchRequest req = new SearchRequest(new String[]{index}, sourceBuilder);
+            SearchResponse response = null;
+            try {
+                response = client.search(req, RequestOptions.DEFAULT);
+            } catch (IOException e) {
+                logger.warn("Could not fetch suggestions for  term: '" + term + "'." + e);
+                return Collections.emptyList();
+            }
 
-        Suggest suggest = response.getSuggest();
-        if (suggest == null) {
-            // no data in the database
-            return Collections.emptyList();
-        }
+            Suggest suggest = response.getSuggest();
+            if (suggest == null) {
+                // no data in the database
+                return Collections.emptyList();
+            }
 
-        List<String> suggestions = suggest.getSuggestion(COMPLETION)
-                                          .getEntries()
-                                          .stream()
-                                          .flatMap(entry -> entry.getOptions().stream())
-                                          .map(option -> option.getText().string())
-                                          .collect(Collectors.toList());
+            List<String> suggestions = suggest.getSuggestion(COMPLETION)
+                                              .getEntries()
+                                              .stream()
+                                              .flatMap(entry -> entry.getOptions().stream())
+                                              .map(option -> option.getText().string())
+                                              .collect(Collectors.toList());
 
-        return removeSuggestionsDifferingByCase(suggestions);
+            return removeSuggestionsDifferingByCase(suggestions);
+        });
     }
 
     private List<String> removeSuggestionsDifferingByCase(List<String> suggestions) {
@@ -313,32 +315,27 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     @Override
     public void saveAll(Collection<I> indexedDocuments) {
         List<IndexQuery> queries = indexedDocuments.parallelStream().map(this::createIndexQuery).collect(Collectors.toList());
-        elasticsearchTemplate.bulkIndex(queries);
+        elasticsearchTemplate.bulkIndex(queries, getIndexedDocumentClass());
         // Refreshing after each request is a very consuming task. Let ES using its own refresh index setting.
-//        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(getDocumentClass()).getIndexName());
     }
 
     @Override
     public void saveAllSuggestions(Collection<SuggestionDocument> suggestions) {
         List<IndexQuery> queries = suggestions.parallelStream().map(this::createSuggestionIndexQuery).collect(Collectors.toList());
-        elasticsearchTemplate.bulkIndex(queries);
+        elasticsearchTemplate.bulkIndex(queries, getSuggestionDocumentClass());
         // allow to refresh systematically since this method is only used for testing purpose, impact of performances is low
-        elasticsearchTemplate.refresh(elasticsearchTemplate.getPersistentEntityFor(getSuggestionDocumentClass()).getIndexName());
+        elasticsearchTemplate.indexOps(getSuggestionDocumentClass()).refresh();
     }
 
     @Override
     public void deleteAllSuggestions() {
-        DeleteQuery deleteQuery = new DeleteQuery();
-        ElasticsearchPersistentEntity persistentEntity = elasticsearchTemplate.getPersistentEntityFor(SuggestionDocument.class);
-        deleteQuery.setIndex(persistentEntity.getIndexName());
-        deleteQuery.setType(persistentEntity.getIndexType());
-        elasticsearchTemplate.delete(deleteQuery);
-        elasticsearchTemplate.refresh(persistentEntity.getIndexName());
+        elasticsearchTemplate.delete(new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build(), getSuggestionDocumentClass());
+        elasticsearchTemplate.indexOps(getSuggestionDocumentClass()).refresh();
     }
 
     @Override
     public void putMapping() {
-        elasticsearchTemplate.putMapping(getIndexedDocumentClass());
+        elasticsearchTemplate.indexOps(getIndexedDocumentClass()).putMapping();
     }
 
     @Override
@@ -367,8 +364,13 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
             .addAggregation(pillar)
             .withPageable(NoPage.INSTANCE);
 
-        AggregatedPage<D> documents = elasticsearchTemplate.queryForPage(builder.build(), getDocumentClass());
-        return documents.getAggregations().get(pillarAggregationName);
+        SearchHits<D> searchHits = elasticsearchTemplate.search(builder.build(), getDocumentClass());
+        return searchHits.getAggregations().get(pillarAggregationName);
+    }
+
+    @Override
+    public void refresh() {
+        elasticsearchTemplate.indexOps(getDocumentClass()).refresh();
     }
 
     private IndexQuery createSuggestionIndexQuery(SuggestionDocument suggestion) {
@@ -474,6 +476,11 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         @Override
         public boolean hasPrevious() {
             return false;
+        }
+
+        @Override
+        public Pageable withPage(int pageNumber) {
+            throw new UnsupportedOperationException();
         }
     }
 }

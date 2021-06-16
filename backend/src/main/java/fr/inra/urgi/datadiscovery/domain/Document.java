@@ -1,7 +1,7 @@
 package fr.inra.urgi.datadiscovery.domain;
 
 /**
- * Interface common to all documents that can be manipulated by this application, for sugesting or for searching.
+ * Interface common to all documents that can be manipulated by this application, for suggesting or for searching.
  * Known implementations:
  * <ul>
  *     <li>{@link fr.inra.urgi.datadiscovery.domain.SuggestionDocument SuggestionDocument}</li>

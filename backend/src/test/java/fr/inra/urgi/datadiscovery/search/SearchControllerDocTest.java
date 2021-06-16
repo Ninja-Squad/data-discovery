@@ -18,6 +18,7 @@ import fr.inra.urgi.datadiscovery.dao.rare.RareAggregation;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import fr.inra.urgi.datadiscovery.doc.DocumentationConfig;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -31,7 +32,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,8 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 /**
  * REST-Docs tests for {@link SearchController}
  */
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = SearchController.class, secure = false)
+@WebMvcTest(controllers = SearchController.class)
 @Import(DocumentationConfig.class)
 @AutoConfigureRestDocs
 class SearchControllerDocTest {

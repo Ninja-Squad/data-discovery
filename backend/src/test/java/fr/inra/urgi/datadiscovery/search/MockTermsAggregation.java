@@ -51,8 +51,8 @@ public final class MockTermsAggregation implements Terms {
     }
 
     @Override
-    public Map<String, Object> getMetaData() {
-        throw new UnsupportedOperationException();
+    public Map<String, Object> getMetadata() {
+        return null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package fr.inra.urgi.datadiscovery.dao;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Map;
 
 import org.elasticsearch.common.settings.Settings;
 
@@ -10,7 +11,7 @@ import org.elasticsearch.common.settings.Settings;
  * @author JB Nizet
  */
 public class DocumentIndexSettings {
-    public static String createSettings(String profile) {
+    public static Settings createSettings(String profile) {
         try {
             String appName = profile.substring(0, profile.lastIndexOf("-"));
             appName = profile.equals("data-discovery-app") ? "wheatis" : appName;
@@ -18,19 +19,19 @@ public class DocumentIndexSettings {
                     appName + "/settings.json",
                     DocumentIndexSettings.class.getResourceAsStream(appName + "/settings.json"),
                     true
-            ).build().toString();
+            ).build();
         }
         catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
-    public static String createSuggestionsSettings() {
+    public static Settings createSuggestionsSettings() {
         try {
             return Settings.builder().loadFromStream(
                     "settings-suggestions.json",
                     DocumentIndexSettings.class.getResourceAsStream("settings-suggestions.json"),
                     true
-            ).build().toString();
+            ).build();
         }
         catch (IOException e) {
             throw new UncheckedIOException(e);

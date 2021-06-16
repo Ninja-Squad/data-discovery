@@ -9,7 +9,11 @@ import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,14 +26,14 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.query.AliasBuilder;
+import org.springframework.data.elasticsearch.core.index.AliasAction;
+import org.springframework.data.elasticsearch.core.index.AliasActionParameters;
+import org.springframework.data.elasticsearch.core.index.AliasActions;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
 @TestPropertySource(
     value = "/test-rare.properties",
     properties = {
@@ -51,16 +55,22 @@ class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
 
     @BeforeAll
     void prepareIndex() {
-        ElasticsearchPersistentEntity documentEntity =
-            elasticsearchTemplate.getPersistentEntityFor(RareDocument.class);
-        elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
-        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings(AppProfile.RARE));
-        elasticsearchTemplate.addAlias(
-            new AliasBuilder().withAliasName(documentEntity.getIndexName())
-                              .withIndexName(PHYSICAL_INDEX)
-                              .build()
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).delete();
+        elasticsearchTemplate.execute(
+            client -> {
+                Settings settings = DocumentIndexSettings.createSettings(AppProfile.RARE);
+                CreateIndexRequest createIndexRequest = new CreateIndexRequest(PHYSICAL_INDEX).settings(settings);
+                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+                return null;
+            }
         );
-        elasticsearchTemplate.putMapping(RareDocument.class);
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).alias(
+            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
+                elasticsearchTemplate.getIndexCoordinatesFor(RareDocument.class).getIndexName()
+            ).withIndices(PHYSICAL_INDEX).build()))
+        );
+
+        elasticsearchTemplate.indexOps(RareDocument.class).putMapping();
     }
 
     @BeforeEach

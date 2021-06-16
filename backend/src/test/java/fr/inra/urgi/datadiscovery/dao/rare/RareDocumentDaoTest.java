@@ -13,10 +13,14 @@ import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import org.assertj.core.util.Lists;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,14 +34,14 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.query.AliasBuilder;
+import org.springframework.data.elasticsearch.core.index.AliasAction;
+import org.springframework.data.elasticsearch.core.index.AliasActionParameters;
+import org.springframework.data.elasticsearch.core.index.AliasActions;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-rare.properties")
 @Import(ElasticSearchConfig.class)
 @JsonTest
@@ -55,26 +59,37 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
     @BeforeAll
     void prepareIndex() {
-        ElasticsearchPersistentEntity documentEntity = elasticsearchTemplate.getPersistentEntityFor(
-                RareDocument.class);
-        ElasticsearchPersistentEntity suggestionDocumentEntity = elasticsearchTemplate.getPersistentEntityFor(
-                SuggestionDocument.class);
-        elasticsearchTemplate.deleteIndex(PHYSICAL_INDEX);
-        elasticsearchTemplate.createIndex(PHYSICAL_INDEX, DocumentIndexSettings.createSettings(AppProfile.RARE));
-        elasticsearchTemplate.deleteIndex(SUGGESTION_INDEX);
-        elasticsearchTemplate.createIndex(SUGGESTION_INDEX, DocumentIndexSettings.createSuggestionsSettings());
-        elasticsearchTemplate.addAlias(
-            new AliasBuilder().withAliasName(documentEntity.getIndexName())
-                    .withIndexName(PHYSICAL_INDEX)
-                    .build()
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).delete();
+        elasticsearchTemplate.execute(
+            client -> {
+                Settings settings = DocumentIndexSettings.createSettings(AppProfile.RARE);
+                CreateIndexRequest createIndexRequest = new CreateIndexRequest(PHYSICAL_INDEX).settings(settings);
+                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+                return null;
+            }
         );
-        elasticsearchTemplate.addAlias(
-            new AliasBuilder().withAliasName(suggestionDocumentEntity.getIndexName())
-                    .withIndexName(SUGGESTION_INDEX)
-                    .build()
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(SUGGESTION_INDEX)).delete();
+        elasticsearchTemplate.execute(
+            client -> {
+                Settings settings = DocumentIndexSettings.createSuggestionsSettings();
+                CreateIndexRequest createIndexRequest = new CreateIndexRequest(SUGGESTION_INDEX).settings(settings);
+                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+                return null;
+            }
         );
-        elasticsearchTemplate.putMapping(RareDocument.class);
-        elasticsearchTemplate.putMapping(SuggestionDocument.class);
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).alias(
+            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
+                elasticsearchTemplate.getIndexCoordinatesFor(RareDocument.class).getIndexName()
+            ).withIndices(PHYSICAL_INDEX).build()))
+        );
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(SUGGESTION_INDEX)).alias(
+            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
+                elasticsearchTemplate.getIndexCoordinatesFor(SuggestionDocument.class).getIndexName()
+            ).withIndices(SUGGESTION_INDEX).build()))
+        );
+
+        elasticsearchTemplate.indexOps(RareDocument.class).putMapping();
+        elasticsearchTemplate.indexOps(SuggestionDocument.class).putMapping();
     }
 
     @BeforeEach
@@ -85,7 +100,6 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
     @Test
     void shouldSaveAndGet() {
-
         RareDocument document =
             RareDocument.builder()
                                .withId("doi:10.15454/1.492178535151698E12")
@@ -113,7 +127,8 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
         documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
-//        assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
+        // TODO JBN why is this commented out?
+        // assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
     }
 
     @Test
@@ -360,9 +375,9 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         RareDocument document1 = resource1Builder.build();
 
         RareDocument document2 = RareDocument.builder()
-                                                                  .withId("r2")
-                                                                  .withName("vitis 2")
-                                                                  .build();
+                                             .withId("r2")
+                                             .withName("vitis 2")
+                                             .build();
 
         documentDao.saveAll(Arrays.asList(document1, document2));
         documentDao.refresh();
@@ -380,15 +395,15 @@ class RareDocumentDaoTest extends DocumentDaoTest {
     private void shouldAggregateEmptyArrayAsNullValue(RareAggregation rareAggregation,
                                                       BiConsumer<RareDocument.Builder, List<String>> initializer) {
         RareDocument.Builder resource1Builder = RareDocument.builder()
-                                                                          .withId("r1")
-                                                                          .withName("vitis 1");
+                                                            .withId("r1")
+                                                            .withName("vitis 1");
         initializer.accept(resource1Builder, Collections.singletonList("foo"));
         RareDocument document1 = resource1Builder.build();
 
         RareDocument document2 = RareDocument.builder()
-                                                                  .withId("r2")
-                                                                  .withName("vitis 2")
-                                                                  .build();
+                                             .withId("r2")
+                                             .withName("vitis 2")
+                                             .build();
 
         documentDao.saveAll(Arrays.asList(document1, document2));
         documentDao.refresh();

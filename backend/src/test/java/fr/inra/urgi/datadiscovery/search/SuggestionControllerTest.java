@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Unit tests for {@link SuggestionController}
  * @author JB Nizet
  */
-@ExtendWith(SpringExtension.class)
 @Import(SecurityConfig.class)
 @WebMvcTest(controllers = SuggestionController.class)
 class SuggestionControllerTest {

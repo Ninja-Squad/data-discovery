@@ -15,7 +15,6 @@ import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareIndexedDocument;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
 
 /**
  * Implementation of {@link RareDocumentDaoCustom}
@@ -54,9 +53,8 @@ public class RareDocumentDaoImpl
     private final SearchRefinements implicitSearchRefinements;
 
     public RareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
-                               EntityMapper entityMapper,
                                RareImplicitRefinementsProperties refinementsProperties) {
-        super(elasticsearchTemplate, new RareDocumentHighlightMapper(entityMapper));
+        super(elasticsearchTemplate, new RareDocumentHighlighter());
         SearchRefinements.Builder builder = SearchRefinements.builder();
         refinementsProperties.getImplicitTerms().forEach(builder::withTerm);
         this.implicitSearchRefinements = builder.build();

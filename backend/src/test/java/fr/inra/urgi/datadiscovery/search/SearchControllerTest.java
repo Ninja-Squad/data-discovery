@@ -10,6 +10,7 @@ import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregation;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
+import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * MVC tests for {@link SearchController}
  */
-@ExtendWith(SpringExtension.class)
 @Import(SecurityConfig.class)
 @WebMvcTest(controllers = SearchController.class)
 class SearchControllerTest {

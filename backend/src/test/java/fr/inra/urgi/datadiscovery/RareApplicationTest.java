@@ -12,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * Unit test for {@link Application}
  * @author JB Nizet
  */
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource("/test-rare.properties")
 @ActiveProfiles(AppProfile.RARE)

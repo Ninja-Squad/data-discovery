@@ -27,9 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * REST-Docs tests for {@link SuggestionController}
  * @author JB Nizet
  */
-@ExtendWith(SpringExtension.class)
 @Import(DocumentationConfig.class)
-@WebMvcTest(controllers = SuggestionController.class, secure = false)
+@WebMvcTest(controllers = SuggestionController.class)
 @AutoConfigureRestDocs
 class SuggestionControllerDocTest {
     @MockBean
