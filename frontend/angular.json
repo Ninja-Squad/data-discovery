@@ -13,7 +13,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "aot": true,
             "outputPath": "dist/data-discovery-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -38,7 +37,13 @@
               "node_modules/prismjs/components/prism-json.js",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"
             ],
-            "baseHref": "./"
+            "baseHref": "./",
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -51,9 +56,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -94,9 +97,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -153,9 +154,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -205,9 +204,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -218,7 +215,11 @@
                 ]
               },
               "assets": [
-                { "glob": "*", "input": "src/assets/wheatis", "output": "/assets" },
+                {
+                  "glob": "*",
+                  "input": "src/assets/wheatis",
+                  "output": "/assets"
+                },
                 "src/assets"
               ],
               "budgets": [
@@ -241,7 +242,6 @@
                 }
               ],
               "baseHref": "/data-discovery-dev/",
-              "sourceMap": true,
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/data-discovery/"
@@ -273,9 +273,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -286,7 +284,11 @@
                 ]
               },
               "assets": [
-                { "glob": "*", "input": "src/assets/data-discovery", "output": "/assets" },
+                {
+                  "glob": "*",
+                  "input": "src/assets/data-discovery",
+                  "output": "/assets"
+                },
                 "src/assets"
               ],
               "budgets": [
@@ -301,7 +303,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -352,7 +355,7 @@
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
+            "karmaConfig": "karma.conf.js",
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/assets/rare/"

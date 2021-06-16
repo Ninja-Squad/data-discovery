@@ -10,21 +10,27 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-firefox-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
       require('karma-junit-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, '../coverage'),
-      reports: ['html', 'lcovonly'],
-      fixWebpackSourcePaths: true
+    jasmineHtmlReporter: {
+      suppressAll: true // removes the duplicated traces
+    },
+    coverageReporter: {
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' },
+        { type: 'lcovonly' }
+      ]
     },
     reporters: ['progress', 'kjhtml', 'junit'],
     junitReporter: {
-      outputDir: '../karma-junit-tests-report', // results will be saved as $outputDir/$browserName.xml
+      outputDir: './karma-junit-tests-report', // results will be saved as $outputDir/$browserName.xml
       outputFile: undefined, // if included, results will be saved as $outputDir/$browserName/$outputFile
       suite: '', // suite will become the package name attribute in xml testsuite element
       useBrowserName: true, // add browser name to report and classes names
@@ -44,6 +50,7 @@ module.exports = function (config) {
         flags: ['--no-sandbox'] // required for Gitlab CI
       }
     },
-    singleRun: false
+    singleRun: false,
+    restartOnFileChange: true
   });
 };

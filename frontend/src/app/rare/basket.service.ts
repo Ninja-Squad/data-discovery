@@ -41,7 +41,7 @@ export interface BasketCreated extends Basket {
   providedIn: 'root'
 })
 export class BasketService {
-  basket: Basket;
+  basket: Basket = null;
   private basket$ = new BehaviorSubject<Basket>(this.basket);
 
   constructor(private http: HttpClient) {

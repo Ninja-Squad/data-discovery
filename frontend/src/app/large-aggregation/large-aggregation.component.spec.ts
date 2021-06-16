@@ -2,7 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { NgbTooltipModule, NgbTypeahead, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
@@ -13,7 +13,8 @@ import { DocumentCountComponent } from '../document-count/document-count.compone
 import { Bucket } from '../models/page';
 import { NULL_VALUE } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
+import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('LargeAggregationComponent', () => {
 
@@ -52,8 +53,7 @@ describe('LargeAggregationComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTypeaheadModule,
-      NgbTooltipModule,
+      DataDiscoveryNgbTestingModule,
       I18nTestingModule
     ],
     declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent, DescendantsCheckboxComponent]

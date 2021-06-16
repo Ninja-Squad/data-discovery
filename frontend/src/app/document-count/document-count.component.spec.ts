@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { DocumentCountComponent } from './document-count.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('DocumentCountComponent', () => {
 
@@ -36,7 +36,7 @@ describe('DocumentCountComponent', () => {
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       declarations: [DocumentCountComponent],
-      imports: [NgbTooltipModule, I18nTestingModule],
+      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
     });
     jasmine.addMatchers(speculoosMatchers);

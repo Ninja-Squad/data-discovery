@@ -1,7 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { AggregationsComponent } from './aggregations.component';
@@ -12,8 +11,9 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
-import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
+import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('AggregationsComponent', () => {
 
@@ -34,8 +34,7 @@ describe('AggregationsComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTypeaheadModule,
-      NgbTooltipModule,
+      DataDiscoveryNgbTestingModule,
       I18nTestingModule
     ],
     declarations: [

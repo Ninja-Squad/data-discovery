@@ -1,6 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 
 import { SmallAggregationComponent } from './small-aggregation.component';
@@ -9,7 +8,8 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { NULL_VALUE } from '../models/document.model';
-import {DescendantsCheckboxComponent} from '../descendants-checkbox/descendants-checkbox.component';
+import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('SmallAggregationComponent', () => {
 
@@ -36,7 +36,7 @@ describe('SmallAggregationComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-      NgbTooltipModule
+      DataDiscoveryNgbTestingModule
     ],
     declarations: [SmallAggregationComponent, AggregationNamePipe, DocumentCountComponent, DescendantsCheckboxComponent]
   }));
@@ -80,12 +80,12 @@ describe('SmallAggregationComponent', () => {
   it('should extract keys from selected values', () => {
     // given a few selected values among a bucket
     const values: { [key: string]: boolean | null } = {
-        'France': true,
-        'England': false,
-        'Italy': true,
-        'New Zealand': null,
-        [NULL_VALUE]: true
-      };
+      'France': true,
+      'England': false,
+      'Italy': true,
+      'New Zealand': null,
+      [NULL_VALUE]: true
+    };
 
     // when extracting keys
     const keys = SmallAggregationComponent.extractKeys(values);
