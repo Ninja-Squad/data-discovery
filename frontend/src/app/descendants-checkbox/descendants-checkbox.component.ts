@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'dd-descendants-checkbox',
@@ -6,11 +6,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
   styleUrls: ['./descendants-checkbox.component.scss']
 })
 export class DescendantsCheckboxComponent implements OnInit {
-
   @Input() searchDescendants = false;
   @Output() searchDescendantsChange = new EventEmitter();
-
-  constructor() { }
 
   ngOnInit() {
     this.searchDescendantsChange.emit(this.searchDescendants);
@@ -24,5 +21,4 @@ export class DescendantsCheckboxComponent implements OnInit {
     this.searchDescendants = e.target.checked;
     this.searchDescendantsChange.emit(this.searchDescendants);
   }
-
 }

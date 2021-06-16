@@ -6,9 +6,7 @@ export const environment = {
   navbar: {
     title: 'BRC4Env Search',
     logoUrl: '',
-    links: [
-      { label: 'BRC4Env Home', url: 'https://www.brc4env.fr/' }
-    ]
+    links: [{ label: 'BRC4Env Home', url: 'https://www.brc4env.fr/' }]
   },
   searchPlaceholder: 'e.g. salmo, chlamydomonas, phytomyzinae',
   resourceModule: RareModule,
@@ -24,7 +22,7 @@ export const environment = {
    * Should be kept in sync with the `RareAggregation` enum of the backend.
    */
   aggregationNames: {
-    coo: 'Pays d\'origine',
+    coo: "Pays d'origine",
     coc: 'Pays de collecte',
     domain: 'Domaine',
     material: 'Matériel',

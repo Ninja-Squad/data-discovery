@@ -9,11 +9,21 @@ describe('HighlightService', () => {
 
     expect(service.truncate(text, 34, 10)).toBe(text);
     expect(service.truncate(text, 29, 10)).toBe(text);
-    expect(service.truncate(text, 28, 10)).toBe('hello <em>great </em><em>great</em> &amp;big <em>world</em>');
-    expect(service.truncate(text, 27, 10)).toBe('hello <em>great </em><em>great</em> &amp;big <em>worl</em>');
-    expect(service.truncate(text, 26, 10)).toBe('hello <em>great </em><em>great</em> &amp;big <em>wor</em>');
-    expect(service.truncate(text, 25, 10)).toBe('hello <em>great </em><em>great</em> &amp;big <em>wo</em>');
-    expect(service.truncate(text, 24, 10)).toBe('hello <em>great </em><em>great</em> &amp;big <em>w</em>');
+    expect(service.truncate(text, 28, 10)).toBe(
+      'hello <em>great </em><em>great</em> &amp;big <em>world</em>'
+    );
+    expect(service.truncate(text, 27, 10)).toBe(
+      'hello <em>great </em><em>great</em> &amp;big <em>worl</em>'
+    );
+    expect(service.truncate(text, 26, 10)).toBe(
+      'hello <em>great </em><em>great</em> &amp;big <em>wor</em>'
+    );
+    expect(service.truncate(text, 25, 10)).toBe(
+      'hello <em>great </em><em>great</em> &amp;big <em>wo</em>'
+    );
+    expect(service.truncate(text, 24, 10)).toBe(
+      'hello <em>great </em><em>great</em> &amp;big <em>w</em>'
+    );
     expect(service.truncate(text, 23, 10)).toBe('hello <em>great </em><em>great</em> &amp;big ');
     expect(service.truncate(text, 22, 10)).toBe('hello <em>great </em><em>great</em> &amp;big');
     expect(service.truncate(text, 21, 10)).toBe('hello <em>great </em><em>great</em> &amp;bi');
@@ -28,13 +38,16 @@ describe('HighlightService', () => {
     expect(service.truncate(text, 12, 10)).toBe('hello <em>great </em>');
     expect(service.truncate(text, 11, 10)).toBe('h<i> [...] </i>o <em>great </em><em>gr</em>');
 
-    const text2 = 'lorem ipsum blabla text hello <em>great</em> <em>great</em> &amp;big <em>world</em>!';
-    expect(service.truncate(text2, 30, 15))
-      .toBe('lorem ipsum bla<i> [...] </i>ello <em>great</em> <em>grea</em>');
+    const text2 =
+      'lorem ipsum blabla text hello <em>great</em> <em>great</em> &amp;big <em>world</em>!';
+    expect(service.truncate(text2, 30, 15)).toBe(
+      'lorem ipsum bla<i> [...] </i>ello <em>great</em> <em>grea</em>'
+    );
 
     const text3 = 'lorem ipsum blabla blabla blabla text hello <em>great</em> !';
-    expect(service.truncate(text3, 30, 15))
-      .toBe('lorem ipsum bla<i> [...] </i>t hello <em>great</em> !');
+    expect(service.truncate(text3, 30, 15)).toBe(
+      'lorem ipsum bla<i> [...] </i>t hello <em>great</em> !'
+    );
 
     const desc = Array(200).fill('aaa').join(' ');
     expect(service.truncate(desc, 256, 100).length).toBe(256);

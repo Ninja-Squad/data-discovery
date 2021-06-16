@@ -16,26 +16,32 @@ describe('MarkdownPageComponent', () => {
   let fixture: ComponentFixture<MarkdownPageComponent>;
   const route = fakeRoute({ data: of({ mdFile: environment.helpMdFile }) });
 
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [MarkdownPageComponent],
-    imports: [I18nTestingModule, HttpClientTestingModule, MarkdownModule.forRoot({
-      loader: HttpClient, // optional, only if you use [src] attribute
-      markedOptions: {
-        provide: MarkedOptions,
-        useFactory: markedOptionsFactory,
-        useValue: {
-          gfm: true, // default
-          tables: true,
-          breaks: false,
-          pedantic: false,
-          sanitize: false,
-          smartLists: true,
-          smartypants: false
-        }
-      }
-    })],
-    providers: [{ provide: ActivatedRoute, useValue: route }]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      declarations: [MarkdownPageComponent],
+      imports: [
+        I18nTestingModule,
+        HttpClientTestingModule,
+        MarkdownModule.forRoot({
+          loader: HttpClient, // optional, only if you use [src] attribute
+          markedOptions: {
+            provide: MarkedOptions,
+            useFactory: markedOptionsFactory,
+            useValue: {
+              gfm: true, // default
+              tables: true,
+              breaks: false,
+              pedantic: false,
+              sanitize: false,
+              smartLists: true,
+              smartypants: false
+            }
+          }
+        })
+      ],
+      providers: [{ provide: ActivatedRoute, useValue: route }]
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MarkdownPageComponent);
@@ -51,10 +57,12 @@ describe('MarkdownPageComponent', () => {
 
     // the markdown component requests the server for the file
     // we return a fake markdown with just a title
-    http.expectOne({
-      method: 'GET',
-      url: 'assets/help-en.md'
-    }).flush('# Help section');
+    http
+      .expectOne({
+        method: 'GET',
+        url: 'assets/help-en.md'
+      })
+      .flush('# Help section');
 
     // the markdown component should render the title
     const title = fixture.nativeElement.querySelector('h1').textContent;

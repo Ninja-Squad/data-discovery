@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -19,7 +27,6 @@ const maxResultsDisplayed = 8;
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class LargeAggregationComponent {
-
   @Input() aggregation!: Aggregation;
   @Input() selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or removes a criterion
@@ -34,30 +41,32 @@ export class LargeAggregationComponent {
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
-    return merge(text$, inputFocus$)
-      .pipe(
-        distinctUntilChanged(),
-        map(term => {
-          const allMatchingBuckets = this.aggregation.buckets
-            // returns values not already selected
-            .filter(bucket => !this.selectedKeys.includes(bucket.key)
+    return merge(text$, inputFocus$).pipe(
+      distinctUntilChanged(),
+      map(term => {
+        const allMatchingBuckets = this.aggregation.buckets
+          // returns values not already selected
+          .filter(
+            bucket =>
+              !this.selectedKeys.includes(bucket.key) &&
               // and that contains the term, ignoring the case
-              && this.displayableKey(bucket.key).toLowerCase().includes(term.toString().toLowerCase()));
+              this.displayableKey(bucket.key).toLowerCase().includes(term.toString().toLowerCase())
+          );
 
-          // return the first N results
-          const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
+        // return the first N results
+        const result: Array<BucketOrRefine> = allMatchingBuckets.slice(0, maxResultsDisplayed);
 
-          // if more results exist, add a fake refine bucket
-          if (allMatchingBuckets.length > maxResultsDisplayed) {
-            result.push('REFINE');
-          }
+        // if more results exist, add a fake refine bucket
+        if (allMatchingBuckets.length > maxResultsDisplayed) {
+          result.push('REFINE');
+        }
 
-          return result;
-        }));
-  }
+        return result;
+      })
+    );
+  };
 
   emitEvent(): void {
-
     // to emit a new event every time a value changes
     const event: AggregationCriterion = {
       name: this.aggregation.name,
@@ -73,7 +82,10 @@ export class LargeAggregationComponent {
 
   removeKey(key: string) {
     const index = this.selectedKeys.indexOf(key);
-    this.selectedKeys = [...this.selectedKeys.slice(0, index), ...this.selectedKeys.slice(index + 1)];
+    this.selectedKeys = [
+      ...this.selectedKeys.slice(0, index),
+      ...this.selectedKeys.slice(index + 1)
+    ];
     this.emitEvent();
   }
 

@@ -3,9 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { WheatisHeaderComponent } from './wheatis-header.component';
 
 describe('WheatisHeaderComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [WheatisHeaderComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      declarations: [WheatisHeaderComponent]
+    })
+  );
 
   it('should display title and image', () => {
     const fixture = TestBed.createComponent(WheatisHeaderComponent);

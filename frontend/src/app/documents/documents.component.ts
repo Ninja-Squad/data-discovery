@@ -11,7 +11,6 @@ import { BasketService } from '../rare/basket.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentsComponent {
-
   @Input() documents!: Page<DocumentModel>;
   isBasketEnabled: boolean;
 
@@ -20,7 +19,7 @@ export class DocumentsComponent {
   }
 
   get firstResultIndex() {
-    return (this.documents.number * this.documents.size) + 1;
+    return this.documents.number * this.documents.size + 1;
   }
 
   get lastResultIndex() {

@@ -3,7 +3,10 @@ import { AggregationCriterion } from './aggregation-criterion';
 import { RareDocumentModel } from '../rare/rare-document.model';
 import { GenericDocumentModel } from '../urgi-common/generic-document.model';
 
-export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
+export function toSinglePage<T>(
+  content: Array<T>,
+  aggregations?: Array<Aggregation>
+): AggregatedPage<T> {
   return {
     content,
     number: 0,
@@ -15,7 +18,10 @@ export function toSinglePage<T>(content: Array<T>, aggregations?: Array<Aggregat
   };
 }
 
-export function toSecondPage<T>(content: Array<T>, aggregations?: Array<Aggregation>): AggregatedPage<T> {
+export function toSecondPage<T>(
+  content: Array<T>,
+  aggregations?: Array<Aggregation>
+): AggregatedPage<T> {
   return {
     content,
     number: 1,
@@ -29,7 +35,10 @@ export function toSecondPage<T>(content: Array<T>, aggregations?: Array<Aggregat
 
 export function toAggregation(name: string, values: Array<string>): Aggregation {
   // creates a bucket for each value, with a document count of (index+1)*10
-  const buckets: Array<Bucket> = values.map((key, index) => ({ key, documentCount: (index + 1) * 10 }));
+  const buckets: Array<Bucket> = values.map((key, index) => ({
+    key,
+    documentCount: (index + 1) * 10
+  }));
   return {
     name,
     buckets,

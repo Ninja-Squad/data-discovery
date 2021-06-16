@@ -1,10 +1,15 @@
 <div>
   <h3 class="d-flex">
     <div class="flex-grow-1">
-      <a class="main-link name" [href]="document.dataURL ? document.dataURL : document.portalURL" target="_blank">
+      <a
+        class="main-link name"
+        [href]="document.dataURL ? document.dataURL : document.portalURL"
+        target="_blank"
+      >
         {{ document.name }}
       </a>
-      <small> - {{ document.pillarName }}</small>&ngsp;
+      <small> - {{ document.pillarName }}</small
+      >&ngsp;
     </div>
     <div *ngIf="isBasketEnabled && document.accessionHolder">
       <button
@@ -33,10 +38,14 @@
   </h3>
   <div>
     <span class="mr-4">
-      <a class="datasource-link" [href]="document.portalURL" target="_blank">{{ document.databaseSource }}</a>
+      <a class="datasource-link" [href]="document.portalURL" target="_blank">{{
+        document.databaseSource
+      }}</a>
     </span>
     <span class="taxon mr-4">
-      <span *ngFor="let taxon of document.taxon" class="badge badge-secondary mr-2">{{ taxon }}</span>
+      <span *ngFor="let taxon of document.taxon" class="badge badge-secondary mr-2">{{
+        taxon
+      }}</span>
     </span>
     <span class="type">
       {{ document.materialType?.join(', ') }}

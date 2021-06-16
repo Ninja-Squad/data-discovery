@@ -1,28 +1,35 @@
 <div class="card mb-1" *ngIf="aggregation.buckets.length">
   <div class="card-body">
-
     <!-- title -->
-    <h3 class="card-title" [class.text-muted]="aggregationForm.disabled">{{ aggregation.name | aggregationName }}</h3>
+    <h3 class="card-title" [class.text-muted]="aggregationForm.disabled">
+      {{ aggregation.name | aggregationName }}
+    </h3>
 
     <!-- values -->
     <form [formGroup]="aggregationForm">
       <div class="card-text" *ngFor="let bucket of aggregation.buckets">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox"
-                 [id]="aggregation.name + bucket.key"
-                 [formControlName]="bucket.key">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="aggregation.name + bucket.key"
+            [formControlName]="bucket.key"
+          />
           <label class="form-check-label" [for]="aggregation.name + bucket.key">
-            <dd-document-count [name]="displayableKey(bucket.key)" [count]="bucket.documentCount"></dd-document-count>
+            <dd-document-count
+              [name]="displayableKey(bucket.key)"
+              [count]="bucket.documentCount"
+            ></dd-document-count>
           </label>
         </div>
       </div>
     </form>
 
     <div *ngIf="aggregation.name === 'annot'" style="margin-bottom: 10px">
-      <dd-descendants-checkbox (searchDescendantsChange)="onSearchDescendants($event)"
-                               [searchDescendants]="searchDescendants"
+      <dd-descendants-checkbox
+        (searchDescendantsChange)="onSearchDescendants($event)"
+        [searchDescendants]="searchDescendants"
       ></dd-descendants-checkbox>
     </div>
-
   </div>
 </div>

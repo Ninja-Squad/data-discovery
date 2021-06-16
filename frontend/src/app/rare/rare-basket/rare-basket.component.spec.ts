@@ -132,7 +132,10 @@ describe('RareBasketComponent', () => {
 
     // several items
     basketEvents.next({
-      items: [{ accession: { identifier: 'rosa' } } as BasketItem, { accession: { identifier: 'rosa rosae' } } as BasketItem]
+      items: [
+        { accession: { identifier: 'rosa' } } as BasketItem,
+        { accession: { identifier: 'rosa rosae' } } as BasketItem
+      ]
     });
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('2');
@@ -147,7 +150,9 @@ describe('RareBasketComponent', () => {
 
   it('should open a summary modal on click', () => {
     tester.detectChanges();
-    basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
+    basketEvents.next({
+      items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
+    });
     tester.detectChanges();
     tester.basketCounter.click();
 
@@ -174,7 +179,9 @@ describe('RareBasketComponent', () => {
         reference
       } as BasketCreated)
     );
-    basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
+    basketEvents.next({
+      items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
+    });
     tester.detectChanges();
     expect(tester.eulaAgreementError).toBeNull();
     tester.basketCounter.click();
@@ -192,12 +199,16 @@ describe('RareBasketComponent', () => {
     expect(service.sendBasket).toHaveBeenCalled();
 
     expect(tester.modalTitle).toBeNull();
-    expect(location.assign).toHaveBeenCalledWith(`http://localhost:4201/rare-basket/baskets/${reference}`);
+    expect(location.assign).toHaveBeenCalledWith(
+      `http://localhost:4201/rare-basket/baskets/${reference}`
+    );
   }));
 
   it('should clear the basket', () => {
     tester.detectChanges();
-    basketEvents.next({ items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem] });
+    basketEvents.next({
+      items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
+    });
     tester.detectChanges();
     tester.basketCounter.click();
 

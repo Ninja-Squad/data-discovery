@@ -1,13 +1,12 @@
 import { AggregationNamePipe } from './aggregation-name.pipe';
 
 describe('AggregationNamePipe', () => {
-
   it('should return the displayed name of an aggregation', () => {
     const pipe = new AggregationNamePipe();
 
     // for know aggregation names
     const cooResult = pipe.transform('coo');
-    expect(cooResult).toBe('Pays d\'origine');
+    expect(cooResult).toBe("Pays d'origine");
     const domainResult = pipe.transform('domain');
     expect(domainResult).toBe('Domaine');
   });
@@ -19,5 +18,4 @@ describe('AggregationNamePipe', () => {
     const result = pipe.transform('unknown');
     expect(result).toBe('unknown');
   });
-
 });

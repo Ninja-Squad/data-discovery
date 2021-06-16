@@ -9,7 +9,6 @@ import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('DocumentCountComponent', () => {
-
   class DocumentCountComponentTester extends ComponentTester<DocumentCountComponent> {
     constructor() {
       super(DocumentCountComponent);

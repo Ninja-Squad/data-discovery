@@ -7,10 +7,12 @@ import { ErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule, HttpClientTestingModule],
-    declarations: [AppComponent, ErrorComponent, NavbarComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, HttpClientTestingModule],
+      declarations: [AppComponent, ErrorComponent, NavbarComponent]
+    })
+  );
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);

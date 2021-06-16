@@ -17,7 +17,6 @@ import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendant
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 
 describe('LargeAggregationComponent', () => {
-
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
 
   class LargeAggregationComponentTester extends ComponentTester<LargeAggregationComponent> {
@@ -50,14 +49,17 @@ describe('LargeAggregationComponent', () => {
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      ReactiveFormsModule,
-      DataDiscoveryNgbTestingModule,
-      I18nTestingModule
-    ],
-    declarations: [LargeAggregationComponent, AggregationNamePipe, DocumentCountComponent, DescendantsCheckboxComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
+      declarations: [
+        LargeAggregationComponent,
+        AggregationNamePipe,
+        DocumentCountComponent,
+        DescendantsCheckboxComponent
+      ]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
@@ -69,7 +71,7 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should display a title and the number of possible keys
-    expect(tester.title).toHaveText('Pays d\'origine (4)');
+    expect(tester.title).toContainText("Pays d'origine (4)");
     // and the buckets with their name and count in a typeahead
     expect(tester.inputField).not.toBeNull();
     expect(tester.typeahead).not.toBeNull();
@@ -117,8 +119,7 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('anc'))
-      .subscribe(results => actualResults = results);
+    component.search(of('anc')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -132,8 +133,7 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('auc'))
-      .subscribe(results => actualResults = results);
+    component.search(of('auc')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -147,8 +147,7 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('A'))
-      .subscribe(results => actualResults = results);
+    component.search(of('A')).subscribe(results => (actualResults = results));
 
     // then it should have one match
     expect(actualResults.length).toBe(4);
@@ -166,8 +165,7 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('anc'))
-      .subscribe(results => actualResults = results);
+    component.search(of('anc')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(0);
@@ -180,8 +178,7 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('a'))
-      .subscribe(results => actualResults = results);
+    component.search(of('a')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(9);
@@ -203,7 +200,7 @@ describe('LargeAggregationComponent', () => {
 
     // then it should emit an event
     let emittedEvent: AggregationCriterion;
-    component.aggregationChange.subscribe((event: AggregationCriterion) => emittedEvent = event);
+    component.aggregationChange.subscribe((event: AggregationCriterion) => (emittedEvent = event));
 
     // when a value is entered
     tester.inputField.fillWith('fr');
@@ -285,7 +282,7 @@ describe('LargeAggregationComponent', () => {
 
     // then it should not emit an event
     let emittedEvent: AggregationCriterion;
-    component.aggregationChange.subscribe((event: AggregationCriterion) => emittedEvent = event);
+    component.aggregationChange.subscribe((event: AggregationCriterion) => (emittedEvent = event));
 
     // when a value is entered
     tester.inputField.fillWith('a');
@@ -293,7 +290,9 @@ describe('LargeAggregationComponent', () => {
 
     // results should appear
     expect(tester.results.length).toBe(9);
-    expect(tester.results[tester.results.length - 1].textContent).toContain(`Other results are available`);
+    expect(tester.results[tester.results.length - 1].textContent).toContain(
+      `Other results are available`
+    );
 
     // when the result is selected
     tester.results[tester.results.length - 1].click();

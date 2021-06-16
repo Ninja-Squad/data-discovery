@@ -5,12 +5,22 @@
       <span translate="document-count.one-document"></span>&ngsp;<em>{{ name }}</em>
     </ng-template>
     <ng-template ngPluralCase="other">
-      <span translate="document-count.several-documents" [translateParams]="{ count: count | number }"></span>&ngsp;<em>{{ name }}</em>
+      <span
+        translate="document-count.several-documents"
+        [translateParams]="{ count: count | number }"
+      ></span
+      >&ngsp;<em>{{ name }}</em>
     </ng-template>
   </ng-container>
 </ng-template>
 <!-- name, with a link if necessary, followed by the count -->
 <a *ngIf="url" [href]="url" target="_blank">{{ name }}</a>
 <span *ngIf="!url">{{ name }}</span>
-<small class="ml-1" [class.text-muted]="muted" [ngbTooltip]="tooltipContent" placement="top"
-       container="body">[{{ count | number }}]</small>
+<small
+  class="ml-1"
+  [class.text-muted]="muted"
+  [ngbTooltip]="tooltipContent"
+  placement="top"
+  container="body"
+  >[{{ count | number }}]</small
+>

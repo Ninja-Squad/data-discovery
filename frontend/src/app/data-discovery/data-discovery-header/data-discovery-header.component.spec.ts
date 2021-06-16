@@ -3,9 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { DataDiscoveryHeaderComponent } from './data-discovery-header.component';
 
 describe('DataDiscoveryHeaderComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [DataDiscoveryHeaderComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      declarations: [DataDiscoveryHeaderComponent]
+    })
+  );
 
   it('should display title and image', () => {
     const fixture = TestBed.createComponent(DataDiscoveryHeaderComponent);

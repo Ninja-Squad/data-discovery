@@ -2,7 +2,12 @@
   <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
   <span class="badge badge-pill badge-light">0</span>
 </div>
-<button class="basket-counter btn" *ngIf="isEnabled && itemCounter" [ngbTooltip]="buttonTooltip" (click)="viewItems(basketModal)">
+<button
+  class="basket-counter btn"
+  *ngIf="isEnabled && itemCounter"
+  [ngbTooltip]="buttonTooltip"
+  (click)="viewItems(basketModal)"
+>
   <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
   <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
 </button>
@@ -13,7 +18,10 @@
       <span translate="rare-basket.one-item"></span>
     </ng-template>
     <ng-template ngPluralCase="other">
-      <span translate="rare-basket.several-items" [translateParams]="{ itemCounter: itemCounter | number }"></span>
+      <span
+        translate="rare-basket.several-items"
+        [translateParams]="{ itemCounter: itemCounter | number }"
+      ></span>
     </ng-template>
   </ng-container>
 </ng-template>
@@ -29,9 +37,15 @@
     <ng-container *ngIf="basket && basket.items.length > 0; else emptyBasket">
       <div *ngFor="let item of basket.items" class="d-flex align-items-center">
         <span class="flex-grow-1"
-          >{{ item.accession.name }}&ngsp;<small class="text-muted">{{ item.accession.identifier }}</small></span
+          >{{ item.accession.name }}&ngsp;<small class="text-muted">{{
+            item.accession.identifier
+          }}</small></span
         >&ngsp;
-        <button type="button" class="btn btn-outline-danger delete-btn" (click)="removeItemFromBasket(item.accession.identifier)">
+        <button
+          type="button"
+          class="btn btn-outline-danger delete-btn"
+          (click)="removeItemFromBasket(item.accession.identifier)"
+        >
           <span class="fa fa-fw fa-trash"></span>
         </button>
       </div>
@@ -43,9 +57,22 @@
             <span translate="rare-basket.eula-end"></span>
           </div>
           <div class="form-group form-check mb-0">
-            <input [formControl]="eulaAgreementControl" type="checkbox" class="form-check-input" id="eula-agreement" />
-            <label class="form-check-label" for="eula-agreement" translate="rare-basket.eula-agreement"></label>
-            <div *ngIf="eulaAgreementControl.invalid && submitted" class="invalid-feedback d-block" id="eula-agreement-error">
+            <input
+              [formControl]="eulaAgreementControl"
+              type="checkbox"
+              class="form-check-input"
+              id="eula-agreement"
+            />
+            <label
+              class="form-check-label"
+              for="eula-agreement"
+              translate="rare-basket.eula-agreement"
+            ></label>
+            <div
+              *ngIf="eulaAgreementControl.invalid && submitted"
+              class="invalid-feedback d-block"
+              id="eula-agreement-error"
+            >
               <span translate="rare-basket.eula-agreement-required"></span>
             </div>
           </div>

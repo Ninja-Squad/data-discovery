@@ -36,7 +36,11 @@ describe('RareSelectAllResultsComponent', () => {
   const rosaWithoutAccessionHolder = { name: 'Rosa3', identifier: 'rosa3' } as RareDocumentModel;
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', ['isAccessionInBasket', 'removeFromBasket', 'addToBasket']);
+    service = jasmine.createSpyObj<BasketService>('BasketService', [
+      'isAccessionInBasket',
+      'removeFromBasket',
+      'addToBasket'
+    ]);
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],
       declarations: [TestComponent, RareSelectAllResultsComponent],

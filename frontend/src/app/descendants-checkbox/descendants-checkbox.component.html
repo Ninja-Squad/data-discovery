@@ -1,14 +1,22 @@
-  <!-- Rounded switch to Increase sensitivity -->
-  <label for="descendants1" style="margin-right: 5px"
-         class="form-check-label">
-         <span translate="descendants-checkbox.expand-search"></span>
-  </label>
-  <label class="switch">
-    <input type="checkbox" class="form-check-input" id="descendants1"
-           (change)="onDescendantsChecked($event)" [checked]="searchDescendants">
-    <span class="slider round"></span>
-  </label>
-  <i class="fa fa-question-circle-o icon-size" aria-hidden="true"
-     placement="top"
-     [openDelay]="150" [closeDelay]="800"
-     ngbTooltip="{{ 'descendants-checkbox.tooltips' | translate }}"></i>
+<!-- Rounded switch to Increase sensitivity -->
+<label for="descendants1" style="margin-right: 5px" class="form-check-label">
+  <span translate="descendants-checkbox.expand-search"></span>
+</label>
+<label class="switch">
+  <input
+    type="checkbox"
+    class="form-check-input"
+    id="descendants1"
+    (change)="onDescendantsChecked($event)"
+    [checked]="searchDescendants"
+  />
+  <span class="slider round"></span>
+</label>
+<i
+  class="fa fa-question-circle-o icon-size"
+  aria-hidden="true"
+  placement="top"
+  [openDelay]="150"
+  [closeDelay]="800"
+  ngbTooltip="{{ 'descendants-checkbox.tooltips' | translate }}"
+></i>

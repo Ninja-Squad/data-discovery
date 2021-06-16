@@ -57,6 +57,7 @@ export class BasketService {
     if (rareBasketStringified) {
       try {
         this.basket = JSON.parse(rareBasketStringified);
+        // eslint-disable-next-line no-empty
       } catch (e) {}
     }
     if (!this.basket) {
@@ -90,14 +91,18 @@ export class BasketService {
 
   isAccessionInBasket(rareAccession: RareDocumentModel): Observable<boolean> {
     return this.basket$.pipe(
-      map(basket => basket!.items.map(item => item.accession.identifier).includes(rareAccession.identifier)),
+      map(basket =>
+        basket!.items.map(item => item.accession.identifier).includes(rareAccession.identifier)
+      ),
       // do not re-emit when value is the same
       distinctUntilChanged()
     );
   }
 
   removeFromBasket(identifier: string) {
-    this.basket!.items = this.basket!.items.filter(item => identifier !== item.accession.identifier);
+    this.basket!.items = this.basket!.items.filter(
+      item => identifier !== item.accession.identifier
+    );
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }
@@ -111,7 +116,9 @@ export class BasketService {
   }
 
   sendBasket(): Observable<BasketCreated> {
-    return this.http.post<BasketCreated>(`${rareBasket.url}/api/baskets`, this.basket).pipe(tap(() => this.clearBasket()));
+    return this.http
+      .post<BasketCreated>(`${rareBasket.url}/api/baskets`, this.basket)
+      .pipe(tap(() => this.clearBasket()));
   }
 
   clearBasket() {

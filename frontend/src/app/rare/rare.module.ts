@@ -27,9 +27,7 @@ export const LOCATION = new InjectionToken<Location>('Location');
     RareBasketComponent,
     RareSelectAllResultsComponent
   ],
-  providers: [
-    { provide: LOCATION, useValue: window.location }
-  ],
+  providers: [{ provide: LOCATION, useValue: window.location }],
   exports: [
     RareDocumentComponent,
     RareHeaderComponent,

@@ -9,12 +9,14 @@
       <form [formGroup]="searchForm" (ngSubmit)="search()">
         <label class="sr-only" for="query" translate="home.search"></label>
         <div class="input-group">
-          <input id="query"
-                 class="form-control form-control-lg"
-                 placeholder="{{ placeholder }}"
-                 formControlName="search"
-                 [ngbTypeahead]="suggesterTypeahead"
-                 [focusFirst]="false">
+          <input
+            id="query"
+            class="form-control form-control-lg"
+            placeholder="{{ placeholder }}"
+            formControlName="search"
+            [ngbTypeahead]="suggesterTypeahead"
+            [focusFirst]="false"
+          />
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" translate="home.search"></button>
           </div>

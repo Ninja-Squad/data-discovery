@@ -10,10 +10,7 @@ import { ɵDomSharedStylesHost } from '@angular/platform-browser';
 declare const require: any;
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
-);
+getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 // https://github.com/angular/angular/issues/31834
 afterEach(() => {
   getTestBed().inject(ɵDomSharedStylesHost).ngOnDestroy();

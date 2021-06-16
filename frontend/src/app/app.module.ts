@@ -81,17 +81,13 @@ registerLocaleData(localeFr);
     // able to display the genetic resource of the application
     environment.resourceModule
   ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true }
-  ],
+  providers: [{ provide: HTTP_INTERCEPTORS, useExisting: ErrorInterceptorService, multi: true }],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
-export class AppModule {
-}
+export class AppModule {}
 
 export function markedOptionsFactory(): MarkedOptions {
-
   const renderer = new MarkedRenderer();
 
   renderer.link = (href: string, title: string, text: string) => {

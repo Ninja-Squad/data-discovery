@@ -5,7 +5,6 @@ import { TruncatableDescriptionComponent } from './truncatable-description.compo
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('TruncatableDescriptionComponent', () => {
-
   class TruncatableDescriptionComponentTester extends ComponentTester<TruncatableDescriptionComponent> {
     constructor() {
       super(TruncatableDescriptionComponent);
@@ -28,10 +27,12 @@ describe('TruncatableDescriptionComponent', () => {
     }
   }
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [I18nTestingModule],
-    declarations: [TruncatableDescriptionComponent]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [I18nTestingModule],
+      declarations: [TruncatableDescriptionComponent]
+    })
+  );
 
   beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 

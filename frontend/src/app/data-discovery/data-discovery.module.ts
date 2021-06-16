@@ -6,12 +6,8 @@ import { DataDiscoveryHeaderComponent } from './data-discovery-header/data-disco
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 
 @NgModule({
-  imports: [
-    UrgiCommonModule
-  ],
-  declarations: [
-    DataDiscoveryHeaderComponent
-  ],
+  imports: [UrgiCommonModule],
+  declarations: [DataDiscoveryHeaderComponent],
   exports: [
     GenericDocumentComponent,
     GenericSelectAllResultsComponent,

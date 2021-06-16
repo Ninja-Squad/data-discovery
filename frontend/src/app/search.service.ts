@@ -11,24 +11,30 @@ import { AggregationCriterion } from './models/aggregation-criterion';
   providedIn: 'root'
 })
 export class SearchService {
-
   constructor(private http: HttpClient) {}
 
   /**
    * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)
    */
-  search(query: string,
-         aggregationCriteria: Array<AggregationCriterion>,
-         pageAsNumber: number,
-         descendants: boolean): Observable<AggregatedPage<DocumentModel>> {
+  search(
+    query: string,
+    aggregationCriteria: Array<AggregationCriterion>,
+    pageAsNumber: number,
+    descendants: boolean
+  ): Observable<AggregatedPage<DocumentModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = pageAsNumber - 1;
     // we built the search parameters
-    const params: { [key: string]: string | number | Array<string> } = { query, page, highlight: 'true', descendants: String(descendants) };
+    const params: { [key: string]: string | number | Array<string> } = {
+      query,
+      page,
+      highlight: 'true',
+      descendants: String(descendants)
+    };
 
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {
-      aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
+      aggregationCriteria.forEach(criterion => (params[criterion.name] = criterion.values));
     }
     return this.http.get<AggregatedPage<DocumentModel>>('api/search', {
       params
@@ -38,15 +44,19 @@ export class SearchService {
   /**
    * Aggregates documents for the given query (full-text search), and return an Aggregated page with aggregations and without results
    */
-  aggregate(query: string,
-         aggregationCriteria: Array<AggregationCriterion>,
-            descendants: boolean): Observable<AggregatedPage<DocumentModel>> {
-
+  aggregate(
+    query: string,
+    aggregationCriteria: Array<AggregationCriterion>,
+    descendants: boolean
+  ): Observable<AggregatedPage<DocumentModel>> {
     // we built the search parameters
-    const params: { [key: string]: string | Array<string> } = { query, descendants: String(descendants) };
+    const params: { [key: string]: string | Array<string> } = {
+      query,
+      descendants: String(descendants)
+    };
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {
-      aggregationCriteria.forEach(criterion => params[criterion.name] = criterion.values);
+      aggregationCriteria.forEach(criterion => (params[criterion.name] = criterion.values));
     }
     return this.http.get<AggregatedPage<DocumentModel>>('api/aggregate', {
       params
@@ -60,22 +70,24 @@ export class SearchService {
    * Observable<Array<string>>, representing the stream of suggestions to display for each string emitted by the
    * observable taken as argument.
    */
-  getSuggesterTypeahead(): ((obs: Observable<string>) => Observable<Array<string>>) {
+  getSuggesterTypeahead(): (obs: Observable<string>) => Observable<Array<string>> {
     return (text$: Observable<string>) =>
       text$.pipe(
         map(query => query.trim()), // start by ignoring the spaces at the beginning or end of the query
         debounceTime(300), // only send a query if the user has stopped writing in the field for at least 300ms.
         distinctUntilChanged(), // avoid sending a request if the input hasn't changed (for example igf the user enters
-                                // a character then backspace)
-        switchMap(query => { // get the suggestions for the entered string
-            if (query.length < 2) { // if the query is only one character, prefer suggesting nothing: too vague
-              return of([]);
-            }
-            return this.suggest(query).pipe( // otherwise send a request to the server
-              catchError(() => of([])) // but if the request fails, suggest nothing
-            );
+        // a character then backspace)
+        switchMap(query => {
+          // get the suggestions for the entered string
+          if (query.length < 2) {
+            // if the query is only one character, prefer suggesting nothing: too vague
+            return of([]);
           }
-        )
+          return this.suggest(query).pipe(
+            // otherwise send a request to the server
+            catchError(() => of([])) // but if the request fails, suggest nothing
+          );
+        })
       );
   }
 

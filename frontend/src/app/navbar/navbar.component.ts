@@ -7,12 +7,10 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-
   navbarCollapsed = true;
   navbar = environment.navbar;
 
   toggleNavbar() {
     this.navbarCollapsed = !this.navbarCollapsed;
   }
-
 }
