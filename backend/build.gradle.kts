@@ -8,7 +8,6 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-
     }
 }
 
@@ -16,7 +15,7 @@ plugins {
     java
     jacoco
     id("org.springframework.boot") version "2.1.1.RELEASE"
-    id("com.gorylenko.gradle-git-properties") version "1.5.2"
+    id("com.gorylenko.gradle-git-properties") version "2.3.1"
     id("org.asciidoctor.convert") version "1.5.9.2"
     id("io.spring.dependency-management") version "1.0.6.RELEASE"
     id("org.sonarqube")
