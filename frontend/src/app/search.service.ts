@@ -22,9 +22,9 @@ export class SearchService {
          pageAsNumber: number,
          descendants: boolean): Observable<AggregatedPage<DocumentModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
-    const page = (pageAsNumber - 1).toString();
+    const page = pageAsNumber - 1;
     // we built the search parameters
-    const params: { [key: string]: string | Array<string> } = { query, page, highlight: 'true', descendants: String(descendants) };
+    const params: { [key: string]: string | number | Array<string> } = { query, page, highlight: 'true', descendants: String(descendants) };
 
     // if we have aggregation values, add them as domain=Plantae&domain=...
     if (aggregationCriteria) {

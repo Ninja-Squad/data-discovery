@@ -280,7 +280,7 @@ describe('SearchComponent', () => {
     component.ngOnInit();
 
     // and the results emptied
-    expect(component.results).toBeUndefined();
+    expect(component.results).toBeNull();
     expect(component.aggregations).toEqual([]);
   });
 
@@ -344,7 +344,7 @@ describe('SearchComponent', () => {
       relativeTo: activatedRoute,
       queryParams: {
         query,
-        page: '2',
+        page: 2,
         descendants: 'false',
         coo,
         domain

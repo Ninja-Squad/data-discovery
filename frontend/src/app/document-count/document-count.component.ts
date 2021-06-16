@@ -8,9 +8,9 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class DocumentCountComponent {
 
-  @Input() name: string;
-  @Input() url: string;
-  @Input() count: number;
+  @Input() name = '';
+  @Input() url = '';
+  @Input() count = 0;
   @Input() muted = true;
 
 }

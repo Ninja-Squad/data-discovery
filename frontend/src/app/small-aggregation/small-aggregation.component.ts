@@ -13,8 +13,8 @@ import { NULL_VALUE } from '../models/document.model';
 })
 export class SmallAggregationComponent implements OnInit {
 
-  @Input() aggregation: Aggregation;
-  @Input() searchDescendants: boolean;
+  @Input() aggregation!: Aggregation;
+  @Input() searchDescendants = false;
   private _selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or remove a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
@@ -30,7 +30,7 @@ export class SmallAggregationComponent implements OnInit {
    * [ 'France' ]
    */
   static extractKeys(formValues: { [key: string]: boolean | null }) {
-    return Object.entries<boolean>(formValues)
+    return Object.entries<boolean | null>(formValues)
       .filter(([key, value]) => value)
       .map(([key]) => key);
   }

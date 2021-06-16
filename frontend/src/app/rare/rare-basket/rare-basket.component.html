@@ -26,7 +26,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <ng-container *ngIf="basket.items.length > 0; else emptyBasket">
+    <ng-container *ngIf="basket && basket.items.length > 0; else emptyBasket">
       <div *ngFor="let item of basket.items" class="d-flex align-items-center">
         <span class="flex-grow-1"
           >{{ item.accession.name }}&ngsp;<small class="text-muted">{{ item.accession.identifier }}</small></span
@@ -56,7 +56,7 @@
       <p translate="rare-basket.no-accession"></p>
     </ng-template>
   </div>
-  <div class="modal-footer" *ngIf="basket.items.length > 0">
+  <div class="modal-footer" *ngIf="basket && basket.items.length > 0">
     <button
       type="button"
       id="send-basket"

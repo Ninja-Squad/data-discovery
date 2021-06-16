@@ -47,7 +47,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 })
 export class LoadingSkeletonComponent implements OnInit {
 
-  @Input() loading: boolean;
+  @Input() loading = false;
   @Input() aggregationStyle = false;
 
   constructor(private errorService: ErrorInterceptorService) {

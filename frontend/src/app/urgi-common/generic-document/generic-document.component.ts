@@ -9,6 +9,6 @@ import { GenericDocumentModel } from '../generic-document.model';
 })
 export class GenericDocumentComponent {
 
-  @Input() document: GenericDocumentModel;
+  @Input() document!: GenericDocumentModel;
 
 }

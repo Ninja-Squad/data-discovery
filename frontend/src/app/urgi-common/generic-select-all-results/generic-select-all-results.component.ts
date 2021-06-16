@@ -15,6 +15,6 @@ import { Page } from '../../models/page';
 })
 export class GenericSelectAllResultsComponent {
 
-  @Input() documents: Page<GenericDocumentModel>;
+  @Input() documents!: Page<GenericDocumentModel>;
 
 }

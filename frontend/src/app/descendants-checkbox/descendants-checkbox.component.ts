@@ -7,7 +7,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class DescendantsCheckboxComponent implements OnInit {
 
-  @Input() searchDescendants: boolean;
+  @Input() searchDescendants = false;
   @Output() searchDescendantsChange = new EventEmitter();
 
   constructor() { }

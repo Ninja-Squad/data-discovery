@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   searchForm: FormGroup;
   placeholder = environment.searchPlaceholder;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
@@ -20,16 +20,13 @@ export class HomeComponent implements OnInit {
     this.searchForm = new FormGroup({
       search: new FormControl()
     });
-  }
-
-  ngOnInit(): void {
     this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
   }
 
   search() {
     this.router.navigate(['/search'], {
       queryParams: {
-        query: this.searchForm.get('search').value,
+        query: this.searchForm.get('search')!.value,
         descendants: false
       }
     });

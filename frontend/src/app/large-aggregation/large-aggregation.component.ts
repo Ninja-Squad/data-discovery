@@ -20,26 +20,26 @@ const maxResultsDisplayed = 8;
 })
 export class LargeAggregationComponent {
 
-  @Input() aggregation: Aggregation;
+  @Input() aggregation!: Aggregation;
   @Input() selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or removes a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
 
-  @ViewChild('typeahead') typeahead: ElementRef<HTMLInputElement>;
+  @ViewChild('typeahead') typeahead!: ElementRef<HTMLInputElement>;
 
   focus$ = new Subject<string>();
   criterion = new FormControl('');
-  @Input() searchDescendants: boolean;
+  @Input() searchDescendants = false;
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
-    const merged$ = merge(text$, inputFocus$)
+    return merge(text$, inputFocus$)
       .pipe(
         distinctUntilChanged(),
         map(term => {
           const allMatchingBuckets = this.aggregation.buckets
-          // returns values not already selected
+            // returns values not already selected
             .filter(bucket => !this.selectedKeys.includes(bucket.key)
               // and that contains the term, ignoring the case
               && this.displayableKey(bucket.key).toLowerCase().includes(term.toString().toLowerCase()));
@@ -54,7 +54,6 @@ export class LargeAggregationComponent {
 
           return result;
         }));
-    return merged$;
   }
 
   emitEvent(): void {
@@ -92,7 +91,7 @@ export class LargeAggregationComponent {
   }
 
   documentCountForKey(key: string) {
-    return this.aggregation.buckets.find(bucket => bucket.key === key).documentCount;
+    return this.aggregation.buckets.find(bucket => bucket.key === key)!.documentCount;
   }
 
   displayableKey(key: string): string {

@@ -41,8 +41,8 @@ export interface BasketCreated extends Basket {
   providedIn: 'root'
 })
 export class BasketService {
-  basket: Basket = null;
-  private basket$ = new BehaviorSubject<Basket>(this.basket);
+  basket: Basket | null = null;
+  private basket$ = new BehaviorSubject<Basket | null>(this.basket);
 
   constructor(private http: HttpClient) {
     this.restoreBasketFromLocalStorage();
@@ -68,11 +68,11 @@ export class BasketService {
   }
 
   private emitNewBasket() {
-    this.basket$.next({ ...this.basket });
+    this.basket$.next({ ...this.basket! });
   }
 
   addToBasket(rareAccession: RareDocumentModel) {
-    if (this.basket.items.some(item => item.accession.identifier === rareAccession.identifier)) {
+    if (this.basket!.items.some(item => item.accession.identifier === rareAccession.identifier)) {
       // already in basket
       return;
     }
@@ -83,21 +83,21 @@ export class BasketService {
       },
       accessionHolder: rareAccession.accessionHolder
     };
-    this.basket.items.push(basketItem);
+    this.basket!.items.push(basketItem);
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }
 
   isAccessionInBasket(rareAccession: RareDocumentModel): Observable<boolean> {
     return this.basket$.pipe(
-      map(basket => basket.items.map(item => item.accession.identifier).includes(rareAccession.identifier)),
+      map(basket => basket!.items.map(item => item.accession.identifier).includes(rareAccession.identifier)),
       // do not re-emit when value is the same
       distinctUntilChanged()
     );
   }
 
   removeFromBasket(identifier: string) {
-    this.basket.items = this.basket.items.filter(item => identifier !== item.accession.identifier);
+    this.basket!.items = this.basket!.items.filter(item => identifier !== item.accession.identifier);
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }
@@ -106,7 +106,7 @@ export class BasketService {
     window.localStorage.setItem('rare-basket', JSON.stringify(this.basket));
   }
 
-  getBasket(): Observable<Basket> {
+  getBasket(): Observable<Basket | null> {
     return this.basket$.asObservable();
   }
 
@@ -115,7 +115,7 @@ export class BasketService {
   }
 
   clearBasket() {
-    this.basket.items = [];
+    this.basket!.items = [];
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }

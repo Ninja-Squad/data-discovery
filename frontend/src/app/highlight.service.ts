@@ -44,7 +44,7 @@ export class HighlightService {
     for (i = 0; i < span.childNodes.length && length < maxLength; i++) {
       const remainingLength = maxLength - length;
       const childNode = span.childNodes[i];
-      const textContent = childNode.textContent;
+      const textContent = childNode.textContent!;
       if (textContent.length > remainingLength) {
         childNode.textContent = textContent.substring(0, remainingLength);
         length += remainingLength;
@@ -64,41 +64,43 @@ export class HighlightService {
     // and that the first child node of the span is thus a text node, and the second child node of the span
     // is the first highlighted node, since the span is normalized
     let contextLength = requestedContextLength;
-    const totalLength = span.textContent.length;
+    const totalLength = span.textContent!.length;
     const firstTextNode = span.childNodes[0];
     const firstHighlightedNode = span.childNodes[1];
 
     // The remaining context length is the number of characters to add before the <em> and after the </em>
-    let remainingContextLength = contextLength - firstHighlightedNode.textContent.length;
+    const firstHighlightedNodeContent = firstHighlightedNode.textContent!;
+    let remainingContextLength = contextLength - firstHighlightedNodeContent.length;
     if (remainingContextLength < 0) {
       // that shouldn't happen, expect if the content of the highlighted node is really really large: larger than the
       // context length. In that case, we enlarge the context.
-      contextLength = firstHighlightedNode.textContent.length;
+      contextLength = firstHighlightedNodeContent.length;
       remainingContextLength = 0;
     }
 
     // split the remaining context length in half, unless there is not enough space at the end
+    const firstTextNodeContent = firstTextNode.textContent!;
     const trailingLength = Math.min(
       remainingContextLength / 2,
-      totalLength - (firstTextNode.textContent.length + firstHighlightedNode.textContent.length));
+      totalLength - (firstTextNodeContent.length + firstHighlightedNodeContent.length));
     const beginningLength = remainingContextLength - trailingLength;
 
     // we will generate a new span and append the various elements.
     const resultSpan = document.createElement('span');
 
-    resultSpan.appendChild(document.createTextNode(firstTextNode.textContent.substring(0, Math.max(
+    resultSpan.appendChild(document.createTextNode(firstTextNodeContent.substring(0, Math.max(
       0, maxLength - contextLength))));
     const ellipsesElement = document.createElement('i');
     ellipsesElement.appendChild(document.createTextNode(' [...] '));
     resultSpan.appendChild(ellipsesElement);
-    resultSpan.appendChild(document.createTextNode(firstTextNode.textContent.substring(
-      firstTextNode.textContent.length - beginningLength)));
+    resultSpan.appendChild(document.createTextNode(firstTextNodeContent.substring(
+      firstTextNodeContent.length - beginningLength)));
 
     let length = beginningLength;
     for (let i = 1; i < span.childNodes.length && length < contextLength; i++) {
       const remainingLength = contextLength - length;
       const childNode = span.childNodes[i].cloneNode(true);
-      const textContent = childNode.textContent;
+      const textContent = childNode.textContent!;
       if (textContent.length > remainingLength) {
         childNode.textContent = textContent.substring(0, remainingLength);
         length += remainingLength;
@@ -111,14 +113,14 @@ export class HighlightService {
     return resultSpan.innerHTML;
   }
 
-  private boundariesOfFirstHighlightedText(span: HTMLSpanElement): Boundaries {
+  private boundariesOfFirstHighlightedText(span: HTMLSpanElement): Boundaries | null {
     let index = 0;
     for (let i = 0; i < span.childNodes.length; i++) {
       const childNode = span.childNodes[i];
       if (childNode instanceof HTMLElement) {
-        return { startIndex: index, endIndex: index + childNode.textContent.length };
+        return { startIndex: index, endIndex: index + childNode.textContent!.length };
       } else {
-        index += childNode.textContent.length;
+        index += childNode.textContent!.length;
       }
     }
     return null;

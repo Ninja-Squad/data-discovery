@@ -9,9 +9,9 @@ import { BasketService } from '../basket.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RareDocumentComponent implements OnInit {
+  @Input() document!: RareDocumentModel;
   selectedForOrdering = false;
-  @Input() document: RareDocumentModel;
-  isBasketEnabled: boolean;
+  isBasketEnabled = false;
 
   constructor(private changeDetectorRef: ChangeDetectorRef, private basketService: BasketService) {}
 

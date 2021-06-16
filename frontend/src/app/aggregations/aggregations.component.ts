@@ -16,7 +16,7 @@ export class AggregationsComponent {
   @Input() aggLoading = false;
   @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
-  @Input() searchDescendants: boolean;
+  @Input() searchDescendants = false;
 
   /**
    * Extracts the selected criteria for the aggregation.

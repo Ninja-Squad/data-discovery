@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PillarService } from '../pillar.service';
@@ -11,16 +11,13 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./pillars.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PillarsComponent implements OnInit {
+export class PillarsComponent {
 
   pillars$: Observable<Array<PillarModel>>;
   environment: any;
 
   constructor(private pillarService: PillarService) {
     this.environment = environment;
-  }
-
-  ngOnInit() {
     this.pillars$ = this.pillarService.list();
   }
 }
