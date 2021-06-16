@@ -52,8 +52,11 @@ build-es-synonyms-docker-image:
   # only push latest tag on master branch
   - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
  only:
+  refs:
+   - merge_requests
   changes:
    - data/synonyms/*
+
 
 build-loader-docker-image:
  image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
@@ -72,6 +75,8 @@ build-loader-docker-image:
   # only push latest tag on master branch
   - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
  only:
+  refs:
+   - merge_requests
   changes:
    - scripts/*
    - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
@@ -89,10 +94,10 @@ deploy-synonyms-to-prod-cluster-proxmox:
   - for ES_HOST in $ES_PROD_HOSTS $ES_PROD_MASTER_PROXMOX ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_PROXMOX}@${ES_HOST} "mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
   - eval $(ssh-agent -k)
  only:
-  changes:
-   - data/synonyms/all_*
   refs:
    - master
+  changes:
+   - data/synonyms/all_*
 
 deploy-synonyms-to-dev-cluster-openstack:
  stage: pre-build
@@ -109,7 +114,7 @@ deploy-synonyms-to-dev-cluster-openstack:
   changes:
    - data/synonyms/all_*
   refs:
-   - branches
+   - merge_requests
  except:
   - master
 
@@ -181,16 +186,11 @@ test-and-sonarqube:
  only:
   refs:
    - merge_requests
+   - master
   changes:
    - backend/src/**/*
    - frontend/**/*
    - .gitlab-ci.yml
-
-test-and-sonarqube-master:
- extends: test-and-sonarqube
- only:
-  refs:
-   - master
 
 lint:
  stage: test
@@ -198,6 +198,9 @@ lint:
   - openstack
  script: ./gradlew :frontend:lint
  only:
+  refs:
+   - merge_requests
+   - master
   changes:
    - backend/src/**/*
    - frontend/**/*
@@ -222,6 +225,9 @@ lint:
    - frontend/.gradle/
    - frontend/node_modules/
  only:
+  refs:
+   - merge_requests
+   - master
   changes:
    - backend/src/**/*
    - backend/build.gradle.kts
@@ -253,14 +259,18 @@ build-data-discovery:
  <<: *build_app           # Merge the contents of the 'build_app' alias
 
 .restart-config-server: &restart_config_server
-  stage: build
-  script: 
+ stage: build
+ script: 
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
   - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
   - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@config-server"
   - eval $(ssh-agent -k)
-  allow_failure: true
+ allow_failure: true
+ only:
+  refs:
+   - merge_requests
+   - master
 
 restart-config-server-proxmox:
  variables:
@@ -292,6 +302,10 @@ restart-config-server-openstack:
   - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
   - eval $(ssh-agent -k)
   - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
+ only:
+  refs:
+   - merge_requests
+   - master
 
 .deploy-to-vm-openstack: &deploy_to_vm_openstack
  tags:
@@ -507,7 +521,7 @@ deploy-rare-to-beta-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
+   - merge_requests
  except:
   refs:
    - master
@@ -526,10 +540,7 @@ deploy-rare-to-staging-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  when: manual
  needs: ["build-rare"]
 
@@ -575,10 +586,7 @@ deploy-brc4env-to-beta-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  allow_failure: false # mandatory to block the execution of the pipeline
  needs: ["build-brc4env"]
  when: manual # for speeding up pipelines during Ninja Squad devs
@@ -594,10 +602,7 @@ deploy-brc4env-to-staging-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  when: manual
  needs: ["build-brc4env"]
 
@@ -628,10 +633,7 @@ deploy-wheatis-to-beta-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  allow_failure: false
  needs: ["build-wheatis"]
  when: manual # for speeding up pipelines during Ninja Squad devs
@@ -647,10 +649,7 @@ deploy-wheatis-to-staging-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  when: manual
  needs: ["build-wheatis"]
 
@@ -696,10 +695,7 @@ deploy-data-discovery-to-beta-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  allow_failure: false
  needs: ["build-data-discovery"]
  when: manual # for speeding up pipelines during Ninja Squad devs
@@ -715,10 +711,7 @@ deploy-data-discovery-to-staging-openstack:
    - backend/src/**/*
    - frontend/**/*
   refs:
-   - branches
- except:
-  refs:
-   - master
+   - merge_requests
  when: manual
  needs: ["build-data-discovery"]
 
@@ -772,6 +765,10 @@ deploy-data-discovery-to-prod-openstack:
   # Deployments view because of a known bug:
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
  when: manual
+ only:
+  refs:
+   - merge_requests
+   - master
 
 .data-integration-openstack: &data-integration-openstack
  # do not retry to avoid overloading the Elasticsearch cluster
@@ -804,11 +801,6 @@ data-integration-rare-beta-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
 
 data-integration-rare-staging-openstack:
  stage: data-integration-staging
@@ -821,11 +813,6 @@ data-integration-rare-staging-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
  when: manual
 
 data-integration-rare-prod-proxmox:
@@ -837,8 +824,6 @@ data-integration-rare-prod-proxmox:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
-  refs:
-   - master
 
 # ALPHA
 data-integration-rare-prod-openstack:
@@ -852,8 +837,6 @@ data-integration-rare-prod-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
-  refs:
-   - master
 
 data-integration-brc4env-beta-openstack:
  stage: data-integration-beta
@@ -866,11 +849,6 @@ data-integration-brc4env-beta-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
 
 data-integration-brc4env-staging-openstack:
  stage: data-integration-staging
@@ -883,11 +861,6 @@ data-integration-brc4env-staging-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
  when: manual
 
 # ALPHA
@@ -902,8 +875,6 @@ data-integration-brc4env-prod-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
-  refs:
-   - master
 
 data-integration-wheatis-beta-openstack:
  stage: data-integration-beta
@@ -917,11 +888,6 @@ data-integration-wheatis-beta-openstack:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
 
 data-integration-wheatis-staging-openstack:
  stage: data-integration-staging
@@ -935,11 +901,6 @@ data-integration-wheatis-staging-openstack:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
  when: manual
 
 data-integration-wheatis-prod-proxmox:
@@ -952,8 +913,6 @@ data-integration-wheatis-prod-proxmox:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - master
 
 # ALPHA
 data-integration-wheatis-prod-openstack:
@@ -968,8 +927,6 @@ data-integration-wheatis-prod-openstack:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - master
 
 data-integration-data-discovery-beta-openstack:
  stage: data-integration-beta
@@ -983,11 +940,6 @@ data-integration-data-discovery-beta-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
 
 data-integration-data-discovery-staging-openstack:
  stage: data-integration-staging
@@ -1001,11 +953,6 @@ data-integration-data-discovery-staging-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - branches
- except:
-  refs:
-   - master
  when: manual
 
 data-integration-data-discovery-prod-proxmox:
@@ -1018,8 +965,6 @@ data-integration-data-discovery-prod-proxmox:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - master
 
 # ALPHA
 data-integration-data-discovery-prod-openstack:
@@ -1034,5 +979,3 @@ data-integration-data-discovery-prod-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
-  refs:
-   - master
