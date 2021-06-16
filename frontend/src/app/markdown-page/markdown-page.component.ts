@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MarkdownPageComponent implements OnInit {
 
-  mdFile: string;
+  mdFile = '';
 
   constructor(private route: ActivatedRoute, @Inject(LOCALE_ID) private locale: 'en' | 'fr') {
   }

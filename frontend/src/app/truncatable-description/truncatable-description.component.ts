@@ -9,11 +9,11 @@ import { HighlightService } from '../highlight.service';
 })
 export class TruncatableDescriptionComponent implements OnInit {
 
-  @Input() description: string;
+  @Input() description = '';
 
   descriptionCollapsed = true;
 
-  truncatedDescription: string;
+  truncatedDescription = '';
 
   constructor(private highlightService: HighlightService) { }
 

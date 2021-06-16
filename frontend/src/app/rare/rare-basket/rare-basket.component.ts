@@ -17,11 +17,11 @@ import { timer } from 'rxjs';
 })
 export class RareBasketComponent implements OnInit {
   itemCounter = 0;
-  basket: Basket;
-  eulaAgreementControl: FormControl;
+  basket: Basket | null = null;
+  eulaAgreementControl!: FormControl;
   submitted = false;
   confirmForbidden = false;
-  isEnabled: boolean;
+  isEnabled = false;
 
   constructor(
     private basketService: BasketService,
@@ -33,9 +33,11 @@ export class RareBasketComponent implements OnInit {
   ngOnInit(): void {
     this.isEnabled = this.basketService.isEnabled();
     if (this.isEnabled) {
-      this.basketService.getBasket().subscribe((basket: Basket) => {
-        this.itemCounter = basket.items.length;
+      this.basketService.getBasket().subscribe((basket: Basket | null) => {
         this.basket = basket;
+        if (basket) {
+          this.itemCounter = basket.items.length;
+        }
       });
       this.eulaAgreementControl = this.fb.control(false, Validators.requiredTrue);
     }

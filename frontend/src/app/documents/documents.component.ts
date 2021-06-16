@@ -12,7 +12,7 @@ import { BasketService } from '../rare/basket.service';
 })
 export class DocumentsComponent {
 
-  @Input() documents: Page<DocumentModel>;
+  @Input() documents!: Page<DocumentModel>;
   isBasketEnabled: boolean;
 
   constructor(basketService: BasketService) {

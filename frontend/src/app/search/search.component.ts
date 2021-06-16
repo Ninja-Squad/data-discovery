@@ -41,8 +41,9 @@ export class SearchComponent implements OnInit {
   aggLoading = true;
   query = '';
   placeholder = environment.searchPlaceholder;
+  searchCtrl: FormControl;
   searchForm: FormGroup;
-  results: Page<DocumentModel>;
+  results!: Page<DocumentModel> | null;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
   aggregations: Array<Aggregation> = [];
   // array of all the selected criteria
@@ -52,9 +53,11 @@ export class SearchComponent implements OnInit {
   searchDescendants = false ;
 
   constructor(private route: ActivatedRoute, private router: Router, private searchService: SearchService) {
+    this.searchCtrl = new FormControl();
     this.searchForm = new FormGroup({
-      search: new FormControl()
+      search: this.searchCtrl
     });
+    this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
   }
 
 
@@ -63,16 +66,16 @@ export class SearchComponent implements OnInit {
       .pipe(
         // extract parameters
         switchMap(params => {
-          const requestedQuery = params.get('query');
+          const requestedQuery = params.get('query')!;
           if (this.query !== requestedQuery) {
             // we reset the results and criteria
-            this.results = undefined;
+            this.results = null;
             this.aggregationCriteria = [];
           }
 
           this.query = requestedQuery;
           // set the search field
-          this.searchForm.get('search').setValue(this.query);
+          this.searchCtrl.setValue(this.query);
           // extract the page if present
           const page = this.extractPageFromParameters(params);
           // extract the aggregations if there are some
@@ -105,15 +108,10 @@ export class SearchComponent implements OnInit {
           this.results = results;
         }
       });
-    this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
   }
 
   extractPageFromParameters(params: ParamMap): number {
-    let page = 1;
-    if (params.get('page')) {
-      page = +params.get('page');
-    }
-    return page;
+    return +(params.get('page') ?? 1);
   }
 
   /*extractDescendantsFromParameters(): boolean {
@@ -142,7 +140,7 @@ export class SearchComponent implements OnInit {
    * It uses the new search terms in the form, and asks for the default page (1) for this new query
    */
   newSearch() {
-    const query = this.searchForm.get('search').value;
+    const query = this.searchCtrl.value;
     // const descendants = this.extractDescendantsFromParameters();
     if (!(query === this.query)) {
       // Add the following conditions if we don't reset aggregations on new search anymore && (
@@ -165,7 +163,7 @@ export class SearchComponent implements OnInit {
   }
 
   collectionSize() {
-    return Math.min(this.results.totalElements, this.results.maxResults);
+    return Math.min(this.results!.totalElements, this.results!.maxResults);
   }
 
   /**
@@ -193,9 +191,9 @@ export class SearchComponent implements OnInit {
    * It accepts a search options object with one mandatory field (the query) and optional ones (page, criteria)
    */
   private search(options: { query: string; page?: number; criteria?: Array<AggregationCriterion>, descendants?: boolean }) {
-    const queryParams: { [key: string]: string | Array<string> } = {
+    const queryParams: { [key: string]: string | number | undefined | Array<string> } = {
       query: options.query,
-      page: options.page ? options.page.toString() : undefined,
+      page: options.page,
       descendants: options.descendants ? options.descendants.toString() : 'false'
     };
     // we iterate over each criteria if necessary

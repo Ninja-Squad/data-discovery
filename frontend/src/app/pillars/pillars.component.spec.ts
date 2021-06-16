@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { EMPTY, of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
@@ -41,10 +41,13 @@ class PillarsComponentTester extends ComponentTester<PillarsComponent> {
 
 describe('PillarsComponent', () => {
   let tester: PillarsComponentTester;
-  let pillarService: PillarService;
+  let pillarService: jasmine.SpyObj<PillarService>;
+  const pillars$ = new Subject<Array<PillarModel>>();
 
   beforeEach(() => {
     registerLocaleData(localeFr);
+    pillarService = jasmine.createSpyObj<PillarService>('PillarService', ['list']);
+    pillarService.list.and.returnValue(pillars$);
     TestBed.configureTestingModule({
       declarations: [PillarsComponent, DocumentCountComponent],
       imports: [
@@ -53,21 +56,17 @@ describe('PillarsComponent', () => {
         I18nTestingModule
       ],
       providers: [
-        { provide: LOCALE_ID, useValue: 'fr-FR' }
+        { provide: LOCALE_ID, useValue: 'fr-FR' },
+        { provide: PillarService, useValue: pillarService }
       ]
     });
 
     tester = new PillarsComponentTester();
-    pillarService = TestBed.inject(PillarService);
-
+    tester.detectChanges();
     jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should not display any pillar nor any alert while pillars are not available yet', () => {
-    spyOn(pillarService, 'list').and.returnValue(EMPTY);
-
-    tester.detectChanges();
-
     expect(tester.pillarListItems.length).toBe(0);
     expect(tester.noDataAlert).toBeNull();
   });
@@ -94,7 +93,7 @@ describe('PillarsComponent', () => {
         databaseSources: []
       }
     ];
-    spyOn(pillarService, 'list').and.returnValue(of(pillars));
+    pillars$.next(pillars);
 
     tester.detectChanges();
 
@@ -113,8 +112,7 @@ describe('PillarsComponent', () => {
   });
 
   it('should display alert if no pillar has been found', () => {
-    spyOn(pillarService, 'list').and.returnValue(of([]));
-
+    pillars$.next([]);
     tester.detectChanges();
 
     expect(tester.noDataAlert).toContainText('No data found');
