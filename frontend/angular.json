@@ -19,7 +19,11 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              { "glob": "**/*", "input": "src/assets/rare", "output": "/assets" },
+              {
+                "glob": "**/*",
+                "input": "src/assets/rare",
+                "output": "/assets"
+              },
               "src/assets"
             ],
             "stylePreprocessorOptions": {
@@ -190,7 +194,11 @@
                 ]
               },
               "assets": [
-                { "glob": "*", "input": "src/assets/wheatis", "output": "/assets" },
+                {
+                  "glob": "*",
+                  "input": "src/assets/wheatis",
+                  "output": "/assets"
+                },
                 "src/assets"
               ]
             },
@@ -248,7 +256,11 @@
                 ]
               },
               "assets": [
-                { "glob": "*", "input": "src/assets/data-discovery", "output": "/assets" },
+                {
+                  "glob": "*",
+                  "input": "src/assets/data-discovery",
+                  "output": "/assets"
+                },
                 "src/assets"
               ],
               "budgets": [
@@ -366,7 +378,11 @@
             ],
             "scripts": [],
             "assets": [
-              { "glob": "*", "input": "src/assets/rare", "output": "/assets" },
+              {
+                "glob": "*",
+                "input": "src/assets/rare",
+                "output": "/assets"
+              },
               "src/assets"
             ]
           },
@@ -377,14 +393,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
