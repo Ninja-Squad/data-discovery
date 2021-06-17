@@ -35,7 +35,7 @@ USAGE:
 	$0 -app <application name> [-h|--help]
 
 PARAMS:
-	-app           the application for which to create the suggestions: rare, wheatis or data-discovery
+	-app           the application for which to create the suggestions: rare, wheatis or faidare
 	-h or --help   print this help
 
 EOF
@@ -96,6 +96,7 @@ WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
 FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
 
 WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
+FAIDARE_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
 RARE_FIELDS_TO_EXTRACT=".pillar , .databaseSource , .name , .domain, .taxon, .family, .genus, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect, [.species]"
 
 if [ "${APP_NAME}" == "rare" ] ; then
@@ -108,10 +109,10 @@ elif [ "${APP_NAME}" == "wheatis" ]; then
     FILTER_DATA_SCRIPT="${WHEATIS_FILTER_DATA_SCRIPT}"
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
     DATADIR=$(readlink -f "$BASEDIR/../data/data-discovery")
-elif [ "${APP_NAME}" == "data-discovery" ]; then
-    FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
+elif [ "${APP_NAME}" == "faidare" ]; then
+    FIELDS_TO_EXTRACT="${FAIDARE_FIELDS_TO_EXTRACT}"
 else
-    echo -e "${RED_BOLD}ERROR: app value is invalid, please specify one among following: ${GREEN}rare${RED}, ${GREEN}brc4env${RED}, ${GREEN}wheatis${RED}, or ${GREEN}data-discovery${RED}.${NC}" && help && exit 5
+    echo -e "${RED_BOLD}ERROR: app value is invalid, please specify one among following: ${GREEN}rare${RED}, ${GREEN}brc4env${RED}, ${GREEN}wheatis${RED}, or ${GREEN}faidare${RED}.${NC}" && help && exit 5
 fi
 
 [ ! -d "${DATADIR}/suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/suggestions"
@@ -119,7 +120,7 @@ fi
 export FILTER_DATA_SCRIPT FIELDS_TO_EXTRACT
 
 extract_suggestions() {
-    bash -c "set -o pipefail; gunzip -c $1 |                        # jq below add a filter on some data if needed (noop by default, or brc4env or wheatis)
+    bash -c "set -o pipefail; gunzip -c $1 |                        # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for brc4env or wheat related species for wheatis)
     jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
     tee \
         >(

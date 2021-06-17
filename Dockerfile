@@ -7,12 +7,12 @@ COPY scripts/filters/* /opt/scripts/filters/
 # COPY dao settings
 COPY backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/rare/settings.json /opt/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/rare/settings.json
 COPY backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/wheatis/settings.json /opt/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/wheatis/settings.json
-COPY backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/data-discovery/settings.json /opt/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/data-discovery/settings.json
+COPY backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/faidare/settings.json /opt/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/faidare/settings.json
 
 # COPY dao mappings
 COPY /backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json /opt/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/rare/RareGeneticResource.mapping.json
 COPY /backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json /opt/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json
-COPY /backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/data-discovery/WheatisGeneticResource.mapping.json /opt/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/data-discovery/WheatisGeneticResource.mapping.json
+COPY /backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/faidare/FaidareGeneticResource.mapping.json /opt/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/faidare/FaidareGeneticResource.mapping.json
 
 # COPY suggestions settings
 COPY backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json /opt/backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json

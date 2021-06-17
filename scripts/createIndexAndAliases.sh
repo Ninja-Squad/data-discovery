@@ -10,4 +10,4 @@ $SHELL $BASEDIR/index.sh -host localhost -app rare -env dev --no-data
 $SHELL $BASEDIR/index.sh -host localhost -app wheatis -env dev --no-data
 
 # DataDiscovery index/alias
-$SHELL $BASEDIR/index.sh -host localhost -app data-discovery -env dev --no-data
+$SHELL $BASEDIR/index.sh -host localhost -app faidare -env dev --no-data

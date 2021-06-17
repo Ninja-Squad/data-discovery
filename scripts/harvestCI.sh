@@ -27,7 +27,7 @@ fi
 help() {
 	cat <<EOF
 DESCRIPTION: 
-	Script used to index data in Data Discovery portals (RARe, WheatIS and DataDiscovery)
+	Script used to index data in Data Discovery portals (RARe, WheatIS and Faidare)
 
 USAGE:
 	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -timestamp <epoch timestamp> [-h|--help]
@@ -35,7 +35,7 @@ USAGE:
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
-	-app           the name of the targeted application: rare, wheatis or data-discovery
+	-app           the name of the targeted application: rare, wheatis or faidare
 	-env           the environment name of the targeted application (dev, beta, prod ...)
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
 	-h or --help   print this help

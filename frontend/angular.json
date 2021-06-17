@@ -257,7 +257,7 @@
                   "with": "src/environments/environment.data-discovery.ts"
                 }
               ],
-              "baseHref": "/data-discovery-dev/",
+              "baseHref": "/faidare-dev/",
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/data-discovery/"

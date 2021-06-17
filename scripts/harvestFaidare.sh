@@ -3,4 +3,4 @@
 # delegates to parameterized script
 BASEDIR=$(dirname "$0")
 
-$SHELL $BASEDIR/index.sh -app data-discovery --local
+$SHELL $BASEDIR/index.sh -app faidare --local

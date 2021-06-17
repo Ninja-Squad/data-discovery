@@ -1,4 +1,4 @@
-package fr.inra.urgi.datadiscovery.dao.wheatis;
+package fr.inra.urgi.datadiscovery.dao.faidare;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,23 +13,23 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
- * The {@link AggregationAnalyzer} implementation for the WheatIS application
+ * The {@link AggregationAnalyzer} implementation for the Faidare application
  * @author JB Nizet
  */
 @Component
-@Profile({AppProfile.WHEATIS})
-public class WheatisAggregationAnalyzer implements AggregationAnalyzer {
+@Profile({AppProfile.FAIDARE})
+public class FaidareAggregationAnalyzer implements AggregationAnalyzer {
     private static final List<AppAggregation> AGGREGATIONS =
-        Collections.unmodifiableList(Arrays.asList(WheatisAggregation.values()));
+        Collections.unmodifiableList(Arrays.asList(FaidareAggregation.values()));
 
     @Override
     public AppAggregation.Type getAggregationType(Terms terms) {
-        return WheatisAggregation.fromName(terms.getName()).getType();
+        return FaidareAggregation.fromName(terms.getName()).getType();
     }
 
     @Override
     public Comparator<Terms> comparator() {
-        return Comparator.comparing(terms -> WheatisAggregation.fromName(terms.getName()));
+        return Comparator.comparing(terms -> FaidareAggregation.fromName(terms.getName()));
     }
 
     @Override

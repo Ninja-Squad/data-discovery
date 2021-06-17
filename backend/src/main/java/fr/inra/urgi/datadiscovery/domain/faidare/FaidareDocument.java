@@ -1,4 +1,6 @@
-package fr.inra.urgi.datadiscovery.domain.wheatis;
+package fr.inra.urgi.datadiscovery.domain.faidare;
+
+import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,18 +13,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
-import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
-
 /**
- * The document for the WheatIS application
+ * The document for the Faidare application
  * @author JB Nizet
  */
 @org.springframework.data.elasticsearch.annotations.Document(
     indexName = "#{@dataDiscoveryProperties.getElasticsearchPrefix()}resource-alias",
     createIndex = false
 )
-@Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json")
-public final class WheatisDocument implements SearchDocument {
+@Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/faidare/FaidareGeneticResource.mapping.json")
+public final class FaidareDocument implements SearchDocument {
     @Id
     @JsonProperty("identifier")
     private final String id;
@@ -39,7 +39,7 @@ public final class WheatisDocument implements SearchDocument {
 
     @JsonCreator
     @PersistenceConstructor
-    public WheatisDocument(@JsonProperty("identifier") String id,
+    public FaidareDocument(@JsonProperty("identifier") String id,
                            String name,
                            String entryType,
                            String databaseName,
@@ -63,7 +63,7 @@ public final class WheatisDocument implements SearchDocument {
         this.ancestors = ancestors;
     }
 
-    public WheatisDocument(Builder builder) {
+    public FaidareDocument(Builder builder) {
         this(builder.id,
              builder.name,
              builder.entryType,
@@ -125,7 +125,7 @@ public final class WheatisDocument implements SearchDocument {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        WheatisDocument that = (WheatisDocument) o;
+        FaidareDocument that = (FaidareDocument) o;
         return Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(entryType, that.entryType) &&
@@ -159,8 +159,8 @@ public final class WheatisDocument implements SearchDocument {
         return new Builder();
     }
 
-    public static Builder builder(WheatisDocument document) {
-        return new WheatisDocument.Builder(document);
+    public static Builder builder(FaidareDocument document) {
+        return new FaidareDocument.Builder(document);
     }
 
     public static class Builder {
@@ -180,7 +180,7 @@ public final class WheatisDocument implements SearchDocument {
         private Builder() {
         }
 
-        private Builder(WheatisDocument document) {
+        private Builder(FaidareDocument document) {
             this.id = document.getId();
             this.name = document.getName();
             this.entryType= document.getEntryType();
@@ -249,8 +249,8 @@ public final class WheatisDocument implements SearchDocument {
             return this;
         }
 
-        public WheatisDocument build() {
-            return new WheatisDocument(this);
+        public FaidareDocument build() {
+            return new FaidareDocument(this);
         }
     }
 }
