@@ -43,21 +43,6 @@ tasks {
         options.compilerArgs.add("-parameters")
     }
 
-    getByName<Copy>("processResources") {
-        inputs.property("app", project.app)
-
-        filesMatching("bootstrap.yml") {
-            filter {
-                if (it.trim().startsWith("active:")) {
-                    it.replace("rare", project.app)
-                }
-                else {
-                    it
-                }
-            }
-        }
-    }
-
     // this task is always out-of-date because it generates a properties file with the build time inside
     // so the bootJar task is also always out of date, too, since it depends on it
     // but it's better to do that than using the bootInfo() method of the springBoot closure, because that
@@ -68,7 +53,7 @@ tasks {
     }
 
     val bootJar by getting(BootJar::class) {
-        archiveName = "${project.app}.jar"
+        archiveFileName.set("${project.app}.jar")
         dependsOn(":frontend:assemble")
         dependsOn(buildInfo)
 
@@ -81,6 +66,10 @@ tasks {
         launchScript()
     }
 
+    val bootRun by getting(BootRun::class) {
+        jvmArgs("-Dspring.profiles.active=${project.app}-app")
+    }
+
     val test by getting(Test::class) {
         useJUnitPlatform()
         testLogging {
@@ -91,8 +80,8 @@ tasks {
 
     val jacocoTestReport by getting(JacocoReport::class) {
         reports {
-            xml.setEnabled(true)
-            html.setEnabled(true)
+            xml.required.set(true)
+            html.required.set(true)
         }
     }
 
@@ -114,7 +103,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
-    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
