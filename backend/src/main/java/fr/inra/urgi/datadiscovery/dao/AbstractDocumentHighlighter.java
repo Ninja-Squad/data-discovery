@@ -9,7 +9,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.data.elasticsearch.core.SearchHit;
 
 /**
- * A base class for a document highlighter, whose responsibility is to take a document and created a higlighted version
+ * A base class for a document highlighter, whose responsibility is to take a document and create a highlighted version
  * of that document based on the highlights found in the search hits.
  * There is one subclass for each app (RARe, WheatIS, etc.)
  * @author JB Nizet
