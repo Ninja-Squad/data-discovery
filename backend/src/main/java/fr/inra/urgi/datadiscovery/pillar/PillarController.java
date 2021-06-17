@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/pillars")
 public class PillarController {
 
-    private final DocumentDao<?, ?> documentDao;
+    private final DocumentDao<?> documentDao;
 
-    public PillarController(DocumentDao<?, ?> documentDao) {
+    public PillarController(DocumentDao<?> documentDao) {
         this.documentDao = documentDao;
     }
 

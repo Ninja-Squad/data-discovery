@@ -27,6 +27,7 @@ import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 @Mapping(mappingPath = "fr/inra/urgi/datadiscovery/domain/wheatis/WheatisGeneticResource.mapping.json")
 public final class WheatisDocument implements SearchDocument {
     @Id
+    @JsonProperty("identifier")
     private final String id;
     private final String name;
     private final String entryType;
@@ -41,7 +42,7 @@ public final class WheatisDocument implements SearchDocument {
 
     @JsonCreator
     @PersistenceConstructor
-    public WheatisDocument(String id,
+    public WheatisDocument(@JsonProperty("identifier") String id,
 						   String name,
 						   String entryType,
 						   String databaseName,

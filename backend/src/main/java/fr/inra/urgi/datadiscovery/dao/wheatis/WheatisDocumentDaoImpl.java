@@ -11,16 +11,13 @@ import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
-import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisIndexedDocument;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
 /**
  * Implementation of {@link WheatisDocumentDaoCustom}
  * @author JB Nizet
  */
-public class WheatisDocumentDaoImpl
-    extends AbstractDocumentDaoImpl<WheatisDocument, WheatisIndexedDocument>
-    implements WheatisDocumentDaoCustom {
+public class WheatisDocumentDaoImpl extends AbstractDocumentDaoImpl<WheatisDocument> implements WheatisDocumentDaoCustom {
 
     /**
      * Contains the fields searchable on a {@link WheatisDocument}.
@@ -48,11 +45,6 @@ public class WheatisDocumentDaoImpl
     @Override
     protected Class<WheatisDocument> getDocumentClass() {
         return WheatisDocument.class;
-    }
-
-    @Override
-    protected Class<WheatisIndexedDocument> getIndexedDocumentClass() {
-        return WheatisIndexedDocument.class;
     }
 
     @Override
