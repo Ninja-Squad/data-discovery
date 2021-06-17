@@ -62,37 +62,17 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
 
     @BeforeAll
     void prepareIndex() {
-        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).delete();
-        elasticsearchTemplate.execute(
-            client -> {
-                Settings settings = DocumentIndexSettings.createSettings(AppProfile.WHEATIS);
-                CreateIndexRequest createIndexRequest = new CreateIndexRequest(PHYSICAL_INDEX).settings(settings);
-                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-                return null;
-            }
-        );
-        elasticsearchTemplate.indexOps(IndexCoordinates.of(SUGGESTION_INDEX)).delete();
-        elasticsearchTemplate.execute(
-            client -> {
-                Settings settings = DocumentIndexSettings.createSuggestionsSettings();
-                CreateIndexRequest createIndexRequest = new CreateIndexRequest(SUGGESTION_INDEX).settings(settings);
-                client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-                return null;
-            }
-        );
-        elasticsearchTemplate.indexOps(IndexCoordinates.of(PHYSICAL_INDEX)).alias(
-            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
-                elasticsearchTemplate.getIndexCoordinatesFor(RareDocument.class).getIndexName()
-            ).withIndices(PHYSICAL_INDEX).build()))
-        );
-        elasticsearchTemplate.indexOps(IndexCoordinates.of(SUGGESTION_INDEX)).alias(
-            new AliasActions().add(new AliasAction.Add(AliasActionParameters.builder().withAliases(
-                elasticsearchTemplate.getIndexCoordinatesFor(SuggestionDocument.class).getIndexName()
-            ).withIndices(SUGGESTION_INDEX).build()))
-        );
+        deleteIndex(PHYSICAL_INDEX);
+        createDocumentIndex(PHYSICAL_INDEX, AppProfile.WHEATIS);
 
-        elasticsearchTemplate.indexOps(WheatisDocument.class).putMapping();
-        elasticsearchTemplate.indexOps(SuggestionDocument.class).putMapping();
+        deleteIndex(SUGGESTION_INDEX);
+        createSuggestionIndex(SUGGESTION_INDEX);
+
+        createAlias(PHYSICAL_INDEX, WheatisDocument.class);
+        createAlias(SUGGESTION_INDEX, SuggestionDocument.class);
+
+        putMapping(WheatisDocument.class);
+        putMapping(SuggestionDocument.class);
     }
 
     @BeforeEach
