@@ -43,10 +43,14 @@ build-es-synonyms-docker-image:
   - cd data/synonyms
   - gzip -fd all_*.txt.gz
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
+  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION} .
+  # TODO fix above before merging into master branch
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest .
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
   # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
   - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
+  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+  # TODO fix above before merging into master branch
   - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
  only:
   refs:
@@ -145,7 +149,8 @@ test-and-sonarqube:
    # because we need to pass some variables, but they are passed to _all_ containers
    # so they fail the start of other docker images like urgi/docker-browsers
    # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest
+   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+    # TODO fix above before merging into master branch
      alias: elasticsearch
      # discovery.type=single-node
      # single-node is necessary to start in development mode
@@ -261,7 +266,7 @@ build-data-discovery:
 
 .restart-config-server: &restart_config_server
  stage: build
- script: 
+ script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
   - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
