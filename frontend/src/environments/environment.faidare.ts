@@ -1,7 +1,11 @@
-import { DataDiscoveryModule } from '../app/data-discovery/data-discovery.module';
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build --configuration=production` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+
+import { FaidareModule } from '../app/faidare/faidare.module';
 
 export const environment = {
-  production: true,
+  production: false,
   title: 'DataDiscovery - Genetic and Genomic Information System',
   navbar: {
     title: 'URGI',
@@ -12,13 +16,13 @@ export const environment = {
     ]
   },
   searchPlaceholder: 'Examples: yield, fhb',
-  resourceModule: DataDiscoveryModule,
+  resourceModule: FaidareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
-  newsMdFile: 'assets/news.md',
   eulaMdFile: 'assets/eula.md',
+  newsMdFile: 'assets/news.md',
   dataProvider: 'Data providers',
   /**
    * Map containing the list of the aggregations and their displayed name.
@@ -32,3 +36,11 @@ export const environment = {
     annot: 'Ontology annotation'
   }
 };
+
+/*
+ * In development mode, to ignore zone related error stack frames such as
+ * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can
+ * import the following file, but please comment it out in production mode
+ * because it will have performance impact when throw error
+ */
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

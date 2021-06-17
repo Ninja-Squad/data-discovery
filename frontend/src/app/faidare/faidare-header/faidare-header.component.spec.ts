@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DataDiscoveryHeaderComponent } from './data-discovery-header.component';
+import { FaidareHeaderComponent } from './faidare-header.component';
 
-describe('DataDiscoveryHeaderComponent', () => {
+describe('FaidareHeaderComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      declarations: [DataDiscoveryHeaderComponent]
+      declarations: [FaidareHeaderComponent]
     })
   );
 
   it('should display title and image', () => {
-    const fixture = TestBed.createComponent(DataDiscoveryHeaderComponent);
+    const fixture = TestBed.createComponent(FaidareHeaderComponent);
 
     fixture.detectChanges();
 

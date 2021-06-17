@@ -1,6 +1,6 @@
 describe('Home page', () => {
   it('should display pillars', () => {
-    cy.intercept('GET', '/data-discovery-dev/api/pillars', [
+    cy.intercept('GET', '/faidare-dev/api/pillars', [
       {
         name: 'INRAE-URGI',
         databaseSources: [
