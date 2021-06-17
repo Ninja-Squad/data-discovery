@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
-import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.action.search.SearchRequest;
@@ -43,8 +42,7 @@ import org.springframework.data.elasticsearch.core.query.*;
  * Base class for implementations of {@link DocumentDao}
  * @author JB Nizet, R. Flores
  */
-public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extends IndexedDocument<D>>
-    implements DocumentDaoCustom<D, I> {
+public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implements DocumentDaoCustom<D> {
 
     /**
      * The name of the completion suggestion
@@ -59,7 +57,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     /**
      * The max number of suggestions returned to the caller
      */
-    private int MAX_RETURNED_SUGGESTION_COUNT = 10;
+    private static final int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
     protected final ElasticsearchRestTemplate elasticsearchTemplate;
     private final AbstractDocumentHighlighter<D> documentHighlighter;
@@ -313,13 +311,6 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     }
 
     @Override
-    public void saveAll(Collection<I> indexedDocuments) {
-        List<IndexQuery> queries = indexedDocuments.parallelStream().map(this::createIndexQuery).collect(Collectors.toList());
-        elasticsearchTemplate.bulkIndex(queries, getIndexedDocumentClass());
-        // Refreshing after each request is a very consuming task. Let ES using its own refresh index setting.
-    }
-
-    @Override
     public void saveAllSuggestions(Collection<SuggestionDocument> suggestions) {
         List<IndexQuery> queries = suggestions.parallelStream().map(this::createSuggestionIndexQuery).collect(Collectors.toList());
         elasticsearchTemplate.bulkIndex(queries, getSuggestionDocumentClass());
@@ -331,11 +322,6 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
     public void deleteAllSuggestions() {
         elasticsearchTemplate.delete(new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build(), getSuggestionDocumentClass());
         elasticsearchTemplate.indexOps(getSuggestionDocumentClass()).refresh();
-    }
-
-    @Override
-    public void putMapping() {
-        elasticsearchTemplate.indexOps(getIndexedDocumentClass()).putMapping();
     }
 
     @Override
@@ -379,13 +365,6 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
         return query;
     }
 
-    private IndexQuery createIndexQuery(I entity) {
-        IndexQuery query = new IndexQuery();
-        query.setObject(entity);
-        query.setId(entity.getDocument().getId());
-        return query;
-    }
-
     /**
      * Returns the specific {@link SearchDocument} class of this DAO
      */
@@ -396,12 +375,6 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument, I extend
      * No need to make it abstract since it does not differ across applications
      */
     protected Class<SuggestionDocument> getSuggestionDocumentClass(){ return SuggestionDocument.class; }
-
-    /**
-     * Returns the specific {@link IndexedDocument} class of this DAO
-     */
-    @Deprecated
-    protected abstract Class<I> getIndexedDocumentClass();
 
     /**
      * Returns the list of fields of the specific {@link SearchDocument} subclass on which the full text query must be

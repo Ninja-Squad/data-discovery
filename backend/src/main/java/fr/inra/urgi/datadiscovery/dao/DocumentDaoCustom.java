@@ -4,18 +4,16 @@ import java.util.Collection;
 import java.util.List;
 
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
-import fr.inra.urgi.datadiscovery.domain.IndexedDocument;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.SearchPage;
 
 /**
  * Base custom interface for document DAOs
  * @author JB Nizet
  */
-public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDocument<D>> {
+public interface DocumentDaoCustom<D extends SearchDocument> {
     /**
      * Searches for the given text anywhere (except typically in the identifier, the URL and numeric fields) in the
      * documents, and returns the requested page (results are sorted by score, in descending order).
@@ -40,17 +38,6 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
     List<String> suggest(String term);
 
     /**
-     * Saves all the given documents given as argument. Since {@link IndexedDocument} is in fact the
-     * same document as {@link SearchDocument}, but with an additional computed field used only to enable suggestions
-     * implementation, and used only when saving the entities, this method has been added to the
-     * {@link DocumentDao} as a custom method instead of creating a whole DAO only for this "fake" document:
-     * we don't want to encourage doing anything other than saving {@link IndexedDocument} instances, which
-     * a specific DAO would do.
-     */
-    @Deprecated
-    void saveAll(Collection<I> indexedDocuments);
-
-    /**
      * Saves all the given suggestions.
      * @param suggestions
      */
@@ -70,12 +57,6 @@ public interface DocumentDaoCustom<D extends SearchDocument, I extends IndexedDo
      * or 1 (or more, but this shows a problem in the data) bucket containing the URL of the database source.
      */
     Terms findPillars();
-
-    /**
-     * Puts the mapping for the alias of the {@link IndexedDocument} document
-     */
-    @Deprecated
-    void putMapping();
 
     void refresh();
 }

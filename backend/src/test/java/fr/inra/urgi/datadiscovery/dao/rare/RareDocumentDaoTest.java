@@ -127,8 +127,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
 
         documentDao.saveAll(Collections.singleton(document));
         documentDao.refresh();
-        // TODO JBN why is this commented out?
-        // assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
+        assertThat(documentDao.findById(document.getId()).get()).isEqualTo(document);
     }
 
     @Test

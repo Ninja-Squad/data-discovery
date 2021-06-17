@@ -13,16 +13,13 @@ import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
-import fr.inra.urgi.datadiscovery.domain.rare.RareIndexedDocument;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
 /**
  * Implementation of {@link RareDocumentDaoCustom}
  * @author JB Nizet
  */
-public class RareDocumentDaoImpl
-        extends AbstractDocumentDaoImpl<RareDocument, RareIndexedDocument>
-        implements RareDocumentDaoCustom {
+public class RareDocumentDaoImpl extends AbstractDocumentDaoImpl<RareDocument> implements RareDocumentDaoCustom {
 
     /**
      * Contains the fields searchable on a {@link RareDocument}.
@@ -63,11 +60,6 @@ public class RareDocumentDaoImpl
     @Override
     protected Class<RareDocument> getDocumentClass() {
         return RareDocument.class;
-    }
-
-    @Override
-    protected Class<RareIndexedDocument> getIndexedDocumentClass() {
-        return RareIndexedDocument.class;
     }
 
     @Override

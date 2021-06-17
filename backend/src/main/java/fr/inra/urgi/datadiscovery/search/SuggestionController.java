@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/suggest")
 public class SuggestionController {
 
-    private DocumentDao<?, ?> documentDao;
+    private DocumentDao<?> documentDao;
 
-    public SuggestionController(DocumentDao<?, ?> documentDao) {
+    public SuggestionController(DocumentDao<?> documentDao) {
         this.documentDao = documentDao;
     }
 

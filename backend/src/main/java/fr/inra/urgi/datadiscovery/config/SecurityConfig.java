@@ -18,7 +18,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/api/harvests", "/api/harvests/**").authenticated()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated() // EndpointRequest.toAnyEndpoint()
                                                                                   // only targets the **actuator**
                                                                                   // endpoints.

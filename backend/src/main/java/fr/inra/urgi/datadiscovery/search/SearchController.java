@@ -30,10 +30,10 @@ public class SearchController {
      */
     public static final int MAX_RESULTS = PageDTO.MAX_RESULTS;
 
-    private final DocumentDao<?, ?> documentDao;
+    private final DocumentDao<?> documentDao;
     private final AggregationAnalyzer aggregationAnalyzer;
 
-    public SearchController(DocumentDao<?, ?> documentDao,
+    public SearchController(DocumentDao<?> documentDao,
                             AggregationAnalyzer aggregationAnalyzer) {
         this.documentDao = documentDao;
         this.aggregationAnalyzer = aggregationAnalyzer;
@@ -62,11 +62,11 @@ public class SearchController {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(documentDao.search(query,
-                                            highlight.orElse(false),
-                                            descendants,
-                                            createRefinementsFromParameters(parameters),
-                                            PageRequest.of(page.orElse(0), PAGE_SIZE)),
-                                            aggregationAnalyzer);
+                                                             highlight.orElse(false),
+                                                             descendants,
+                                                             createRefinementsFromParameters(parameters),
+                                                             PageRequest.of(page.orElse(0), PAGE_SIZE)),
+                                          aggregationAnalyzer);
 
     }
     @GetMapping("/api/aggregate")
@@ -74,8 +74,9 @@ public class SearchController {
             @RequestParam MultiValueMap<String, String> parameters, @RequestParam("descendants") boolean descendants) {
 
         return AggregatedPageDTO.fromPage(documentDao.aggregate(query,
-                createRefinementsFromParameters(parameters), descendants),
-                aggregationAnalyzer);
+                                                                createRefinementsFromParameters(parameters),
+                                                                descendants),
+                                          aggregationAnalyzer);
 
     }
 
