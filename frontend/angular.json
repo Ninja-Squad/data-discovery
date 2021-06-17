@@ -22,9 +22,10 @@
               {
                 "glob": "**/*",
                 "input": "src/assets/rare",
+                "followSymlinks": true,
+                "ignore": ["**/*.scss"],
                 "output": "/assets"
-              },
-              "src/assets"
+              }
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -40,30 +41,10 @@
               "node_modules/prismjs/prism.js",
               "node_modules/prismjs/components/prism-json.js",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"
-            ],
-            "baseHref": "./",
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
+            ]
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -74,15 +55,24 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb"
                 }
-              ]
-            },
-            "rare": {
-              "budgets": [
+              ],
+              "fileReplacements": [
                 {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "rare": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -97,33 +87,9 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
                 }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "900kb",
-                  "maximumError": "1.2mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
               ]
             },
             "brc4env": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -139,9 +105,10 @@
                 {
                   "glob": "*",
                   "input": "src/assets/brc4env",
+                  "followSymlinks": true,
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
-                },
-                "src/assets"
+                }
               ]
             },
             "brc4env-production": {
@@ -155,40 +122,17 @@
                   "with": "src/environments/rare-with-basket.prod.ts"
                 }
               ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "assets": [
                 {
                   "glob": "*",
                   "input": "src/assets/brc4env",
+                  "followSymlinks": true,
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
-                },
-                "src/assets"
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "900kb",
-                  "maximumError": "1.2mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
                 }
               ]
             },
             "wheatis": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -205,9 +149,10 @@
                 {
                   "glob": "*",
                   "input": "src/assets/wheatis",
+                  "followSymlinks": true,
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
-                },
-                "src/assets"
+                }
               ]
             },
             "wheatis-production": {
@@ -217,14 +162,6 @@
                   "with": "src/environments/environment.wheatis.prod.ts"
                 }
               ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "baseHref": "./",
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/wheatis/"
@@ -234,19 +171,9 @@
                 {
                   "glob": "*",
                   "input": "src/assets/wheatis",
+                  "followSymlinks": true,
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
-                },
-                "src/assets"
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "900kb",
-                  "maximumError": "1.2mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
                 }
               ]
             },
@@ -267,19 +194,9 @@
                 {
                   "glob": "*",
                   "input": "src/assets/data-discovery",
+                  "followSymlinks": true,
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
-                },
-                "src/assets"
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "900kb",
-                  "maximumError": "1.2mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
                 }
               ]
             },
@@ -290,14 +207,6 @@
                   "with": "src/environments/environment.data-discovery.prod.ts"
                 }
               ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "baseHref": "./",
               "stylePreprocessorOptions": {
                 "includePaths": [
                   "src/assets/data-discovery/"
@@ -307,60 +216,53 @@
                 {
                   "glob": "*",
                   "input": "src/assets/data-discovery",
+                  "followSymlinks": true,
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
-                },
-                "src/assets"
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "900kb",
-                  "maximumError": "1.2mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
                 }
               ]
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "data-discovery-frontend:build:rare",
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "production": {
               "browserTarget": "data-discovery-frontend:build:production"
             },
+            "development": {
+              "browserTarget": "data-discovery-frontend:build:development"
+            },
             "rare": {
-              "browserTarget": "data-discovery-frontend:build:rare"
+              "browserTarget": "data-discovery-frontend:build:development,rare"
             },
             "rare-production": {
-              "browserTarget": "data-discovery-frontend:build:rare-production"
+              "browserTarget": "data-discovery-frontend:build:production,rare-production"
             },
             "brc4env": {
-              "browserTarget": "data-discovery-frontend:build:brc4env"
+              "browserTarget": "data-discovery-frontend:build:development,brc4env"
             },
             "brc4env-production": {
-              "browserTarget": "data-discovery-frontend:build:brc4env-production"
+              "browserTarget": "data-discovery-frontend:build:production,brc4env-production"
             },
             "wheatis": {
-              "browserTarget": "data-discovery-frontend:build:wheatis"
+              "browserTarget": "data-discovery-frontend:build:development,wheatis"
             },
             "wheatis-production": {
-              "browserTarget": "data-discovery-frontend:build:wheatis-production"
+              "browserTarget": "data-discovery-frontend:build:production,wheatis-production"
             },
             "data-discovery": {
-              "browserTarget": "data-discovery-frontend:build:data-discovery"
+              "browserTarget": "data-discovery-frontend:build:development,data-discovery"
             },
             "data-discovery-production": {
-              "browserTarget": "data-discovery-frontend:build:data-discovery-production"
+              "browserTarget": "data-discovery-frontend:build:production,data-discovery-production"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
