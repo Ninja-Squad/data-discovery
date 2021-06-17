@@ -1,0 +1,1 @@
+../../../../HOW-TO-JOIN-RARe-FEDERATION.md

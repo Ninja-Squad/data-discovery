@@ -130,25 +130,25 @@
                   "with": "src/environments/environment.brc4env.ts"
                 },
                 {
-                  "replace": "src/assets/rare/band.jpg",
-                  "with": "src/assets/rare/Bandeau-BRC4env.jpg"
-                },
-                {
                   "replace": "src/environments/rare-no-basket.ts",
                   "with": "src/environments/rare-with-basket.ts"
                 }
               ],
-              "baseHref": "/brc4env-dev/"
+              "baseHref": "/brc4env-dev/",
+              "assets": [
+                {
+                  "glob": "*",
+                  "input": "src/assets/brc4env",
+                  "output": "/assets"
+                },
+                "src/assets"
+              ]
             },
             "brc4env-production": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.brc4env.prod.ts"
-                },
-                {
-                  "replace": "src/assets/rare/band.jpg",
-                  "with": "src/assets/rare/Bandeau-BRC4env.jpg"
                 },
                 {
                   "replace": "src/environments/rare-no-basket.ts",
@@ -162,6 +162,14 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "assets": [
+                {
+                  "glob": "*",
+                  "input": "src/assets/brc4env",
+                  "output": "/assets"
+                },
+                "src/assets"
+              ],
               "budgets": [
                 {
                   "type": "initial",
