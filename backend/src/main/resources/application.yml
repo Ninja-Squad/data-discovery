@@ -1,4 +1,11 @@
 spring:
+  config:
+    import: 'optional:configserver:'
+
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://localhost:8888}
+
   security:
     user:
       name: rare
@@ -32,22 +39,25 @@ server:
       - text/css
       - text/markdown
 
-logging.level:
-  root: ERROR
-    # tracer: TRACE
-    # Above allows for logging curl queries and responses to/from ES.
-    # Need to add this header to curl: `-H "Content-Type: application/json"`
-  # org.elasticsearch.client: TRACE # to log Elasticsearch queries
-  org.springframework:
-    boot.web.embedded.tomcat.TomcatWebServer: INFO
-    web.client.RestTemplate: DEBUG
+logging:
+  level:
+    root: ERROR
+      # tracer: TRACE
+      # Above allows for logging curl queries and responses to/from ES.
+      # Need to add this header to curl: `-H "Content-Type: application/json"`
+    # org.elasticsearch.client: TRACE # to log Elasticsearch queries
+    org.springframework:
+      boot.web.embedded.tomcat.TomcatWebServer: INFO
+      web.client.RestTemplate: DEBUG
 
 ---
 spring:
   config:
     activate:
       on-profile: rare-app
-  cloud.config.name: rare
+  cloud:
+    config:
+      name: rare
   security.user:
       name: rare
       password: f01a7031fc17
@@ -62,11 +72,12 @@ server:
 
 ---
 spring:
-  spring:
+  config:
+    activate:
+      on-profile: brc4env-app
+  cloud:
     config:
-      activate:
-        on-profile: brc4env-app
-  cloud.config.name: brc4env
+      name: brc4env
   security.user:
     name: rare
     password: f01a7031fc17
@@ -89,11 +100,12 @@ server:
 
 ---
 spring:
-  spring:
+  config:
+    activate:
+      on-profile: wheatis-app
+  cloud:
     config:
-      activate:
-        on-profile: wheatis-app
-  cloud.config.name: wheatis
+      name: wheatis
   security.user:
       name: wheatis
       password: f01a7031fc17
@@ -108,11 +120,12 @@ server:
 
 ---
 spring:
-  spring:
+  config:
+    activate:
+      on-profile: data-discovery-app
+  cloud:
     config:
-      activate:
-        on-profile: data-discovery-app
-  cloud.config.name: data-discovery
+      name: data-discovery
   security.user:
       name: data-discovery
       password: f01a7031fc17
