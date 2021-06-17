@@ -1,0 +1,43 @@
+{
+    "number_of_replicas": 0,
+    "number_of_shards": 8,
+    "refresh_interval": "30s",
+    "analysis": {
+        "filter": {
+            "autophrase_filter": {
+                "type": "synonym",
+                "synonyms_path": "analysis/synonyms/all_autophrases.txt"
+            },
+            "synonyms_filter": {
+                "type": "synonym",
+                "tokenizer": "keyword",
+                "synonyms_path" : "analysis/synonyms/all_synonyms.txt"
+            }
+        },
+        "analyzer": {
+            "custom_suggestion_analyzer": {
+                "type": "custom",
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase"
+                ]
+            },
+            "syn_text": {
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "asciifolding",
+                    "autophrase_filter",
+                    "synonyms_filter"
+                ]
+            },
+            "ascii_folding": {
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "asciifolding"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,101 @@
+{
+    "properties": {
+        "name": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "description": {
+            "analyzer": "ascii_folding",
+            "type": "text",
+            "fields": {
+                "synonyms": {
+                    "type": "text",
+                    "analyzer": "syn_text"
+                }
+            }
+        },
+        "entryType": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "databaseName": {
+            "type": "text",
+            "analyzer": "french",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "url": {
+            "type": "text",
+            "index": false,
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "species": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "annotationId": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "annotationName": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "ancestors": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256,
+                    "null_value": "NULL"
+                }
+            }
+        },
+        "node": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        }
+    }
+}

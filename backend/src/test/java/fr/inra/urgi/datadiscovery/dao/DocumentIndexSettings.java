@@ -14,7 +14,6 @@ public class DocumentIndexSettings {
     public static Settings createSettings(String profile) {
         try {
             String appName = profile.substring(0, profile.lastIndexOf("-"));
-            appName = profile.equals("data-discovery-app") ? "wheatis" : appName;
             return Settings.builder().loadFromStream(
                     appName + "/settings.json",
                     DocumentIndexSettings.class.getResourceAsStream(appName + "/settings.json"),

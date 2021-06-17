@@ -19,7 +19,7 @@ USAGE:
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the indexing load on several hosts
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
-	-app           the name of the targeted application: rare, wheatis or data-discovery
+	-app           the name of the targeted application: rare, wheatis or faidare
 	-env           the environment name of the targeted application (dev, beta, prod ...)
 	--local        use local environment for RARe application (by default) and ignore all Elasticsearch related options (env, host, port)
 	--no-data      does not index data, only create indices and aliases

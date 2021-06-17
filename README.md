@@ -104,7 +104,7 @@ The application will be available on:
 - <http://localhost:4000/rare-dev> for RARe (runs with: `yarn start:rare` or simply `yarn start`)
 - <http://localhost:4000/rare-dev> for RARe with basket (runs with: `yarn start:brc4env`)
 - <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `yarn start:wheatis`)
-- <http://localhost:4200/data-discovery-dev> for DataDiscovery (runs with: `yarn start:data-discovery`)
+- <http://localhost:4200/faidare-dev> for Faidare (runs with: `yarn start:faidare`)
 
 See [./frontend/package.json (scripts section)](./frontend/package.json) for other yarn commands.
 
@@ -134,14 +134,14 @@ This will build a standalone jar at `backend/build/libs/`, that you can run with
 java -jar backend/build/libs/rare.jar
 java -jar backend/build/libs/brc4env.jar
 java -jar backend/build/libs/wheatis.jar
-java -jar backend/build/libs/data-discovery.jar
+java -jar backend/build/libs/faidare.jar
 ```
 
 And the full app running on:
 
 - <http://localhost:8080/rare-dev>
 - <http://localhost:8180/wheatis-dev>
-- <http://localhost:8280/data-discovery-dev>
+- <http://localhost:8280/faidare-dev>
 - <http://localhost:8580/brc4env-dev>
 
 ## CI
@@ -245,7 +245,7 @@ To create the index and its aliases execute the script below for local dev envir
 ./scripts/index.sh -app rare|wheatis|data-discovery --local
 ```
 
-The -app parameter will trigger a harvest of the resources stored in the Git LFS directories `data/rare`, `data/wheatis` and `data/data-discovery` respectively.
+The -app parameter will trigger a harvest of the resources stored in the Git LFS directories `data/rare`, `data/wheatis` and `data/faidare` respectively.
 
 ## Indices and aliases
 
@@ -331,13 +331,13 @@ See the `backend/src/main/resources/application.yml` file for details.
 You can adapt the elasticsearch index used with the following parameter
 
 ```sh
-java -jar backend/build/libs/data-discovery.jar --data-discovery.elasticsearch-prefix="data-discovery-staging-"
+java -jar backend/build/libs/faidare.jar --data-discovery.elasticsearch-prefix="faidare-staging-"
 ```
 
 For debuging:
 
 ```sh
-java -jar backend/build/libs/data-discovery.jar --debug
+java -jar backend/build/libs/faidare.jar --debug
 ```
 
 ## Configuration

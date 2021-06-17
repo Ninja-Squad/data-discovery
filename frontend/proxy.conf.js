@@ -17,8 +17,8 @@ const PROXY_CONFIG = [
   },
   {
     context: [
-      "/data-discovery-dev/api",
-      "/data-discovery-dev/actuator"
+      "/faidare-dev/api",
+      "/faidare-dev/actuator"
     ],
     target: "http://localhost:8280",
     secure: false

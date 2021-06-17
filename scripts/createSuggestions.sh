@@ -35,7 +35,7 @@ USAGE:
 	$0 -app <application name> [-h|--help]
 
 PARAMS:
-	-app           the application for which to create the suggestions: rare, wheatis or data-discovery
+	-app           the application for which to create the suggestions: rare, wheatis or faidare
 	-h or --help   print this help
 
 EOF
@@ -95,6 +95,7 @@ BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
 FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
 
 WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
+FAIDARE_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
 RARE_FIELDS_TO_EXTRACT=".pillar , .databaseSource , .name , .domain, .taxon, .family, .genus, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect, [.species]"
 
 if [ "${APP_NAME}" == "rare" ] ; then
@@ -105,10 +106,10 @@ elif [ "${APP_NAME}" == "brc4env" ]; then
     DATADIR=$(readlink -f "$BASEDIR/../data/rare")
 elif [ "${APP_NAME}" == "wheatis" ]; then
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
-elif [ "${APP_NAME}" == "data-discovery" ]; then
-    FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
+elif [ "${APP_NAME}" == "faidare" ]; then
+    FIELDS_TO_EXTRACT="${FAIDARE_FIELDS_TO_EXTRACT}"
 else
-    echo -e "${RED_BOLD}ERROR: app value is invalid, please specify one among following: ${GREEN}rare${RED}, ${GREEN}brc4env${RED}, ${GREEN}wheatis${RED}, or ${GREEN}data-discovery${RED}.${NC}" && help && exit 5
+    echo -e "${RED_BOLD}ERROR: app value is invalid, please specify one among following: ${GREEN}rare${RED}, ${GREEN}brc4env${RED}, ${GREEN}wheatis${RED}, or ${GREEN}faidare${RED}.${NC}" && help && exit 5
 fi
 
 [ ! -d "${DATADIR}/suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/suggestions"

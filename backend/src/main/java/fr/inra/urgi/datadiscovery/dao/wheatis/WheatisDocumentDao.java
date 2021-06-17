@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Profile;
  * DAO for {@link WheatisDocument}
  * @author JB Nizet
  */
-@Profile({AppProfile.WHEATIS, AppProfile.DATADISCOVERY})
+@Profile({AppProfile.WHEATIS})
 public interface WheatisDocumentDao extends DocumentDao<WheatisDocument>, WheatisDocumentDaoCustom {
 }

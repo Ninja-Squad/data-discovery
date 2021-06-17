@@ -1,4 +1,9 @@
-package fr.inra.urgi.datadiscovery.domain.wheatis;
+package fr.inra.urgi.datadiscovery.domain.faidare;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -6,25 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 
-import java.io.IOException;
-import java.util.Collections;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
- * Unit test to check that a {@link WheatisDocument} can correctly be marshalled/unmarshaleld to/from JSON
+ * Unit test to check that a {@link FaidareDocument} can correctly be marshalled/unmarshaleld to/from JSON
  * @author JB Nizet
  */
 @JsonTest
-class WheatisDocumentTest {
+class FaidareDocumentTest {
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
     void shouldMarshallAndUnMarshall() throws IOException {
-        WheatisDocument document =
-            WheatisDocument.builder()
+        FaidareDocument document =
+            FaidareDocument.builder()
                            .withName("14_mtDNA")
                            .withEntryType("Marker")
                            .withDatabaseName("Evoltree")
@@ -38,7 +38,7 @@ class WheatisDocumentTest {
                                   .withFeatures(SerializationFeature.INDENT_OUTPUT)
                                   .writeValueAsString(document);
 
-        WheatisDocument unmarshalled = objectMapper.readValue(json, WheatisDocument.class);
+        FaidareDocument unmarshalled = objectMapper.readValue(json, FaidareDocument.class);
 
         assertThat(unmarshalled).isEqualTo(document);
     }
@@ -55,7 +55,7 @@ class WheatisDocumentTest {
             "    \"name\": \"14_mtDNA\"\n" +
             "  }";
 
-        WheatisDocument document = objectMapper.readValue(json, WheatisDocument.class);
+        FaidareDocument document = objectMapper.readValue(json, FaidareDocument.class);
 
         assertThat(document.getSpecies()).containsExactly("Pinus banksiana");
     }
@@ -72,7 +72,7 @@ class WheatisDocumentTest {
             "    \"name\": \"14_mtDNA\"\n" +
             "  }";
 
-        WheatisDocument document = objectMapper.readValue(json, WheatisDocument.class);
+        FaidareDocument document = objectMapper.readValue(json, FaidareDocument.class);
 
         assertThat(document.getSpecies()).isEmpty();
     }

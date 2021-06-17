@@ -84,7 +84,7 @@ spring:
 
 ## Below properties should not be enabled here because it makes tests failing.
 ## But they may be enabled in cloud-config server if relevant to apply the 
-## filter (for brc4env) or not (for main rare application)
+## filter (for brc4env) or not (for main rare application)
 # rare:
 #   implicit-terms:
 #     PILLAR:
@@ -122,18 +122,18 @@ server:
 spring:
   config:
     activate:
-      on-profile: data-discovery-app
+      on-profile: faidare-app
   cloud:
     config:
-      name: data-discovery
+      name: faidare
   security.user:
-      name: data-discovery
+      name: faidare
       password: f01a7031fc17
 
 data-discovery:
-  elasticsearch-prefix: 'data-discovery-dev-'
+  elasticsearch-prefix: 'faidare-dev-'
 
 server:
   port: 8280
   servlet:
-    context-path: /data-discovery-dev
+    context-path: /faidare-dev

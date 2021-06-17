@@ -167,9 +167,8 @@ test-lint-build:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
  script:
-  - ./gradlew --parallel test jacocoTestReport
-  - ./gradlew :frontend:lint
-  - ./gradlew assemble -Papp=${DATADISCOVERY_APP_NAME}
+  - ./gradlew --parallel check jacocoTestReport
+  - ./gradlew assemble -Papp=faidare
 #  - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
 #  - export PATH="/tmp/node/:$PATH"
 #  - ./gradlew sonarqube -x test
@@ -211,7 +210,7 @@ test-lint-build:
 #   - backend/src/**/*
 #   - frontend/**/*
 # interruptible: true
-
+#
 #.build-app: &build_app
 # # Hidden job which serves as a template for following
 # # jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
@@ -261,9 +260,9 @@ test-lint-build:
 # <<: *build_app           # Merge the contents of the 'build_app' alias
 # when: manual # for speeding up pipelines during Ninja Squad devs
 #
-#build-data-discovery:
+#build-faidare:
 # variables:
-#  APP_NAME: ${DATADISCOVERY_APP_NAME}
+#  APP_NAME: ${FAIDARE_APP_NAME}
 # <<: *build_app           # Merge the contents of the 'build_app' alias
 #
 #.restart-config-server: &restart_config_server
@@ -465,11 +464,11 @@ test-lint-build:
 #  ES_PORT: ${ES_PROD_PORT}
 #  APP_CONTEXT: ${APP_NAME}
 #
-#.variables-data-discovery-beta-openstack: &variables-data-discovery-beta-openstack
+#.variables-faidare-beta-openstack: &variables-faidare-beta-openstack
 # variables:
 #  ENV: beta
-#  APP_NAME: data-discovery
-#  APP_PORT: ${BETA_DATADISCOVERY_PORT}
+#  APP_NAME: faidare
+#  APP_PORT: ${BETA_FAIDARE_PORT}
 #  DATA_DIR: ${APP_NAME}
 #  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
 #  SERVER_USER: ${SERVER_USER_OPENSTACK}
@@ -478,11 +477,11 @@ test-lint-build:
 #  ES_PORT: ${ES_DEV_PORT}
 #  APP_CONTEXT: ${APP_NAME}-${ENV}
 #
-#.variables-data-discovery-staging-openstack: &variables-data-discovery-staging-openstack
+#.variables-faidare-staging-openstack: &variables-faidare-staging-openstack
 # variables:
 #  ENV: staging
-#  APP_NAME: data-discovery
-#  APP_PORT: ${STAGING_DATADISCOVERY_PORT}
+#  APP_NAME: faidare
+#  APP_PORT: ${STAGING_FAIDARE_PORT}
 #  DATA_DIR: ${APP_NAME}
 #  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
 #  SERVER_USER: ${SERVER_USER_OPENSTACK}
@@ -491,32 +490,32 @@ test-lint-build:
 #  ES_PORT: ${ES_DEV_PORT}
 #  APP_CONTEXT: ${APP_NAME}-${ENV}
 #
-#.variables-data-discovery-prod-proxmox: &variables-data-discovery-prod-proxmox
+#.variables-faidare-prod-proxmox: &variables-faidare-prod-proxmox
 # variables:
 #  ENV: prod
-#  APP_NAME: data-discovery
-#  APP_PORT: ${PROD_DATADISCOVERY_PORT}
+#  APP_NAME: faidare
+#  APP_PORT: ${PROD_FAIDARE_PORT}
 #  DATA_DIR: ${APP_NAME}
 #  SERVER_IP: ${SERVER_IP_PROXMOX}
 #  SERVER_USER: ${SERVER_USER_PROXMOX}
 #  ES_HOST: ${ES_PROD_HOST}
 #  ES_HOSTS: ${ES_PROD_HOSTS}
 #  ES_PORT: ${ES_PROD_PORT}
-#  APP_CONTEXT: data-discovery
+#  APP_CONTEXT: faidare
 #
 ## ALPHA
-#.variables-data-discovery-prod-openstack: &variables-data-discovery-prod-openstack
+#.variables-faidare-prod-openstack: &variables-faidare-prod-openstack
 # variables:
 #  ENV: prod
-#  APP_NAME: data-discovery
-#  APP_PORT: ${PROD_DATADISCOVERY_PORT}
+#  APP_NAME: faidare
+#  APP_PORT: ${PROD_FAIDARE_PORT}
 #  DATA_DIR: ${APP_NAME}
 #  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
 #  SERVER_USER: ${SERVER_USER_OPENSTACK}
 #  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  ES_PORT: ${ES_PROD_PORT}
-#  APP_CONTEXT: data-discovery
+#  APP_CONTEXT: faidare
 #
 #deploy-rare-to-beta-openstack:
 # stage: deploy-beta
@@ -692,11 +691,11 @@ test-lint-build:
 # allow_failure: false
 # needs: ["build-wheatis"]
 #
-#deploy-data-discovery-to-beta-openstack:
+#deploy-faidare-to-beta-openstack:
 # stage: deploy-beta
 # tags:
 #  - openstack
-# <<: *variables-data-discovery-beta-openstack
+# <<: *variables-faidare-beta-openstack
 # <<: *deploy_to_vm_openstack
 # only:
 #  changes:
@@ -705,14 +704,14 @@ test-lint-build:
 #  refs:
 #   - merge_requests
 # allow_failure: false
-# needs: ["build-data-discovery"]
+# needs: ["build-faidare"]
 # when: manual # for speeding up pipelines during Ninja Squad devs
 #
-#deploy-data-discovery-to-staging-openstack:
+#deploy-faidare-to-staging-openstack:
 # stage: deploy-staging
 # tags:
 #  - openstack
-# <<: *variables-data-discovery-staging-openstack
+# <<: *variables-faidare-staging-openstack
 # <<: *deploy_to_vm_openstack
 # only:
 #  changes:
@@ -722,11 +721,11 @@ test-lint-build:
 #   - merge_requests
 #   - master
 # when: manual
-# needs: ["build-data-discovery"]
+# needs: ["build-faidare"]
 #
-#deploy-data-discovery-to-prod-proxmox:
+#deploy-faidare-to-prod-proxmox:
 # stage: deploy-production
-# <<: *variables-data-discovery-prod-proxmox
+# <<: *variables-faidare-prod-proxmox
 # <<: *deploy_to_vm_proxmox
 # only:
 #  changes:
@@ -736,14 +735,14 @@ test-lint-build:
 #   - master
 # when: manual
 # allow_failure: false
-# needs: ["build-data-discovery"]
+# needs: ["build-faidare"]
 #
 ## ALPHA
-#deploy-data-discovery-to-prod-openstack:
+#deploy-faidare-to-prod-openstack:
 # stage: deploy-production
 # tags:
 #  - openstack
-# <<: *variables-data-discovery-prod-openstack
+# <<: *variables-faidare-prod-openstack
 # <<: *deploy_to_vm_openstack
 # only:
 #  changes:
@@ -753,7 +752,7 @@ test-lint-build:
 #   - master
 # when: manual
 # allow_failure: false
-# needs: ["build-data-discovery"]
+# needs: ["build-faidare"]
 #
 #.data-integration-proxmox: &data-integration-proxmox
 # # do not retry to avoid overloading the Elasticsearch cluster
@@ -944,31 +943,31 @@ test-lint-build:
 #  refs:
 #   - master
 #
-#data-integration-data-discovery-beta-openstack:
+#data-integration-faidare-beta-openstack:
 # stage: data-integration-beta
 # tags:
 #  - openstack
-# <<: *variables-data-discovery-beta-openstack
+# <<: *variables-faidare-beta-openstack
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/data-discovery/*.json.gz
-#   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
+#   - data/faidare/*.json.gz
+#   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
 #  refs:
 #   - merge_requests
 #
-#data-integration-data-discovery-staging-openstack:
+#data-integration-faidare-staging-openstack:
 # stage: data-integration-staging
 # tags:
 #  - openstack
-# <<: *variables-data-discovery-staging-openstack
+# <<: *variables-faidare-staging-openstack
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/data-discovery/*.json.gz
-#   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
+#   - data/faidare/*.json.gz
+#   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
 #  refs:
@@ -976,30 +975,30 @@ test-lint-build:
 #   - master
 # when: manual
 #
-#data-integration-data-discovery-prod-proxmox:
+#data-integration-faidare-prod-proxmox:
 # stage: data-integration-production
-# <<: *variables-data-discovery-prod-proxmox
+# <<: *variables-faidare-prod-proxmox
 # <<: *data-integration-proxmox
 # only:
 #  changes:
-#   - data/data-discovery/*.json.gz
-#   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
+#   - data/faidare/*.json.gz
+#   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
 #  refs:
 #   - master
 #
 ## ALPHA
-#data-integration-data-discovery-prod-openstack:
+#data-integration-faidare-prod-openstack:
 # stage: data-integration-production
 # tags:
 #  - openstack
-# <<: *variables-data-discovery-prod-openstack
+# <<: *variables-faidare-prod-openstack
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/data-discovery/*.json.gz
-#   - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
+#   - data/faidare/*.json.gz
+#   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
 #  refs:

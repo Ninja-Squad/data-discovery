@@ -18,7 +18,7 @@ USAGE:
 PARAMS:
 	-host          the host name of the targeted Elasticsearch endpoint
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
-	-app           the name of the targeted application: rare, wheatis or data-discovery
+	-app           the name of the targeted application: rare, wheatis or faidare
 	-env           the environment name of the targeted application (dev, beta, prod ...)
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
 	-h or --help   print this help
