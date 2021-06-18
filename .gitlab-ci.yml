@@ -54,6 +54,7 @@ build-es-synonyms-docker-image:
  only:
   refs:
    - merge_requests
+   - master
   changes:
    - data/synonyms/*
 
@@ -77,6 +78,7 @@ build-loader-docker-image:
  only:
   refs:
    - merge_requests
+   - master
   changes:
    - scripts/*
    - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
