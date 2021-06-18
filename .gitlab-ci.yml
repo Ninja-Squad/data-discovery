@@ -789,7 +789,6 @@ data-integration-rare-beta-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
- only:
   refs:
    - merge_requests
 
@@ -804,11 +803,10 @@ data-integration-rare-staging-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
- when: manual
- only:
   refs:
    - merge_requests
    - master
+ when: manual
 
 data-integration-rare-prod-proxmox:
  stage: data-integration-production
@@ -819,7 +817,6 @@ data-integration-rare-prod-proxmox:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
- only:
   refs:
    - master
 
@@ -835,7 +832,6 @@ data-integration-rare-prod-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/rare_bulk*.json.gz
    - scripts/*
- only:
   refs:
    - master
 
@@ -850,7 +846,6 @@ data-integration-brc4env-beta-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
- only:
   refs:
    - merge_requests
 
@@ -865,11 +860,10 @@ data-integration-brc4env-staging-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
- when: manual
- only:
   refs:
    - merge_requests
    - master
+ when: manual
 
 # ALPHA
 data-integration-brc4env-prod-openstack:
@@ -883,7 +877,6 @@ data-integration-brc4env-prod-openstack:
    - data/rare/*.json.gz
    - data/rare/suggestions/brc4env_bulk*.json.gz
    - scripts/*
- only:
   refs:
    - master
 
@@ -899,7 +892,6 @@ data-integration-wheatis-beta-openstack:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- only:
   refs:
    - merge_requests
 
@@ -915,11 +907,10 @@ data-integration-wheatis-staging-openstack:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- when: manual
- only:
   refs:
    - merge_requests
    - master
+ when: manual
 
 data-integration-wheatis-prod-proxmox:
  stage: data-integration-production
@@ -931,7 +922,6 @@ data-integration-wheatis-prod-proxmox:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- only:
   refs:
    - master
 
@@ -948,7 +938,6 @@ data-integration-wheatis-prod-openstack:
    - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- only:
   refs:
    - master
 
@@ -964,7 +953,6 @@ data-integration-data-discovery-beta-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- only:
   refs:
    - merge_requests
 
@@ -980,11 +968,10 @@ data-integration-data-discovery-staging-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- when: manual
- only:
   refs:
    - merge_requests
    - master
+ when: manual
 
 data-integration-data-discovery-prod-proxmox:
  stage: data-integration-production
@@ -996,7 +983,6 @@ data-integration-data-discovery-prod-proxmox:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- only:
   refs:
    - master
 
@@ -1013,6 +999,5 @@ data-integration-data-discovery-prod-openstack:
    - data/data-discovery/suggestions/data-discovery_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
- only:
   refs:
    - master
