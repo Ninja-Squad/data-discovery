@@ -191,6 +191,8 @@ test-and-sonarqube:
    - backend/src/**/*
    - frontend/**/*
    - .gitlab-ci.yml
+ interruptible: true
+
 
 lint:
  stage: test
@@ -204,6 +206,7 @@ lint:
   changes:
    - backend/src/**/*
    - frontend/**/*
+ interruptible: true
 
 .build-app: &build_app
  # Hidden job which serves as a template for following
@@ -234,6 +237,7 @@ lint:
    - frontend/**/*
    - build.gradle.kts
    - docker.env
+ interruptible: true
 
 build-rare:
  variables:
@@ -271,6 +275,7 @@ build-data-discovery:
   refs:
    - merge_requests
    - master
+ interruptible: true
 
 restart-config-server-proxmox:
  variables:
@@ -297,15 +302,14 @@ restart-config-server-openstack:
   - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
   # Copy jar to the server
   - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}.jar
-  - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/"
-  # Restarting service with the updated jar and the according Spring profiles enabled
-  - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
+  - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/ ; sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
   - eval $(ssh-agent -k)
   - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
  only:
   refs:
    - merge_requests
    - master
+ interruptible: true
 
 .deploy-to-vm-openstack: &deploy_to_vm_openstack
  tags:
@@ -755,7 +759,7 @@ deploy-data-discovery-to-prod-openstack:
   - git pull origin $CI_COMMIT_REF_NAME
   - git lfs pull -I "data/${DATA_DIR}/*.gz"
   - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
-  - ./scripts/index.sh -host ${ES_HOST} -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
+  - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
  environment:
   # take care that some variables cannot be expanded according to where they are
   # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
@@ -769,26 +773,12 @@ deploy-data-discovery-to-prod-openstack:
   refs:
    - merge_requests
    - master
+ interruptible: true
 
 .data-integration-openstack: &data-integration-openstack
- # do not retry to avoid overloading the Elasticsearch cluster
- retry: 0
- script:
-  # Do fetch of GIT LFS files only for data integration steps for given app
-  - git checkout -f origin/$CI_COMMIT_REF_NAME
-  - git pull origin $CI_COMMIT_REF_NAME
-  - git lfs pull -I "data/${DATA_DIR}/*.gz"
-  - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
-  - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
- environment:
-  # take care that some variables cannot be expanded according to where they are
-  # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
-  name: ${ENV}-${APP_NAME}
-  # DO NOT specify environment's url here if it is already defined in the
-  # Environments settings, it would cause the build not being visible in the
-  # Deployments view because of a known bug:
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
- when: manual
+ tags:
+  - openstack
+ <<: *data-integration-proxmox
 
 data-integration-rare-beta-openstack:
  stage: data-integration-beta
