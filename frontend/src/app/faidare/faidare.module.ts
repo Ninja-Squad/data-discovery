@@ -8,10 +8,6 @@ import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-
 @NgModule({
   imports: [UrgiCommonModule],
   declarations: [FaidareHeaderComponent],
-  exports: [
-    GenericDocumentComponent,
-    GenericSelectAllResultsComponent,
-    FaidareHeaderComponent
-  ]
+  exports: [GenericDocumentComponent, GenericSelectAllResultsComponent, FaidareHeaderComponent]
 })
 export class FaidareModule {}
