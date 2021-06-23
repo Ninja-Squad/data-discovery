@@ -1,3 +1,6 @@
-h1 .small {
-  font-size: 0.8rem;
+@import 'theme';
+
+h1 {
+  font-size: 1.75rem;
+  color: $theme-h1-color;
 }

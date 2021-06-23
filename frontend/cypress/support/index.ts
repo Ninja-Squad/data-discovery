@@ -20,7 +20,10 @@
 // (either in application code, or because of network requests not handled)
 let consoleSpy: Cypress.Agent<sinon.SinonSpy>;
 Cypress.on('window:before:load', win => {
+  // spy on the console
   consoleSpy = cy.spy(win.console, 'error');
+  // also set the language to en
+  Object.defineProperty(win.navigator, 'language', { value: 'en' });
 });
 afterEach(() => {
   // consoleSpy can be null if test failed already in beforeEach
