@@ -27,8 +27,11 @@ public interface AppAggregation {
 
     /**
      * The type of an aggregation. On the server, it's used to know what is the maximum number of buckets to
-     * retrieve. On the client, it's used to know if the aggregation must be displayed using a list of checkbowes to
-     * choose from, or using a typeahead which will allow adding choices among the potentially large number of results
+     * retrieve. On the client, it's used to know if the aggregation must be displayed using a list of checkboxes to
+     * choose from, or using a typeahead which will allow adding choices among the potentially large number of results:
+     * - if the type is LARGE and there are at least 10 buckets, then a typeahead is used
+     * - otherwise, checkboxes are used
+     * So SMALL should really only be used if there is a guarantee that the number of buckets is really small
      */
     public enum Type {
         SMALL(100),

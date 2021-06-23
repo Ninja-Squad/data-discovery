@@ -27,8 +27,7 @@ public abstract class DocumentDaoTest {
     protected ElasticsearchRestTemplate elasticsearchTemplate;
 
     protected void deleteIndex(String physicalIndexName) {
-        boolean deleted = elasticsearchTemplate.indexOps(IndexCoordinates.of(physicalIndexName)).delete();
-        System.out.println(deleted);
+        elasticsearchTemplate.indexOps(IndexCoordinates.of(physicalIndexName)).delete();
     }
 
     protected void createDocumentIndex(String physicalIndexName, String appProfile) {

@@ -20,7 +20,12 @@ public enum FaidareAggregation implements AppAggregation {
     ENTRY_TYPE("entry", "entryType.keyword", LARGE),
     GO_ANNOTATION("annot", "annotationName.keyword", LARGE),
     DATABASE_NAME("db", "databaseName.keyword", LARGE),
-    NODE("node", "node.keyword", SMALL);
+    NODE("node", "node.keyword", SMALL),
+    HOLDING_INSTITUTE("hi", "holdingInstitute.keyword", LARGE),
+    BIOLOGICAL_STATUS("bs", "biologicalStatus.keyword", LARGE),
+    GENETIC_NATURE("gn", "geneticNature.keyword", LARGE),
+    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE),
+    TAXON_GROUP("tg", "taxonGroup.keyword", LARGE);
 
     private final String name;
     private final String field;

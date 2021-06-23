@@ -33,7 +33,12 @@ export const environment = {
     db: 'Database',
     node: 'Data provider',
     species: 'Species',
-    annot: 'Ontology annotation'
+    annot: 'Ontology annotation',
+    hi: 'Holding institute',
+    bs: 'Biological status',
+    gn: 'Genetic nature',
+    coo: 'Country of origin',
+    tg: 'Taxon group'
   }
 };
 
