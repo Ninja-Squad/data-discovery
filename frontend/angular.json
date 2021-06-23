@@ -309,7 +309,8 @@
               "src/**/*.ts",
               "src/**/*.html",
               "cypress/**/*.ts"
-            ]
+            ],
+            "maxWarnings": 0
           }
         },
         "cypress-run": {
