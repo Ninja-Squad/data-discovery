@@ -89,10 +89,9 @@ include::{snippets}/search/highlight/http-response.adoc[]
 
 === Aggregations
 
-In addition to the page of documents, the service can also aggregate the search results.
-To request the aggregations, you must pass an additional `aggregate=true` request parameter.
-The set of properties used to compute aggregations is hard-coded on the server, and is thus always the same:
-`domain`, `biotopeType`, `materialType`, `countryOfOrigin` and `taxon`.
+Besides searching for documents, the service can also provide information about aggregations based on that search.
+The set of properties used to compute aggregations is hard-coded on the server, and is thus always the same
+(`domain`, `biotopeType`, `materialType`, `countryOfOrigin` and `taxon` for RARe).
 
 If you request aggregations, then for each property, an aggregation will be computed and the results will contain
 every distinct value of the property along with the number of matching documents for each distinct value.
@@ -117,19 +116,20 @@ include::{snippets}/search/aggregate/response-fields.adoc[]
 
 === Filtering
 
-Based on the aggregations obtained when searching, you can execute the same search query, but filter the results
-by choosing one or several values for every aggregation.
+Based on the aggregations obtained above, you can execute the same search query (and the same aggregation query),
+but filter the results (or refine the aggregations) by choosing one or several values for every aggregation.
 
-For example, if you want only the search results which have _France_ **or** _Italy_ as their country of origin,
-you can pass the following additional request parameters: `coo=France&coo=Italy`.
+For example, if you want only the search results (or aggregations) which have _France_ **or** _Italy_ as their country
+of origin, you can pass the following additional request parameters: `coo=France&coo=Italy`.
+This is true for the `search` request and the `aggregate` requests.
 
 If you want only the search results which have _France_ **or** _Italy_ as their country of origin, *and* _Plantae_
 as their domain, you can pass the following additional request parameters: `coo=France&coo=Italy&domain=Plantae`.
 
 NOTE: These additional filters are applied *after* the full-text search.
-This means that they will not be highlighted in the description, and more importantly, it means that if you combine
-filters with aggregation (i.e. `aggregate=true`), the aggregations will be computed *before* the filters are applied.
-This is necessary, otherwise there wouldn't be any other value then _Plantae_ in the returned aggregations, and
+This means that they will not be highlighted in the description, and more importantly, it means that if you apply
+filters on an `aggregate` request, the aggregations will be computed *before* the filters are applied.
+This is necessary, otherwise there wouldn't be any other value than _Plantae_ in the returned aggregations, and
 any other country than _France_ and _Italy_, which would prevent you from knowing which additional filters you
 can apply to further refine the query.
 

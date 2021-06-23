@@ -72,10 +72,10 @@ class SearchControllerTest {
     @Test
     void shouldAggregate() throws Exception {
         RareDocument resource = RareDocument.builder()
-                                                          .withId("CFBP 8402")
-                                                          .withName("CFBP 8402")
-                                                          .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
-                                                          .build();
+                                            .withId("CFBP 8402")
+                                            .withName("CFBP 8402")
+                                            .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
+                                            .build();
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
