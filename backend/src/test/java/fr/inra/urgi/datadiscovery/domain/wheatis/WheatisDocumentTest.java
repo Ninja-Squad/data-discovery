@@ -32,6 +32,9 @@ class WheatisDocumentTest {
                            .withUrl("http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1")
                            .withSpecies(Collections.singletonList("Pinus banksiana"))
                            .withNode("URGI")
+                           .withAnnotationId(Collections.singletonList("annotation id 1"))
+                           .withAnnotationName(Collections.singletonList("annotation name 1"))
+                           .withAncestors(Collections.singletonList("ancestors"))
                            .build();
 
         String json = objectMapper.writer()
