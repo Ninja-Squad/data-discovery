@@ -15,7 +15,7 @@ describe('FaidareHeaderComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('h1');
-    expect(title.textContent).toContain('DataDiscovery');
+    expect(title.textContent).toContain('FAIR Data-finder for Agronomic REsearch');
 
     const image = fixture.nativeElement.querySelector('img');
     expect(image).toBeDefined();
