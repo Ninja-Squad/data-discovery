@@ -36,6 +36,11 @@ public final class FaidareDocument implements SearchDocument {
     private final List<String> annotationId;
     private final List<String> annotationName;
     private final List<String> ancestors;
+    private final String holdingInstitute;
+    private final String biologicalStatus;
+    private final String geneticNature;
+    private final String countryOfOrigin;
+    private final String taxonGroup;
 
     @JsonCreator
     @PersistenceConstructor
@@ -49,7 +54,12 @@ public final class FaidareDocument implements SearchDocument {
                            String description,
                            List<String> annotationId,
                            List<String> annotationName,
-                           List<String> ancestors) {
+                           List<String> ancestors,
+                           String holdingInstitute,
+                           String biologicalStatus,
+                           String geneticNature,
+                           String countryOfOrigin,
+                           String taxonGroup) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -61,6 +71,11 @@ public final class FaidareDocument implements SearchDocument {
         this.annotationId = annotationId;
         this.annotationName = annotationName;
         this.ancestors = ancestors;
+        this.holdingInstitute = holdingInstitute;
+        this.biologicalStatus = biologicalStatus;
+        this.geneticNature = geneticNature;
+        this.countryOfOrigin = countryOfOrigin;
+        this.taxonGroup = taxonGroup;
     }
 
     public FaidareDocument(Builder builder) {
@@ -74,7 +89,12 @@ public final class FaidareDocument implements SearchDocument {
              builder.description,
              builder.annotationId,
              builder.annotationName,
-             builder.ancestors);
+             builder.ancestors,
+             builder.holdingInstitute,
+             builder.biologicalStatus,
+             builder.geneticNature,
+             builder.countryOfOrigin,
+             builder.taxonGroup);
     }
 
     @Override
@@ -111,11 +131,37 @@ public final class FaidareDocument implements SearchDocument {
         return description;
     }
 
-    public List<String> getAnnotationId() {return annotationId; }
+    public List<String> getAnnotationId() {
+        return annotationId;
+    }
 
-    public List<String> getAnnotationName() {return annotationName; }
+    public List<String> getAnnotationName() {
+        return annotationName;
+    }
 
-    public List<String> getAncestors() {return ancestors; }
+    public List<String> getAncestors() {
+        return ancestors;
+    }
+
+    public String getHoldingInstitute() {
+        return holdingInstitute;
+    }
+
+    public String getBiologicalStatus() {
+        return biologicalStatus;
+    }
+
+    public String getGeneticNature() {
+        return geneticNature;
+    }
+
+    public String getCountryOfOrigin() {
+        return countryOfOrigin;
+    }
+
+    public String getTaxonGroup() {
+        return taxonGroup;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -133,17 +179,40 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(url, that.url) &&
             Objects.equals(species, that.species) &&
             Objects.equals(node, that.node) &&
-            Objects.equals(description, that.description);
+            Objects.equals(description, that.description) &&
+            Objects.equals(annotationId, that.annotationId) &&
+            Objects.equals(annotationName, that.annotationName) &&
+            Objects.equals(ancestors, that.ancestors) &&
+            Objects.equals(holdingInstitute, that.holdingInstitute) &&
+            Objects.equals(biologicalStatus, that.biologicalStatus) &&
+            Objects.equals(geneticNature, that.geneticNature) &&
+            Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
+            Objects.equals(taxonGroup, that.taxonGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, entryType, databaseName, url, species, node, description);
+        return Objects.hash(id,
+                            name,
+                            entryType,
+                            databaseName,
+                            url,
+                            species,
+                            node,
+                            description,
+                            annotationId,
+                            annotationName,
+                            ancestors,
+                            holdingInstitute,
+                            biologicalStatus,
+                            geneticNature,
+                            countryOfOrigin,
+                            taxonGroup);
     }
 
     @Override
     public String toString() {
-        return "WheatisGeneticResource{" +
+        return "FaidareDocument{" +
             "id='" + id + '\'' +
             ", name='" + name + '\'' +
             ", entryType='" + entryType + '\'' +
@@ -152,6 +221,14 @@ public final class FaidareDocument implements SearchDocument {
             ", species=" + species +
             ", node='" + node + '\'' +
             ", description='" + description + '\'' +
+            ", annotationId=" + annotationId +
+            ", annotationName=" + annotationName +
+            ", ancestors=" + ancestors +
+            ", holdingInstitute='" + holdingInstitute + '\'' +
+            ", biologicalStatus='" + biologicalStatus + '\'' +
+            ", geneticNature='" + geneticNature + '\'' +
+            ", countryOfOrigin='" + countryOfOrigin + '\'' +
+            ", taxonGroup='" + taxonGroup + '\'' +
             '}';
     }
 
@@ -175,7 +252,12 @@ public final class FaidareDocument implements SearchDocument {
         private String description;
         private List<String> annotationId;
         private List<String> annotationName;
-        public List<String> ancestors;
+        private List<String> ancestors;
+        private String holdingInstitute;
+        private String biologicalStatus;
+        private String geneticNature;
+        private String countryOfOrigin;
+        private String taxonGroup;
 
         private Builder() {
         }
@@ -192,6 +274,11 @@ public final class FaidareDocument implements SearchDocument {
             this.annotationId = document.getAnnotationId();
             this.annotationName = document.getAnnotationName();
             this.ancestors = document.getAncestors();
+            this.holdingInstitute = document.getHoldingInstitute();
+            this.biologicalStatus = document.getBiologicalStatus();
+            this.geneticNature = document.getGeneticNature();
+            this.countryOfOrigin = document.getCountryOfOrigin();
+            this.taxonGroup = document.getTaxonGroup();
         }
 
         public Builder withId(String id) {
@@ -246,6 +333,31 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withAncestors(List<String> ancestors) {
             this.ancestors = ancestors;
+            return this;
+        }
+
+        public Builder withHoldingInstitute(String holdingInstitute) {
+            this.holdingInstitute = holdingInstitute;
+            return this;
+        }
+
+        public Builder withBiologicalStatus(String biologicalStatus) {
+            this.biologicalStatus = biologicalStatus;
+            return this;
+        }
+
+        public Builder withGeneticNature(String geneticNature) {
+            this.geneticNature = geneticNature;
+            return this;
+        }
+
+        public Builder withCountryOfOrigin(String countryOfOrigin) {
+            this.countryOfOrigin = countryOfOrigin;
+            return this;
+        }
+
+        public Builder withTaxonGroup(String taxonGroup) {
+            this.taxonGroup = taxonGroup;
             return this;
         }
 

@@ -119,6 +119,31 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
     }
 
     @Test
+    void shouldSearchOnHoldingInstitute() {
+        shouldSearch(FaidareDocument.Builder::withHoldingInstitute);
+    }
+
+    @Test
+    void shouldSearchOnBiologicalStatus() {
+        shouldSearch(FaidareDocument.Builder::withBiologicalStatus);
+    }
+
+    @Test
+    void shouldSearchOnGeneticNature() {
+        shouldSearch(FaidareDocument.Builder::withGeneticNature);
+    }
+
+    @Test
+    void shouldSearchOnCountryOfOrigin() {
+        shouldSearch(FaidareDocument.Builder::withCountryOfOrigin);
+    }
+
+    @Test
+    void shouldSearchOnTaxonGroup() {
+        shouldSearch(FaidareDocument.Builder::withTaxonGroup);
+    }
+
+    @Test
     void shouldNotSearchOnUrl() {
         FaidareDocument document =
             FaidareDocument.builder().withUrl("foo bar baz").build();

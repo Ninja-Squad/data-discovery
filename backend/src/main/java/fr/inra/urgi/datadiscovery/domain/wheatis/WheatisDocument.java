@@ -111,11 +111,17 @@ public final class WheatisDocument implements SearchDocument {
         return description;
     }
 
-    public List<String> getAnnotationId() {return annotationId; }
+    public List<String> getAnnotationId() {
+        return annotationId;
+    }
 
-    public List<String> getAnnotationName() {return annotationName; }
+    public List<String> getAnnotationName() {
+        return annotationName;
+    }
 
-    public List<String> getAncestors() {return ancestors; }
+    public List<String> getAncestors() {
+        return ancestors;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -133,17 +139,30 @@ public final class WheatisDocument implements SearchDocument {
             Objects.equals(url, that.url) &&
             Objects.equals(species, that.species) &&
             Objects.equals(node, that.node) &&
-            Objects.equals(description, that.description);
+            Objects.equals(description, that.description) &&
+            Objects.equals(annotationId, that.annotationId) &&
+            Objects.equals(annotationName, that.annotationName) &&
+            Objects.equals(ancestors, that.ancestors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, entryType, databaseName, url, species, node, description);
+        return Objects.hash(id,
+                            name,
+                            entryType,
+                            databaseName,
+                            url,
+                            species,
+                            node,
+                            description,
+                            annotationId,
+                            annotationName,
+                            ancestors);
     }
 
     @Override
     public String toString() {
-        return "WheatisGeneticResource{" +
+        return "WheatisDocument{" +
             "id='" + id + '\'' +
             ", name='" + name + '\'' +
             ", entryType='" + entryType + '\'' +
@@ -152,6 +171,9 @@ public final class WheatisDocument implements SearchDocument {
             ", species=" + species +
             ", node='" + node + '\'' +
             ", description='" + description + '\'' +
+            ", annotationId=" + annotationId +
+            ", annotationName=" + annotationName +
+            ", ancestors=" + ancestors +
             '}';
     }
 
@@ -175,7 +197,7 @@ public final class WheatisDocument implements SearchDocument {
         private String description;
         private List<String> annotationId;
         private List<String> annotationName;
-        public List<String> ancestors;
+        private List<String> ancestors;
 
         private Builder() {
         }

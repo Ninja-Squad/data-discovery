@@ -30,7 +30,12 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
         "entryType",
         "databaseName",
         "node",
-        "species"
+        "species",
+        "holdingInstitute",
+        "biologicalStatus",
+        "geneticNature",
+        "countryOfOrigin",
+        "taxonGroup"
     ).collect(Collectors.toSet()));
 
     private static final PillarAggregationDescriptor PILLAR_AGGREGATION_DESCRIPTOR =
