@@ -121,10 +121,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
         List<String> annotIds = new ArrayList<String>();
         Pattern pattern = Pattern.compile("\\(\\w{2,6}:\\d{7}\\)$");
         for (AppAggregation term : refinements.getTerms()) {
-            if(term.getName().equals("annot")) {
-                Set<String> annotRefinments = refinements.getRefinementsForTerm(term);
-                for (String annotRefinment : annotRefinments) {
-                    Matcher matcher = pattern.matcher(annotRefinment);
+            if (term.getName().equals("annot")) {
+                Set<String> annotRefinements = refinements.getRefinementsForTerm(term);
+                for (String annotRefinement : annotRefinements) {
+                    Matcher matcher = pattern.matcher(annotRefinement);
                     if (matcher.find()) {
                         annotIds.add(matcher.group(0).replace("(","").replace(")",""));
                     }
@@ -151,13 +151,8 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
             refinementQuery.must(createRefinementQuery(implicitRefinements, term, descendants));
         }
 
-        // this allows avoiding to get back the suggestions field in the found documents, since we don't care
-        // about them, and they're large
-        SourceFilter sourceFilter = new FetchSourceFilterBuilder().withExcludes(SUGGESTIONS_FIELD).build();
-
         return new NativeSearchQueryBuilder()
             .withQuery(fullTextQuery)
-            .withSourceFilter(sourceFilter)
             .withFilter(refinementQuery)
             .withPageable(page);
     }
