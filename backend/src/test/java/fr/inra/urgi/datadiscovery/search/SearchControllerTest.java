@@ -6,11 +6,14 @@ import java.util.Collections;
 import java.util.List;
 
 import fr.inra.urgi.datadiscovery.config.SecurityConfig;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.dao.faidare.FaidareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregation;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
+import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.Test;
@@ -49,10 +52,10 @@ class SearchControllerTest {
     @Test
     void shouldSearch() throws Exception {
         RareDocument resource = RareDocument.builder()
-                                                          .withId("CFBP 8402")
-                                                          .withName("CFBP 8402")
-                                                          .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
-                                                          .build();
+                                            .withId("CFBP 8402")
+                                            .withName("CFBP 8402")
+                                            .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
+                                            .build();
 
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
@@ -93,7 +96,7 @@ class SearchControllerTest {
         // return aggregations in a random order
         Collections.shuffle(aggregations);
 
-        when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, false))
+        when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, AggregationSelection.ALL, false))
             .thenReturn(new AggregatedPageImpl<>(
                 Arrays.asList(resource),
                 pageRequest,

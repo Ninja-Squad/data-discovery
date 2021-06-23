@@ -10,6 +10,7 @@ import java.util.function.BiConsumer;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
@@ -279,7 +280,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.aggregate("foo", SearchRefinements.EMPTY, false);
+            documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
@@ -352,7 +353,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.aggregate("vitis", SearchRefinements.EMPTY, false);
+            documentDao.aggregate("vitis", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms material = result.getAggregations().get(rareAggregation.getName());
@@ -378,7 +379,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.aggregate("vitis",SearchRefinements.EMPTY, false);
+            documentDao.aggregate("vitis",SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms material = result.getAggregations().get(rareAggregation.getName());
@@ -631,7 +632,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                  .build();
 
             AggregatedPage<RareDocument> result =
-                documentDao.aggregate("hello", refinements, false);
+                documentDao.aggregate("hello", refinements, AggregationSelection.ALL, false);
 
             Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
             assertThat(domain.getBuckets()).hasSize(2);

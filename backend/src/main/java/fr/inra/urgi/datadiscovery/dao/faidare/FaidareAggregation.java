@@ -3,6 +3,9 @@ package fr.inra.urgi.datadiscovery.dao.faidare;
 import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.LARGE;
 import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
@@ -26,6 +29,12 @@ public enum FaidareAggregation implements AppAggregation {
     GENETIC_NATURE("gn", "geneticNature.keyword", LARGE),
     COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE),
     TAXON_GROUP("tg", "taxonGroup.keyword", LARGE);
+
+    /**
+     * The "main" aggregations, i.e. those that are displayed on the home page
+     */
+    public static final List<FaidareAggregation> MAIN_AGGREGATIONS =
+            Collections.unmodifiableList(Arrays.asList(TAXON_GROUP, ENTRY_TYPE, DATABASE_NAME, NODE));
 
     private final String name;
     private final String field;

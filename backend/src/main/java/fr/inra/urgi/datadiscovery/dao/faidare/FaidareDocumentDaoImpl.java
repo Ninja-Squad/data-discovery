@@ -58,8 +58,13 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
     }
 
     @Override
-    protected List<AppAggregation> getAppAggregations() {
+    protected List<FaidareAggregation> getAppAggregations() {
         return Arrays.asList(FaidareAggregation.values());
+    }
+
+    @Override
+    protected List<FaidareAggregation> getMainAppAggregations() {
+        return FaidareAggregation.MAIN_AGGREGATIONS;
     }
 
     @Override

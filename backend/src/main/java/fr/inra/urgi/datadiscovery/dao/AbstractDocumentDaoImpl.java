@@ -95,12 +95,18 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
 
     @Override
-    public AggregatedPage<D> aggregate(String query, SearchRefinements refinements, boolean descendants) {
+    public AggregatedPage<D> aggregate(String query,
+                                       SearchRefinements refinements,
+                                       AggregationSelection aggregationSelection,
+                                       boolean descendants) {
 
         PageRequest page = PageRequest.of(0, 1);
         NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
 
-        getAppAggregations().forEach(appAggregation -> {
+        List<? extends AppAggregation> aggregations =
+                aggregationSelection == AggregationSelection.MAIN ? getMainAppAggregations() : getAppAggregations();
+
+        aggregations.forEach(appAggregation -> {
             FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements, descendants);
             builder.addAggregation(filterAggregation);
         });
@@ -135,8 +141,14 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     }
 
     private NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
+        // if the query is empty, rather than showing no result, we show everything.
+        // this is necessary in Faidare because we need to show aggregations on the home page, and be able to search
+        // only with refinements
+
         // this full text query is executed, and its results are used to compute aggregations
-        MultiMatchQueryBuilder fullTextQuery = multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
+        AbstractQueryBuilder<?> fullTextQuery = query.trim().isEmpty()
+                ? matchAllQuery()
+                : multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
 
         // this post filter query is applied, after the aggregation have been computed, to apply the
         // refinements (i.e. the aggregation/facet criteria).
@@ -380,7 +392,13 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     /**
      * Returns the ordered list of {@link AppAggregation} to apply
      */
-    protected abstract List<AppAggregation> getAppAggregations();
+    protected abstract List<? extends AppAggregation> getAppAggregations();
+
+    /**
+     * Returns the ordered list of main {@link AppAggregation} to apply. The main app agregations are the ones
+     * displayed on the home page if an application chooses to do so rather than displaying the pillars
+     */
+    protected abstract List<? extends AppAggregation> getMainAppAggregations();
 
     /**
      * Gets the descriptor allowing to create the pillars aggregation

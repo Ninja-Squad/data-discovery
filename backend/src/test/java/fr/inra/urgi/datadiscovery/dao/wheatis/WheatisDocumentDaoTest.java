@@ -9,10 +9,7 @@ import java.util.function.BiConsumer;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
-import fr.inra.urgi.datadiscovery.dao.DocumentDao;
-import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
-import fr.inra.urgi.datadiscovery.dao.DocumentIndexSettings;
-import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.dao.*;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
@@ -191,7 +188,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.aggregate("foo", SearchRefinements.EMPTY, false);
+            documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms databaseName = result.getAggregations().get(WheatisAggregation.DATABASE_NAME.getName());
@@ -237,7 +234,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<WheatisDocument> result =
-            documentDao.aggregate("bar",  SearchRefinements.EMPTY, false);
+            documentDao.aggregate("bar",  SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms aggregation = result.getAggregations().get(wheatisAggregation.getName());

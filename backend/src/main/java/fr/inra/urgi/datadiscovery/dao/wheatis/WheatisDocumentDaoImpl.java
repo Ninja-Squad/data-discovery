@@ -58,6 +58,11 @@ public class WheatisDocumentDaoImpl extends AbstractDocumentDaoImpl<WheatisDocum
     }
 
     @Override
+    protected List<? extends AppAggregation> getMainAppAggregations() {
+        return getAppAggregations();
+    }
+
+    @Override
     protected PillarAggregationDescriptor getPillarAggregationDescriptor() {
         return PILLAR_AGGREGATION_DESCRIPTOR;
     }
