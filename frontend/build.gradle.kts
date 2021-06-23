@@ -77,6 +77,7 @@ tasks {
     inputs.dir("src")
     inputs.dir("cypress")
     inputs.file("cypress.json")
+    inputs.file("package.json")
     outputs.file("$buildDir/cypress-result.json")
   }
 
