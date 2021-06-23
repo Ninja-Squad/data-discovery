@@ -193,6 +193,12 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                            .withDatabaseName("Plantae")
                            .withNode("URGI")
                            .withSpecies(Arrays.asList("Vitis vinifera"))
+                           .withAnnotationName(Arrays.asList("annot1", "annot2"))
+                           .withHoldingInstitute("INRA")
+                           .withBiologicalStatus("Natural")
+                           .withGeneticNature("Nature1")
+                           .withCountryOfOrigin("France")
+                           .withTaxonGroup("Pixies")
                            .build();
 
         FaidareDocument document2 =
@@ -202,6 +208,11 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                            .withDatabaseName("Fungi")
                            .withNode("URGI")
                            .withSpecies(Arrays.asList("Girolla mucha gusta"))
+                           .withHoldingInstitute("University of Oulu")
+                           .withBiologicalStatus("Traditional")
+                           .withGeneticNature("Nature1")
+                           .withCountryOfOrigin("Finland")
+                           .withTaxonGroup("Rolling stones")
                            .build();
 
         documentDao.saveAll(Arrays.asList(document1, document2));
@@ -230,6 +241,31 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
         assertThat(species.getName()).isEqualTo(FaidareAggregation.SPECIES.getName());
         assertThat(species.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Vitis vinifera", "Girolla mucha gusta");
         assertThat(species.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+        Terms holdingInstitute = result.getAggregations().get(FaidareAggregation.HOLDING_INSTITUTE.getName());
+        assertThat(holdingInstitute.getName()).isEqualTo(FaidareAggregation.HOLDING_INSTITUTE.getName());
+        assertThat(holdingInstitute.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("INRA", "University of Oulu");
+        assertThat(holdingInstitute.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+        Terms biologicalStatus = result.getAggregations().get(FaidareAggregation.BIOLOGICAL_STATUS.getName());
+        assertThat(biologicalStatus.getName()).isEqualTo(FaidareAggregation.BIOLOGICAL_STATUS.getName());
+        assertThat(biologicalStatus.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Natural", "Traditional");
+        assertThat(biologicalStatus.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+        Terms geneticNature = result.getAggregations().get(FaidareAggregation.GENETIC_NATURE.getName());
+        assertThat(geneticNature.getName()).isEqualTo(FaidareAggregation.GENETIC_NATURE.getName());
+        assertThat(geneticNature.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Nature1");
+        assertThat(geneticNature.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L);
+
+        Terms countryOfOrigin = result.getAggregations().get(FaidareAggregation.COUNTRY_OF_ORIGIN.getName());
+        assertThat(countryOfOrigin.getName()).isEqualTo(FaidareAggregation.COUNTRY_OF_ORIGIN.getName());
+        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("France", "Finland");
+        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+        Terms taxonGroup = result.getAggregations().get(FaidareAggregation.TAXON_GROUP.getName());
+        assertThat(taxonGroup.getName()).isEqualTo(FaidareAggregation.TAXON_GROUP.getName());
+        assertThat(taxonGroup.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Pixies", "Rolling stones");
+        assertThat(taxonGroup.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
     }
 
     @Test
