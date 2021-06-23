@@ -7,6 +7,7 @@ import java.util.List;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.context.annotation.Profile;
@@ -28,7 +29,7 @@ public class RareAggregationAnalyzer implements AggregationAnalyzer {
     }
 
     @Override
-    public Comparator<Terms> comparator() {
+    public Comparator<Terms> comparator(AggregationSelection aggregationSelection) {
         return Comparator.comparing(terms -> RareAggregation.fromName(terms.getName()));
     }
 

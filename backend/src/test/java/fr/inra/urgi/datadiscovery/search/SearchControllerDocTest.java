@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregation;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
@@ -59,6 +60,9 @@ class SearchControllerDocTest {
     private static final ParameterDescriptor DESCENDANTS_PARAM =
         parameterWithName("descendants")
             .description("If true, a query searching in the children of the node (of an ontology, ie. GO) is launched and the results are returned.");
+    private static final ParameterDescriptor MAIN_PARAM =
+            parameterWithName("main")
+                    .description("If present and set to true, only the main aggregations are returned. This is used to only display some aggregations on the home page");
 
     @MockBean
     private RareDocumentDao mockDocumentDao;
@@ -191,7 +195,7 @@ class SearchControllerDocTest {
     void shouldAggregate() throws Exception {
         String query = "vitis";
 
-        when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, false))
+        when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, AggregationSelection.ALL, false))
             .thenReturn(new AggregatedPageImpl<>(
                 Collections.emptyList(),
                 PageRequest.of(0, 1),
@@ -214,10 +218,10 @@ class SearchControllerDocTest {
                 )
             ));
 
-        mockMvc.perform(docGet("/api/aggregate").param("query", query))
+        mockMvc.perform(docGet("/api/aggregate").param("query", query).param("main", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/aggregate",
-                               requestParameters(QUERY_PARAM),
+                               requestParameters(QUERY_PARAM, MAIN_PARAM),
                                responseFields(
                                    fieldWithPath("number").ignored(),
                                    fieldWithPath("size").ignored(),

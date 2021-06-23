@@ -68,8 +68,13 @@ public class RareDocumentDaoImpl extends AbstractDocumentDaoImpl<RareDocument> i
     }
 
     @Override
-    protected List<AppAggregation> getAppAggregations() {
+    protected List<RareAggregation> getAppAggregations() {
         return Arrays.asList(RareAggregation.values());
+    }
+
+    @Override
+    protected List<? extends AppAggregation> getMainAppAggregations() {
+        return getAppAggregations();
     }
 
     @Override

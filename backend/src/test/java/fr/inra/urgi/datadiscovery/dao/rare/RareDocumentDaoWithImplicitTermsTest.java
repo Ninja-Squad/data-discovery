@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
@@ -128,7 +129,7 @@ class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
         documentDao.refresh();
 
         AggregatedPage<RareDocument> result =
-            documentDao.aggregate("foo", SearchRefinements.EMPTY, false);
+            documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
         Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
