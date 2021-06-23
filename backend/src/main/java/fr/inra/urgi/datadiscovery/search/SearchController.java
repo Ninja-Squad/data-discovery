@@ -43,9 +43,6 @@ public class SearchController {
      * Searches for the given query, and returns an aggregated page of results
      * @param query the query (mandatory parameter)
      * @param page the requested page number, starting at 0. Defaults to 0 if not passed.
-     * @param aggregate if true, the aggregated page's aggregations will be a non-empty array containing all the terms
-     * aggregations allowing to refine the query. If false or omitted, the aggregations won't be loaded and the
-     * aggregations array in the result will be empty
      * @param parameters all the parameters, containing the refinements based on the aggregations. The names
      * of the other parameters are the names of the agregations, and the values are one of the values for that
      * aggregation.
@@ -54,11 +51,10 @@ public class SearchController {
      */
     @GetMapping("/api/search")
     public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam("query") String query,
-                                                        @RequestParam("aggregate") Optional<Boolean> aggregate,
-                                                        @RequestParam("highlight") Optional<Boolean> highlight,
-                                                        @RequestParam("descendants") boolean descendants,
-                                                        @RequestParam("page") Optional<Integer> page,
-                                                        @RequestParam MultiValueMap<String, String> parameters) {
+                                                              @RequestParam("highlight") Optional<Boolean> highlight,
+                                                              @RequestParam("descendants") boolean descendants,
+                                                              @RequestParam("page") Optional<Integer> page,
+                                                              @RequestParam MultiValueMap<String, String> parameters) {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(documentDao.search(query,
@@ -69,6 +65,7 @@ public class SearchController {
                                           aggregationAnalyzer);
 
     }
+
     @GetMapping("/api/aggregate")
     public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam("query") String query,
             @RequestParam MultiValueMap<String, String> parameters, @RequestParam("descendants") boolean descendants) {
