@@ -17,6 +17,6 @@ describe('Home page', () => {
     cy.get('.pillar-name').should('have.length', 1).should('contain', 'INRAE-URGI');
     cy.get('.pillar li li').should('have.length', 2);
     cy.get('.pillar li li').first().should('contain', 'GnpIS');
-    cy.get('.pillar li small').first().should('contain', '[5 943]');
+    cy.get('.pillar li small').first().should('contain', '[5,943]');
   });
 });
