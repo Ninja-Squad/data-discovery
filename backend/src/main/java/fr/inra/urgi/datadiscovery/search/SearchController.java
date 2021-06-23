@@ -52,14 +52,14 @@ public class SearchController {
     @GetMapping("/api/search")
     public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam("query") String query,
                                                               @RequestParam("highlight") Optional<Boolean> highlight,
-                                                              @RequestParam("descendants") boolean descendants,
+                                                              @RequestParam("descendants") Optional<Boolean> descendants,
                                                               @RequestParam("page") Optional<Integer> page,
                                                               @RequestParam MultiValueMap<String, String> parameters) {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
         return AggregatedPageDTO.fromPage(documentDao.search(query,
                                                              highlight.orElse(false),
-                                                             descendants,
+                                                             descendants.orElse(false),
                                                              createRefinementsFromParameters(parameters),
                                                              PageRequest.of(page.orElse(0), PAGE_SIZE)),
                                           aggregationAnalyzer);
@@ -68,11 +68,12 @@ public class SearchController {
 
     @GetMapping("/api/aggregate")
     public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam("query") String query,
-            @RequestParam MultiValueMap<String, String> parameters, @RequestParam("descendants") boolean descendants) {
+                                                                 @RequestParam MultiValueMap<String, String> parameters,
+                                                                 @RequestParam("descendants") Optional<Boolean> descendants) {
 
         return AggregatedPageDTO.fromPage(documentDao.aggregate(query,
                                                                 createRefinementsFromParameters(parameters),
-                                                                descendants),
+                                                                descendants.orElse(false)),
                                           aggregationAnalyzer);
 
     }

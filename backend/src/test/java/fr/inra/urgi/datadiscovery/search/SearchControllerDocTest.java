@@ -165,11 +165,10 @@ class SearchControllerDocTest {
 
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
-                            .param("page", Integer.toString(page))
-                            .param("descendants", "false"))
+                            .param("page", Integer.toString(page)))
                .andExpect(status().isOk())
                .andDo(document("search/page",
-                               requestParameters(QUERY_PARAM, PAGE_PARAM, DESCENDANTS_PARAM)));
+                               requestParameters(QUERY_PARAM, PAGE_PARAM)));
     }
 
     @Test
@@ -182,24 +181,21 @@ class SearchControllerDocTest {
 
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
-                            .param("highlight", "true")
-                            .param("descendants", "false"))
+                            .param("highlight", "true"))
                .andExpect(status().isOk())
                .andDo(document("search/highlight",
-                               requestParameters(QUERY_PARAM, HIGHLIGHT_PARAM, DESCENDANTS_PARAM)));
+                               requestParameters(QUERY_PARAM, HIGHLIGHT_PARAM)));
     }
 
     @Test
-    void shouldSearchAndAggregate() throws Exception {
-        int page = 253;
-        PageRequest pageRequest = PageRequest.of(page, SearchController.PAGE_SIZE);
+    void shouldAggregate() throws Exception {
         String query = "vitis";
 
-        when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
+        when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, false))
             .thenReturn(new AggregatedPageImpl<>(
-                Arrays.asList(syrah, dorato),
-                pageRequest,
-                SearchController.PAGE_SIZE * page + 2,
+                Collections.emptyList(),
+                PageRequest.of(0, 1),
+                34567,
                 new Aggregations(
                     Arrays.asList(new MockTermsAggregation(RareAggregation.DOMAIN.getName(),
                                                            Arrays.asList(new MockBucket("Plantae", 123),
@@ -218,14 +214,10 @@ class SearchControllerDocTest {
                 )
             ));
 
-        mockMvc.perform(docGet("/api/search")
-                            .param("query", query)
-                            .param("page", Integer.toString(page))
-                            .param("aggregate", "true")
-                            .param("descendants", "false"))
+        mockMvc.perform(docGet("/api/aggregate").param("query", query))
                .andExpect(status().isOk())
                .andDo(document("search/aggregate",
-                               requestParameters(QUERY_PARAM, PAGE_PARAM, AGGREGATE_PARAM, DESCENDANTS_PARAM),
+                               requestParameters(QUERY_PARAM),
                                responseFields(
                                    fieldWithPath("number").ignored(),
                                    fieldWithPath("size").ignored(),
@@ -261,13 +253,12 @@ class SearchControllerDocTest {
 
         mockMvc.perform(docGet("/api/search")
                             .param("query", query)
-                            .param("descendants", "false")
                             .param(RareAggregation.DOMAIN.getName(), "Plantae")
                             .param(RareAggregation.COUNTRY_OF_ORIGIN.getName(), "France", "Italy"))
                .andExpect(status().isOk())
                .andDo(document("search/filter",
                                requestParameters(
-                                   QUERY_PARAM, DESCENDANTS_PARAM,
+                                   QUERY_PARAM,
                                    parameterWithName(RareAggregation.DOMAIN.getName()).description("The accepted values for the " + RareAggregation.DOMAIN.getName() + " aggregation's corresponding property (`domain`)"),
                                    parameterWithName(RareAggregation.COUNTRY_OF_ORIGIN.getName()).description("The accepted values for the " + RareAggregation.COUNTRY_OF_ORIGIN.getName() + " aggregation's corresponding property (`countryOfOrigin`)"))));
     }
