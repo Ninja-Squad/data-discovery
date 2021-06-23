@@ -10,10 +10,9 @@ stages:
 # - deploy-production
 # - data-integration-production
 
-# Image source available on https://forgemia.inra.fr/urgi-is/docker-rare
-# It contains a JDK 8 and a Chrome browser
+# The image contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
-image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-browsers:latest
+image: circleci/openjdk:8-jdk-browsers
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
