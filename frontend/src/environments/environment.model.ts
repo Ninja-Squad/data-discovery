@@ -32,10 +32,6 @@ export interface DataDiscoveryEnvironment {
     links: Array<Link>;
   };
   /**
-   * Placeholder displayed in the search field
-   */
-  searchPlaceholder: string;
-  /**
    * The applications can override default components with custom one by loading a module
    */
   resourceModule: Type<any>;

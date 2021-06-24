@@ -13,7 +13,6 @@ export const environment: DataDiscoveryEnvironment = {
     logoUrl: '',
     links: [{ label: 'agrobrc', url: 'https://www.agrobrc-rare.org/' }]
   },
-  searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',

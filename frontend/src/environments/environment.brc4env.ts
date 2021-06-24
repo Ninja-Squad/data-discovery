@@ -9,7 +9,6 @@ export const environment: DataDiscoveryEnvironment = {
     logoUrl: '',
     links: [{ label: 'brc4env', url: 'https://www.brc4env.fr/' }]
   },
-  searchPlaceholder: 'e.g. salmo, chlamydomonas, phytomyzinae',
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',

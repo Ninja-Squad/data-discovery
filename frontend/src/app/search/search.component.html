@@ -14,7 +14,7 @@
         <input
           id="query"
           class="form-control"
-          placeholder="{{ placeholder }}"
+          [placeholder]="appName + '.search.placeholder' | translate"
           formControlName="search"
           [ngbTypeahead]="suggesterTypeahead"
           [focusFirst]="false"
