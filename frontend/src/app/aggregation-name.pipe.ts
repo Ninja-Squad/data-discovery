@@ -1,14 +1,23 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { environment } from '../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
- * Returns the name of an aggregation, ot the key itself if the aggregation is unknown.
+ * Returns the translation of an aggregation key, or the key itself if the aggregation is unknown.
  */
 @Pipe({
   name: 'aggregationName'
 })
 export class AggregationNamePipe implements PipeTransform {
-  transform(value: string): string {
-    return environment.aggregationNames[value] || value;
+  constructor(private translate: TranslateService) {}
+  transform(aggregationKey: string): string {
+    const key = `${environment.name}.aggregation.${aggregationKey}`;
+    const aggregationTranslated = this.translate.instant(key);
+    // if the translation does not exist
+    if (aggregationTranslated === key) {
+      // return the aggregation key
+      return aggregationKey;
+    }
+    return aggregationTranslated;
   }
 }

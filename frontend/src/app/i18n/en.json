@@ -75,5 +75,46 @@
     "eula-end": "before completing your order.",
     "eula-agreement": "I read and I agree to the EULA",
     "eula-agreement-required": "You must check this box in order to complete your order"
+  },
+  "rare": {
+    "aggregation": {
+      "coo": "Country of origin",
+      "coc": "Country of collect",
+      "domain": "Domain",
+      "material": "Material",
+      "taxon": "Taxon",
+      "biotope": "Biotope"
+    }
+  },
+  "brc4env": {
+    "aggregation": {
+      "coo": "Country of origin",
+      "coc": "Country of collect",
+      "domain": "Domain",
+      "material": "Material",
+      "taxon": "Taxon",
+      "biotope": "Biotope"
+    }
+  },
+  "wheatis": {
+    "aggregation": {
+      "entry": "Data type",
+      "db": "Database",
+      "node": "Data provider",
+      "species": "Species",
+      "annot": "Ontology annotation"
+    }
+  },
+  "faidare": {
+    "aggregation": {
+      "node": "Data provider",
+      "species": "Species",
+      "annot": "Ontology annotation",
+      "hi": "Holding institute",
+      "bs": "Biological status",
+      "gn": "Genetic nature",
+      "coo": "Country of origin",
+      "tg": "Taxon group"
+    }
   }
 }

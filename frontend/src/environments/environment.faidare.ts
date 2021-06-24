@@ -7,6 +7,7 @@ import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
+  name: 'faidare',
   title: 'FAIR Data-finder for Agronomic REsearch',
   navbar: {
     title: 'FAIDARE',
@@ -36,21 +37,7 @@ export const environment: DataDiscoveryEnvironment = {
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md', // TODO does not exist
-  newsMdFile: 'assets/news.md', // TODO does not exist
-  /**
-   * Map containing the list of the aggregations and their displayed name.
-   * Should be kept in sync with the `FaidareAggregation` enum of the backend.
-   */
-  aggregationNames: {
-    node: 'Data provider',
-    species: 'Species',
-    annot: 'Ontology annotation',
-    hi: 'Holding institute',
-    bs: 'Biological status',
-    gn: 'Genetic nature',
-    coo: 'Country of origin',
-    tg: 'Taxon group'
-  }
+  newsMdFile: 'assets/news.md' // TODO does not exist
   // taxa links are used in germplasm cards
   // taxaLinks: {
   //  NCBI: 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=',
