@@ -10,12 +10,11 @@ export const environment: DataDiscoveryEnvironment = {
   name: 'rare',
   title: 'WheatIS - Wheat Information System',
   navbar: {
-    title: 'Wheat Initiative',
     logoUrl: 'http://www.wheatinitiative.org/',
     links: [
-      { label: 'Home', url: './' },
-      { label: 'WheatIS website', url: 'http://wheatis.org/' },
-      { label: 'Wheat@URGI', url: 'https://wheat-urgi.versailles.inrae.fr/' }
+      { label: 'home', url: './' },
+      { label: 'wheatis', url: 'http://wheatis.org/' },
+      { label: 'wheat-urgi', url: 'https://wheat-urgi.versailles.inrae.fr/' }
     ]
   },
   searchPlaceholder: 'Examples: yield, fhb',

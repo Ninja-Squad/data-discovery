@@ -28,7 +28,6 @@ export interface DataDiscoveryEnvironment {
    * The navbar has a dynamic system to display different links depending on the app.
    */
   navbar: {
-    title: string;
     logoUrl: string;
     links: Array<Link>;
   };

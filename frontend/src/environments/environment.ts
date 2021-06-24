@@ -10,9 +10,8 @@ export const environment: DataDiscoveryEnvironment = {
   name: 'rare',
   title: 'RARe - Ressources Agronomiques pour la Recherche',
   navbar: {
-    title: 'RARe Search',
     logoUrl: '',
-    links: [{ label: 'AgroBRC-RARe Home', url: 'https://www.agrobrc-rare.org/' }]
+    links: [{ label: 'agrobrc', url: 'https://www.agrobrc-rare.org/' }]
   },
   searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: RareModule,
