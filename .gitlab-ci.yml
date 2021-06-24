@@ -163,6 +163,7 @@ test-lint-build:
          exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch"
  variables:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx1024m -Dorg.gradle.daemon=false"
+  ES_JAVA_OPTS: "-Xms2g -Xmx2g"
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
  script:
