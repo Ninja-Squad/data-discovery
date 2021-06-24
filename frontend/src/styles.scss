@@ -50,19 +50,19 @@ thead th {
   border-bottom: (2 * $table-border-width) solid $table-border-color;
 }
 
-h1{
+h1 {
   border-bottom: $theme-h1-bottom-width solid $theme-border-color;
 }
 
-h2{
+h2 {
   border-bottom: 3px solid $theme-border-color;
 }
 
-h3{
+h3 {
   font-style: italic;
 }
 
-blockquote{
+blockquote {
   border-left-color: $_theme-secondary-color;
   border-left-style: solid;
   border-left-width: 4px;

@@ -6,7 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
  * Returns the translation of an aggregation key, or the key itself if the aggregation is unknown.
  */
 @Pipe({
-  name: 'aggregationName'
+  name: 'aggregationName',
+  pure: false
 })
 export class AggregationNamePipe implements PipeTransform {
   constructor(private translate: TranslateService) {}

@@ -48,7 +48,7 @@ public class SearchController {
      * @see AppAggregation
      */
     @GetMapping("/api/search")
-    public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam("query") String query,
+    public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam(value = "query", defaultValue = "") String query,
                                                               @RequestParam("highlight") Optional<Boolean> highlight,
                                                               @RequestParam("descendants") Optional<Boolean> descendants,
                                                               @RequestParam("page") Optional<Integer> page,
@@ -67,7 +67,7 @@ public class SearchController {
     }
 
     @GetMapping("/api/aggregate")
-    public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam("query") String query,
+    public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam(value = "query", defaultValue = "") String query,
                                                                  @RequestParam MultiValueMap<String, String> parameters,
                                                                  @RequestParam("descendants") Optional<Boolean> descendants,
                                                                  @RequestParam("main") Optional<Boolean> mainAggregationsOnly) {

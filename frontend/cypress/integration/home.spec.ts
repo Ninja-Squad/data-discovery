@@ -1,21 +1,75 @@
 describe('Home page', () => {
-  it('should display pillars', () => {
-    cy.intercept('GET', '/faidare-dev/api/pillars', [
-      {
-        name: 'INRAE-URGI',
-        databaseSources: [
-          { name: 'GnpIS', url: null, documentCount: 5943 },
-          { name: 'IWGSC@GnpIS', url: null, documentCount: 3392 }
-        ],
-        documentCount: 9335
-      }
-    ]).as('getPillars');
+  it('should display aggregations', () => {
+    cy.intercept('GET', '/faidare-dev/api/aggregate?main=true', {
+      aggregations: [
+        {
+          name: 'tg',
+          type: 'LARGE',
+          buckets: [
+            {
+              key: 'NULL',
+              documentCount: 21416
+            }
+          ]
+        },
+        {
+          name: 'entry',
+          type: 'LARGE',
+          buckets: [
+            {
+              key: 'NULL',
+              documentCount: 10000
+            },
+            {
+              key: 'Genome annotation',
+              documentCount: 8090
+            },
+            {
+              key: 'Germplasm',
+              documentCount: 1432
+            }
+          ]
+        },
+        {
+          name: 'db',
+          type: 'LARGE',
+          buckets: [
+            {
+              key: 'GnpIS',
+              documentCount: 5963
+            },
+            {
+              key: 'CR-EST',
+              documentCount: 5387
+            }
+          ]
+        },
+        {
+          name: 'node',
+          type: 'SMALL',
+          buckets: [
+            {
+              key: 'IPK',
+              documentCount: 10000
+            },
+            {
+              key: 'INRAE-URGI',
+              documentCount: 9355
+            }
+          ]
+        }
+      ]
+    }).as('getMainAggregations');
     cy.visit('/');
-    cy.wait('@getPillars');
+    cy.wait('@getMainAggregations');
     cy.contains('h1', 'FAIR Data-finder for Agronomic REsearch');
-    cy.get('.pillar-name').should('have.length', 1).should('contain', 'INRAE-URGI');
-    cy.get('.pillar li li').should('have.length', 2);
-    cy.get('.pillar li li').first().should('contain', 'GnpIS');
-    cy.get('.pillar li small').first().should('contain', '[5,943]');
+    cy.get('dd-aggregations')
+      .should('have.length', 1)
+      .should('contain', 'Taxon group')
+      .should('contain', 'Aucun')
+      .should('contain', '[21,416]')
+      .should('contain', 'Data type')
+      .should('contain', 'Database')
+      .should('contain', 'Data provider');
   });
 });

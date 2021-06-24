@@ -21,7 +21,7 @@
     "paging": "Paging"
   },
   "descendants-checkbox": {
-    "expand-search":"Expand search",
+    "expand-search": "Expand search",
     "tooltips": "Search for results with associated ontology terms."
   },
   "document-count": {
@@ -41,7 +41,8 @@
   "home": {
     "title": "Search for resources",
     "search": "Search",
-    "pillars": "Pillars"
+    "pillars": "Pillars",
+    "example-queries": "Example queries"
   },
   "large-aggregation": {
     "other-results-available": "Other results are available.",
@@ -146,6 +147,8 @@
       }
     },
     "aggregation": {
+      "entry": "Data type",
+      "db": "Database",
       "node": "Data provider",
       "species": "Species",
       "annot": "Ontology annotation",

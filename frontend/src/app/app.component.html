@@ -1,5 +1,7 @@
-<dd-navbar></dd-navbar>
-<div class="container">
-  <dd-error></dd-error>
-  <router-outlet></router-outlet>
-</div>
+<ng-container *ngIf="i18nReady$ | async">
+  <dd-navbar></dd-navbar>
+  <div class="container">
+    <dd-error></dd-error>
+    <router-outlet></router-outlet>
+  </div>
+</ng-container>
