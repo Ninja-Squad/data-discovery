@@ -13,7 +13,7 @@ import { environment } from '../../environments/environment';
 })
 export class HomeComponent {
   searchForm: FormGroup;
-  placeholder = environment.searchPlaceholder;
+  appName = environment.name;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
   constructor(private router: Router, private searchService: SearchService) {

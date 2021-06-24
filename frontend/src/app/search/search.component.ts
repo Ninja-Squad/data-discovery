@@ -42,7 +42,7 @@ export class SearchComponent implements OnInit {
   searchLoading = true;
   aggLoading = true;
   query = '';
-  placeholder = environment.searchPlaceholder;
+  appName = environment.name;
   searchCtrl: FormControl;
   searchForm: FormGroup;
   results!: Page<DocumentModel> | null;

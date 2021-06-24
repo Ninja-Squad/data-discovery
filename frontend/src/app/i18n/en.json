@@ -91,6 +91,9 @@
       "material": "Material",
       "taxon": "Taxon",
       "biotope": "Biotope"
+    },
+    "search": {
+      "placeholder": "e.g. pisum sativum, rosa"
     }
   },
   "brc4env": {
@@ -107,6 +110,9 @@
       "material": "Material",
       "taxon": "Taxon",
       "biotope": "Biotope"
+    },
+    "search": {
+      "placeholder": "e.g. salmo, chlamydomonas, phytomyzinae"
     }
   },
   "wheatis": {
@@ -124,6 +130,9 @@
       "node": "Data provider",
       "species": "Species",
       "annot": "Ontology annotation"
+    },
+    "search": {
+      "placeholder": "Examples: yield, fhb"
     }
   },
   "faidare": {
@@ -145,6 +154,9 @@
       "gn": "Genetic nature",
       "coo": "Country of origin",
       "tg": "Taxon group"
+    },
+    "search": {
+      "placeholder": "Examples: yield, fhb"
     }
   }
 }

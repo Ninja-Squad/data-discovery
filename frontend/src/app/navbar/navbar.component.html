@@ -19,7 +19,8 @@
               class="nav-link d-flex align-items-center"
               [href]="link.url"
               [title]="appName + '.navbar.links.' + link.label | translate"
-              [translate]="appName + '.navbar.links.' + link.label">
+              [translate]="appName + '.navbar.links.' + link.label"
+            >
             </a>
           </div>
           <div *ngIf="link.subMenu">
@@ -30,7 +31,8 @@
                 class="nav-link d-flex align-items-center"
                 [href]="link.url"
                 [title]="appName + '.navbar.links.' + link.label | translate"
-                [translate]="appName + '.navbar.links.' + link.label">
+                [translate]="appName + '.navbar.links.' + link.label"
+              >
                 ></a
               >
               <div ngbDropdownMenu class="dropdown-menu">
@@ -39,7 +41,8 @@
                     class="dropdown-item"
                     [href]="subItem.url"
                     [title]="appName + '.navbar.links.' + subItem.label | translate"
-                    [translate]="appName + '.navbar.links.' + subItem.label">
+                    [translate]="appName + '.navbar.links.' + subItem.label"
+                  >
                     >
                   </a>
                 </div>

@@ -17,7 +17,6 @@ export const environment: DataDiscoveryEnvironment = {
       { label: 'wheat-urgi', url: 'https://wheat-urgi.versailles.inrae.fr/' }
     ]
   },
-  searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: WheatisModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',

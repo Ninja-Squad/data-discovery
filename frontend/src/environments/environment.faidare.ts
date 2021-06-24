@@ -29,7 +29,6 @@ export const environment: DataDiscoveryEnvironment = {
     //  logo: 'assets/elixir_logo.png'
     // }
   },
-  searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: FaidareModule,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
