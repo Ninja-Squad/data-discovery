@@ -18,6 +18,10 @@ class PillarsComponentTester extends ComponentTester<PillarsComponent> {
     super(PillarsComponent);
   }
 
+  get dataProviders() {
+    return this.element('h4');
+  }
+
   get pillarListItems() {
     return this.elements('ul.pillar > li');
   }
@@ -92,6 +96,8 @@ describe('PillarsComponent', () => {
     pillars$.next(pillars);
 
     tester.detectChanges();
+
+    expect(tester.dataProviders).toHaveText('Data providers');
 
     expect(tester.pillarListItem(0)).toContainText('Plant');
     expect(tester.pillarListItem(1)).toContainText('Forest');

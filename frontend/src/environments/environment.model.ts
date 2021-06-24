@@ -50,10 +50,6 @@ export interface DataDiscoveryEnvironment {
   eulaMdFile: string;
   newsMdFile: string;
   /**
-   * Used for i18n
-   */
-  dataProvider?: string; // not always displayed
-  /**
    * Only necessary for applications with rare basket
    */
   rareBasket?: string;
