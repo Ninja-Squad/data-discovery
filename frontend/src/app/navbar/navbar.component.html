@@ -14,7 +14,7 @@
     <div id="navbar" class="collapse navbar-collapse" [class.collapse]="navbarCollapsed">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let link of navbar.links">
-          <div *ngIf="!$any(link).subMenu">
+          <div *ngIf="!link.subMenu">
             <a
               class="nav-link d-flex align-items-center"
               [href]="link.url"
@@ -23,7 +23,7 @@
               >{{ link.label }}</a
             >
           </div>
-          <div *ngIf="$any(link).subMenu">
+          <div *ngIf="link.subMenu">
             <!-- Dropdown -->
             <div ngbDropdown class="d-inline-block dropdown">
               <a
@@ -34,7 +34,7 @@
                 >{{ link.label }}</a
               >
               <div ngbDropdownMenu class="dropdown-menu">
-                <div *ngFor="let subItem of $any(link).subMenu">
+                <div *ngFor="let subItem of link.subMenu">
                   <a
                     class="dropdown-item"
                     href="{{ subItem.url }}"

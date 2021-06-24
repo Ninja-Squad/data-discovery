@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { FaidareModule } from '../app/faidare/faidare.module';
+import { DataDiscoveryEnvironment } from './environment.model';
 
-export const environment = {
+export const environment: DataDiscoveryEnvironment = {
   production: false,
   title: 'FAIR Data-finder for Agronomic REsearch',
   navbar: {
@@ -20,13 +21,13 @@ export const environment = {
           { label: 'About us', url: 'https://urgi.versailles.inra.fr/About-us' }
         ]
       }
-    ],
+    ]
     // TODO should the contributor be displayed in the navbar?
-    contributor: {
-      name: 'Elixir',
-      url: 'https://elixir-europe.org/',
-      logo: 'assets/elixir_logo.png'
-    }
+    // contributor: {
+    //  name: 'Elixir',
+    //  url: 'https://elixir-europe.org/',
+    //  logo: 'assets/elixir_logo.png'
+    // }
   },
   searchPlaceholder: 'Examples: yield, fhb',
   resourceModule: FaidareModule,
@@ -49,14 +50,14 @@ export const environment = {
     gn: 'Genetic nature',
     coo: 'Country of origin',
     tg: 'Taxon group'
-  },
-  // taxa links are used in germplasm cards
-  taxaLinks: {
-    NCBI: 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=',
-    ThePlantList: 'http://www.theplantlist.org/tpl1.1/record/',
-    TAXREF: 'https://inpn.mnhn.fr/espece/cd_nom/',
-    CatalogueOfLife: 'http://www.catalogueoflife.org/col/details/species/id/'
   }
+  // taxa links are used in germplasm cards
+  // taxaLinks: {
+  //  NCBI: 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=',
+  //  ThePlantList: 'http://www.theplantlist.org/tpl1.1/record/',
+  //  TAXREF: 'https://inpn.mnhn.fr/espece/cd_nom/',
+  //  CatalogueOfLife: 'http://www.catalogueoflife.org/col/details/species/id/'
+  // }
 };
 
 /*

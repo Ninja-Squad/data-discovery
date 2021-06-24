@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { RareModule } from '../app/rare/rare.module';
+import { DataDiscoveryEnvironment } from './environment.model';
 
-export const environment = {
+export const environment: DataDiscoveryEnvironment = {
   production: false,
   title: 'RARe - Ressources Agronomiques pour la Recherche',
   navbar: {

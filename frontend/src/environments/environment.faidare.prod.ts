@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { environment as devEnvironment } from './environment.faidare';
+import { DataDiscoveryEnvironment } from './environment.model';
 
-export const environment = {
+export const environment: DataDiscoveryEnvironment = {
   ...devEnvironment,
   production: true
 };
