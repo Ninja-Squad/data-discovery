@@ -71,7 +71,7 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should display a title and the number of possible keys
-    expect(tester.title).toContainText("Pays d'origine (4)");
+    expect(tester.title).toContainText('Country of origin (4)');
     // and the buckets with their name and count in a typeahead
     expect(tester.inputField).not.toBeNull();
     expect(tester.typeahead).not.toBeNull();

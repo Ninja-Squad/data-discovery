@@ -16,23 +16,45 @@ interface Link {
  */
 export interface DataDiscoveryEnvironment {
   production: boolean;
+  /**
+   * Name of the app, used in the i18n process, to translate specific values
+   */
+  name: string;
+  /**
+   * The title of the application, displayed on screen
+   */
   title: string;
+  /**
+   * The navbar has a dynamic system to display different links depending on the app.
+   */
   navbar: {
     title: string;
     logoUrl: string;
     links: Array<Link>;
   };
+  /**
+   * Placeholder displayed in the search field
+   */
   searchPlaceholder: string;
+  /**
+   * The applications can override default components with custom one by loading a module
+   */
   resourceModule: Type<any>;
+  /**
+   * Markdown files served
+   */
   helpMdFile: string;
   aboutUsMdFile: string;
   joinUsMdFile: string;
   legalMentionsMdFile: string;
   eulaMdFile: string;
   newsMdFile: string;
+  /**
+   * Used for i18n
+   */
   dataProvider?: string; // not always displayed
-  aggregationNames: {
-    [key: string]: string;
-  };
-  rareBasket?: string; // only necessary for applications with rare basket
+  /**
+   * Only necessary for applications with rare basket
+   */
+  rareBasket?: string;
 }

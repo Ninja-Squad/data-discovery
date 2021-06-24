@@ -7,6 +7,7 @@ import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
+  name: 'rare',
   title: 'RARe - Ressources Agronomiques pour la Recherche',
   navbar: {
     title: 'RARe Search',
@@ -21,19 +22,7 @@ export const environment: DataDiscoveryEnvironment = {
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md',
   newsMdFile: 'assets/news.md',
-  dataProvider: 'Data providers',
-  /**
-   * Map containing the list of the aggregations and their displayed name.
-   * Should be kept in sync with the `RareAggregation` enum of the backend.
-   */
-  aggregationNames: {
-    coo: "Pays d'origine",
-    coc: 'Pays de collecte',
-    domain: 'Domaine',
-    material: 'Matériel',
-    taxon: 'Taxon',
-    biotope: 'Biotope'
-  }
+  dataProvider: 'Data providers'
 };
 
 /*

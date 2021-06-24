@@ -7,7 +7,8 @@ import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
-  title: 'WheatIS - DataDiscovery',
+  name: 'rare',
+  title: 'WheatIS - Wheat Information System',
   navbar: {
     title: 'Wheat Initiative',
     logoUrl: 'http://www.wheatinitiative.org/',
@@ -25,18 +26,7 @@ export const environment: DataDiscoveryEnvironment = {
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md',
   newsMdFile: 'assets/news.md',
-  dataProvider: 'Data providers',
-  /**
-   * Map containing the list of the aggregations and their displayed name.
-   * Should be kept in sync with the `WheatisAggregation` enum of the backend.
-   */
-  aggregationNames: {
-    entry: 'Data type',
-    db: 'Database',
-    node: 'Data provider',
-    species: 'Species',
-    annot: 'Ontology annotation'
-  }
+  dataProvider: 'Data providers'
 };
 
 /*

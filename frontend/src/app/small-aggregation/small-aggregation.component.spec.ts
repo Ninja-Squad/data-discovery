@@ -10,6 +10,7 @@ import { DocumentCountComponent } from '../document-count/document-count.compone
 import { NULL_VALUE } from '../models/document.model';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('SmallAggregationComponent', () => {
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
@@ -34,7 +35,7 @@ describe('SmallAggregationComponent', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule],
+      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
       declarations: [
         SmallAggregationComponent,
         AggregationNamePipe,
@@ -54,7 +55,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should display a title
-    expect(tester.title).toContainText("Pays d'origine");
+    expect(tester.title).toContainText('Country of origin');
     // and the buckets with their name and count
     expect(tester.labels.length).toBe(4);
     expect(tester.labels[0]).toContainText('France');
