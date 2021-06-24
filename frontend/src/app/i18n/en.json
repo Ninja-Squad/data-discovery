@@ -9,7 +9,8 @@
   },
   "pillars": {
     "no-data": "No data found.",
-    "no-data-contact": "Please, contact the administrator for him to feed the database."
+    "no-data-contact": "Please, contact the administrator for him to feed the database.",
+    "data-providers": "Data providers"
   },
   "search": {
     "title": "Search results",

@@ -9,7 +9,8 @@
   },
   "pillars": {
     "no-data": "Pas de donnée trouvée.",
-    "no-data-contact": "Merci de contacter votre administrateur afin de remplir la base de données."
+    "no-data-contact": "Merci de contacter votre administrateur afin de remplir la base de données.",
+    "data-providers": "Fournisseurs de données"
   },
   "search": {
     "title": "Résultats de la recherche",

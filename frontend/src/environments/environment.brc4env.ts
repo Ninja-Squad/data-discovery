@@ -17,6 +17,5 @@ export const environment: DataDiscoveryEnvironment = {
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md',
-  newsMdFile: 'assets/news.md',
-  dataProvider: 'Data providers'
+  newsMdFile: 'assets/news.md'
 };
