@@ -6,9 +6,8 @@ export const environment: DataDiscoveryEnvironment = {
   name: 'brc4env',
   title: 'BRC4Env - Biological Resource Centre for the Environment',
   navbar: {
-    title: 'BRC4Env Search',
     logoUrl: '',
-    links: [{ label: 'BRC4Env Home', url: 'https://www.brc4env.fr/' }]
+    links: [{ label: 'brc4env', url: 'https://www.brc4env.fr/' }]
   },
   searchPlaceholder: 'e.g. salmo, chlamydomonas, phytomyzinae',
   resourceModule: RareModule,

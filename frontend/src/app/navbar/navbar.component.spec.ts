@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { NavbarComponent } from './navbar.component';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -36,7 +37,8 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 describe('NavbarComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      declarations: [NavbarComponent]
+      declarations: [NavbarComponent],
+      imports: [I18nTestingModule]
     })
   );
 
@@ -59,24 +61,19 @@ describe('NavbarComponent', () => {
     const component = tester.componentInstance;
 
     component.navbar = {
-      title: 'RARe',
       logoUrl: 'https://www.agrobrc-rare.org/',
-      links: [
-        { label: 'INRAE', url: 'https://www.inrae.fr/' },
-        { label: 'URGI', url: 'https://urgi.versailles.inrae.fr/' }
-      ]
+      links: component.navbar.links
     };
 
     tester.detectChanges();
 
     expect(tester.title.attr('href')).toBe('https://www.agrobrc-rare.org/');
-    expect(tester.logo.attr('title')).toBe('Logo with RARe link');
+    expect(tester.logo.attr('title')).toBe('RARe Search');
 
-    expect(tester.links.length - 1).toBe(2);
+    expect(tester.links.length - 1).toBe(1);
     // minus 1 because of More section (containing Help, About, Join and Legal links) added automatically
 
-    expect(tester.firstLink.textContent).toBe('INRAE');
-    expect(tester.firstLink.attr('href')).toBe('https://www.inrae.fr/');
-    expect(tester.firstLink.attr('target')).toBe('_blank');
+    expect(tester.firstLink.textContent).toBe('AgroBRC-RARe Home');
+    expect(tester.firstLink.attr('href')).toBe('https://www.agrobrc-rare.org/');
   });
 });

@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand-md navbar-dark py-0">
   <div class="container px-0">
-    <a class="navbar-brand d-flex align-items-center mr-0 px" href="{{ navbar.logoUrl }}">
+    <a class="navbar-brand d-flex align-items-center mr-0 px" [href]="navbar.logoUrl">
       <img
         src="assets/logo.png"
-        alt="Logo"
-        title="Logo with {{ navbar.title }} link"
+        [alt]="appName + '.navbar.title' | translate"
+        [title]="appName + '.navbar.title' | translate"
         height="56px"
       />
     </a>
@@ -18,10 +18,9 @@
             <a
               class="nav-link d-flex align-items-center"
               [href]="link.url"
-              title="{{ link.label }} link"
-              target="_blank"
-              >{{ link.label }}</a
-            >
+              [title]="appName + '.navbar.links.' + link.label | translate"
+              [translate]="appName + '.navbar.links.' + link.label">
+            </a>
           </div>
           <div *ngIf="link.subMenu">
             <!-- Dropdown -->
@@ -29,19 +28,20 @@
               <a
                 ngbDropdownToggle
                 class="nav-link d-flex align-items-center"
-                title="{{ link.label }} link"
                 [href]="link.url"
-                >{{ link.label }}</a
+                [title]="appName + '.navbar.links.' + link.label | translate"
+                [translate]="appName + '.navbar.links.' + link.label">
+                ></a
               >
               <div ngbDropdownMenu class="dropdown-menu">
                 <div *ngFor="let subItem of link.subMenu">
                   <a
                     class="dropdown-item"
-                    href="{{ subItem.url }}"
-                    title="{{ subItem.label }} link"
-                    target="_blank"
-                    >{{ subItem.label }}</a
-                  >
+                    [href]="subItem.url"
+                    [title]="appName + '.navbar.links.' + subItem.label | translate"
+                    [translate]="appName + '.navbar.links.' + subItem.label">
+                    >
+                  </a>
                 </div>
               </div>
             </div>

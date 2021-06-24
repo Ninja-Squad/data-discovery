@@ -10,16 +10,15 @@ export const environment: DataDiscoveryEnvironment = {
   name: 'faidare',
   title: 'FAIR Data-finder for Agronomic REsearch',
   navbar: {
-    title: 'FAIDARE',
     logoUrl: '',
     links: [
       {
-        label: 'URGI',
-        url: '#',
+        label: 'urgi',
+        url: '',
         subMenu: [
-          { label: 'Home', url: 'https://urgi.versailles.inra.fr' },
-          { label: 'News', url: 'https://urgi.versailles.inra.fr/About-us/News' },
-          { label: 'About us', url: 'https://urgi.versailles.inra.fr/About-us' }
+          { label: 'home', url: 'https://urgi.versailles.inra.fr' },
+          { label: 'news', url: 'https://urgi.versailles.inra.fr/About-us/News' },
+          { label: 'about', url: 'https://urgi.versailles.inra.fr/About-us' }
         ]
       }
     ]

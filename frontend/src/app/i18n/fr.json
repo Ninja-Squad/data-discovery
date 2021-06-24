@@ -78,6 +78,12 @@
     "eula-agreement-required": "Vous devez cocher cette case pour poursuivre votre commande"
   },
   "rare": {
+    "navbar": {
+      "title": "Recherche RARe",
+      "links": {
+        "agrobrc": "Accueil AgroBRC-RARe"
+      }
+    },
     "aggregation": {
       "coo": "Pays d'origine",
       "coc": "Pays de collecte",
@@ -88,6 +94,12 @@
     }
   },
   "brc4env": {
+    "navbar": {
+      "title": "Recherche BRC4Env",
+      "links": {
+        "brc4env": "Accueil BRC4Env"
+      }
+    },
     "aggregation": {
       "coo": "Pays d'origine",
       "coc": "Pays de collecte",
@@ -98,6 +110,14 @@
     }
   },
   "wheatis": {
+    "navbar": {
+      "title": "Initiative Wheat",
+      "links": {
+        "home": "Accueil",
+        "wheatis": "WheatIS",
+        "wheat-urgi": "Wheat@URGI"
+      }
+    },
     "aggregation": {
       "entry": "Type de données",
       "db": "Base de données",
@@ -107,6 +127,15 @@
     }
   },
   "faidare": {
+    "navbar": {
+      "title": "FAIDARE",
+      "links": {
+        "urgi": "URGI",
+        "home": "Accueil",
+        "news": "Informations",
+        "about": "À propos"
+      }
+    },
     "aggregation": {
       "node": "Fournisseurs de données",
       "species": "Espèces",
