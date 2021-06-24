@@ -3,8 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { WheatisModule } from '../app/wheatis/wheatis.module';
+import { DataDiscoveryEnvironment } from './environment.model';
 
-export const environment = {
+export const environment: DataDiscoveryEnvironment = {
   production: false,
   title: 'WheatIS - DataDiscovery',
   navbar: {

@@ -9,6 +9,6 @@ import { environment } from '../environments/environment';
 })
 export class AggregationNamePipe implements PipeTransform {
   transform(value: string): string {
-    return (environment.aggregationNames as { [key: string]: string })[value] || value;
+    return environment.aggregationNames[value] || value;
   }
 }

@@ -1,6 +1,7 @@
 import { RareModule } from '../app/rare/rare.module';
+import { DataDiscoveryEnvironment } from './environment.model';
 
-export const environment = {
+export const environment: DataDiscoveryEnvironment = {
   production: false,
   title: 'BRC4Env - Biological Resource Centre for the Environment',
   navbar: {
