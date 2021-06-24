@@ -1,6 +1,6 @@
-
-.skeleton-loading, .skeleton-loading-aggregation {
-  background: #FFF;
+.skeleton-loading,
+.skeleton-loading-aggregation {
+  background: #fff;
   margin-bottom: 20px;
   padding: 15px;
 }
@@ -12,35 +12,81 @@
 .skeleton-default {
   width: 100%;
   clip-path: polygon(
-      0 0, 40% 0, 40% 25px, 0 25px,
-      0 35px, 80% 35px, 80% 45px, 0 45px,
-      0 55px, 90% 55px, 90% 65px, 0 65px,
-      0 75px, 95% 75px, 95% 85px, 0 85px
+    0 0,
+    40% 0,
+    40% 25px,
+    0 25px,
+    0 35px,
+    80% 35px,
+    80% 45px,
+    0 45px,
+    0 55px,
+    90% 55px,
+    90% 65px,
+    0 65px,
+    0 75px,
+    95% 75px,
+    95% 85px,
+    0 85px
   );
   height: 90px;
 }
 
-
 .skeleton-aggregation {
   width: 100%;
   clip-path: polygon(
-      0 0, 40% 0, 40% 20px, 0 20px,
-      0 30px, 50% 30px, 50% 40px, 0 40px,
-      0 50px, 60% 50px, 60% 60px, 0 60px,
-      0 70px, 35% 70px, 35% 80px, 0 80px,
-      0 90px, 50% 90px, 50% 100px, 0 100px,
-      0 110px, 40% 110px, 40% 120px, 0 120px
+    0 0,
+    40% 0,
+    40% 20px,
+    0 20px,
+    0 30px,
+    50% 30px,
+    50% 40px,
+    0 40px,
+    0 50px,
+    60% 50px,
+    60% 60px,
+    0 60px,
+    0 70px,
+    35% 70px,
+    35% 80px,
+    0 80px,
+    0 90px,
+    50% 90px,
+    50% 100px,
+    0 100px,
+    0 110px,
+    40% 110px,
+    40% 120px,
+    0 120px
   );
   height: 120px;
 }
 
 .skeleton-image-text {
   clip-path: polygon(
-      0 0, 70px 0, 70px 70px, 0 70px, 0 0,
-      90px 0, 100% 0, 100% 10px, 90px 10px,
-      90px 20px, 80% 20px, 80% 30px, 90px 30px,
-      90px 40px, 90% 40px, 90% 50px, 90px 50px,
-      90px 60px, 95% 60px, 95% 70px, 90px 70px, 90px 0
+    0 0,
+    70px 0,
+    70px 70px,
+    0 70px,
+    0 0,
+    90px 0,
+    100% 0,
+    100% 10px,
+    90px 10px,
+    90px 20px,
+    80% 20px,
+    80% 30px,
+    90px 30px,
+    90px 40px,
+    90% 40px,
+    90% 50px,
+    90px 50px,
+    90px 60px,
+    95% 60px,
+    95% 70px,
+    90px 70px,
+    90px 0
   );
   height: 70px;
 
@@ -51,7 +97,7 @@
 
 .skeleton-animated-background {
   background-color: #edeff2;
-  background-image: linear-gradient(90deg, transparent, rgba(#000, .05), transparent);
+  background-image: linear-gradient(90deg, transparent, rgba(#000, 0.05), transparent);
   background-repeat: no-repeat;
   background-size: 200px 100%;
   animation: 2500ms infinite backgroundAnimation;

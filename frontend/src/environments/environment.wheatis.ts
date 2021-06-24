@@ -23,7 +23,11 @@ export const environment: DataDiscoveryEnvironment = {
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md',
-  newsMdFile: 'assets/news.md'
+  newsMdFile: 'assets/news.md',
+  home: {
+    showAggregations: false,
+    exampleQueries: [] as Array<string>
+  }
 };
 
 /*

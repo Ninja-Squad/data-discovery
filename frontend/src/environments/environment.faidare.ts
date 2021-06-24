@@ -35,7 +35,12 @@ export const environment: DataDiscoveryEnvironment = {
   joinUsMdFile: 'assets/join.md',
   legalMentionsMdFile: 'assets/legal.md',
   eulaMdFile: 'assets/eula.md', // TODO does not exist
-  newsMdFile: 'assets/news.md' // TODO does not exist
+  newsMdFile: 'assets/news.md', // TODO does not exist
+  home: {
+    // show the main aggregations instead of pillars in Faidare
+    showAggregations: true,
+    exampleQueries: ['yield', 'fhb', 'University of Oulu', 'metribuzin tolerance']
+  }
   // taxa links are used in germplasm cards
   // taxaLinks: {
   //  NCBI: 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=',

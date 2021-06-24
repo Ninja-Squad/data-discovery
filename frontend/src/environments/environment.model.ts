@@ -48,4 +48,14 @@ export interface DataDiscoveryEnvironment {
    * Only necessary for applications with rare basket
    */
   rareBasket?: string;
+  home: {
+    /**
+     * if true, instead of showing pillars on the home page, we show the main aggregations
+     */
+    showAggregations: boolean;
+    /**
+     * these will be displayed as example queries on the home page. Use an empty array to avoid displaying the example queries section
+     */
+    exampleQueries: Array<string>;
+  };
 }

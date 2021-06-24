@@ -1,5 +1,5 @@
 // non-public variables used in this theme only
-$_theme-primary-color: #C44859;
+$_theme-primary-color: #c44859;
 $_theme-secondary-color: #222222;
 
 $component-active-bg: $_theme-primary-color;
@@ -11,9 +11,9 @@ $link-hover-color: $_theme-secondary-color;
 // override default shadows behavior
 $enable-shadows: true;
 
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
 
 // public custom variables used in this theme, and in component styles
 

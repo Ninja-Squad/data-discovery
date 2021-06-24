@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { DocumentModel } from './models/document.model';
-import { AggregatedPage } from './models/page';
+import { AggregatedPage, Aggregation } from './models/page';
 import { AggregationCriterion } from './models/aggregation-criterion';
 
 @Injectable({
@@ -95,5 +95,13 @@ export class SearchService {
     return this.http.get<Array<string>>('api/suggest', {
       params: { query }
     });
+  }
+
+  getMainAggregations(): Observable<Array<Aggregation>> {
+    return this.http
+      .get<AggregatedPage<DocumentModel>>('api/aggregate', {
+        params: { main: true }
+      })
+      .pipe(map(aggregatedPage => aggregatedPage.aggregations));
   }
 }

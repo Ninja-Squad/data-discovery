@@ -1,5 +1,5 @@
 // non-public variables used in this theme only
-$_theme-primary-color:#222222;
+$_theme-primary-color: #222222;
 $_theme-blue: #0f6e9f;
 $_theme-primary-color-light: #c2c2c2;
 $_theme-secondary-color: #eaeaea;
@@ -13,9 +13,9 @@ $link-hover-color: $_theme-primary-color;
 // override default shadows behavior
 $enable-shadows: true;
 
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
 
 // custom button
 $theme-btn-color: $white;

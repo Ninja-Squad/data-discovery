@@ -41,3 +41,5 @@ cypress-result.json
 # System Files
 .DS_Store
 Thumbs.db
+
+/cypress/screenshots/
