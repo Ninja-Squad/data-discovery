@@ -2,10 +2,18 @@ import { NgModule } from '@angular/core';
 import {
   NgbPaginationModule,
   NgbTooltipModule,
-  NgbTypeaheadModule
+  NgbTypeaheadModule,
+  NgbCollapseModule,
+  NgbDropdownModule
 } from '@ng-bootstrap/ng-bootstrap';
 
-const NGB_MODULES = [NgbTooltipModule, NgbTypeaheadModule, NgbPaginationModule];
+const NGB_MODULES = [
+  NgbTooltipModule,
+  NgbTypeaheadModule,
+  NgbPaginationModule,
+  NgbCollapseModule,
+  NgbDropdownModule
+];
 
 /**
  * A module which imports all the needed ng-bootstrap modules for the application

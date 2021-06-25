@@ -21,11 +21,3 @@
     background-color: $theme-navbar-hover-bg-color;
   }
 }
-
-.dropdown:hover > .dropdown-menu {
-  display: block;
-}
-
-.dropdown-menu {
-  margin-top: initial;
-}
