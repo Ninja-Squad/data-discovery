@@ -3,6 +3,9 @@ import { ComponentTester } from 'ngx-speculoos';
 
 import { NavbarComponent } from './navbar.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { By } from '@angular/platform-browser';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -13,8 +16,12 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
     return this.element('#navbar');
   }
 
+  get ngbCollapse(): NgbCollapse {
+    return this.debugElement.query(By.directive(NgbCollapse)).injector.get(NgbCollapse);
+  }
+
   get toggler() {
-    return this.button('button');
+    return this.button('button.navbar-toggler');
   }
 
   get links() {
@@ -38,22 +45,24 @@ describe('NavbarComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       declarations: [NavbarComponent],
-      imports: [I18nTestingModule]
+      imports: [I18nTestingModule, DataDiscoveryNgbTestingModule]
     })
   );
 
-  it('should toggle the class on click', () => {
+  it('should toggle the ngbCollapse on click', () => {
     const tester = new NavbarComponentTester();
 
     tester.detectChanges();
 
-    expect(tester.navBar.classes).toContain('collapse');
+    expect(tester.ngbCollapse.collapsed).toBe(true);
 
     tester.toggler.click();
 
-    tester.detectChanges();
+    expect(tester.ngbCollapse.collapsed).toBe(false);
 
-    expect(tester.navBar.classes).not.toContain('collapse');
+    tester.toggler.click();
+
+    expect(tester.ngbCollapse.collapsed).toBe(true);
   });
 
   it('should display title and links that open in new tabs', () => {

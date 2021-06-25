@@ -5,7 +5,8 @@ import { Type } from '@angular/core';
 
 interface Link {
   label: string;
-  url: string;
+  // should be omitted if subMenu is present. Mandatory if it's not
+  url?: string;
   subMenu?: Array<Link>; // not all navbar links have sub menus
 }
 

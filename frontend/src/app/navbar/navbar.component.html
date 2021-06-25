@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark py-0">
   <div class="container px-0">
-    <a class="navbar-brand d-flex align-items-center mr-0 px" [href]="navbar.logoUrl">
+    <a class="navbar-brand d-flex align-items-center mr-2" [href]="navbar.logoUrl">
       <img
         src="assets/logo.png"
         [alt]="appName + '.navbar.title' | translate"
@@ -11,89 +11,53 @@
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
     </button>
-    <div id="navbar" class="collapse navbar-collapse" [class.collapse]="navbarCollapsed">
+    <div id="navbar" class="collapse navbar-collapse" [ngbCollapse]="navbarCollapsed">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item" *ngFor="let link of navbar.links">
-          <div *ngIf="!link.subMenu">
+        <ng-container *ngFor="let link of navbar.links">
+          <li class="nav-item" *ngIf="!link.subMenu">
             <a
               class="nav-link d-flex align-items-center"
               [href]="link.url"
               [title]="appName + '.navbar.links.' + link.label | translate"
               [translate]="appName + '.navbar.links.' + link.label"
-            >
-            </a>
-          </div>
-          <div *ngIf="link.subMenu">
-            <!-- Dropdown -->
-            <div ngbDropdown class="d-inline-block dropdown">
-              <a
-                ngbDropdownToggle
-                class="nav-link d-flex align-items-center"
-                [href]="link.url"
-                [title]="appName + '.navbar.links.' + link.label | translate"
-                [translate]="appName + '.navbar.links.' + link.label"
-              >
-                ></a
-              >
-              <div ngbDropdownMenu class="dropdown-menu">
-                <div *ngFor="let subItem of link.subMenu">
-                  <a
-                    class="dropdown-item"
-                    [href]="subItem.url"
-                    [title]="appName + '.navbar.links.' + subItem.label | translate"
-                    [translate]="appName + '.navbar.links.' + subItem.label"
-                  >
-                    >
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="nav-item">
-          <div ngbDropdown class="d-inline-block dropdown">
-            <span
+            ></a>
+          </li>
+          <li class="nav-item" *ngIf="link.subMenu" ngbDropdown>
+            <a
               ngbDropdownToggle
               class="nav-link d-flex align-items-center"
-              translate="navbar.more"
-            ></span>
-            <div ngbDropdownMenu class="dropdown-menu">
-              <!-- About link -->
+              tabindex="0"
+              role="button"
+              [id]="'navbar-menu-' + link.label"
+              [translate]="appName + '.navbar.links.' + link.label"
+            >
+            </a>
+            <div ngbDropdownMenu [attr.aria-labelledby]="'navbar-menu-' + link.label">
               <a
+                *ngFor="let subItem of link.subMenu"
                 class="dropdown-item"
-                routerLink="/about"
-                routerLinkActive="true"
-                translate="navbar.about"
-              ></a>
-              <!-- Join link -->
-              <a
-                class="dropdown-item"
-                routerLink="/join"
-                routerLinkActive="true"
-                translate="navbar.join-us"
-              ></a>
-              <!-- Legal mentions link -->
-              <a
-                class="dropdown-item"
-                routerLink="/legal"
-                routerLinkActive="true"
-                translate="navbar.legal-mentions"
-              ></a>
-              <!-- Help link -->
-              <a
-                class="dropdown-item"
-                routerLink="/help"
-                routerLinkActive="true"
-                translate="navbar.help"
-              ></a>
-              <!-- News link -->
-              <a
-                class="dropdown-item"
-                routerLink="/news"
-                routerLinkActive="true"
-                translate="navbar.news"
-              ></a>
+                [href]="subItem.url"
+                [translate]="appName + '.navbar.links.' + subItem.label"
+              >
+              </a>
             </div>
+          </li>
+        </ng-container>
+        <li class="nav-item" ngbDropdown>
+          <a
+            ngbDropdownToggle
+            class="nav-link d-flex align-items-center"
+            tabindex="0"
+            role="button"
+            id="navbar-menu-more"
+            translate="navbar.more"
+          ></a>
+          <div ngbDropdownMenu aria-lebelledby="navbar-menu-more">
+            <a class="dropdown-item" routerLink="/about" translate="navbar.about"></a>
+            <a class="dropdown-item" routerLink="/join" translate="navbar.join-us"></a>
+            <a class="dropdown-item" routerLink="/legal" translate="navbar.legal-mentions"></a>
+            <a class="dropdown-item" routerLink="/help" translate="navbar.help"></a>
+            <a class="dropdown-item" routerLink="/news" translate="navbar.news"></a>
           </div>
         </li>
       </ul>

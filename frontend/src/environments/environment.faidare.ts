@@ -14,7 +14,6 @@ export const environment: DataDiscoveryEnvironment = {
     links: [
       {
         label: 'urgi',
-        url: '',
         subMenu: [
           { label: 'home', url: 'https://urgi.versailles.inra.fr' },
           { label: 'news', url: 'https://urgi.versailles.inra.fr/About-us/News' },
