@@ -2,7 +2,7 @@ import { WheatisModule } from '../app/wheatis/wheatis.module';
 
 export const environment = {
   production: true,
-  title: 'WheatIS - Wheat Information System',
+  title: 'WheatIS - DataDiscovery',
   navbar: {
     title: 'Wheat Initiative',
     logoUrl: 'http://www.wheatinitiative.org/',
