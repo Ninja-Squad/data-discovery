@@ -26,6 +26,7 @@ variables:
  ELASTIC_VERSION: "6.6.2"
  IMAGE_TAG: $CI_COMMIT_REF_SLUG
  GIT_DEPTH: 0
+ DOCKER_OPTS: "--mtu=1450"
 
 build-es-synonyms-docker-image:
  # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
