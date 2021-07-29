@@ -69,12 +69,12 @@
       }}..."
       (focus)="focus$.next($any($event.target).value)"
     />
-  </div>
 
-  <div *ngIf="aggregation.name === 'annot'">
-    <dd-descendants-checkbox
-      (searchDescendantsChange)="onSearchDescendants($event)"
-      [searchDescendants]="searchDescendants"
-    ></dd-descendants-checkbox>
+    <div *ngIf="aggregation.name === 'annot'" class="mt-2">
+      <dd-descendants-checkbox
+        (searchDescendantsChange)="onSearchDescendants($event)"
+        [searchDescendants]="searchDescendants"
+      ></dd-descendants-checkbox>
+    </div>
   </div>
 </div>

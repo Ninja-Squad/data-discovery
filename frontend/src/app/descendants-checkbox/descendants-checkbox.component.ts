@@ -17,8 +17,8 @@ export class DescendantsCheckboxComponent implements OnInit {
    * Listen to checkBox status and change it accordingly
    * but always keep the selected criteria
    **/
-  onDescendantsChecked(e: any) {
-    this.searchDescendants = e.target.checked;
+  onDescendantsChecked(checked: boolean) {
+    this.searchDescendants = checked;
     this.searchDescendantsChange.emit(this.searchDescendants);
   }
 }
