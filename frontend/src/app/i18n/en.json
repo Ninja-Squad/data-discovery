@@ -49,7 +49,8 @@
     "refine-search": "Refine your search.",
     "only-one-value": "Only one possible value for",
     "several-values": "{{ count }} possible values for",
-    "filter-on": "Filter on"
+    "filter-on": "Filter on",
+    "none": "None"
   },
   "truncatable-description": {
     "expand": "... (expand)",

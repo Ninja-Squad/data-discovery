@@ -11,10 +11,11 @@ import { FormControl } from '@angular/forms';
 import { merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { NULL_VALUE } from '../models/document.model';
+import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
 
 import { Aggregation, Bucket } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { TranslateService } from '@ngx-translate/core';
 
 export type BucketOrRefine = Bucket | 'REFINE';
 
@@ -66,6 +67,8 @@ export class LargeAggregationComponent {
     );
   };
 
+  constructor(private translateService: TranslateService) {}
+
   emitEvent(): void {
     // to emit a new event every time a value changes
     const event: AggregationCriterion = {
@@ -107,6 +110,6 @@ export class LargeAggregationComponent {
   }
 
   displayableKey(key: string): string {
-    return key === NULL_VALUE ? 'Aucun' : key;
+    return key === NULL_VALUE ? this.translateService.instant(NULL_VALUE_TRANSLATION_KEY) : key;
   }
 }

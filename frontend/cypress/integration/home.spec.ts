@@ -66,7 +66,7 @@ describe('Home page', () => {
     cy.get('dd-aggregations')
       .should('have.length', 1)
       .should('contain', 'Taxon group')
-      .should('contain', 'Aucun')
+      .should('contain', 'None')
       .should('contain', '[21,416]')
       .should('contain', 'Data type')
       .should('contain', 'Database')
