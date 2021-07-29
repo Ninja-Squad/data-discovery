@@ -64,7 +64,7 @@ describe('SmallAggregationComponent', () => {
     expect(tester.labels[1]).toContainText('[20]');
     expect(tester.labels[2]).toContainText('New Zealand');
     expect(tester.labels[2]).toContainText('[30]');
-    expect(tester.labels[3]).toContainText('Aucun');
+    expect(tester.labels[3]).toContainText('None');
     expect(tester.labels[3]).toContainText('[40]');
   });
 
@@ -99,8 +99,9 @@ describe('SmallAggregationComponent', () => {
   });
 
   it('should build a form based on the bucket', () => {
+    const tester = new SmallAggregationComponentTester();
     // given an aggregation with a bucket
-    const component = new SmallAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
 
     // when initializing the component
@@ -115,7 +116,8 @@ describe('SmallAggregationComponent', () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France'];
 
-    const component = new SmallAggregationComponent();
+    const tester = new SmallAggregationComponentTester();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
     component.selectedKeys = selectedKeys;
 
@@ -153,8 +155,9 @@ describe('SmallAggregationComponent', () => {
   }));
 
   it('should change the selected values in the form when the selectedValues input changes, without emitting events', () => {
+    const tester = new SmallAggregationComponentTester();
     // given an aggregation with a bucket and no selected value
-    const component = new SmallAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
     component.selectedKeys = [];
 

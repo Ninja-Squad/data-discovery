@@ -10,7 +10,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { NULL_VALUE } from '../models/document.model';
+import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'dd-small-aggregation',
@@ -53,6 +54,8 @@ export class SmallAggregationComponent implements OnInit {
 
     return a.every(value => secondSet.has(value));
   }
+
+  constructor(private translateService: TranslateService) {}
 
   ngOnInit(): void {
     // create as many form control as there are buckets
@@ -97,7 +100,7 @@ export class SmallAggregationComponent implements OnInit {
   }
 
   displayableKey(key: string): string {
-    return key === NULL_VALUE ? 'Aucun' : key;
+    return key === NULL_VALUE ? this.translateService.instant(NULL_VALUE_TRANSLATION_KEY) : key;
   }
 
   onSearchDescendants(event: boolean) {

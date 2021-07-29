@@ -108,13 +108,14 @@ describe('LargeAggregationComponent', () => {
     expect(tester.pills[0].button('button')).not.toBeNull();
     expect(tester.pills[1]).toContainText('Italy[20]');
     expect(tester.pills[1].button('button')).not.toBeNull();
-    expect(tester.pills[2]).toContainText('Aucun[40]');
+    expect(tester.pills[2]).toContainText('None[40]');
     expect(tester.pills[2].button('button')).not.toBeNull();
   });
 
   it('should find one results containing the term entered', () => {
+    const tester = new LargeAggregationComponentTester();
     // given an aggregation with a bucket
-    const component = new LargeAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
 
     // when searching for a result
@@ -127,13 +128,14 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should find one results containing the term entered when it is the null value translation', () => {
+    const tester = new LargeAggregationComponentTester();
     // given an aggregation with a bucket
-    const component = new LargeAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('auc')).subscribe(results => (actualResults = results));
+    component.search(of('non')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -141,25 +143,35 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should find the results containing the term entered and ignore the case', () => {
+    const tester = new LargeAggregationComponentTester();
     // given an aggregation with a bucket
-    const component = new LargeAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
     component.search(of('A')).subscribe(results => (actualResults = results));
 
-    // then it should have one match
-    expect(actualResults.length).toBe(4);
+    // then it should have matches  (NULL_VALUE is None in English, so it does not contains 'A')
+    expect(actualResults.length).toBe(3);
     expect((actualResults[0] as Bucket).key).toBe('France');
     expect((actualResults[1] as Bucket).key).toBe('Italy');
     expect((actualResults[2] as Bucket).key).toBe('New Zealand');
-    expect((actualResults[3] as Bucket).key).toBe(NULL_VALUE);
+
+    // when searching for another result
+    component.search(of('n')).subscribe(results => (actualResults = results));
+
+    // then it should have matches (NULL_VALUE is None in English, so it contains 'n')
+    expect(actualResults.length).toBe(3);
+    expect((actualResults[0] as Bucket).key).toBe('France');
+    expect((actualResults[1] as Bucket).key).toBe('New Zealand');
+    expect((actualResults[2] as Bucket).key).toBe(NULL_VALUE);
   });
 
   it('should not find the results containing the term entered if it is already selected', () => {
+    const tester = new LargeAggregationComponentTester();
     // given an aggregation with a bucket
-    const component = new LargeAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = aggregation;
     component.selectedKeys = ['France'];
 
@@ -172,8 +184,9 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should find 8 results max + a fake refine result', () => {
+    const tester = new LargeAggregationComponentTester();
     // given an aggregation with a bucket
-    const component = new LargeAggregationComponent();
+    const component = tester.componentInstance;
     component.aggregation = toAggregation('coo', Array(30).fill('a'));
 
     // when searching for a result
