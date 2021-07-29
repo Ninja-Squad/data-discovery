@@ -22,7 +22,7 @@
   },
   "descendants-checkbox": {
     "expand-search": "Expand search",
-    "tooltips": "Search for results with associated ontology terms."
+    "tooltip": "Search for results with associated ontology terms."
   },
   "document-count": {
     "one-document": "Only one document matches",
