@@ -20,6 +20,7 @@ import fr.inra.urgi.datadiscovery.dao.AppAggregation;
  */
 public enum FaidareAggregation implements AppAggregation {
     SPECIES("species", "species.keyword", LARGE),
+    TAXON_GROUP("tg", "taxonGroup.keyword", LARGE),
     ENTRY_TYPE("entry", "entryType.keyword", LARGE),
     GO_ANNOTATION("annot", "annotationName.keyword", LARGE),
     DATABASE_NAME("db", "databaseName.keyword", LARGE),
@@ -27,8 +28,7 @@ public enum FaidareAggregation implements AppAggregation {
     HOLDING_INSTITUTE("hi", "holdingInstitute.keyword", LARGE),
     BIOLOGICAL_STATUS("bs", "biologicalStatus.keyword", LARGE),
     GENETIC_NATURE("gn", "geneticNature.keyword", LARGE),
-    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE),
-    TAXON_GROUP("tg", "taxonGroup.keyword", LARGE);
+    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE);
 
     /**
      * The "main" aggregations, i.e. those that are displayed on the home page

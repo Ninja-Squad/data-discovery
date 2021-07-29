@@ -13,6 +13,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
  */
 public interface AggregationAnalyzer {
     Type getAggregationType(Terms terms);
-    Comparator<Terms> comparator(AggregationSelection aggregationSelection);
+    Comparator<Terms> comparator();
     List<AppAggregation> getAggregations();
 }

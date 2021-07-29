@@ -29,7 +29,7 @@ public class WheatisAggregationAnalyzer implements AggregationAnalyzer {
     }
 
     @Override
-    public Comparator<Terms> comparator(AggregationSelection aggregationSelection) {
+    public Comparator<Terms> comparator() {
         return Comparator.comparing(terms -> WheatisAggregation.fromName(terms.getName()));
     }
 

@@ -30,16 +30,14 @@ public final class AggregatedPageDTO<T> {
     }
 
     public static <T> AggregatedPageDTO<T> fromPage(AggregatedPage<T> page,
-                                                    AggregationAnalyzer aggregationAnalyzer,
-                                                    AggregationSelection aggregationSelection) {
+                                                    AggregationAnalyzer aggregationAnalyzer) {
         return new AggregatedPageDTO<>(
             PageDTO.fromPage(page),
-            toAggregationDTOs(page.getAggregations(), aggregationAnalyzer, aggregationSelection));
+            toAggregationDTOs(page.getAggregations(), aggregationAnalyzer));
     }
 
     private static List<AggregationDTO> toAggregationDTOs(Aggregations aggregations,
-                                                          AggregationAnalyzer aggregationAnalyzer,
-                                                          AggregationSelection aggregationSelection) {
+                                                          AggregationAnalyzer aggregationAnalyzer) {
         if (aggregations == null) {
             return Collections.emptyList();
         }
@@ -47,7 +45,7 @@ public final class AggregatedPageDTO<T> {
                            .stream()
                            .filter(aggregation -> aggregation instanceof Terms)
                            .map(Terms.class::cast)
-                           .sorted(aggregationAnalyzer.comparator(aggregationSelection))
+                           .sorted(aggregationAnalyzer.comparator())
                            .map(terms -> new AggregationDTO(terms, aggregationAnalyzer))
                            .collect(Collectors.toList());
     }
