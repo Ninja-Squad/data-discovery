@@ -29,7 +29,7 @@ public class RareAggregationAnalyzer implements AggregationAnalyzer {
     }
 
     @Override
-    public Comparator<Terms> comparator(AggregationSelection aggregationSelection) {
+    public Comparator<Terms> comparator() {
         return Comparator.comparing(terms -> RareAggregation.fromName(terms.getName()));
     }
 

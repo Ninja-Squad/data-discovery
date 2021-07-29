@@ -62,7 +62,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     protected final ElasticsearchRestTemplate elasticsearchTemplate;
     private final AbstractDocumentHighlighter<D> documentHighlighter;
 
-    final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public AbstractDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
                                    AbstractDocumentHighlighter<D> documentHighlighter) {
@@ -85,9 +85,10 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
                     ).withHighlightBuilder(new HighlightBuilder().encoder("html"));
         }
 
-        logger.debug(builder.build().toString());
+        NativeSearchQuery searchQuery = builder.build();
+        logger.debug("Search query: {}", searchQuery);
         return AggregatedPage.fromSearchHits(
-            elasticsearchTemplate.search(builder.build(), getDocumentClass()),
+            elasticsearchTemplate.search(searchQuery, getDocumentClass()),
             page,
             documentHighlighter
         );
@@ -281,7 +282,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
             try {
                 response = client.search(req, RequestOptions.DEFAULT);
             } catch (IOException e) {
-                logger.warn("Could not fetch suggestions for  term: '" + term + "'." + e);
+                logger.warn("Could not fetch suggestions for term: '{}'", term, e);
                 return Collections.emptyList();
             }
 

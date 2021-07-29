@@ -62,7 +62,7 @@ public class SearchController {
                 createRefinementsFromParameters(parameters),
                 PageRequest.of(page.orElse(0), PAGE_SIZE)
         );
-        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer, AggregationSelection.ALL);
+        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer);
 
     }
 
@@ -77,7 +77,7 @@ public class SearchController {
                 createRefinementsFromParameters(parameters),
                 aggregationSelection,
                 descendants.orElse(false));
-        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer, aggregationSelection);
+        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer);
     }
 
     private SearchRefinements createRefinementsFromParameters(MultiValueMap<String, String> parameters) {

@@ -52,7 +52,7 @@ class IndexFilterTest {
                 PageRequest.of(0, 20),
                 0
         ));
-        when(mockAggregationAnalyzer.comparator(any())).thenReturn(Comparator.comparing(Terms::getName));
+        when(mockAggregationAnalyzer.comparator()).thenReturn(Comparator.comparing(Terms::getName));
     }
 
     @Test

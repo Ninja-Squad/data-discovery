@@ -29,17 +29,8 @@ public class FaidareAggregationAnalyzer implements AggregationAnalyzer {
     }
 
     @Override
-    public Comparator<Terms> comparator(AggregationSelection aggregationSelection) {
-        if (aggregationSelection == AggregationSelection.ALL) {
-            return Comparator.comparing(terms -> FaidareAggregation.fromName(terms.getName()));
-        } else if (aggregationSelection == AggregationSelection.MAIN) {
-            return Comparator.comparingInt(terms -> {
-                FaidareAggregation faidareAggregation = FaidareAggregation.fromName(terms.getName());
-                return FaidareAggregation.MAIN_AGGREGATIONS.indexOf(faidareAggregation);
-            });
-        } else {
-            throw new IllegalStateException("Unhandled aggregation selection: " + aggregationSelection);
-        }
+    public Comparator<Terms> comparator() {
+        return Comparator.comparing(terms -> FaidareAggregation.fromName(terms.getName()));
     }
 
     @Override
