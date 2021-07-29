@@ -1,14 +1,15 @@
 package fr.inra.urgi.datadiscovery.dao.faidare;
 
-import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.LARGE;
-import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
+import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
+import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import fr.inra.urgi.datadiscovery.dao.AppAggregation;
+import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.LARGE;
+import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
 
 /**
  * Enum listing the terms aggregations used by Faidare, and their corresponding name and field.
@@ -32,6 +33,7 @@ public enum FaidareAggregation implements AppAggregation {
 
     /**
      * The "main" aggregations, i.e. those that are displayed on the home page
+     * @see AbstractDocumentDaoImpl#getMainAppAggregations()
      */
     public static final List<FaidareAggregation> MAIN_AGGREGATIONS =
             Collections.unmodifiableList(Arrays.asList(TAXON_GROUP, ENTRY_TYPE, DATABASE_NAME, NODE));
