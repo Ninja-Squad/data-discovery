@@ -1,15 +1,15 @@
 package fr.inra.urgi.datadiscovery.domain.faidare;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.util.Collections;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
+
+import java.io.IOException;
+import java.util.Collections;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit test to check that a {@link FaidareDocument} can correctly be marshalled/unmarshaleld to/from JSON
@@ -38,7 +38,7 @@ class FaidareDocumentTest {
                            .withHoldingInstitute("INRAE")
                            .withBiologicalStatus("Natural")
                            .withGeneticNature("Genetic nature 1")
-                           .withTaxonGroup("Taxon group 1")
+                           .withTaxonGroup(Collections.singletonList("Taxon group 1"))
                            .withCountryOfOrigin("France")
                            .build();
 

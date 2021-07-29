@@ -1,17 +1,17 @@
 package fr.inra.urgi.datadiscovery.domain.faidare;
 
-import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.elasticsearch.annotations.Mapping;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
 /**
  * The document for the Faidare application
@@ -40,7 +40,7 @@ public final class FaidareDocument implements SearchDocument {
     private final String biologicalStatus;
     private final String geneticNature;
     private final String countryOfOrigin;
-    private final String taxonGroup;
+    private final List<String> taxonGroup;
 
     @JsonCreator
     @PersistenceConstructor
@@ -59,7 +59,7 @@ public final class FaidareDocument implements SearchDocument {
                            String biologicalStatus,
                            String geneticNature,
                            String countryOfOrigin,
-                           String taxonGroup) {
+                           List<String> taxonGroup) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -159,7 +159,7 @@ public final class FaidareDocument implements SearchDocument {
         return countryOfOrigin;
     }
 
-    public String getTaxonGroup() {
+    public List<String> getTaxonGroup() {
         return taxonGroup;
     }
 
@@ -257,7 +257,7 @@ public final class FaidareDocument implements SearchDocument {
         private String biologicalStatus;
         private String geneticNature;
         private String countryOfOrigin;
-        private String taxonGroup;
+        private List<String> taxonGroup;
 
         private Builder() {
         }
@@ -356,7 +356,7 @@ public final class FaidareDocument implements SearchDocument {
             return this;
         }
 
-        public Builder withTaxonGroup(String taxonGroup) {
+        public Builder withTaxonGroup(List<String> taxonGroup) {
             this.taxonGroup = taxonGroup;
             return this;
         }
