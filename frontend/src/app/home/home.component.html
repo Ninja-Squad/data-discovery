@@ -1,3 +1,38 @@
+<ng-template #payloadTemplate let-node="node">
+  {{ node.text }}
+  <span *ngIf="node.payload?.type" class="badge bg-info">{{ node.payload?.type }}</span>
+</ng-template>
+<div class="row">
+  <div class="col">
+    <div class="form-group">
+      <label class="sr-only" for="tree-filter">Filter</label>
+      <input
+        [formControl]="treeFilterCtrl"
+        id="tree-filter"
+        class="form-control"
+        placeholder="Filter"
+        type="search"
+      />
+    </div>
+
+    <pre>{{ treeFilterCtrl.value }}</pre>
+
+    <dd-tree
+      [filter]="treeFilterCtrl.value"
+      [rootNodes]="tree"
+      [payloadTemplate]="payloadTemplate"
+      (highlightedNode)="highlightedNode = $event"
+      (selectedNodes)="selectedNodes = $event"
+    ></dd-tree>
+  </div>
+  <div class="col">
+    <h2>Highlighted node</h2>
+    <pre>{{ highlightedNode | json }}</pre>
+    <h2>Selected nodes</h2>
+    <pre>{{ selectedNodes | json }}</pre>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-md-8 col-lg-9 order-md-last">
     <!-- the header is specific to each application -->
