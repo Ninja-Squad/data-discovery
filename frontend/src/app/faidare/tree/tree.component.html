@@ -1,0 +1,14 @@
+<ng-container *ngIf="tree$ | async as tree">
+  <ul class="list-unstyled" style="margin-bottom: 500px">
+    <ng-container *ngFor="let node of tree.rootNodes; trackBy: byId">
+      <li [ngbCollapse]="!(!tree.filtered || node.matchingFilter || node.hasVisibleChildren)">
+        <dd-node
+          [node]="node"
+          [filtered]="tree.filtered"
+          [highlightedNodeId]="tree.highlightedNode?.id"
+          [payloadTemplate]="payloadTemplate"
+        ></dd-node>
+      </li>
+    </ng-container>
+  </ul>
+</ng-container>
