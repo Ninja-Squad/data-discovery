@@ -87,7 +87,13 @@ while [ -n "$1" ]; do
 done
 
 BASEDIR=$(dirname "$0")
+SCRIPT_DIR=$(readlink -f "$BASEDIR")
 DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/$APP_NAME/")
+
+DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
+BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
+WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
+FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
 
 if [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
     echo -e "${RED}ERROR: -app and -env parameters are mandatory!${NC}"
@@ -99,13 +105,17 @@ if [ -z "$ES_HOST" ]; then
     echo && help
 	exit 4
 fi
+
+ID_FIELD=""
 if [ "$APP_NAME" == "rare" ]; then
     ID_FIELD=identifier
 elif [ "$APP_NAME" == "brc4env"  ] ; then
     ID_FIELD=identifier
+    FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
     DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
-else
-    ID_FIELD=""
+elif [ "$APP_NAME" == "wheatis"  ] ; then
+    FILTER_DATA_SCRIPT="${WHEATIS_FILTER_DATA_SCRIPT}"
+    DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/data-discovery")
 fi
 export ID_FIELD APP_NAME
 
@@ -140,10 +150,11 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 mkdir -p "$OUTDIR"
 
 FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
-export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS
+export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS FILTER_DATA_SCRIPT
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
+            | jq -rc -f ${FILTER_DATA_SCRIPT} \
             | jq --argjson fields '${FIELDS}' -f ${BASEDIR}/clean_fields.jq \
             | jq -c '.[] | .name = (.name|tostring) | [.]' 2>> ${OUTDIR}/$2.jq.err \
             | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
@@ -163,7 +174,7 @@ export -f index_resources index_suggestions
 
 {
     # set -x
-    echo "Indexing files into ${DATADIR} towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
+    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
     find ${DATADIR} -maxdepth 1 -name "*.json.gz" | \
         parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} {1/.} {2} \
         :::: - ::: ${ES_HOSTS}
@@ -189,7 +200,7 @@ EOF
 
 {
     # set -x
-    echo "Indexing suggestions into ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
+    echo "Indexing suggestions from ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz into index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
     find ${DATADIR}/suggestions/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
         parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
         :::: - ::: ${ES_HOSTS}

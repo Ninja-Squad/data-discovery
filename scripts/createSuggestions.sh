@@ -92,6 +92,7 @@ DATADIR=$(readlink -f "$BASEDIR/../data/$APP_NAME")
 
 DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
 BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
+WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
 FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
 
 WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
@@ -104,7 +105,9 @@ elif [ "${APP_NAME}" == "brc4env" ]; then
     FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
     DATADIR=$(readlink -f "$BASEDIR/../data/rare")
 elif [ "${APP_NAME}" == "wheatis" ]; then
+    FILTER_DATA_SCRIPT="${WHEATIS_FILTER_DATA_SCRIPT}"
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
+    DATADIR=$(readlink -f "$BASEDIR/../data/data-discovery")
 elif [ "${APP_NAME}" == "data-discovery" ]; then
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
 else
@@ -116,7 +119,7 @@ fi
 export FILTER_DATA_SCRIPT FIELDS_TO_EXTRACT
 
 extract_suggestions() {
-    bash -c "set -o pipefail; gunzip -c $1 |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for brc4env)
+    bash -c "set -o pipefail; gunzip -c $1 |                        # jq below add a filter on some data if needed (noop by default, or brc4env or wheatis)
     jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
     tee \
         >(
