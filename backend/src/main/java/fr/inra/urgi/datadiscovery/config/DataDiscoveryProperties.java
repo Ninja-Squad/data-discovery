@@ -1,7 +1,5 @@
 package fr.inra.urgi.datadiscovery.config;
 
-import java.nio.file.Path;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -13,25 +11,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DataDiscoveryProperties {
 
     /**
-     * The directory where the JSON files that are harvested are located.
-     */
-    private Path resourceDir;
-
-    /**
      * The ES prefix used to store the resources.
      * Allows for a different index and type name between dev and tests ('resource' and 'test-resource' for example).
      * Used in the {@link org.springframework.data.elasticsearch.annotations.Document} annotation
      * on our domain entities.
      */
     private String elasticsearchPrefix;
-
-    public Path getResourceDir() {
-        return resourceDir;
-    }
-
-    public void setResourceDir(Path resourceDir) {
-        this.resourceDir = resourceDir;
-    }
 
     public String getElasticsearchPrefix() {
         return elasticsearchPrefix;
@@ -44,8 +29,7 @@ public class DataDiscoveryProperties {
     @Override
     public String toString() {
         return "DataDiscoveryProperties{" +
-                "resourceDir=" + resourceDir +
-                ", elasticsearchPrefix='" + elasticsearchPrefix + '\'' +
+                "elasticsearchPrefix='" + elasticsearchPrefix + '\'' +
                 '}';
     }
 }
