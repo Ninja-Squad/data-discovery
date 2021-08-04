@@ -902,8 +902,8 @@ data-integration-wheatis-beta-openstack:
  <<: *data-integration-openstack
  only:
   changes:
-   - data/wheatis/*.json.gz
-   - data/wheatis/suggestions/wheatis_bulk*.json.gz
+   - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
   refs:
@@ -920,8 +920,8 @@ data-integration-wheatis-staging-openstack:
  <<: *data-integration-openstack
  only:
   changes:
-   - data/wheatis/*.json.gz
-   - data/wheatis/suggestions/wheatis_bulk*.json.gz
+   - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
   refs:
@@ -937,8 +937,8 @@ data-integration-wheatis-prod-proxmox:
  <<: *data-integration-proxmox
  only:
   changes:
-   - data/wheatis/*.json.gz
-   - data/wheatis/suggestions/wheatis_bulk*.json.gz
+   - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
   refs:
@@ -953,8 +953,8 @@ data-integration-wheatis-prod-openstack:
  <<: *data-integration-openstack
  only:
   changes:
-   - data/wheatis/*.json.gz
-   - data/wheatis/suggestions/wheatis_bulk*.json.gz
+   - data/data-discovery/*.json.gz
+   - data/data-discovery/suggestions/wheatis_bulk*.json.gz
    - data/synonyms/all_*
    - scripts/*
   refs:
