@@ -176,7 +176,7 @@ describe('TreeComponent', () => {
   });
 
   it('should create a tree, pre-select nodes, and pre-expand nodes so that selected nodes are visible', () => {
-    expect(tester.nodes.length).toBe(14);
+    expect(tester.nodes.length).toBe(6);
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'B', 'B1', 'B11', 'B12', 'B2']);
     expect(tester.componentInstance.selectedNodes).toEqual([
       {
@@ -189,18 +189,7 @@ describe('TreeComponent', () => {
       }
     ]);
     expect(tester.checkedNodes.map(n => n.text)).toEqual(['B1', 'B11', 'B12']);
-    expect(tester.uncheckedNodes.map(n => n.text)).toEqual([
-      'A',
-      'A1',
-      'A11',
-      'A12',
-      'A2',
-      'A21',
-      'A22',
-      'B2',
-      'B21',
-      'B22'
-    ]);
+    expect(tester.uncheckedNodes.map(n => n.text)).toEqual(['A', 'B2']);
     expect(tester.indeterminateNodes.map(n => n.text)).toEqual(['B']);
   });
 
@@ -230,6 +219,11 @@ describe('TreeComponent', () => {
   });
 
   it('should select and deselect nodes', () => {
+    // expand A
+    tester.node('A').expander.click();
+    // expand A1
+    tester.node('A1').expander.click();
+    // check A1
     tester.node('A1').checkbox.check();
 
     expect(tester.componentInstance.selectedNodes).toEqual([
@@ -253,14 +247,7 @@ describe('TreeComponent', () => {
       }
     ]);
     expect(tester.checkedNodes.map(n => n.text)).toEqual(['A1', 'A11', 'A12', 'B1', 'B11', 'B12']);
-    expect(tester.uncheckedNodes.map(n => n.text)).toEqual([
-      'A2',
-      'A21',
-      'A22',
-      'B2',
-      'B21',
-      'B22'
-    ]);
+    expect(tester.uncheckedNodes.map(n => n.text)).toEqual(['A2', 'B2']);
     expect(tester.indeterminateNodes.map(n => n.text)).toEqual(['A', 'B']);
 
     tester.node('A11').checkbox.uncheck();
@@ -279,15 +266,7 @@ describe('TreeComponent', () => {
       }
     ]);
     expect(tester.checkedNodes.map(n => n.text)).toEqual(['A12', 'B1', 'B11', 'B12']);
-    expect(tester.uncheckedNodes.map(n => n.text)).toEqual([
-      'A11',
-      'A2',
-      'A21',
-      'A22',
-      'B2',
-      'B21',
-      'B22'
-    ]);
+    expect(tester.uncheckedNodes.map(n => n.text)).toEqual(['A11', 'A2', 'B2']);
     expect(tester.indeterminateNodes.map(n => n.text)).toEqual(['A', 'A1', 'B']);
   });
 
@@ -338,11 +317,15 @@ describe('TreeComponent', () => {
   });
 
   it('should honor the node template', () => {
+    tester.node('A').expander.click();
+    tester.node('A1').expander.click();
     expect(tester.node('A').payload.textContent.trim()).toBe('A');
     expect(tester.node('A11').payload).toContainText('A11 foo');
   });
 
   it('should highlight nodes', () => {
+    tester.node('A').expander.click();
+    tester.node('A1').expander.click();
     tester.node('A').payload.click();
     expect(tester.componentInstance.highlightedNode).toEqual({ text: 'A', payload: undefined });
 

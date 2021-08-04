@@ -87,7 +87,7 @@ describe('HomeComponent', () => {
 
       const searchService = TestBed.inject(SearchService);
 
-      const component = new HomeComponent(router, searchService);
+      const component = new HomeComponent(router, searchService, null);
 
       // with a query
       const query = 'Bacteria';

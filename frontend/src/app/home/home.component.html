@@ -1,9 +1,9 @@
 <ng-template #payloadTemplate let-node="node">
   {{ node.text }}
-  <span *ngIf="node.payload?.type" class="badge bg-info">{{ node.payload?.type }}</span>
+  <span class="badge" [ngClass]="'badge-' + node.payload.type">{{ node.payload.type }}</span>
 </ng-template>
-<div class="row">
-  <div class="col">
+<div class="row" *ngIf="tree$ | async as tree">
+  <div class="col" style="overflow-y: hidden">
     <div class="form-group">
       <label class="sr-only" for="tree-filter">Filter</label>
       <input
@@ -15,15 +15,15 @@
       />
     </div>
 
-    <pre>{{ treeFilterCtrl.value }}</pre>
-
-    <dd-tree
-      [filter]="treeFilterCtrl.value"
-      [rootNodes]="tree"
-      [payloadTemplate]="payloadTemplate"
-      (highlightedNode)="highlightedNode = $event"
-      (selectedNodes)="selectedNodes = $event"
-    ></dd-tree>
+    <div class="border rounded p-1" style="max-height: 60vh; overflow-x: auto">
+      <dd-tree
+        [filter]="debouncedFilterValue$ | async"
+        [rootNodes]="tree"
+        [payloadTemplate]="payloadTemplate"
+        (highlightedNode)="highlightedNode = $event"
+        (selectedNodes)="selectedNodes = $event"
+      ></dd-tree>
+    </div>
   </div>
   <div class="col">
     <h2>Highlighted node</h2>

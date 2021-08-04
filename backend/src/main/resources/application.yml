@@ -20,6 +20,9 @@ spring:
     deserialization:
       accept-single-value-as-array: true
 
+  codec:
+    max-in-memory-size: 5MB
+
 management:
   endpoint:
     health:
@@ -49,6 +52,10 @@ logging:
     org.springframework:
       boot.web.embedded.tomcat.TomcatWebServer: INFO
       web.client.RestTemplate: DEBUG
+
+data-discovery:
+  ontology:
+    base-url: 'https://urgi.versailles.inra.fr/faidare/brapi'
 
 ---
 spring:

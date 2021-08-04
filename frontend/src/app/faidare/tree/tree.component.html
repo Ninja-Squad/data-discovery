@@ -1,7 +1,7 @@
 <ng-container *ngIf="tree$ | async as tree">
-  <ul class="list-unstyled" style="margin-bottom: 500px">
+  <ul class="list-unstyled">
     <ng-container *ngFor="let node of tree.rootNodes; trackBy: byId">
-      <li [ngbCollapse]="!(!tree.filtered || node.matchingFilter || node.hasVisibleChildren)">
+      <li *ngIf="!tree.filtered || node.matchingFilter || node.hasVisibleChildren">
         <dd-node
           [node]="node"
           [filtered]="tree.filtered"
