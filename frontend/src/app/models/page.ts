@@ -15,7 +15,7 @@ export interface Bucket {
 export interface Aggregation {
   name: string;
   buckets: Array<Bucket>;
-  type: 'SMALL' | 'LARGE';
+  type: 'SMALL' | 'LARGE' | 'ONTOLOGY';
 }
 
 export interface AggregatedPage<T> extends Page<T> {

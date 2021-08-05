@@ -10,12 +10,18 @@ import fr.inra.urgi.datadiscovery.ontology.api.Trait;
 public final class TraitDetails {
     @JsonUnwrapped
     private final Trait trait;
+    private final String ontologyName;
 
-    public TraitDetails(Trait trait) {
+    public TraitDetails(Trait trait, String ontologyName) {
         this.trait = trait;
+        this.ontologyName = ontologyName;
     }
 
     public Trait getTrait() {
         return trait;
+    }
+
+    public String getOntologyName() {
+        return ontologyName;
     }
 }

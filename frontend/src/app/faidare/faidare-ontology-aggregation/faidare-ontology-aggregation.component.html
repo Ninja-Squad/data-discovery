@@ -1,0 +1,14 @@
+<div class="card mb-1" *ngIf="aggregation.buckets.length">
+  <div class="card-body">
+    <h3
+      class="card-title"
+      [class.text-muted]="aggregation.buckets.length === 0"
+      translate="faidare.aggregation.o"
+    ></h3>
+
+    <p>{{ selectedKeys.length }} variable(s) sélectionnée(s)</p>
+    <button type="button" class="btn btn-sm btn-outline-dark" (click)="openModal()">
+      Modifier la sélection
+    </button>
+  </div>
+</div>

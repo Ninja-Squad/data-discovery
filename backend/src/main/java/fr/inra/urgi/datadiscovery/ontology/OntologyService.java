@@ -160,7 +160,7 @@ public class OntologyService implements CommandLineRunner {
                                                                                           traitClassPayload.getName(),
                                                                                           variable.getOntologyName()));
                 }
-                traitsById.put(traitPayload.getId(), new TraitDetails(variable.getTrait()));
+                traitsById.put(traitPayload.getId(), new TraitDetails(variable.getTrait(), variable.getOntologyName()));
                 variablesById.put(variablePayload.getId(), new VariableDetails(variable));
             }
         }

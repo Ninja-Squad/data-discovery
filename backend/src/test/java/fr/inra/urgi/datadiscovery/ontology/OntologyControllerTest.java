@@ -99,13 +99,15 @@ class OntologyControllerTest {
     @Test
     void shouldGetTrait() throws Exception {
         when(mockOntologyService.getTrait("foo")).thenReturn(
-            Optional.of(new TraitDetails(Trait.builder().withTraitDbId("foo").withName("Foo").build()))
+            Optional.of(new TraitDetails(Trait.builder().withTraitDbId("foo").withName("Foo").build(), "Some ontology name"))
         );
 
         mockMvc.perform(get("/api/ontologies/traits/foo"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.traitDbId").value("foo"))
-               .andExpect(jsonPath("$.name").value("Foo"));
+               .andExpect(jsonPath("$.name").value("Foo"))
+               .andExpect(jsonPath("$.ontologyName").value("Some ontology name"))
+        ;
     }
 
     @Test

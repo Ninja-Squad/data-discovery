@@ -1,0 +1,21 @@
+@import 'theme';
+
+.badge-ONTOLOGY {
+  color: $white;
+  background-color: $gray-800;
+}
+
+.badge-TRAIT_CLASS {
+  color: $white;
+  background-color: $primary;
+}
+
+.badge-TRAIT {
+  color: $white;
+  background-color: $info;
+}
+
+.badge-VARIABLE {
+  color: $white;
+  background-color: $success;
+}

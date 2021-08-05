@@ -1,0 +1,61 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate="faidare.ontology-aggregation-modal.title"></h4>
+  <button
+    type="button"
+    class="close"
+    [attr.aria-label]="'faidare.ontology-aggregation-modal.close' | translate"
+    (click)="cancel()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ng-template #payloadTemplate let-node="node">
+    {{ node.text }}
+    <dd-ontology-node-type [type]="node.payload.type"></dd-ontology-node-type>
+  </ng-template>
+  <div class="content" *ngIf="tree$ | async as tree">
+    <div class="tree-section">
+      <div class="form-group">
+        <label class="sr-only" for="tree-filter">Filter</label>
+        <input
+          [formControl]="treeFilterCtrl"
+          id="tree-filter"
+          class="form-control"
+          [placeholder]="'faidare.ontology-aggregation-modal.filter' | translate"
+          type="search"
+        />
+      </div>
+
+      <div class="border rounded p-1 tree">
+        <dd-tree
+          [filter]="debouncedFilterValue$ | async"
+          [rootNodes]="tree"
+          [payloadTemplate]="payloadTemplate"
+          (highlightedNode)="highlightNode($event)"
+          (selectedNodes)="selectedNodes = $event"
+        ></dd-tree>
+      </div>
+    </div>
+    <div class="details-section">
+      <dd-node-details
+        *ngIf="highlightedNodeDetails$ | async as highlightedNodeDetails"
+        [node]="highlightedNodeDetails"
+      ></dd-node-details>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-primary mr-1"
+    (click)="ok()"
+    translate="faidare.ontology-aggregation-modal.ok"
+  ></button>
+  <button
+    type="button"
+    class="btn btn-danger"
+    (click)="cancel()"
+    translate="faidare.ontology-aggregation-modal.cancel"
+  ></button>
+</div>

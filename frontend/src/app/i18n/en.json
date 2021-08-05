@@ -157,10 +157,60 @@
       "bs": "Biological status",
       "gn": "Genetic nature",
       "coo": "Country of origin",
-      "tg": "Taxon group"
+      "tg": "Taxon group",
+      "o": "Ontology"
     },
     "search": {
       "placeholder": "Examples: yield, fhb"
+    },
+    "ontology-node-type": {
+      "ONTOLOGY": "Ontology",
+      "TRAIT_CLASS": "Trait class",
+      "TRAIT": "Trait",
+      "VARIABLE": "Variable"
+    },
+    "node-details": {
+      "ontology-name": "Ontology name",
+      "version": "Version",
+      "authors": "Authors",
+      "links": "Links",
+      "copyright": "Copyright",
+      "license": "License",
+      "name": "Name",
+      "id": "Identifier",
+      "description": "Description",
+      "entity": "Entity",
+      "attribute": "Attribute",
+      "class": "Class",
+      "synonyms": "Synonyms",
+      "main-abbreviation": "Main abbreviation",
+      "alternative-abbreviations": "Alternative abbreviations",
+      "status": "Status",
+      "xref": "Cross reference",
+      "institution": "Institution",
+      "scientist": "Scientist",
+      "date": "Date",
+      "crop": "Crop",
+      "formula": "Formula",
+      "reference": "Reference",
+      "scale": "Scale",
+      "method": "Method",
+      "data-type": "Data type",
+      "decimal-places": "Decimal places",
+      "min": "Min",
+      "max": "Max",
+      "categories": "Categories",
+      "documentation-url": "Documentation",
+      "context-of-use": "Context of use",
+      "growth-stage": "Growth stage",
+      "default-value": "Default value"
+    },
+    "ontology-aggregation-modal": {
+      "title": "Ontology variable selection",
+      "close": "Close",
+      "filter": "Filter",
+      "ok": "OK",
+      "cancel": "Cancel"
     }
   }
 }

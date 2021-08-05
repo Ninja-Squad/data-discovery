@@ -1,0 +1,25 @@
+@import 'theme';
+
+label {
+  text-align: right;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.badge-METHOD {
+  color: $white;
+  background-color: #000066;
+}
+
+.badge-SCALE {
+  color: $white;
+  background-color: $warning;
+}
+
+.truncated {
+  display: inline-block;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

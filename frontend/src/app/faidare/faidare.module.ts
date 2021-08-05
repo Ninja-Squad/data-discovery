@@ -8,15 +8,28 @@ import { TreeComponent } from './tree/tree.component';
 import { NodeComponent } from './tree/node/node.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DataDiscoveryNgbModule } from '../data-discovery-ngb.module';
+import { FaidareOntologyAggregationComponent } from './faidare-ontology-aggregation/faidare-ontology-aggregation.component';
+import { OntologyAggregationModalComponent } from './ontology-aggregation-modal/ontology-aggregation-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { NodeDetailsComponent } from './node-details/node-details.component';
+import { OntologyNodeTypeComponent } from './ontology-node-type/ontology-node-type.component';
 
 @NgModule({
-  imports: [UrgiCommonModule, ReactiveFormsModule, DataDiscoveryNgbModule],
-  declarations: [FaidareHeaderComponent, TreeComponent, NodeComponent],
+  imports: [UrgiCommonModule, ReactiveFormsModule, DataDiscoveryNgbModule, TranslateModule],
+  declarations: [
+    FaidareHeaderComponent,
+    TreeComponent,
+    NodeComponent,
+    FaidareOntologyAggregationComponent,
+    OntologyAggregationModalComponent,
+    NodeDetailsComponent,
+    OntologyNodeTypeComponent
+  ],
   exports: [
     GenericDocumentComponent,
     GenericSelectAllResultsComponent,
     FaidareHeaderComponent,
-    TreeComponent
+    FaidareOntologyAggregationComponent
   ]
 })
 export class FaidareModule {}

@@ -5,21 +5,26 @@
 
 <div *ngIf="aggregations?.length && !aggLoading">
   <div *ngFor="let aggregation of aggregations">
+    <dd-ontology-aggregation
+      *ngIf="aggregation.type === 'ONTOLOGY'"
+      [aggregation]="aggregation"
+      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+      (aggregationChange)="onAggregationChange($event)"
+    ></dd-ontology-aggregation>
     <!-- we display checkboxes if there are only a few options -->
-    <ng-template #smallAggregation>
-      <dd-small-aggregation
-        [aggregation]="aggregation"
-        [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-        (aggregationChange)="onAggregationChange($event)"
-      ></dd-small-aggregation>
-    </ng-template>
+    <dd-small-aggregation
+      *ngIf="
+        aggregation.type === 'SMALL' ||
+        (aggregation.type === 'LARGE' && aggregation.buckets.length < 10)
+      "
+      [aggregation]="aggregation"
+      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+      (aggregationChange)="onAggregationChange($event)"
+    ></dd-small-aggregation>
     <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
     <dd-large-aggregation
-      *ngIf="
-        aggregation.type === 'LARGE' && aggregation.buckets.length >= 10;
-        else smallAggregation
-      "
+      *ngIf="aggregation.type === 'LARGE' && aggregation.buckets.length >= 10"
       [aggregation]="aggregation"
       [searchDescendants]="searchDescendants"
       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
