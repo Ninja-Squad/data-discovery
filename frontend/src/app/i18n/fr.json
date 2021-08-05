@@ -157,10 +157,60 @@
       "bs": "Statut biologique",
       "gn": "Nature génétique",
       "coo": "Pays d'origine",
-      "tg": "Groupe taxonomique"
+      "tg": "Groupe taxonomique",
+      "o": "Ontologie"
     },
     "search": {
       "placeholder": "Exemples\u00a0: yield, fhb"
+    },
+    "ontology-node-type": {
+      "ONTOLOGY": "Ontologie",
+      "TRAIT_CLASS": "Classe de trait",
+      "TRAIT": "Trait",
+      "VARIABLE": "Variable"
+    },
+    "node-details": {
+      "ontology-name": "Nom de l'ontologie",
+      "version": "Version",
+      "authors": "Auteurs·rices",
+      "links": "Liens",
+      "copyright": "Droits d'auteur",
+      "license": "License",
+      "name": "Nom",
+      "id": "Identifiant",
+      "description": "Description",
+      "entity": "Entité",
+      "attribute": "Attribut",
+      "class": "Classe",
+      "synonyms": "Synonymes",
+      "main-abbreviation": "Abréviation principale",
+      "alternative-abbreviations": "Abréviations alternatives",
+      "status": "État",
+      "xref": "Référence croisée",
+      "institution": "Institution",
+      "scientist": "Scientifique",
+      "date": "Date",
+      "crop": "Récolte",
+      "formula": "Formule",
+      "reference": "Référence",
+      "scale": "Échelle",
+      "method": "Méthode",
+      "data-type": "Type de donnée",
+      "decimal-places": "Nb. de Décimales",
+      "min": "Min",
+      "max": "Max",
+      "categories": "Catégories",
+      "documentation-url": "Documentation",
+      "context-of-use": "Contexte d'usage",
+      "growth-stage": "Étape de croissance",
+      "default-value": "Valeur par défaut"
+    },
+    "ontology-aggregation-modal": {
+      "title": "Sélection de variables d'ontologie",
+      "close": "Fermer",
+      "filter": "Filtrer",
+      "ok": "OK",
+      "cancel": "Annuler"
     }
   }
 }

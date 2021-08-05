@@ -1,15 +1,15 @@
 package fr.inra.urgi.datadiscovery.dao.faidare;
 
-import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
-import fr.inra.urgi.datadiscovery.dao.AppAggregation;
+import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.LARGE;
+import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.LARGE;
-import static fr.inra.urgi.datadiscovery.dao.AppAggregation.Type.SMALL;
+import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
+import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 
 /**
  * Enum listing the terms aggregations used by Faidare, and their corresponding name and field.
@@ -29,7 +29,9 @@ public enum FaidareAggregation implements AppAggregation {
     HOLDING_INSTITUTE("hi", "holdingInstitute.keyword", LARGE),
     BIOLOGICAL_STATUS("bs", "biologicalStatus.keyword", LARGE),
     GENETIC_NATURE("gn", "geneticNature.keyword", LARGE),
-    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE);
+    COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE),
+    // FIXME change the field when it's known
+    ONTOLOGY("o", "species.keyword", Type.ONTOLOGY);
 
     /**
      * The "main" aggregations, i.e. those that are displayed on the home page
