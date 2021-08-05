@@ -1,5 +1,6 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -118,9 +119,9 @@ public final class Trait {
         private String traitClass;
         private String traitDbId;
         private String description;
-        private List<String> synonyms;
+        private List<String> synonyms = new ArrayList<>();
         private String mainAbbreviation;
-        private List<String> alternativeAbbreviations;
+        private List<String> alternativeAbbreviations = new ArrayList<>();
         private String entity;
         private String attribute;
         private String status;

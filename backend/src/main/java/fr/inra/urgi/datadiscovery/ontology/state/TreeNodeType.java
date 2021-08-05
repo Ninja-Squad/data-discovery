@@ -8,6 +8,6 @@ package fr.inra.urgi.datadiscovery.ontology.state;
 public enum TreeNodeType {
     ONTOLOGY,
     TRAIT_CLASS,
-    TRAIT_NAME,
+    TRAIT,
     VARIABLE
 }

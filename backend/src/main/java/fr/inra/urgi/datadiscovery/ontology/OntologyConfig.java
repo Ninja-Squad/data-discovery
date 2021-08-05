@@ -21,7 +21,7 @@ public class OntologyConfig {
     }
 
     @Bean
-    @Ontology
+    @OntologyQualifier
     public WebClient ontologyWebClient(WebClient.Builder builder) {
         return builder
                 .baseUrl(ontologyProperties.getBaseUrl())

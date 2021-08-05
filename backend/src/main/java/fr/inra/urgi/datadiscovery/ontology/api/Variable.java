@@ -1,5 +1,6 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -179,8 +180,8 @@ public final class Variable {
         private Trait trait;
         private String ontologyDbId;
         private String observationVariableDbId;
-        private List<String> synonyms;
-        private List<String> contextOfUse;
+        private List<String> synonyms = new ArrayList<>();
+        private List<String> contextOfUse = new ArrayList<>();
         private String growthStage;
         private String status;
         private String xref;

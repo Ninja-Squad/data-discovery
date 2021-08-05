@@ -6,16 +6,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
+import fr.inra.urgi.datadiscovery.ontology.api.Ontology;
 import fr.inra.urgi.datadiscovery.ontology.api.Variable;
+import fr.inra.urgi.datadiscovery.ontology.state.OntologyDetails;
 import fr.inra.urgi.datadiscovery.ontology.state.OntologyState;
+import fr.inra.urgi.datadiscovery.ontology.state.TraitClassDetails;
+import fr.inra.urgi.datadiscovery.ontology.state.TraitDetails;
 import fr.inra.urgi.datadiscovery.ontology.state.TreeNode;
 import fr.inra.urgi.datadiscovery.ontology.state.TreeNodePayload;
 import fr.inra.urgi.datadiscovery.ontology.state.TreeNodeType;
+import fr.inra.urgi.datadiscovery.ontology.state.VariableDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -36,22 +42,27 @@ public class OntologyService implements CommandLineRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(OntologyService.class);
 
     private final OntologyClient ontologyClient;
+    private final TraitClassIdGenerator traitClassIdGenerator;
 
     /**
      * The state, stored in an AtomicReference to make sure changes are visible by all threads reading it.
      */
-    private final AtomicReference<OntologyState> state = new AtomicReference<>(new OntologyState(Collections.emptyList()));
+    private final AtomicReference<OntologyState> state = new AtomicReference<>(new OntologyState(Collections.emptyList(),
+                                                                                                 Collections.emptyMap(),
+                                                                                                 Collections.emptyMap(),
+                                                                                                 Collections.emptyMap(),
+                                                                                                 Collections.emptyMap()));
 
-    public OntologyService(OntologyClient ontologyClient) {
+    public OntologyService(OntologyClient ontologyClient, TraitClassIdGenerator traitClassIdGenerator) {
         this.ontologyClient = ontologyClient;
+        this.traitClassIdGenerator = traitClassIdGenerator;
     }
 
     @Scheduled(cron = "0 0 * * * *") // every hour
     public void refreshOntology() {
         try {
             LOGGER.info("Refreshing ontologies...");
-            List<Variable> variables = ontologyClient.getAllVariables().block();
-            this.state.set(createState(variables));
+            doRefreshOntologies();
         } catch (Exception e) {
             LOGGER.error("Exception while refreshing ontology. Keep using the current one. Retrying every hour...", e);
         }
@@ -69,17 +80,44 @@ public class OntologyService implements CommandLineRunner {
         return this.state.get().getTree();
     }
 
+    public Optional<OntologyDetails> getOntology(String id) {
+        return this.state.get().getOntology(id);
+    }
+
+    public Optional<TraitClassDetails> getTraitClass(String id) {
+        return this.state.get().getTraitClass(id);
+    }
+
+    public Optional<TraitDetails> getTrait(String id) {
+        return this.state.get().getTrait(id);
+    }
+
+    public Optional<VariableDetails> getVariable(String id) {
+        return this.state.get().getVariable(id);
+    }
+
     private void initializeOntology() {
         try {
             LOGGER.info("Initializing ontologies...");
-            List<Variable> variables = ontologyClient.getAllVariables().block();
-            this.state.set(createState(variables));
+            doRefreshOntologies();
         } catch (Exception e) {
             LOGGER.error("Exception while loading ontology. The ontology aggregation will not work. Retrying every hour...", e);
         }
     }
 
-    private OntologyState createState(List<Variable> variables) {
+    private void doRefreshOntologies() {
+        List<Ontology> ontologies = ontologyClient.getAllOntologies().block();
+        List<Variable> variables = ontologyClient.getAllVariables().block();
+        this.state.set(createState(ontologies, variables));
+    }
+
+    private OntologyState createState(List<Ontology> ontologies, List<Variable> variables) {
+        Map<String, OntologyDetails> ontologiesById =
+            ontologies.stream().collect(Collectors.toMap(Ontology::getOntologyDbId, OntologyDetails::new));
+        Map<String, TraitClassDetails> traitClassesById = new HashMap<>();
+        Map<String, TraitDetails> traitsById = new HashMap<>();
+        Map<String, VariableDetails> variablesById = new HashMap<>();
+
         // For the moment, we will ignore variables which are not in the English language
         // FIXME JBN: deal with multiple languages
         Map<TreeNodePayload, MutableNode> nodesByPayload = new HashMap<>();
@@ -91,12 +129,12 @@ public class OntologyService implements CommandLineRunner {
                 TreeNodePayload traitClassPayload = null;
                 if (variable.getTrait().getTraitClass() != null) {
                     traitClassPayload = new TreeNodePayload(TreeNodeType.TRAIT_CLASS,
-                                                            variable.getOntologyDbId() + ":" + variable.getTrait().getTraitClass(),
+                                                            traitClassIdGenerator.generateId(variable.getOntologyDbId(), variable.getTrait().getTraitClass()),
                                                             variable.getTrait().getTraitClass());
                 }
-                TreeNodePayload traitNamePayload = new TreeNodePayload(TreeNodeType.TRAIT_NAME,
-                                                                       variable.getTrait().getTraitDbId(),
-                                                                       variable.getTrait().getName());
+                TreeNodePayload traitPayload = new TreeNodePayload(TreeNodeType.TRAIT,
+                                                                   variable.getTrait().getTraitDbId(),
+                                                                   variable.getTrait().getName());
                 TreeNodePayload variablePayload = new TreeNodePayload(TreeNodeType.VARIABLE,
                                                                       variable.getObservationVariableDbId(),
                                                                       variable.getName());
@@ -106,21 +144,29 @@ public class OntologyService implements CommandLineRunner {
                 if (traitClassPayload != null) {
                     traitClassNode = nodesByPayload.computeIfAbsent(traitClassPayload, MutableNode::new);
                 }
-                MutableNode traitNameNode = nodesByPayload.computeIfAbsent(traitNamePayload, MutableNode::new);
+                MutableNode traitNode = nodesByPayload.computeIfAbsent(traitPayload, MutableNode::new);
                 MutableNode variableNode = nodesByPayload.computeIfAbsent(variablePayload, MutableNode::new);
 
                 if (traitClassPayload != null) {
                     ontologyNode.addChild(traitClassNode);
-                    traitClassNode.addChild(traitNameNode);
+                    traitClassNode.addChild(traitNode);
                 } else {
-                    ontologyNode.addChild(traitNameNode);
+                    ontologyNode.addChild(traitNode);
                 }
-                traitNameNode.addChild(variableNode);
+                traitNode.addChild(variableNode);
+
+                if (traitClassPayload != null) {
+                    traitClassesById.put(traitClassPayload.getId(), new TraitClassDetails(traitClassPayload.getId(),
+                                                                                          traitClassPayload.getName(),
+                                                                                          variable.getOntologyName()));
+                }
+                traitsById.put(traitPayload.getId(), new TraitDetails(variable.getTrait()));
+                variablesById.put(variablePayload.getId(), new VariableDetails(variable));
             }
         }
 
         List<TreeNode> tree = createTree(nodesByPayload);
-        return new OntologyState(tree);
+        return new OntologyState(tree, ontologiesById, traitClassesById, traitsById, variablesById);
     }
 
     private List<TreeNode> createTree(Map<TreeNodePayload, MutableNode> nodesByPayload) {
