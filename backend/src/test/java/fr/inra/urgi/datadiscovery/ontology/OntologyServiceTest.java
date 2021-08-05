@@ -2,6 +2,7 @@ package fr.inra.urgi.datadiscovery.ontology;
 
 import static fr.inra.urgi.datadiscovery.ontology.state.TreeNodeType.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import fr.inra.urgi.datadiscovery.ontology.api.Ontology;
 import fr.inra.urgi.datadiscovery.ontology.api.Trait;
 import fr.inra.urgi.datadiscovery.ontology.api.Variable;
 import fr.inra.urgi.datadiscovery.ontology.state.TreeNode;
@@ -24,12 +26,19 @@ import reactor.core.publisher.Mono;
 public class OntologyServiceTest {
 
     private OntologyClient mockOntologyClient;
+    private TraitClassIdGenerator mockTraitClassIdGenerator;
     private OntologyService ontologyService;
 
     @BeforeEach
     void prepare() {
         mockOntologyClient = mock(OntologyClient.class);
-        ontologyService = new OntologyService(mockOntologyClient);
+        mockTraitClassIdGenerator = mock(TraitClassIdGenerator.class);
+
+        when(mockTraitClassIdGenerator.generateId(any(), any())).thenAnswer(
+            invocation -> (invocation.getArgument(0) + ":" + invocation.getArgument(1)).toLowerCase()
+        );
+
+        ontologyService = new OntologyService(mockOntologyClient, mockTraitClassIdGenerator);
     }
 
     @Test
@@ -54,6 +63,13 @@ public class OntologyServiceTest {
                         .withName("T4")
                         .withTraitClass("TC3")
                         .build();
+
+        when(mockOntologyClient.getAllOntologies()).thenReturn(Mono.just(
+           Arrays.asList(
+               Ontology.builder().withOntologyDbId("o1").withOntologyName("O1").build(),
+               Ontology.builder().withOntologyDbId("o2").withOntologyName("O2").build()
+           )
+        ));
 
         when(mockOntologyClient.getAllVariables()).thenReturn(Mono.just(
             Arrays.asList(
@@ -123,10 +139,10 @@ public class OntologyServiceTest {
                 new TreeNodePayload(ONTOLOGY, "o1", "O1"),
                 Arrays.asList(
                     new TreeNode(
-                        new TreeNodePayload(TRAIT_CLASS, "o1:TC3", "TC3"),
+                        new TreeNodePayload(TRAIT_CLASS, "o1:tc3", "TC3"),
                         Arrays.asList(
                             new TreeNode(
-                                new TreeNodePayload(TRAIT_NAME, "t3", "T3"),
+                                new TreeNodePayload(TRAIT, "t3", "T3"),
                                 Arrays.asList(
                                     new TreeNode(
                                         new TreeNodePayload(VARIABLE, "v7", "V7"),
@@ -139,7 +155,7 @@ public class OntologyServiceTest {
                                 )
                             ),
                             new TreeNode(
-                                new TreeNodePayload(TRAIT_NAME, "t4", "T4"),
+                                new TreeNodePayload(TRAIT, "t4", "T4"),
                                 Arrays.asList(
                                     new TreeNode(
                                         new TreeNodePayload(VARIABLE, "v5", "V5"),
@@ -159,7 +175,7 @@ public class OntologyServiceTest {
                 new TreeNodePayload(ONTOLOGY, "o2", "O2"),
                 Arrays.asList(
                     new TreeNode(
-                        new TreeNodePayload(TRAIT_NAME, "t2", "T2"),
+                        new TreeNodePayload(TRAIT, "t2", "T2"),
                         Arrays.asList(
                             new TreeNode(
                                 new TreeNodePayload(VARIABLE, "v3", "V3"),
@@ -172,10 +188,10 @@ public class OntologyServiceTest {
                         )
                     ),
                     new TreeNode(
-                        new TreeNodePayload(TRAIT_CLASS, "o2:TC1", "TC1"),
+                        new TreeNodePayload(TRAIT_CLASS, "o2:tc1", "TC1"),
                         Arrays.asList(
                             new TreeNode(
-                                new TreeNodePayload(TRAIT_NAME, "t1", "T1"),
+                                new TreeNodePayload(TRAIT, "t1", "T1"),
                                 Arrays.asList(
                                     new TreeNode(
                                         new TreeNodePayload(VARIABLE, "v1", "V1"),
@@ -192,5 +208,18 @@ public class OntologyServiceTest {
                 )
             )
         );
+
+        assertThat(ontologyService.getOntology("o1").get().getOntology().getOntologyName()).isEqualTo("O1");
+        assertThat(ontologyService.getOntology("unknown")).isEmpty();
+
+        assertThat(ontologyService.getTraitClass("o2:tc1").get().getName()).isEqualTo("TC1");
+        assertThat(ontologyService.getTraitClass("o2:tc1").get().getOntologyName()).isEqualTo("O2");
+        assertThat(ontologyService.getTraitClass("unknown")).isEmpty();
+
+        assertThat(ontologyService.getTrait("t1").get().getTrait().getName()).isEqualTo("T1");
+        assertThat(ontologyService.getTrait("unknown")).isEmpty();
+
+        assertThat(ontologyService.getVariable("v1").get().getVariable().getName()).isEqualTo("V1");
+        assertThat(ontologyService.getVariable("unknown")).isEmpty();
     }
 }

@@ -2,34 +2,36 @@
   {{ node.text }}
   <span class="badge" [ngClass]="'badge-' + node.payload.type">{{ node.payload.type }}</span>
 </ng-template>
-<div class="row" *ngIf="tree$ | async as tree">
-  <div class="col" style="overflow-y: hidden">
-    <div class="form-group">
-      <label class="sr-only" for="tree-filter">Filter</label>
-      <input
-        [formControl]="treeFilterCtrl"
-        id="tree-filter"
-        class="form-control"
-        placeholder="Filter"
-        type="search"
-      />
-    </div>
+<div style="margin-bottom: 1000px">
+  <div class="row" *ngIf="tree$ | async as tree">
+    <div class="col" style="overflow-y: hidden">
+      <div class="form-group">
+        <label class="sr-only" for="tree-filter">Filter</label>
+        <input
+          [formControl]="treeFilterCtrl"
+          id="tree-filter"
+          class="form-control"
+          placeholder="Filter"
+          type="search"
+        />
+      </div>
 
-    <div class="border rounded p-1" style="max-height: 60vh; overflow-x: auto">
-      <dd-tree
-        [filter]="debouncedFilterValue$ | async"
-        [rootNodes]="tree"
-        [payloadTemplate]="payloadTemplate"
-        (highlightedNode)="highlightedNode = $event"
-        (selectedNodes)="selectedNodes = $event"
-      ></dd-tree>
+      <div class="border rounded p-1" style="max-height: 60vh; overflow-x: auto">
+        <dd-tree
+          [filter]="debouncedFilterValue$ | async"
+          [rootNodes]="tree"
+          [payloadTemplate]="payloadTemplate"
+          (highlightedNode)="highlightNode($event)"
+          (selectedNodes)="selectedNodes = $event"
+        ></dd-tree>
+      </div>
     </div>
-  </div>
-  <div class="col">
-    <h2>Highlighted node</h2>
-    <pre>{{ highlightedNode | json }}</pre>
-    <h2>Selected nodes</h2>
-    <pre>{{ selectedNodes | json }}</pre>
+    <div class="col" style="overflow-x: hidden">
+      <h2>Highlighted node</h2>
+      <pre style="overflow-x: auto">{{ highlightedNodeDetails$ | async | json }}</pre>
+      <h2>Selected nodes</h2>
+      <pre>{{ selectedNodes | json }}</pre>
+    </div>
   </div>
 </div>
 
