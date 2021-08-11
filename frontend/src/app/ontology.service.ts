@@ -135,22 +135,22 @@ export class OntologyService {
     this.preferredLanguage = language;
   }
 
-  getTree(
-    selectableVariableIds: Array<string>,
-    selectedVariableIds: Array<string>
-  ): Observable<Array<TreeNode<OntologyPayload>>> {
+  getTree(options: {
+    selectableVariableIds: Array<string>;
+    selectedVariableIds: Array<string>;
+  }): Observable<Array<TreeNode<OntologyPayload>>> {
     return this.tree$.pipe(
       map(ontologyTreeNodes =>
         this.toTreeNodes(
           ontologyTreeNodes,
-          new Set<string>(selectableVariableIds),
-          new Set<string>(selectedVariableIds)
+          new Set<string>(options.selectableVariableIds),
+          new Set<string>(options.selectedVariableIds)
         )
       )
     );
   }
 
-  getTreeI8n(language: OntologyLanguage): Observable<TreeI18n> {
+  getTreeI18n(language: OntologyLanguage): Observable<TreeI18n> {
     return this.treeI18ns.get(language)!;
   }
 
