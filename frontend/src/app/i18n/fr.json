@@ -211,6 +211,12 @@
       "filter": "Filtrer",
       "ok": "OK",
       "cancel": "Annuler"
-    }
+    },
+    "ontology-language": {
+      "EN": "English",
+      "FR": "Français",
+      "ES": "Español"
+    },
+    "ontology-default-language": "FR"
   }
 }

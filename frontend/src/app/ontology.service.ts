@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { TreeNode } from './faidare/tree/tree.service';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 export type OntologyNodeType = 'ONTOLOGY' | 'TRAIT_CLASS' | 'TRAIT' | 'VARIABLE';
 
 export interface OntologyPayload {
   id: string;
-  name: string;
   type: OntologyNodeType;
 }
 
@@ -97,20 +97,48 @@ export interface VariableDetails {
   };
 }
 
+export interface TreeI18n {
+  language: string;
+  names: { [type in OntologyNodeType]: { [id: string]: string } };
+}
+
+export const ONTOLOGY_LANGUAGES = ['EN', 'FR', 'ES'] as const;
+export type OntologyLanguage = typeof ONTOLOGY_LANGUAGES[number];
+
 @Injectable({
   providedIn: 'root'
 })
 export class OntologyService {
   private tree$: Observable<Array<OntologyTreeNode>>;
+  private treeI18ns: Map<OntologyLanguage, Observable<TreeI18n>>;
+  private preferredLanguage: OntologyLanguage;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, translateService: TranslateService) {
     this.tree$ = http.get<Array<OntologyTreeNode>>('api/ontologies').pipe(shareReplay());
+    this.treeI18ns = new Map<OntologyLanguage, Observable<TreeI18n>>(
+      ONTOLOGY_LANGUAGES.map(language => [
+        language,
+        http.get<TreeI18n>('api/ontologies/i18n', { params: { language } }).pipe(shareReplay())
+      ])
+    );
+    this.preferredLanguage = translateService.instant('faidare.ontology-default-language');
+    if (!ONTOLOGY_LANGUAGES.includes(this.preferredLanguage)) {
+      this.preferredLanguage = 'EN';
+    }
+  }
+
+  getPreferredLanguage(): OntologyLanguage {
+    return this.preferredLanguage;
+  }
+
+  setPreferredLanguage(language: OntologyLanguage): void {
+    this.preferredLanguage = language;
   }
 
   getTree(
     selectableVariableIds: Array<string>,
     selectedVariableIds: Array<string>
-  ): Observable<Array<TreeNode>> {
+  ): Observable<Array<TreeNode<OntologyPayload>>> {
     return this.tree$.pipe(
       map(ontologyTreeNodes =>
         this.toTreeNodes(
@@ -122,28 +150,36 @@ export class OntologyService {
     );
   }
 
-  getOntology(id: string): Observable<OntologyDetails> {
-    return this.http.get<OntologyDetails>(`api/ontologies/${id}`);
+  getTreeI8n(language: OntologyLanguage): Observable<TreeI18n> {
+    return this.treeI18ns.get(language)!;
   }
 
-  getTraitClass(id: string): Observable<TraitClassDetails> {
-    return this.http.get<TraitClassDetails>(`api/ontologies/trait-classes/${id}`);
+  getOntology(id: string, language: OntologyLanguage): Observable<OntologyDetails> {
+    return this.http.get<OntologyDetails>(`api/ontologies/${id}`, { params: { language } });
   }
 
-  getTrait(id: string): Observable<TraitDetails> {
-    return this.http.get<TraitDetails>(`api/ontologies/traits/${id}`);
+  getTraitClass(id: string, language: OntologyLanguage): Observable<TraitClassDetails> {
+    return this.http.get<TraitClassDetails>(`api/ontologies/trait-classes/${id}`, {
+      params: { language }
+    });
   }
 
-  getVariable(id: string): Observable<VariableDetails> {
-    return this.http.get<VariableDetails>(`api/ontologies/variables/${id}`);
+  getTrait(id: string, language: OntologyLanguage): Observable<TraitDetails> {
+    return this.http.get<TraitDetails>(`api/ontologies/traits/${id}`, { params: { language } });
+  }
+
+  getVariable(id: string, language: OntologyLanguage): Observable<VariableDetails> {
+    return this.http.get<VariableDetails>(`api/ontologies/variables/${id}`, {
+      params: { language }
+    });
   }
 
   private toTreeNodes(
     ontologyTreeNodes: Array<OntologyTreeNode>,
     selectableVariableIds: Set<string>,
     selectedVariableIds: Set<string>
-  ): Array<TreeNode> {
-    const result: Array<TreeNode> = [];
+  ): Array<TreeNode<OntologyPayload>> {
+    const result: Array<TreeNode<OntologyPayload>> = [];
     for (let i = 0; i < ontologyTreeNodes.length; i++) {
       const treeNode = this.toTreeNode(
         ontologyTreeNodes[i],
@@ -161,12 +197,11 @@ export class OntologyService {
     ontologyTreeNode: OntologyTreeNode,
     selectableVariableIds: Set<string>,
     selectedVariableIds: Set<string>
-  ): TreeNode | null {
+  ): TreeNode<OntologyPayload> | null {
     if (ontologyTreeNode.payload.type === 'VARIABLE') {
       // FIXME JBN remove || true which is there only to be able to test the tree while the aggregation doesn't work
       if (selectableVariableIds.has(ontologyTreeNode.payload.id) || true) {
         return {
-          text: ontologyTreeNode.payload.name,
           payload: ontologyTreeNode.payload,
           children: [],
           selected: selectedVariableIds.has(ontologyTreeNode.payload.id)
@@ -182,7 +217,6 @@ export class OntologyService {
       );
       if (children.length) {
         return {
-          text: ontologyTreeNode.payload.name,
           payload: ontologyTreeNode.payload,
           children
         };

@@ -14,24 +14,49 @@
     {{ node.text }}
     <dd-ontology-node-type [type]="node.payload.type"></dd-ontology-node-type>
   </ng-template>
-  <div class="content" *ngIf="tree$ | async as tree">
+  <div class="content" *ngIf="treeView$ | async as treeView">
     <div class="tree-section">
-      <div class="form-group">
-        <label class="sr-only" for="tree-filter">Filter</label>
-        <input
-          [formControl]="treeFilterCtrl"
-          id="tree-filter"
-          class="form-control"
-          [placeholder]="'faidare.ontology-aggregation-modal.filter' | translate"
-          type="search"
-        />
+      <div class="form-row">
+        <div class="col col-md-8">
+          <div class="form-group">
+            <label
+              class="sr-only"
+              for="tree-filter"
+              translate="faidare.ontology-aggregation-modal.filter"
+            ></label>
+            <input
+              [formControl]="treeFilterCtrl"
+              id="tree-filter"
+              class="form-control"
+              [placeholder]="'faidare.ontology-aggregation-modal.filter' | translate"
+              type="search"
+            />
+          </div>
+        </div>
+        <div class="col col-md-4">
+          <div class="form-group">
+            <label
+              class="sr-only"
+              for="language"
+              translate="faidare.ontology-aggregation-modal.language"
+            ></label>
+            <select [formControl]="languageCtrl" id="language" class="custom-select">
+              <option
+                *ngFor="let language of languages"
+                [ngValue]="language"
+                [translate]="'faidare.ontology-language.' + language"
+              ></option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="border rounded p-1 tree">
         <dd-tree
-          [filter]="debouncedFilterValue$ | async"
-          [rootNodes]="tree"
+          [filter]="treeView.filter"
+          [rootNodes]="treeView.tree"
           [payloadTemplate]="payloadTemplate"
+          [textAccessor]="treeView.textAccessor"
           (highlightedNode)="highlightNode($event)"
           (selectedNodes)="selectedNodes = $event"
         ></dd-tree>

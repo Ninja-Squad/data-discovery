@@ -14,25 +14,24 @@ let idCounter = 0;
  * The `selected` flag is used to pre-select the nodes. It should typically only be set to true on leaf nodes: the
  * selection state of their parent will be automatically computed.
  */
-export interface TreeNode {
-  text: string;
-  payload?: unknown;
+export interface TreeNode<P> {
+  payload: P;
   selected?: boolean;
-  children?: ReadonlyArray<TreeNode>;
+  children?: ReadonlyArray<TreeNode<P>>;
 }
 
 /**
  * The highlighted or selected node, as exposed by the component outputs
  */
-export interface NodeInformation {
+export interface NodeInformation<P> {
   text: string;
-  payload?: unknown;
+  payload: P;
 }
 
 /**
  * The node information, as used internally
  */
-export interface InternalNodeInformation extends NodeInformation {
+export interface InternalNodeInformation<P> extends NodeInformation<P> {
   id: string;
 }
 
@@ -40,7 +39,7 @@ export interface InternalNodeInformation extends NodeInformation {
  * The internal immutable structure used by the tree. Every time the user selects, expands of filters the tree,
  * a new copy of this structure is created and emitted.
  */
-export interface InternalTree {
+export interface InternalTree<P> {
   /**
    * Indicates if the tree is being filtered or not.
    */
@@ -49,12 +48,12 @@ export interface InternalTree {
   /**
    * The root nodes of the tree
    */
-  readonly rootNodes: Array<InternalTreeNode>;
+  readonly rootNodes: Array<InternalTreeNode<P>>;
 
   /**
    * The highlighted node, if any. The same instance is reused until the ID changes
    */
-  readonly highlightedNode: InternalNodeInformation | undefined;
+  readonly highlightedNode: InternalNodeInformation<P> | undefined;
 }
 
 /**
@@ -62,7 +61,7 @@ export interface InternalTree {
  * Every time the user selects, expands of filters the tree, a new copy of this structure is created for each node.
  * The tree always keeps the same nodes, but the component decides, based on their state, if and how to display them.
  */
-export interface InternalTreeNode {
+export interface InternalTreeNode<P> {
   /**
    * The internal ID of the node, used for the checkbox label and for trackBy
    */
@@ -76,7 +75,7 @@ export interface InternalTreeNode {
   /**
    * The payload of the node, which can be anything
    */
-  readonly payload: unknown;
+  readonly payload: P;
 
   /**
    * The selection state of the node, used to display the checkbox
@@ -86,7 +85,7 @@ export interface InternalTreeNode {
   /**
    * The children of the node
    */
-  readonly children: Array<InternalTreeNode>;
+  readonly children: Array<InternalTreeNode<P>>;
 
   /**
    * true if the tree is being filtered and if this node matches the filter
@@ -116,24 +115,29 @@ export interface InternalTreeNode {
   readonly expandedForced: boolean | undefined;
 }
 
+export type TextAccessor<P> = (payload: P) => string;
+
+const NODE_COMPARATOR = (n1: InternalTreeNode<unknown>, n2: InternalTreeNode<unknown>) =>
+  n1.text.localeCompare(n2.text);
+
 @Injectable()
-export class TreeService {
-  private tree$ = new BehaviorSubject<InternalTree>({
+export class TreeService<P> {
+  private tree$ = new BehaviorSubject<InternalTree<P>>({
     rootNodes: [],
     filtered: false,
     highlightedNode: undefined
   });
 
-  treeChanges(): Observable<InternalTree> {
+  treeChanges(): Observable<InternalTree<P>> {
     return this.tree$.asObservable();
   }
 
-  selectedNodesChanges(): Observable<Array<NodeInformation>> {
+  selectedNodesChanges(): Observable<Array<NodeInformation<P>>> {
     return this.tree$.pipe(map(tree => this.findSelectedNodes(tree)));
   }
 
-  initialize(rootNodes: Array<TreeNode>) {
-    const initialTree = this.createInitialTree(rootNodes);
+  initialize(rootNodes: Array<TreeNode<P>>, textAccessor: TextAccessor<P>) {
+    const initialTree = this.createInitialTree(rootNodes, textAccessor);
     this.tree$.next(initialTree);
   }
 
@@ -144,49 +148,58 @@ export class TreeService {
       return;
     }
 
-    const newTree: InternalTree = {
+    const newTree: InternalTree<P> = {
       ...tree,
       filtered: !!text,
-      rootNodes: tree.rootNodes.map(rootNode => this.filterNode(rootNode, text))
+      rootNodes: tree.rootNodes.map(rootNode => this.filterRecursively(rootNode, text))
     };
     this.tree$.next(newTree);
   }
 
-  toggleExpanded(targetNode: InternalTreeNode, expanded: boolean) {
+  toggleExpanded(targetNode: InternalTreeNode<P>, expanded: boolean) {
     const tree = this.tree$.value;
-    const newTree: InternalTree = {
+    const newTree: InternalTree<P> = {
       ...tree,
       rootNodes: tree.rootNodes.map(rootNode =>
-        this.toggleExpandedNode(rootNode, targetNode, expanded)
+        this.toggleExpandedRecursively(rootNode, targetNode, expanded)
       )
     };
     this.tree$.next(newTree);
   }
 
-  toggleSelection(targetNode: InternalTreeNode, checked: boolean) {
+  toggleSelection(targetNode: InternalTreeNode<P>, checked: boolean) {
     const tree = this.tree$.value;
-    const newTree: InternalTree = {
+    const newTree: InternalTree<P> = {
       ...tree,
       rootNodes: tree.rootNodes.map(rootNode =>
-        this.toggleSelectionNode(rootNode, targetNode, checked)
+        this.toggleSelectionRecursively(rootNode, targetNode, checked)
       )
     };
     this.tree$.next(newTree);
   }
 
-  highlight(targetNode: InternalTreeNode) {
+  highlight(targetNode: InternalTreeNode<P>) {
     const tree = this.tree$.value;
-    const newTree: InternalTree = {
+    const newTree: InternalTree<P> = {
       ...tree,
       highlightedNode: { id: targetNode.id, text: targetNode.text, payload: targetNode.payload }
     };
     this.tree$.next(newTree);
   }
 
-  private filterNode(node: InternalTreeNode, text: string): InternalTreeNode {
+  changeText(textAccessor: TextAccessor<P>) {
+    const tree = this.tree$.value;
+    const newTree: InternalTree<P> = {
+      ...tree,
+      rootNodes: tree.rootNodes.map(rootNode => this.changeTextRecursively(rootNode, textAccessor))
+    };
+    this.tree$.next(newTree);
+  }
+
+  private filterRecursively(node: InternalTreeNode<P>, text: string): InternalTreeNode<P> {
     const filteringActive = !!text;
     const matchingFilter = filteringActive && node.text.toLowerCase().includes(text);
-    const newChildren = node.children.map(childNode => this.filterNode(childNode, text));
+    const newChildren = node.children.map(childNode => this.filterRecursively(childNode, text));
     const hasVisibleChildren =
       (!filteringActive && newChildren.length > 0) ||
       newChildren.some(c => c.matchingFilter || c.hasVisibleChildren);
@@ -199,11 +212,11 @@ export class TreeService {
     };
   }
 
-  private toggleExpandedNode(
-    node: InternalTreeNode,
-    targetNode: InternalTreeNode,
+  private toggleExpandedRecursively(
+    node: InternalTreeNode<P>,
+    targetNode: InternalTreeNode<P>,
     expanded: boolean
-  ): InternalTreeNode {
+  ): InternalTreeNode<P> {
     return {
       ...node,
       expanded: node === targetNode ? expanded : node.expanded,
@@ -211,19 +224,21 @@ export class TreeService {
       children:
         node === targetNode
           ? node.children
-          : node.children.map(childNode => this.toggleExpandedNode(childNode, targetNode, expanded))
+          : node.children.map(childNode =>
+              this.toggleExpandedRecursively(childNode, targetNode, expanded)
+            )
     };
   }
 
-  private toggleSelectionNode(
-    node: InternalTreeNode,
-    targetNode: InternalTreeNode,
+  private toggleSelectionRecursively(
+    node: InternalTreeNode<P>,
+    targetNode: InternalTreeNode<P>,
     checked: boolean
-  ): InternalTreeNode {
+  ): InternalTreeNode<P> {
     const statesFound = new Set<NodeSelectionState>();
 
     const newChildren = node.children.map(childNode => {
-      const newChildNode = this.toggleSelectionNode(
+      const newChildNode = this.toggleSelectionRecursively(
         childNode,
         targetNode === node ? childNode : targetNode,
         checked
@@ -250,21 +265,45 @@ export class TreeService {
     };
   }
 
-  private createInitialTree(rootNodes: Array<TreeNode>): InternalTree {
+  private changeTextRecursively(
+    node: InternalTreeNode<P>,
+    textAccessor: TextAccessor<P>
+  ): InternalTreeNode<P> {
+    const children = node.children
+      .map(childNode => this.changeTextRecursively(childNode, textAccessor))
+      .sort(NODE_COMPARATOR);
+    return {
+      ...node,
+      text: textAccessor(node.payload),
+      children
+    };
+  }
+
+  private createInitialTree(
+    rootNodes: Array<TreeNode<P>>,
+    textAccessor: TextAccessor<P>
+  ): InternalTree<P> {
     return {
       filtered: false,
-      rootNodes: rootNodes.map(node => this.createInternalNode(node)),
+      rootNodes: rootNodes
+        .map(node => this.createInternalNode(node, textAccessor))
+        .sort(NODE_COMPARATOR),
       highlightedNode: undefined
     };
   }
 
-  private createInternalNode(node: TreeNode): InternalTreeNode {
+  private createInternalNode(
+    node: TreeNode<P>,
+    textAccessor: TextAccessor<P>
+  ): InternalTreeNode<P> {
     const statesFound = new Set<NodeSelectionState>();
-    const children = (node.children ?? []).map(childNode => {
-      const childInternalNode = this.createInternalNode(childNode);
-      statesFound.add(childInternalNode.selectionState);
-      return childInternalNode;
-    });
+    const children = (node.children ?? [])
+      .map(childNode => {
+        const childInternalNode = this.createInternalNode(childNode, textAccessor);
+        statesFound.add(childInternalNode.selectionState);
+        return childInternalNode;
+      })
+      .sort(NODE_COMPARATOR);
 
     let selectionState: NodeSelectionState = 'UNCHECKED';
     if (children.length) {
@@ -279,7 +318,7 @@ export class TreeService {
     const hasVisibleChildren = !!node.children && node.children.length > 0;
     return {
       id: `dd-tree-node-${idCounter++}`,
-      text: node.text,
+      text: textAccessor(node.payload),
       payload: node.payload,
       matchingFilter: false,
       hasVisibleChildren,
@@ -290,15 +329,15 @@ export class TreeService {
     };
   }
 
-  private findSelectedNodes(tree: InternalTree): Array<NodeInformation> {
-    const selectedNodes: Array<NodeInformation> = [];
+  private findSelectedNodes(tree: InternalTree<P>): Array<NodeInformation<P>> {
+    const selectedNodes: Array<NodeInformation<P>> = [];
     tree.rootNodes.forEach(node => this.findSelectedNodesInNode(node, selectedNodes));
     return selectedNodes;
   }
 
   private findSelectedNodesInNode(
-    node: InternalTreeNode,
-    selectedNodes: Array<NodeInformation>
+    node: InternalTreeNode<P>,
+    selectedNodes: Array<NodeInformation<P>>
   ): void {
     if (node.selectionState === 'CHECKED' && node.children.length === 0) {
       selectedNodes.push({ text: node.text, payload: node.payload });

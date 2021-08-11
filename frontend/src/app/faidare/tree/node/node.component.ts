@@ -7,13 +7,13 @@ import { InternalTreeNode, TreeService } from '../tree.service';
   styleUrls: ['./node.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeComponent {
-  @Input() node!: InternalTreeNode;
+export class NodeComponent<P> {
+  @Input() node!: InternalTreeNode<P>;
   @Input() filtered = false;
   @Input() highlightedNodeId: string | undefined;
   @Input() payloadTemplate?: TemplateRef<HTMLElement>;
 
-  constructor(private treeService: TreeService) {}
+  constructor(private treeService: TreeService<P>) {}
 
   toggleExpanded() {
     this.treeService.toggleExpanded(this.node, !(this.node.expanded || this.node.expandedForced));
@@ -27,7 +27,7 @@ export class NodeComponent {
     this.treeService.highlight(this.node);
   }
 
-  byId(index: number, node: InternalTreeNode): string {
+  byId(index: number, node: InternalTreeNode<P>): string {
     return node.id;
   }
 }
