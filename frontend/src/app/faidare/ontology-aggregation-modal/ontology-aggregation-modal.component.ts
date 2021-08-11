@@ -51,15 +51,15 @@ export class OntologyAggregationModalComponent {
   }
 
   prepare(aggregation: Aggregation, selectedKeys: Array<string>) {
-    const tree$ = this.ontologyService.getTree(
-      aggregation.buckets.map(bucket => bucket.key),
-      selectedKeys
-    );
+    const tree$ = this.ontologyService.getTree({
+      selectableVariableIds: aggregation.buckets.map(bucket => bucket.key),
+      selectedVariableIds: selectedKeys
+    });
 
     const textAccessor$: Observable<TextAccessor<OntologyPayload>> = defer(() =>
       this.languageCtrl.valueChanges.pipe(
         startWith(this.languageCtrl.value),
-        switchMap((language: OntologyLanguage) => this.ontologyService.getTreeI8n(language)),
+        switchMap((language: OntologyLanguage) => this.ontologyService.getTreeI18n(language)),
         map(treeI18n => (payload: OntologyPayload) => treeI18n.names[payload.type][payload.id])
       )
     );

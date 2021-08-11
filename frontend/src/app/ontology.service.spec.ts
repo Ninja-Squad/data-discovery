@@ -19,7 +19,9 @@ describe('OntologyService', () => {
 
   it('should get tree', () => {
     let tree: Array<TreeNode<OntologyPayload>> = [];
-    service.getTree(['V1', 'V2'], ['V2']).subscribe(t => (tree = t));
+    service
+      .getTree({ selectableVariableIds: ['V1', 'V2'], selectedVariableIds: ['V2'] })
+      .subscribe(t => (tree = t));
 
     http.expectOne('api/ontologies').flush([
       {
