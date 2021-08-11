@@ -1,14 +1,48 @@
-<div class="card mb-1" *ngIf="aggregation.buckets.length">
+<div class="card mb-1" *ngIf="actualBucketLength">
   <div class="card-body">
-    <h3
-      class="card-title"
-      [class.text-muted]="aggregation.buckets.length === 0"
-      translate="faidare.aggregation.o"
-    ></h3>
+    <!-- tooltip precising what is the number displayed -->
+    <ng-template #tooltipContent>
+      <ng-container [ngPlural]="actualBucketLength">
+        <ng-template ngPluralCase="=1">
+          <span translate="faidare.faidare-ontology-aggregation.only-one-value"></span>&ngsp;
+          <i translate="faidare.aggregation.o"></i>
+        </ng-template>
+        <ng-template ngPluralCase="other">
+          <span
+            translate="faidare.faidare-ontology-aggregation.several-values"
+            [translateParams]="{ count: actualBucketLength | number }"
+          ></span
+          >&ngsp;
+          <i translate="faidare.aggregation.o"></i>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+    <h3 class="card-title" [class.text-muted]="actualBucketLength === 1">
+      <span translate="faidare.aggregation.o"></span>
+      <small class="text-muted ml-1" [ngbTooltip]="tooltipContent" placement="top" container="body">
+        ({{ actualBucketLength | number }})
+      </small>
+    </h3>
 
-    <p>{{ selectedKeys.length }} variable(s) sélectionnée(s)</p>
-    <button type="button" class="btn btn-sm btn-outline-dark" (click)="openModal()">
-      Modifier la sélection
-    </button>
+    <p
+      *ngIf="selectedKeys.length === 0"
+      translate="faidare.faidare-ontology-aggregation.no-selected-variable"
+    ></p>
+    <p
+      *ngIf="selectedKeys.length === 1"
+      translate="faidare.faidare-ontology-aggregation.one-selected-variable"
+    ></p>
+    <p
+      *ngIf="selectedKeys.length > 1"
+      translate="faidare.faidare-ontology-aggregation.selected-variables"
+      [translateParams]="{ count: selectedKeys.length | number }"
+    ></p>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-dark"
+      [disabled]="aggregation.buckets.length === 1"
+      (click)="openModal()"
+      translate="faidare.faidare-ontology-aggregation.modify-selection"
+    ></button>
   </div>
 </div>

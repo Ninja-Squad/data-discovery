@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { ErrorComponent } from './error.component';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
@@ -47,8 +47,6 @@ describe('ErrorComponent', () => {
 
     tester = new ErrorComponentTester();
     tester.detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should not display any error initially', () => {

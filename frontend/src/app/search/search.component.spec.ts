@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
-import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, fakeRoute } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
 import { DocumentsComponent } from '../documents/documents.component';
@@ -94,8 +94,6 @@ describe('SearchComponent', () => {
       providers: [{ provide: BasketService, useValue: basketService }]
     })
   );
-
-  beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should search and aggregate on init if there is a query', () => {
     // given a component

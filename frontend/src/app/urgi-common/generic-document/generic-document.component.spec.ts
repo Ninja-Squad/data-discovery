@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { speculoosMatchers, ComponentTester } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { GenericDocumentComponent } from './generic-document.component';
 import { toWheatisDocument } from '../../models/test-model-generators';
@@ -49,8 +49,6 @@ describe('DataDiscoveryDocumentComponent', () => {
       declarations: [GenericDocumentComponent, TruncatableDescriptionComponent]
     })
   );
-
-  beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
     const tester = new DataDiscoveryDocumentComponentTester();

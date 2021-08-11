@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { TreeComponent } from './tree.component';
 import { Component } from '@angular/core';
 import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
-import { ComponentTester, speculoosMatchers, TestHtmlElement } from 'ngx-speculoos';
+import { ComponentTester, TestHtmlElement } from 'ngx-speculoos';
 import { NodeComponent } from './node/node.component';
 import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
 
@@ -31,6 +31,35 @@ interface TestPayload {
 class TestComponent {
   rootNodes: Array<TreeNode<TestPayload>> = [
     {
+      payload: { id: 'b' },
+      children: [
+        {
+          payload: { id: 'b1' },
+          children: [
+            {
+              payload: { id: 'b11' },
+              selected: true
+            },
+            {
+              payload: { id: 'b12' },
+              selected: true
+            }
+          ]
+        },
+        {
+          payload: { id: 'b2' },
+          children: [
+            {
+              payload: { id: 'b21' }
+            },
+            {
+              payload: { id: 'b22' }
+            }
+          ]
+        }
+      ]
+    },
+    {
       payload: { id: 'a' },
       children: [
         {
@@ -55,35 +84,6 @@ class TestComponent {
             },
             {
               payload: { id: 'a22' }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      payload: { id: 'b' },
-      children: [
-        {
-          payload: { id: 'b1' },
-          children: [
-            {
-              payload: { id: 'b11' },
-              selected: true
-            },
-            {
-              payload: { id: 'b12' },
-              selected: true
-            }
-          ]
-        },
-        {
-          payload: { id: 'b2' },
-          children: [
-            {
-              payload: { id: 'b21' }
-            },
-            {
-              payload: { id: 'b22' }
             }
           ]
         }
@@ -178,8 +178,6 @@ describe('TreeComponent', () => {
 
     tester = new TestComponentTester();
     tester.detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should create a tree, pre-select nodes, and pre-expand nodes so that selected nodes are visible', () => {
@@ -321,6 +319,20 @@ describe('TreeComponent', () => {
       'B11',
       'B12',
       'B2'
+    ]);
+  });
+
+  it('should change the text accessor', () => {
+    tester.componentInstance.textAccessor = payload =>
+      (payload.id.startsWith('a') ? 'z' + payload.id : payload.id) + '!';
+    tester.detectChanges();
+    expect(tester.visibleNodes.map(n => n.text)).toEqual([
+      'b!',
+      'b1!',
+      'b11!',
+      'b12!',
+      'b2!',
+      'za!'
     ]);
   });
 
