@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { DocumentsComponent } from './documents.component';
 import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
@@ -58,8 +58,6 @@ describe('DocumentsComponent', () => {
         { provide: BasketService, useValue: basketService }
       ]
     });
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display no results if empty', () => {

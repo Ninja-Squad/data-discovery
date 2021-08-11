@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { HomeComponent } from './home.component';
@@ -76,8 +76,6 @@ describe('HomeComponent', () => {
       providers: [HttpClientTestingModule]
     })
   );
-
-  beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   describe('when not showing aggregations', () => {
     it('should navigate to search when a query is entered', () => {

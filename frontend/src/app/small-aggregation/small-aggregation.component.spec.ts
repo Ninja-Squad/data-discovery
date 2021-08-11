@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { SmallAggregationComponent } from './small-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
@@ -44,8 +44,6 @@ describe('SmallAggregationComponent', () => {
       ]
     })
   );
-
-  beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display an aggregation with buckets', () => {
     const tester = new SmallAggregationComponentTester();

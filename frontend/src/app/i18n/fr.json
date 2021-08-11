@@ -205,6 +205,14 @@
       "growth-stage": "Étape de croissance",
       "default-value": "Valeur par défaut"
     },
+    "faidare-ontology-aggregation": {
+      "only-one-value": "Une seule valeur possible pour",
+      "several-values": "{{ count }} valeurs possibles pour",
+      "no-selected-variable": "Aucune variable sélectionnée",
+      "one-selected-variable": "1 variable sélectionnée",
+      "selected-variables": "{{ count }} variables sélectionnées",
+      "modify-selection": "Modifier la sélection"
+    },
     "ontology-aggregation-modal": {
       "title": "Sélection de variables d'ontologie",
       "close": "Fermer",

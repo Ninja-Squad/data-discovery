@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { DocumentCountComponent } from './document-count.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
@@ -38,7 +38,6 @@ describe('DocumentCountComponent', () => {
       imports: [DataDiscoveryNgbTestingModule, I18nTestingModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
     });
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display a name and a count', () => {

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
@@ -82,8 +82,6 @@ describe('RareDocumentComponent', () => {
       providers: [{ provide: BasketService, useValue: basketService }]
     });
   });
-
-  beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display a resource', () => {
     const tester = new RareDocumentComponentTester();

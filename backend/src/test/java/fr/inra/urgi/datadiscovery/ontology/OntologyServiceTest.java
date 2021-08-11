@@ -1,5 +1,6 @@
 package fr.inra.urgi.datadiscovery.ontology;
 
+import static fr.inra.urgi.datadiscovery.ontology.OntologyService.DEFAULT_LANGUAGE;
 import static fr.inra.urgi.datadiscovery.ontology.state.TreeNodeType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,6 +14,7 @@ import java.util.List;
 import fr.inra.urgi.datadiscovery.ontology.api.Ontology;
 import fr.inra.urgi.datadiscovery.ontology.api.Trait;
 import fr.inra.urgi.datadiscovery.ontology.api.Variable;
+import fr.inra.urgi.datadiscovery.ontology.state.TreeI18n;
 import fr.inra.urgi.datadiscovery.ontology.state.TreeNode;
 import fr.inra.urgi.datadiscovery.ontology.state.TreeNodePayload;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +63,11 @@ public class OntologyServiceTest {
         Trait t4 = Trait.builder()
                         .withTraitDbId("t4")
                         .withName("T4")
+                        .withTraitClass("TC3")
+                        .build();
+        Trait t3Fr = Trait.builder()
+                        .withTraitDbId("t3")
+                        .withName("T3-FR")
                         .withTraitClass("TC3")
                         .build();
 
@@ -118,6 +125,7 @@ public class OntologyServiceTest {
                 Variable.builder()
                         .withObservationVariableDbId("v7")
                         .withName("V7")
+                        .withLanguage("FR") // V7 only exists in French
                         .withOntologyDbId("o1")
                         .withOntologyName("O1")
                         .withTrait(t3)
@@ -128,6 +136,14 @@ public class OntologyServiceTest {
                         .withOntologyDbId("o1")
                         .withOntologyName("O1")
                         .withTrait(t3)
+                        .build(),
+                Variable.builder()
+                        .withObservationVariableDbId("v8")
+                        .withName("V8-FR") // V8 exists in English and in French
+                        .withLanguage("FR")
+                        .withOntologyDbId("o1")
+                        .withOntologyName("O1")
+                        .withTrait(t3Fr)
                         .build()
             )
         ));
@@ -136,33 +152,33 @@ public class OntologyServiceTest {
         List<TreeNode> tree = ontologyService.getTree();
         assertThat(tree).containsExactly(
             new TreeNode(
-                new TreeNodePayload(ONTOLOGY, "o1", "O1"),
+                new TreeNodePayload(ONTOLOGY, "o1"),
                 Arrays.asList(
                     new TreeNode(
-                        new TreeNodePayload(TRAIT_CLASS, "o1:tc3", "TC3"),
+                        new TreeNodePayload(TRAIT_CLASS, "o1:tc3"),
                         Arrays.asList(
                             new TreeNode(
-                                new TreeNodePayload(TRAIT, "t3", "T3"),
+                                new TreeNodePayload(TRAIT, "t3"),
                                 Arrays.asList(
                                     new TreeNode(
-                                        new TreeNodePayload(VARIABLE, "v7", "V7"),
+                                        new TreeNodePayload(VARIABLE, "v7"),
                                         Collections.emptyList()
                                     ),
                                     new TreeNode(
-                                        new TreeNodePayload(VARIABLE, "v8", "V8"),
+                                        new TreeNodePayload(VARIABLE, "v8"),
                                         Collections.emptyList()
                                     )
                                 )
                             ),
                             new TreeNode(
-                                new TreeNodePayload(TRAIT, "t4", "T4"),
+                                new TreeNodePayload(TRAIT, "t4"),
                                 Arrays.asList(
                                     new TreeNode(
-                                        new TreeNodePayload(VARIABLE, "v5", "V5"),
+                                        new TreeNodePayload(VARIABLE, "v5"),
                                         Collections.emptyList()
                                     ),
                                     new TreeNode(
-                                        new TreeNodePayload(VARIABLE, "v6", "V6"),
+                                        new TreeNodePayload(VARIABLE, "v6"),
                                         Collections.emptyList()
                                     )
                                 )
@@ -172,36 +188,36 @@ public class OntologyServiceTest {
                 )
             ),
             new TreeNode(
-                new TreeNodePayload(ONTOLOGY, "o2", "O2"),
+                new TreeNodePayload(ONTOLOGY, "o2"),
                 Arrays.asList(
                     new TreeNode(
-                        new TreeNodePayload(TRAIT, "t2", "T2"),
+                        new TreeNodePayload(TRAIT_CLASS, "o2:tc1"),
                         Arrays.asList(
                             new TreeNode(
-                                new TreeNodePayload(VARIABLE, "v3", "V3"),
-                                Collections.emptyList()
-                            ),
-                            new TreeNode(
-                                new TreeNodePayload(VARIABLE, "v4", "V4"),
-                                Collections.emptyList()
+                                new TreeNodePayload(TRAIT, "t1"),
+                                Arrays.asList(
+                                    new TreeNode(
+                                        new TreeNodePayload(VARIABLE, "v1"),
+                                        Collections.emptyList()
+                                    ),
+                                    new TreeNode(
+                                        new TreeNodePayload(VARIABLE, "v2"),
+                                        Collections.emptyList()
+                                    )
+                                )
                             )
                         )
                     ),
                     new TreeNode(
-                        new TreeNodePayload(TRAIT_CLASS, "o2:tc1", "TC1"),
+                        new TreeNodePayload(TRAIT, "t2"),
                         Arrays.asList(
                             new TreeNode(
-                                new TreeNodePayload(TRAIT, "t1", "T1"),
-                                Arrays.asList(
-                                    new TreeNode(
-                                        new TreeNodePayload(VARIABLE, "v1", "V1"),
-                                        Collections.emptyList()
-                                    ),
-                                    new TreeNode(
-                                        new TreeNodePayload(VARIABLE, "v2", "V2"),
-                                        Collections.emptyList()
-                                    )
-                                )
+                                new TreeNodePayload(VARIABLE, "v3"),
+                                Collections.emptyList()
+                            ),
+                            new TreeNode(
+                                new TreeNodePayload(VARIABLE, "v4"),
+                                Collections.emptyList()
                             )
                         )
                     )
@@ -209,17 +225,34 @@ public class OntologyServiceTest {
             )
         );
 
-        assertThat(ontologyService.getOntology("o1").get().getOntology().getOntologyName()).isEqualTo("O1");
-        assertThat(ontologyService.getOntology("unknown")).isEmpty();
+        assertThat(ontologyService.getOntology("o1", DEFAULT_LANGUAGE).get().getOntology().getOntologyName()).isEqualTo("O1");
+        assertThat(ontologyService.getOntology("unknown", DEFAULT_LANGUAGE)).isEmpty();
 
-        assertThat(ontologyService.getTraitClass("o2:tc1").get().getName()).isEqualTo("TC1");
-        assertThat(ontologyService.getTraitClass("o2:tc1").get().getOntologyName()).isEqualTo("O2");
-        assertThat(ontologyService.getTraitClass("unknown")).isEmpty();
+        assertThat(ontologyService.getTraitClass("o2:tc1", DEFAULT_LANGUAGE).get().getName()).isEqualTo("TC1");
+        assertThat(ontologyService.getTraitClass("o2:tc1", DEFAULT_LANGUAGE).get().getOntologyName()).isEqualTo("O2");
+        assertThat(ontologyService.getTraitClass("unknown", DEFAULT_LANGUAGE)).isEmpty();
 
-        assertThat(ontologyService.getTrait("t1").get().getTrait().getName()).isEqualTo("T1");
-        assertThat(ontologyService.getTrait("unknown")).isEmpty();
+        assertThat(ontologyService.getTrait("t1", DEFAULT_LANGUAGE).get().getTrait().getName()).isEqualTo("T1");
+        assertThat(ontologyService.getTrait("t3", "FR").get().getTrait().getName()).isEqualTo("T3-FR");
+        assertThat(ontologyService.getTrait("unknown", DEFAULT_LANGUAGE)).isEmpty();
 
-        assertThat(ontologyService.getVariable("v1").get().getVariable().getName()).isEqualTo("V1");
-        assertThat(ontologyService.getVariable("unknown")).isEmpty();
+        assertThat(ontologyService.getVariable("v1", DEFAULT_LANGUAGE).get().getVariable().getName()).isEqualTo("V1");
+        assertThat(ontologyService.getVariable("v7", DEFAULT_LANGUAGE).get().getVariable().getName()).isEqualTo("V7");
+        assertThat(ontologyService.getVariable("v7", "FR").get().getVariable().getName()).isEqualTo("V7");
+        assertThat(ontologyService.getVariable("v8", DEFAULT_LANGUAGE).get().getVariable().getName()).isEqualTo("V8");
+        assertThat(ontologyService.getVariable("v8", "FR").get().getVariable().getName()).isEqualTo("V8-FR");
+        assertThat(ontologyService.getVariable("unknown", DEFAULT_LANGUAGE)).isEmpty();
+
+        TreeI18n englishTreeI18n = ontologyService.getTreeI18n("EN");
+        assertThat(englishTreeI18n.getLanguage()).isEqualTo("EN");
+        assertThat(englishTreeI18n.getNames().get(TRAIT).get("t3")).isEqualTo("T3");
+        assertThat(englishTreeI18n.getNames().get(VARIABLE).get("v7")).isEqualTo("V7");
+        assertThat(englishTreeI18n.getNames().get(VARIABLE).get("v8")).isEqualTo("V8");
+
+        TreeI18n frenchTreeI18n = ontologyService.getTreeI18n("FR");
+        assertThat(frenchTreeI18n.getLanguage()).isEqualTo("FR");
+        assertThat(frenchTreeI18n.getNames().get(TRAIT).get("t3")).isEqualTo("T3-FR");
+        assertThat(englishTreeI18n.getNames().get(VARIABLE).get("v7")).isEqualTo("V7");
+        assertThat(frenchTreeI18n.getNames().get(VARIABLE).get("v8")).isEqualTo("V8-FR");
     }
 }

@@ -191,7 +191,9 @@ export class TreeService<P> {
     const tree = this.tree$.value;
     const newTree: InternalTree<P> = {
       ...tree,
-      rootNodes: tree.rootNodes.map(rootNode => this.changeTextRecursively(rootNode, textAccessor))
+      rootNodes: tree.rootNodes
+        .map(rootNode => this.changeTextRecursively(rootNode, textAccessor))
+        .sort(NODE_COMPARATOR)
     };
     this.tree$.next(newTree);
   }

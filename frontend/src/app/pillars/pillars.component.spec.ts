@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
@@ -63,7 +63,6 @@ describe('PillarsComponent', () => {
 
     tester = new PillarsComponentTester();
     tester.detectChanges();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should not display any pillar nor any alert while pillars are not available yet', () => {

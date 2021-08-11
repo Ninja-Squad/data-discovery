@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { RareBasketComponent } from './rare-basket.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
 import { of, Subject } from 'rxjs';
 import { LOCATION } from '../rare.module';
@@ -92,7 +92,6 @@ describe('RareBasketComponent', () => {
         { provide: LOCATION, useValue: location }
       ]
     });
-    jasmine.addMatchers(speculoosMatchers);
     tester = new RareBasketComponentTester();
   });
 

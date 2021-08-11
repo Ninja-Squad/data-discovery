@@ -7,7 +7,13 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 import { ɵDomSharedStylesHost } from '@angular/platform-browser';
+import { speculoosMatchers } from 'ngx-speculoos';
+
 declare const require: any;
+
+beforeEach(() => {
+  jasmine.addMatchers(speculoosMatchers);
+});
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());

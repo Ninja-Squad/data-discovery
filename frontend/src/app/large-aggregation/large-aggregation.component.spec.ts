@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
@@ -60,8 +60,6 @@ describe('LargeAggregationComponent', () => {
       ]
     })
   );
-
-  beforeEach(() => jasmine.addMatchers(speculoosMatchers));
 
   it('should display an aggregation with buckets as a typeahead', () => {
     const tester = new LargeAggregationComponentTester();
