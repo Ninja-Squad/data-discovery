@@ -10,12 +10,10 @@ import java.util.Objects;
 public final class TreeNodePayload {
     private final TreeNodeType type;
     private final String id;
-    private final String name;
 
-    public TreeNodePayload(TreeNodeType type, String id, String name) {
+    public TreeNodePayload(TreeNodeType type, String id) {
         this.type = type;
         this.id = id;
-        this.name = name;
     }
 
     public TreeNodeType getType() {
@@ -24,10 +22,6 @@ public final class TreeNodePayload {
 
     public String getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -39,12 +33,12 @@ public final class TreeNodePayload {
             return false;
         }
         TreeNodePayload that = (TreeNodePayload) o;
-        return type == that.type && Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return type == that.type && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, id, name);
+        return Objects.hash(type, id);
     }
 
     @Override
@@ -52,7 +46,6 @@ public final class TreeNodePayload {
         return "TreeNodePayload{" +
             "type=" + type +
             ", id='" + id + '\'' +
-            ", name='" + name + '\'' +
             '}';
     }
 }

@@ -1,14 +1,39 @@
-import { ChangeDetectionStrategy, Component, Input, Output, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef
+} from '@angular/core';
 import {
   InternalTree,
   InternalTreeNode,
   NodeInformation,
+  TextAccessor,
   TreeNode,
   TreeService
 } from './tree.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable } from 'rxjs';
+import { distinctUntilChanged, map, skip, switchMap, tap } from 'rxjs/operators';
+
+interface BaseAction {
+  type: 'FILTER' | 'CHANGE_TEXT';
+}
+
+interface FilterAction extends BaseAction {
+  type: 'FILTER';
+  filter: string;
+}
+
+interface ChangeTextAction<P> extends BaseAction {
+  type: 'CHANGE_TEXT';
+  textAccessor: TextAccessor<P>;
+}
+
+type Action<P> = FilterAction | ChangeTextAction<P>;
+
+const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provided';
 
 /**
  * A relatively reusable tree component that has the following features:
@@ -30,18 +55,18 @@ import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'tree'
 })
-export class TreeComponent {
-  tree$: Observable<InternalTree>;
-  filterCtrl = new FormControl();
+export class TreeComponent<P> implements OnInit {
+  tree$: Observable<InternalTree<P>>;
 
-  private rootNodesSubject = new BehaviorSubject<Array<TreeNode>>([]);
+  private rootNodesSubject = new BehaviorSubject<Array<TreeNode<P>>>([]);
   private filterSubject = new BehaviorSubject<string>('');
+  private textAccessorSubject = new BehaviorSubject<TextAccessor<P>>(DEFAULT_TEXT_ACCESSOR);
 
   @Input()
   payloadTemplate?: TemplateRef<HTMLElement>;
 
   @Input()
-  set rootNodes(rootNodes: Array<TreeNode>) {
+  set rootNodes(rootNodes: Array<TreeNode<P>>) {
     this.rootNodesSubject.next(rootNodes);
   }
 
@@ -50,13 +75,18 @@ export class TreeComponent {
     this.filterSubject.next((text ?? '').trim().toLowerCase());
   }
 
-  @Output()
-  highlightedNode: Observable<NodeInformation | undefined>;
+  @Input()
+  set textAccessor(textAccessor: TextAccessor<P> | null) {
+    this.textAccessorSubject.next(textAccessor ?? DEFAULT_TEXT_ACCESSOR);
+  }
 
   @Output()
-  selectedNodes: Observable<Array<NodeInformation>>;
+  highlightedNode: Observable<NodeInformation<P> | undefined>;
 
-  constructor(private treeService: TreeService) {
+  @Output()
+  selectedNodes: Observable<Array<NodeInformation<P>>>;
+
+  constructor(private treeService: TreeService<P>) {
     this.tree$ = treeService.treeChanges();
     this.highlightedNode = this.tree$.pipe(
       map(tree => tree.highlightedNode),
@@ -70,17 +100,40 @@ export class TreeComponent {
       )
     );
     this.selectedNodes = treeService.selectedNodesChanges();
+  }
+
+  ngOnInit(): void {
+    const filterActions$: Observable<FilterAction> = this.filterSubject.pipe(
+      distinctUntilChanged(),
+      map(filter => ({ type: 'FILTER', filter }))
+    );
+
+    const changeTextActions$: Observable<ChangeTextAction<P>> = this.textAccessorSubject.pipe(
+      skip(1),
+      map(textAccessor => ({ type: 'CHANGE_TEXT', textAccessor }))
+    );
+
+    const actions$: Observable<Action<P>> = merge(filterActions$, changeTextActions$);
 
     this.rootNodesSubject
       .pipe(
-        tap(rootNodes => treeService.initialize(rootNodes)),
-        switchMap(() => this.filterSubject.pipe(distinctUntilChanged())),
-        tap(filter => this.treeService.filter(filter))
+        tap(rootNodes => this.treeService.initialize(rootNodes, this.textAccessorSubject.value)),
+        switchMap(() => actions$),
+        tap(action => {
+          switch (action.type) {
+            case 'FILTER':
+              this.treeService.filter(action.filter);
+              break;
+            case 'CHANGE_TEXT':
+              this.treeService.changeText(action.textAccessor);
+              break;
+          }
+        })
       )
       .subscribe();
   }
 
-  byId(index: number, node: InternalTreeNode): string {
+  byId(index: number, node: InternalTreeNode<P>): string {
     return node.id;
   }
 }

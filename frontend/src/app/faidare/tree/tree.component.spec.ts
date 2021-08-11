@@ -2,10 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { TreeComponent } from './tree.component';
 import { Component } from '@angular/core';
-import { NodeInformation, NodeSelectionState, TreeNode } from './tree.service';
+import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
 import { ComponentTester, speculoosMatchers, TestHtmlElement } from 'ngx-speculoos';
 import { NodeComponent } from './node/node.component';
 import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
+
+interface TestPayload {
+  id: string;
+  type?: string;
+}
 
 @Component({
   template: `
@@ -17,75 +22,77 @@ import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.
       [filter]="filter"
       [rootNodes]="rootNodes"
       [payloadTemplate]="payloadTemplate"
+      [textAccessor]="textAccessor"
       (selectedNodes)="selectedNodes = $event"
       (highlightedNode)="highlightedNode = $event"
     ></dd-tree>
   `
 })
 class TestComponent {
-  rootNodes: Array<TreeNode> = [
+  rootNodes: Array<TreeNode<TestPayload>> = [
     {
-      text: 'A',
+      payload: { id: 'a' },
       children: [
         {
-          text: 'A1',
+          payload: { id: 'a1' },
           children: [
             {
-              text: 'A11',
               payload: {
+                id: 'a11',
                 type: 'foo'
               }
             },
             {
-              text: 'A12'
+              payload: { id: 'a12' }
             }
           ]
         },
         {
-          text: 'A2',
+          payload: { id: 'a2' },
           children: [
             {
-              text: 'A21'
+              payload: { id: 'a21' }
             },
             {
-              text: 'A22'
+              payload: { id: 'a22' }
             }
           ]
         }
       ]
     },
     {
-      text: 'B',
+      payload: { id: 'b' },
       children: [
         {
-          text: 'B1',
+          payload: { id: 'b1' },
           children: [
             {
-              text: 'B11',
+              payload: { id: 'b11' },
               selected: true
             },
             {
-              text: 'B12',
+              payload: { id: 'b12' },
               selected: true
             }
           ]
         },
         {
-          text: 'B2',
+          payload: { id: 'b2' },
           children: [
             {
-              text: 'B21'
+              payload: { id: 'b21' }
             },
             {
-              text: 'B22'
+              payload: { id: 'b22' }
             }
           ]
         }
       ]
     }
   ];
-  selectedNodes: Array<NodeInformation> = [];
-  highlightedNode: NodeInformation | undefined;
+  textAccessor: TextAccessor<TestPayload> = payload => payload.id.toUpperCase();
+  selectedNodes: Array<NodeInformation<TestPayload>> = [];
+  highlightedNode: NodeInformation<TestPayload> | undefined;
 
   filter: string | null = null;
 }
@@ -181,11 +188,11 @@ describe('TreeComponent', () => {
     expect(tester.componentInstance.selectedNodes).toEqual([
       {
         text: 'B11',
-        payload: undefined
+        payload: { id: 'b11' }
       },
       {
         text: 'B12',
-        payload: undefined
+        payload: { id: 'b12' }
       }
     ]);
     expect(tester.checkedNodes.map(n => n.text)).toEqual(['B1', 'B11', 'B12']);
@@ -230,20 +237,21 @@ describe('TreeComponent', () => {
       {
         text: 'A11',
         payload: {
+          id: 'a11',
           type: 'foo'
         }
       },
       {
         text: 'A12',
-        payload: undefined
+        payload: { id: 'a12' }
       },
       {
         text: 'B11',
-        payload: undefined
+        payload: { id: 'b11' }
       },
       {
         text: 'B12',
-        payload: undefined
+        payload: { id: 'b12' }
       }
     ]);
     expect(tester.checkedNodes.map(n => n.text)).toEqual(['A1', 'A11', 'A12', 'B1', 'B11', 'B12']);
@@ -254,15 +262,15 @@ describe('TreeComponent', () => {
     expect(tester.componentInstance.selectedNodes).toEqual([
       {
         text: 'A12',
-        payload: undefined
+        payload: { id: 'a12' }
       },
       {
         text: 'B11',
-        payload: undefined
+        payload: { id: 'b11' }
       },
       {
         text: 'B12',
-        payload: undefined
+        payload: { id: 'b12' }
       }
     ]);
     expect(tester.checkedNodes.map(n => n.text)).toEqual(['A12', 'B1', 'B11', 'B12']);
@@ -327,12 +335,15 @@ describe('TreeComponent', () => {
     tester.node('A').expander.click();
     tester.node('A1').expander.click();
     tester.node('A').payload.click();
-    expect(tester.componentInstance.highlightedNode).toEqual({ text: 'A', payload: undefined });
+    expect(tester.componentInstance.highlightedNode).toEqual({ text: 'A', payload: { id: 'a' } });
 
     tester.node('A11').payload.click();
     expect(tester.componentInstance.highlightedNode).toEqual({
       text: 'A11',
-      payload: { type: 'foo' }
+      payload: {
+        id: 'a11',
+        type: 'foo'
+      }
     });
   });
 });

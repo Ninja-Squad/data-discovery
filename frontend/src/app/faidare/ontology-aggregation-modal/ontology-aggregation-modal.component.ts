@@ -1,12 +1,23 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
-import { EMPTY, Observable, Subject } from 'rxjs';
-import { NodeInformation, TreeNode } from '../tree/tree.service';
-import { OntologyPayload, OntologyService } from '../../ontology.service';
+import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
+import { combineLatest, defer, EMPTY, Observable, Subject } from 'rxjs';
+import { NodeInformation, TextAccessor, TreeNode } from '../tree/tree.service';
+import {
+  ONTOLOGY_LANGUAGES,
+  OntologyLanguage,
+  OntologyPayload,
+  OntologyService
+} from '../../ontology.service';
 import { TypedNodeDetails } from '../ontology.model';
 import { Aggregation } from '../../models/page';
+
+export interface TreeViewModel {
+  filter: string;
+  tree: Array<TreeNode<OntologyPayload>>;
+  textAccessor: TextAccessor<OntologyPayload>;
+}
 
 @Component({
   selector: 'dd-ontology-aggregation-modal',
@@ -15,51 +26,76 @@ import { Aggregation } from '../../models/page';
 })
 export class OntologyAggregationModalComponent {
   treeFilterCtrl = new FormControl();
-  debouncedFilterValue$ = this.treeFilterCtrl.valueChanges.pipe(debounceTime(400));
-  tree$: Observable<Array<TreeNode>>;
-  private highlightedNodeSubject = new Subject<NodeInformation>();
+  languageCtrl: FormControl;
+  languages = ONTOLOGY_LANGUAGES;
+  treeView$: Observable<TreeViewModel> = EMPTY;
+  private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
   highlightedNodeDetails$: Observable<TypedNodeDetails>;
-  selectedNodes: Array<NodeInformation> = [];
+  selectedNodes: Array<NodeInformation<OntologyPayload>> = [];
 
   constructor(private modal: NgbActiveModal, private ontologyService: OntologyService) {
-    this.tree$ = EMPTY;
-    this.highlightedNodeDetails$ = this.highlightedNodeSubject.pipe(
-      switchMap(nodeInformation => {
+    this.languageCtrl = new FormControl(ontologyService.getPreferredLanguage());
+    this.languageCtrl.valueChanges.subscribe(language =>
+      this.ontologyService.setPreferredLanguage(language)
+    );
+
+    this.highlightedNodeDetails$ = combineLatest([
+      this.languageCtrl.valueChanges.pipe(startWith(this.languageCtrl.value)),
+      this.highlightedNodeSubject
+    ]).pipe(
+      switchMap(([language, nodeInformation]) => {
         const payload = nodeInformation.payload as OntologyPayload;
-        return this.getTypedNodeDetails(payload);
+        return this.getTypedNodeDetails(payload, language);
       })
     );
   }
 
   prepare(aggregation: Aggregation, selectedKeys: Array<string>) {
-    this.tree$ = this.ontologyService.getTree(
+    const tree$ = this.ontologyService.getTree(
       aggregation.buckets.map(bucket => bucket.key),
       selectedKeys
     );
+
+    const textAccessor$: Observable<TextAccessor<OntologyPayload>> = defer(() =>
+      this.languageCtrl.valueChanges.pipe(
+        startWith(this.languageCtrl.value),
+        switchMap((language: OntologyLanguage) => this.ontologyService.getTreeI8n(language)),
+        map(treeI18n => (payload: OntologyPayload) => treeI18n.names[payload.type][payload.id])
+      )
+    );
+
+    const filter$ = this.treeFilterCtrl.valueChanges.pipe(debounceTime(400), startWith(''));
+
+    this.treeView$ = combineLatest([tree$, textAccessor$, filter$]).pipe(
+      map(([tree, textAccessor, filter]) => ({ tree, textAccessor, filter }))
+    );
   }
 
-  private getTypedNodeDetails(payload: OntologyPayload): Observable<TypedNodeDetails> {
+  private getTypedNodeDetails(
+    payload: OntologyPayload,
+    language: OntologyLanguage
+  ): Observable<TypedNodeDetails> {
     switch (payload.type) {
       case 'ONTOLOGY':
         return this.ontologyService
-          .getOntology(payload.id)
+          .getOntology(payload.id, language)
           .pipe(map(details => ({ type: 'ONTOLOGY', details })));
       case 'TRAIT_CLASS':
         return this.ontologyService
-          .getTraitClass(payload.id)
+          .getTraitClass(payload.id, language)
           .pipe(map(details => ({ type: 'TRAIT_CLASS', details })));
       case 'TRAIT':
         return this.ontologyService
-          .getTrait(payload.id)
+          .getTrait(payload.id, language)
           .pipe(map(details => ({ type: 'TRAIT', details })));
       case 'VARIABLE':
         return this.ontologyService
-          .getVariable(payload.id)
+          .getVariable(payload.id, language)
           .pipe(map(details => ({ type: 'VARIABLE', details })));
     }
   }
 
-  highlightNode(information: NodeInformation | undefined) {
+  highlightNode(information: NodeInformation<OntologyPayload> | undefined) {
     if (information) {
       this.highlightedNodeSubject.next(information);
     }
