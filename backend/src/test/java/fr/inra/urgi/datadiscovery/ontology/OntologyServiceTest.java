@@ -136,6 +136,7 @@ public class OntologyServiceTest {
                         .withOntologyDbId("o1")
                         .withOntologyName("O1")
                         .withTrait(t3)
+                        .withSynonyms(Collections.singletonList("Alt-V8"))
                         .build(),
                 Variable.builder()
                         .withObservationVariableDbId("v8")
@@ -247,7 +248,7 @@ public class OntologyServiceTest {
         assertThat(englishTreeI18n.getLanguage()).isEqualTo("EN");
         assertThat(englishTreeI18n.getNames().get(TRAIT).get("t3")).isEqualTo("T3");
         assertThat(englishTreeI18n.getNames().get(VARIABLE).get("v7")).isEqualTo("V7");
-        assertThat(englishTreeI18n.getNames().get(VARIABLE).get("v8")).isEqualTo("V8");
+        assertThat(englishTreeI18n.getNames().get(VARIABLE).get("v8")).isEqualTo("V8: Alt-V8");
 
         TreeI18n frenchTreeI18n = ontologyService.getTreeI18n("FR");
         assertThat(frenchTreeI18n.getLanguage()).isEqualTo("FR");
