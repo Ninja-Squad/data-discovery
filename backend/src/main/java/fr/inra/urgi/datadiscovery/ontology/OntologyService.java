@@ -261,7 +261,13 @@ public class OntologyService implements CommandLineRunner {
         translations.put(TreeNodeType.ONTOLOGY, namesById(ontologiesById, language, ontologyDetails -> ontologyDetails.getOntology().getOntologyName()));
         translations.put(TreeNodeType.TRAIT_CLASS, namesById(traitClassesById, language, traitClassDetails -> traitClassDetails.getName()));
         translations.put(TreeNodeType.TRAIT, namesById(traitsById, language, traitDetails -> traitDetails.getTrait().getName()));
-        translations.put(TreeNodeType.VARIABLE, namesById(variablesById, language, variableDetails -> variableDetails.getVariable().getName()));
+        translations.put(TreeNodeType.VARIABLE, namesById(variablesById, language, variableDetails -> {
+            if (variableDetails.getVariable().getSynonyms() != null && variableDetails.getVariable().getSynonyms().size() > 0) {
+                return variableDetails.getVariable().getName() + ": " + variableDetails.getVariable().getSynonyms().get(0);
+            } else {
+                return variableDetails.getVariable().getName();
+            }
+        }));
 
         return new TreeI18n(language, translations);
     }
