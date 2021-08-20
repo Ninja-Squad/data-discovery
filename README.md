@@ -316,8 +316,8 @@ You can also run the backend RARe application with basket support using
 
 Adding this property has the following consequences:
 
-- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `brc4env.jar` instead of `rare.jar`);
-- the Spring active profile in `bootstrap.yml` is `wheatis-app` (resp. `brc4env-app`) instead of `rare-app`);
+- the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `brc4env.jar`) instead of `rare.jar`;
+- the Spring active profile in `bootstrap.yml` is `wheatis-app` (resp. `brc4env-app`) instead of `rare-app`;
 - the frontend application built and embedded inside the jar file is the WheatIS frontend application (resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command `yarn build:wheatis` (resp. `yarn build:brc4env`) is executed instead of the command `yarn:rare`.
 
 Since the active Spring profile is different, all the properties specific to this profile
