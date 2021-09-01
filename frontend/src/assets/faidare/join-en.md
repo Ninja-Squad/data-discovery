@@ -55,7 +55,7 @@ Example: [URGI.json](https://github.com/elixir-europe/plant-brapi-etl-data-looku
   "@id": "https://urgi.versailles.inra.fr/gnpis",
   "schema:identifier": "URGI",
   "schema:name": "URGI GnpIS",
-  "brapi:endpointUrl": "https://urgi.versailles.inra.fr/faidare/brapi/v1/"
+  "brapi:endpointUrl": "https://urgi.versailles.inrae.fr/faidare/brapi/v1/"
 }
 ```
 

@@ -55,7 +55,7 @@ logging:
 
 data-discovery:
   ontology:
-    base-url: 'https://urgi.versailles.inra.fr/faidare/brapi'
+    base-url: 'https://urgi.versailles.inrae.fr/faidare/brapi'
 
 ---
 spring:
