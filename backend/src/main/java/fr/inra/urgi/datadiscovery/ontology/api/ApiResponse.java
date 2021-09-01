@@ -1,7 +1,7 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
 /**
- * An API response from the BRApi API
+ * An API response from the BrAPI API
  * @author JB Nizet
  */
 public final class ApiResponse<R> {

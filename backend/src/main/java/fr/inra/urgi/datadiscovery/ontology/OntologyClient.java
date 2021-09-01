@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * A higher-level client for the BRApi API, delegating to the low-level {@link OntologyApiService}
+ * A higher-level client for the BrAPI API, delegating to the low-level {@link OntologyApiService}
  * @author JB Nizet
  */
 @Component
@@ -22,7 +22,7 @@ public class OntologyClient {
     }
 
     /**
-     * Load all the variables from the BRApi API. Since the API is paginated and accepts a maximum of 1000
+     * Load all the variables from the BrAPI API. Since the API is paginated and accepts a maximum of 1000
      * elements per page, this method recursively calls the endpoint until all the pages are available, and returns them as a list.
      */
     public Mono<List<Variable>> getAllVariables() {
@@ -42,7 +42,7 @@ public class OntologyClient {
     }
 
     /**
-     * Load all the ontologies from the BRApi API. Since the API is paginated and accepts a maximum of 1000
+     * Load all the ontologies from the BrAPI API. Since the API is paginated and accepts a maximum of 1000
      * elements per page, this method recursively calls the endpoint until all the pages are available, and returns them as a list.
      */
     public Mono<List<Ontology>> getAllOntologies() {

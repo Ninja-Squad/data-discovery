@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 /**
- * The low-lever service allowing to send requests to the BRApi API
+ * The low-lever service allowing to send requests to the BrAPI API
  *
  * @author JB Nizet
  */
