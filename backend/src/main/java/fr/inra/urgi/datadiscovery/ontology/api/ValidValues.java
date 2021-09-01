@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * The ValidValue of a {@link Scale}
+ * The ValidValues of a {@link Scale}
  *
  * @author JB Nizet
  */
