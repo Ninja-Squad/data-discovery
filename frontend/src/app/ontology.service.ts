@@ -199,8 +199,7 @@ export class OntologyService {
     selectedVariableIds: Set<string>
   ): TreeNode<OntologyPayload> | null {
     if (ontologyTreeNode.payload.type === 'VARIABLE') {
-      // FIXME JBN remove || true which is there only to be able to test the tree while the aggregation doesn't work
-      if (selectableVariableIds.has(ontologyTreeNode.payload.id) || true) {
+      if (selectableVariableIds.has(ontologyTreeNode.payload.id)) {
         return {
           payload: ontologyTreeNode.payload,
           children: [],
