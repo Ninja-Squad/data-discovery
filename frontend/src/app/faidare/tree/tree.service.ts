@@ -102,7 +102,7 @@ export interface InternalTreeNode<P> {
    * true if this node is expanded. When filtering is used, the filtering forces a node to be expanded or not by
    * setting expandedForced to true or false, if the node has a descendant which matches the filter or not.
    * So, if expandedForced is defined, then it is prioritized over expanded. When filtering is canceled,
-   * expandedForced is rest to undefined and expanded thus takes its role again.
+   * expandedForced is reset to undefined and expanded thus takes its role again.
    * Explicitly expanding or collapsing a node after filtering also resets expandedForced to undefined.
    */
   readonly expanded: boolean;

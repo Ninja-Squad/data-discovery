@@ -6,7 +6,7 @@ import java.util.Optional;
 
 /**
  * The immutable state of the {@link fr.inra.urgi.datadiscovery.ontology.OntologyService}, which is refreshed (i.e. replaced by a new state)
- * on a rgular basis
+ * on a regular basis
  *
  * @author JB Nizet
  */

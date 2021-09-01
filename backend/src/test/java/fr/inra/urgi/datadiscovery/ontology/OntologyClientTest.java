@@ -29,13 +29,13 @@ class OntologyClientTest {
     class Variables {
         @Test
         void shouldGetAllVariables() {
-            OntologyApiService mockAPiService = mock(OntologyApiService.class);
+            OntologyApiService mockApiService = mock(OntologyApiService.class);
 
-            when(mockAPiService.getVariables(0)).thenReturn(Mono.just(createResult(0)));
-            when(mockAPiService.getVariables(1)).thenReturn(Mono.just(createResult(1)));
-            when(mockAPiService.getVariables(2)).thenReturn(Mono.just(createResult(2)));
+            when(mockApiService.getVariables(0)).thenReturn(Mono.just(createResult(0)));
+            when(mockApiService.getVariables(1)).thenReturn(Mono.just(createResult(1)));
+            when(mockApiService.getVariables(2)).thenReturn(Mono.just(createResult(2)));
 
-            OntologyClient client = new OntologyClient(mockAPiService);
+            OntologyClient client = new OntologyClient(mockApiService);
             List<Variable> result = client.getAllVariables().block();
             assertThat(result).hasSize(30);
             for (int i = 0; i < result.size(); i++) {
@@ -64,13 +64,13 @@ class OntologyClientTest {
     class Ontologies {
         @Test
         void shouldGetAllOntologies() {
-            OntologyApiService mockAPiService = mock(OntologyApiService.class);
+            OntologyApiService mockApiService = mock(OntologyApiService.class);
 
-            when(mockAPiService.getOntologies(0)).thenReturn(Mono.just(createResult(0)));
-            when(mockAPiService.getOntologies(1)).thenReturn(Mono.just(createResult(1)));
-            when(mockAPiService.getOntologies(2)).thenReturn(Mono.just(createResult(2)));
+            when(mockApiService.getOntologies(0)).thenReturn(Mono.just(createResult(0)));
+            when(mockApiService.getOntologies(1)).thenReturn(Mono.just(createResult(1)));
+            when(mockApiService.getOntologies(2)).thenReturn(Mono.just(createResult(2)));
 
-            OntologyClient client = new OntologyClient(mockAPiService);
+            OntologyClient client = new OntologyClient(mockApiService);
             List<Ontology> result = client.getAllOntologies().block();
             assertThat(result).hasSize(30);
             for (int i = 0; i < result.size(); i++) {

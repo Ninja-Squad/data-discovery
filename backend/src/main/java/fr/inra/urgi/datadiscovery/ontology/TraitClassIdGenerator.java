@@ -8,8 +8,8 @@ import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Component;
 
 /**
- * An ID generator for trait classes.$
- * Trait classes are fake entities which don't have a database ID. To identify them, we use their ontology DB Id and their name.
+ * An ID generator for trait classes.
+ * Trait classes are fake entities which don't have a database ID. To identify them, we use their ontology DB ID and their name.
  * But since their name can be long and contain any kind of character, it's not really suitable for an ID that must be transmitted
  * as a path parameter. So, instead of transmitting this fake ID as is, we hash it, transform it to hex, and use that hex value
  * @author JB Nizet
