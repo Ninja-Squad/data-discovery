@@ -8,9 +8,8 @@ describe('OntologyNodeTypeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OntologyNodeTypeComponent ]
-    })
-    .compileComponents();
+      declarations: [OntologyNodeTypeComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
