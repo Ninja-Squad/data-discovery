@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
-import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -35,7 +34,8 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
         "biologicalStatus",
         "geneticNature",
         "countryOfOrigin",
-        "taxonGroup"
+        "taxonGroup",
+        "observationVariableIds"
     ).collect(Collectors.toSet()));
 
     private static final PillarAggregationDescriptor PILLAR_AGGREGATION_DESCRIPTOR =

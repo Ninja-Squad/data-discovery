@@ -141,6 +141,15 @@
                     "ignore_above": 256
                 }
             }
+        },
+        "observationVariableIds": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
         }
     }
 }
