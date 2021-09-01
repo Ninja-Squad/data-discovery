@@ -43,10 +43,7 @@ export class FaidareOntologyAggregationComponent implements OnChanges {
 
   openModal() {
     const modal = this.modalService.open(OntologyAggregationModalComponent, { size: 'xl' });
-    (modal.componentInstance as OntologyAggregationModalComponent).prepare(
-      this.aggregation,
-      this.selectedKeys
-    );
+    modal.componentInstance.prepare(this.aggregation, this.selectedKeys);
     modal.result.then(
       (selectedVariableIds: Array<string>) => {
         const event: AggregationCriterion = {
