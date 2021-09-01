@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A Variable returned from the "list variables" BRApi endpoint
+ * A Variable returned from the "list variables" BrAPI endpoint
  *
  * @author JB Nizet
  */

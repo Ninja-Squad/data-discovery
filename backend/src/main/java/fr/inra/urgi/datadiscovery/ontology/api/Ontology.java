@@ -6,7 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * An ontology, as returned from the "list ontologies" BRApi API endpoint
+ * An ontology, as returned from the "list ontologies" BrAPI API endpoint
  * @author JB Nizet
  */
 public final class Ontology {

@@ -33,7 +33,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * Service used as a caching proxy to the BRApi. At startup, it loads all the variables in memory and computes the ontology tree.
+ * Service used as a caching proxy to the BrAPI. At startup, it loads all the variables in memory and computes the ontology tree.
  * Every hour, it refreshes this tree.
  *
  * @author JB Nizet

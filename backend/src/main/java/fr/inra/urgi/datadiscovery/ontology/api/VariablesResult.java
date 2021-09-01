@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * The result of an {@link ApiResponse} from the "list variables" endpoint of the BRApi API
+ * The result of an {@link ApiResponse} from the "list variables" endpoint of the BrAPI API
  *
  * @author JB Nizet
  */
