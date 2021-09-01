@@ -145,46 +145,37 @@ public class OntologyService implements CommandLineRunner {
             if (variable.getLanguage() != null) {
                 languages.add(variable.getLanguage());
             }
-            TreeNodePayload ontologyPayload = new TreeNodePayload(TreeNodeType.ONTOLOGY,
-                                                                  variable.getOntologyDbId());
+
+            TreeNodePayload traitPayload = new TreeNodePayload(TreeNodeType.TRAIT, variable.getTrait().getTraitDbId());
+            MutableNode traitNode = nodesByPayload.computeIfAbsent(traitPayload, MutableNode::new);
+            TreeNodePayload ontologyPayload = new TreeNodePayload(TreeNodeType.ONTOLOGY, variable.getOntologyDbId());
+            MutableNode ontologyNode = nodesByPayload.computeIfAbsent(ontologyPayload, MutableNode::new);
             TreeNodePayload traitClassPayload = null;
             if (variable.getTrait().getTraitClass() != null) {
                 traitClassPayload = new TreeNodePayload(TreeNodeType.TRAIT_CLASS,
                                                         traitClassIdGenerator.generateId(variable.getOntologyDbId(), variable.getTrait().getTraitClass()));
             }
-            TreeNodePayload traitPayload = new TreeNodePayload(TreeNodeType.TRAIT,
-                                                               variable.getTrait().getTraitDbId());
-            TreeNodePayload variablePayload = new TreeNodePayload(TreeNodeType.VARIABLE,
-                                                                  variable.getObservationVariableDbId());
-
-            MutableNode ontologyNode = nodesByPayload.computeIfAbsent(ontologyPayload, MutableNode::new);
-            MutableNode traitClassNode = null;
             if (traitClassPayload != null) {
-                traitClassNode = nodesByPayload.computeIfAbsent(traitClassPayload, MutableNode::new);
-            }
-            MutableNode traitNode = nodesByPayload.computeIfAbsent(traitPayload, MutableNode::new);
-            MutableNode variableNode = nodesByPayload.computeIfAbsent(variablePayload, MutableNode::new);
-
-            if (traitClassPayload != null) {
+                MutableNode traitClassNode = nodesByPayload.computeIfAbsent(traitClassPayload, MutableNode::new);
                 ontologyNode.addChild(traitClassNode);
                 traitClassNode.addChild(traitNode);
+                traitClassesById.computeIfAbsent(traitClassPayload.getId(), id -> new Translations<>()).putTranslation(
+                        variable.getLanguage(),
+                        new TraitClassDetails(traitClassPayload.getId(),
+                                              variable.getTrait().getTraitClass(),
+                                              variable.getOntologyName())
+                );
             } else {
                 ontologyNode.addChild(traitNode);
             }
-            traitNode.addChild(variableNode);
-
-            if (traitClassPayload != null) {
-                traitClassesById.computeIfAbsent(traitClassPayload.getId(), id -> new Translations<>()).putTranslation(
-                    variable.getLanguage(),
-                    new TraitClassDetails(traitClassPayload.getId(),
-                                          variable.getTrait().getTraitClass(),
-                                          variable.getOntologyName())
-                );
-            }
             traitsById.computeIfAbsent(traitPayload.getId(), id -> new Translations<>()).putTranslation(
-                variable.getLanguage(),
-                new TraitDetails(variable.getTrait(), variable.getOntologyName())
+                    variable.getLanguage(),
+                    new TraitDetails(variable.getTrait(), variable.getOntologyName())
             );
+
+            TreeNodePayload variablePayload = new TreeNodePayload(TreeNodeType.VARIABLE, variable.getObservationVariableDbId());
+            MutableNode variableNode = nodesByPayload.computeIfAbsent(variablePayload, MutableNode::new);
+            traitNode.addChild(variableNode);
             variablesById.computeIfAbsent(variablePayload.getId(), id -> new Translations<>()).putTranslation(
                 variable.getLanguage(),
                 new VariableDetails(variable)
