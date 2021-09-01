@@ -1,24 +1,45 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { OntologyNodeTypeComponent } from './ontology-node-type.component';
+import { Component } from '@angular/core';
+import { ComponentTester } from 'ngx-speculoos';
+import { OntologyNodeType } from '../../ontology.service';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+
+@Component({
+  template: '<dd-ontology-node-type [type]="type"></dd-ontology-node-type>'
+})
+class TestComponent {
+  type: OntologyNodeType = 'ONTOLOGY';
+}
+
+class TestComponentTester extends ComponentTester<TestComponent> {
+  constructor() {
+    super(TestComponent);
+  }
+}
 
 describe('OntologyNodeTypeComponent', () => {
-  let component: OntologyNodeTypeComponent;
-  let fixture: ComponentFixture<OntologyNodeTypeComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [OntologyNodeTypeComponent]
-    }).compileComponents();
-  });
+  let tester: TestComponentTester;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OntologyNodeTypeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      declarations: [TestComponent, OntologyNodeTypeComponent],
+      imports: [I18nTestingModule]
+    });
+    tester = new TestComponentTester();
+    tester.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should display an ontology type', () => {
+    const element = tester.element('span');
+    expect(element).toContainText('Ontology');
+    expect(element).toHaveClass('badge-ONTOLOGY');
+
+    tester.componentInstance.type = 'TRAIT';
+    tester.detectChanges();
+
+    expect(element).toContainText('Trait');
+    expect(element).toHaveClass('badge-TRAIT');
   });
 });
