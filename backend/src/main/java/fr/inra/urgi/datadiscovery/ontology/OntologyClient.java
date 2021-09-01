@@ -32,7 +32,7 @@ public class OntologyClient {
                     int currentPage = apiResponse.getMetadata().getPagination().getCurrentPage();
                     int totalPages = apiResponse.getMetadata().getPagination().getTotalPages();
                     if (currentPage < totalPages - 1) {
-                        return this.ontologyApiService.getVariables(apiResponse.getMetadata().getPagination().getCurrentPage() + 1);
+                        return this.ontologyApiService.getVariables(currentPage + 1);
                     } else {
                         return Mono.empty();
                     }
@@ -52,7 +52,7 @@ public class OntologyClient {
                 int currentPage = apiResponse.getMetadata().getPagination().getCurrentPage();
                 int totalPages = apiResponse.getMetadata().getPagination().getTotalPages();
                 if (currentPage < totalPages - 1) {
-                    return this.ontologyApiService.getOntologies(apiResponse.getMetadata().getPagination().getCurrentPage() + 1);
+                    return this.ontologyApiService.getOntologies(currentPage + 1);
                 } else {
                     return Mono.empty();
                 }
