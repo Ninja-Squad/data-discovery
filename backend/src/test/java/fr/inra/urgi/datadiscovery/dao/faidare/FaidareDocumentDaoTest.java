@@ -1,5 +1,13 @@
 package fr.inra.urgi.datadiscovery.dao.faidare;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
@@ -14,7 +22,12 @@ import org.assertj.core.util.Lists;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
@@ -22,14 +35,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource("/test-faidare.properties")
 @Import(ElasticSearchConfig.class)
@@ -142,6 +147,11 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
     }
 
     @Test
+    void shouldSearchOnObservationVariableIds() {
+        shouldSearch((b, s) -> b.withObservationVariableIds(Collections.singletonList(s)));
+    }
+
+    @Test
     void shouldNotSearchOnUrl() {
         FaidareDocument document =
             FaidareDocument.builder().withUrl("foo bar baz").build();
@@ -212,6 +222,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withGeneticNature("Nature1")
                             .withCountryOfOrigin("France")
                             .withTaxonGroup(Collections.singletonList("Pixies"))
+                            .withObservationVariableIds(Collections.singletonList("OV1"))
                             .build();
 
             FaidareDocument document2 =
@@ -226,6 +237,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withGeneticNature("Nature1")
                             .withCountryOfOrigin("Finland")
                             .withTaxonGroup(Collections.singletonList("Rolling stones"))
+                            .withObservationVariableIds(Collections.singletonList("OV2"))
                             .build();
 
             documentDao.saveAll(Arrays.asList(document1, document2));
@@ -282,6 +294,11 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
             assertThat(taxonGroup.getName()).isEqualTo(FaidareAggregation.TAXON_GROUP.getName());
             assertThat(taxonGroup.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Pixies", "Rolling stones");
             assertThat(taxonGroup.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+            Terms observationVariableIds = result.getAggregations().get(FaidareAggregation.ONTOLOGY.getName());
+            assertThat(observationVariableIds.getName()).isEqualTo(FaidareAggregation.ONTOLOGY.getName());
+            assertThat(observationVariableIds.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("OV1", "OV2");
+            assertThat(observationVariableIds.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
         }
 
         @Test

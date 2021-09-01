@@ -1,17 +1,17 @@
 package fr.inra.urgi.datadiscovery.domain.faidare;
 
+import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
 /**
  * The document for the Faidare application
@@ -41,6 +41,7 @@ public final class FaidareDocument implements SearchDocument {
     private final String geneticNature;
     private final String countryOfOrigin;
     private final List<String> taxonGroup;
+    private final List<String> observationVariableIds;
 
     @JsonCreator
     @PersistenceConstructor
@@ -59,7 +60,8 @@ public final class FaidareDocument implements SearchDocument {
                            String biologicalStatus,
                            String geneticNature,
                            String countryOfOrigin,
-                           List<String> taxonGroup) {
+                           List<String> taxonGroup,
+                           List<String> observationVariableIds) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -76,6 +78,7 @@ public final class FaidareDocument implements SearchDocument {
         this.geneticNature = geneticNature;
         this.countryOfOrigin = countryOfOrigin;
         this.taxonGroup = taxonGroup;
+        this.observationVariableIds = observationVariableIds;
     }
 
     public FaidareDocument(Builder builder) {
@@ -94,7 +97,8 @@ public final class FaidareDocument implements SearchDocument {
              builder.biologicalStatus,
              builder.geneticNature,
              builder.countryOfOrigin,
-             builder.taxonGroup);
+             builder.taxonGroup,
+             builder.observationVariableIds);
     }
 
     @Override
@@ -163,6 +167,10 @@ public final class FaidareDocument implements SearchDocument {
         return taxonGroup;
     }
 
+    public List<String> getObservationVariableIds() {
+        return observationVariableIds;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -187,7 +195,8 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(biologicalStatus, that.biologicalStatus) &&
             Objects.equals(geneticNature, that.geneticNature) &&
             Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
-            Objects.equals(taxonGroup, that.taxonGroup);
+            Objects.equals(taxonGroup, that.taxonGroup) &&
+            Objects.equals(observationVariableIds, that.observationVariableIds);
     }
 
     @Override
@@ -207,7 +216,8 @@ public final class FaidareDocument implements SearchDocument {
                             biologicalStatus,
                             geneticNature,
                             countryOfOrigin,
-                            taxonGroup);
+                            taxonGroup,
+                            observationVariableIds);
     }
 
     @Override
@@ -229,6 +239,7 @@ public final class FaidareDocument implements SearchDocument {
             ", geneticNature='" + geneticNature + '\'' +
             ", countryOfOrigin='" + countryOfOrigin + '\'' +
             ", taxonGroup='" + taxonGroup + '\'' +
+            ", observationVariableIds='" + observationVariableIds + '\'' +
             '}';
     }
 
@@ -257,7 +268,8 @@ public final class FaidareDocument implements SearchDocument {
         private String biologicalStatus;
         private String geneticNature;
         private String countryOfOrigin;
-        private List<String> taxonGroup;
+        private List<String> taxonGroup = Collections.emptyList();
+        private List<String> observationVariableIds = Collections.emptyList();
 
         private Builder() {
         }
@@ -279,6 +291,7 @@ public final class FaidareDocument implements SearchDocument {
             this.geneticNature = document.getGeneticNature();
             this.countryOfOrigin = document.getCountryOfOrigin();
             this.taxonGroup = document.getTaxonGroup();
+            this.observationVariableIds = document.getObservationVariableIds();
         }
 
         public Builder withId(String id) {
@@ -358,6 +371,11 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withTaxonGroup(List<String> taxonGroup) {
             this.taxonGroup = taxonGroup;
+            return this;
+        }
+
+        public Builder withObservationVariableIds(List<String> observationVariableIds) {
+            this.observationVariableIds = observationVariableIds;
             return this;
         }
 
