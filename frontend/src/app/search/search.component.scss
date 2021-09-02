@@ -6,3 +6,17 @@
     overflow-y: hidden;
   }
 }
+
+/**
+  This media query triggers when the screen size is `md` or larger
+  and acts on the element with the `ngbCollapse` directive and the custom `collapse-md` class.
+  When it is the case, the element is displayed, even if `ngbCollapse` removed the `show` class
+  which is responsible for showing the content.
+  This allows to always display the aggregations on large screen,
+  and defers to `ngbCollapse` and its condition for the smaller screens.
+*/
+@include media-breakpoint-up(md) {
+  .collapse.collapse-md:not(.show) {
+    display: block;
+  }
+}

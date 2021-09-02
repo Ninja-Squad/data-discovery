@@ -1,5 +1,4 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
@@ -50,7 +49,6 @@ registerLocaleData(localeFr);
     DescendantsCheckboxComponent
   ],
   imports: [
-    BrowserAnimationsModule,
     BrowserModule,
     RouterModule.forRoot(routes, {
       scrollPositionRestoration: 'enabled',

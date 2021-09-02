@@ -8,35 +8,12 @@ import { SearchService } from '../search.service';
 import { DocumentModel } from '../models/document.model';
 import { Aggregation, Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
-  animations: [
-    /**
-     * Animation triggered when the filters are show/hidden
-     * on small devices.
-     */
-    trigger('showHide', [
-      state(
-        'show',
-        style({
-          height: '*'
-        })
-      ),
-      state(
-        'hide',
-        style({
-          height: 0
-        })
-      ),
-      transition('show => hide', [animate('500ms ease-out')]),
-      transition('hide => show', [animate('500ms ease-in')])
-    ])
-  ]
+  styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
   searchLoading = true;
@@ -51,7 +28,7 @@ export class SearchComponent implements OnInit {
   // array of all the selected criteria
   aggregationCriteria: Array<AggregationCriterion> = [];
   // hide or show the filters on small devices
-  filters: 'show' | 'hide' = 'hide';
+  filtersExpanded = false;
   searchDescendants = false;
 
   constructor(
@@ -201,7 +178,7 @@ export class SearchComponent implements OnInit {
   }
 
   toggleFilters() {
-    this.filters = this.filters === 'show' ? 'hide' : 'show';
+    this.filtersExpanded = !this.filtersExpanded;
   }
 
   /**
