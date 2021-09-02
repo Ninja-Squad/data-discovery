@@ -4,7 +4,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
 import { ComponentTester, fakeRoute } from 'ngx-speculoos';
@@ -40,11 +39,11 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
   }
 
   get searchBar() {
-    return this.input('input');
+    return this.input('input')!;
   }
 
   get searchButton() {
-    return this.button('button');
+    return this.button('button')!;
   }
 
   get results() {
@@ -74,7 +73,6 @@ describe('SearchComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         DataDiscoveryNgbTestingModule,
-        NoopAnimationsModule,
         I18nTestingModule
       ],
       declarations: [
@@ -116,7 +114,7 @@ describe('SearchComponent', () => {
     component.ngOnInit();
 
     // then the search should be populated
-    expect(component.searchForm.get('search').value).toBe(query);
+    expect(component.searchForm.get('search')!.value).toBe(query);
     // the search service called with page 1, no criteria and asked for aggregations
     expect(searchService.search).toHaveBeenCalledWith(query, [], 1, false);
     // and the results fetched
@@ -145,7 +143,7 @@ describe('SearchComponent', () => {
     component.ngOnInit();
 
     // then the search should be populated
-    expect(component.searchForm.get('search').value).toBe(query);
+    expect(component.searchForm.get('search')!.value).toBe(query);
     // the search service called with page 1, no criteria and asked for aggregations
     expect(searchService.search).toHaveBeenCalledWith(query, [], 1, false);
     // and the results fetched
@@ -179,7 +177,7 @@ describe('SearchComponent', () => {
     component.ngOnInit();
 
     // then the search should be populated
-    expect(component.searchForm.get('search').value).toBe(query);
+    expect(component.searchForm.get('search')!.value).toBe(query);
     // the search service called with page 3, no criteria and and asked for aggregations
     expect(searchService.search).toHaveBeenCalledWith(query, [], 3, false);
     // and the results fetched
@@ -212,7 +210,7 @@ describe('SearchComponent', () => {
     component.ngOnInit();
 
     // then the search should be populated
-    expect(component.searchForm.get('search').value).toBe(query);
+    expect(component.searchForm.get('search')!.value).toBe(query);
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
     const domainCriteria = { name: 'domain', values: ['Plant'] };
@@ -258,7 +256,7 @@ describe('SearchComponent', () => {
     component.ngOnInit();
 
     // then the search should be populated
-    expect(component.searchForm.get('search').value).toBe(query);
+    expect(component.searchForm.get('search')!.value).toBe(query);
     // the search service called with page 1, the criteria and asked for aggregations
     const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
     const domainCriteria = { name: 'domain', values: ['Plant'] };
@@ -319,7 +317,7 @@ describe('SearchComponent', () => {
     const component = new SearchComponent(activatedRoute, router, searchService);
 
     query = 'Bacteria';
-    component.searchForm.get('search').setValue(query);
+    component.searchForm.get('search')!.setValue(query);
     // when searching with a new query Bacteria
     component.newSearch();
 
@@ -376,19 +374,19 @@ describe('SearchComponent', () => {
     const searchService = TestBed.inject(SearchService);
     const activatedRoute = fakeRoute({});
     const component = new SearchComponent(activatedRoute, router, searchService);
-    expect(component.filters).toBe('hide');
+    expect(component.filtersExpanded).toBe(false);
 
     // when toggling filters
     component.toggleFilters();
 
     // then it should show the filters
-    expect(component.filters).toBe('show');
+    expect(component.filtersExpanded).toBe(true);
 
     // when toggling filters again
     component.toggleFilters();
 
     // then it should hide the filters
-    expect(component.filters).toBe('hide');
+    expect(component.filtersExpanded).toBe(false);
   });
 
   it('should display a search bar and trigger a search', () => {
@@ -409,7 +407,7 @@ describe('SearchComponent', () => {
     // trigger search
     tester.searchButton.click();
     expect(component.newSearch).toHaveBeenCalled();
-    expect(component.searchForm.get('search').value).toBe(query);
+    expect(component.searchForm.get('search')!.value).toBe(query);
   });
 
   it('should display results and pagination', () => {

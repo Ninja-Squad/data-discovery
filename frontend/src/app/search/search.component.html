@@ -27,14 +27,18 @@
     <i class="fa fa-sliders" aria-hidden="true"></i>&ngsp;{{ 'search.filters' | translate }}&ngsp;
     <i
       class="fa"
-      [class.fa-caret-up]="filters === 'show'"
-      [class.fa-caret-down]="filters === 'hide'"
+      [class.fa-caret-up]="filtersExpanded"
+      [class.fa-caret-down]="!filtersExpanded"
       aria-hidden="true"
     ></i>
   </button>
 </div>
 <div class="row mt-sm-2 mt-md-5">
-  <div class="col-12 col-md-4 col-lg-3 filters" [@showHide]="filters">
+  <!-- aggregation are collapsed on small screens in a "Filters" button  -->
+  <!-- note the `collapse-md` class below, which is not a standard Bootstrap class -->
+  <!-- `collapse-md` is used in the CSS of the component to always show the aggregations when on desktop (md screen and larger) -->
+  <!-- even if `filtersExpanded` is false -->
+  <div class="col-12 col-md-4 col-lg-3 filters collapse-md" [ngbCollapse]="!filtersExpanded">
     <h2 class="sr-only" translate="search.filters">Filters</h2>
     <dd-aggregations
       *ngIf="aggregations"
