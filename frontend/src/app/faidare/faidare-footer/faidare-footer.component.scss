@@ -1,0 +1,11 @@
+@import 'theme';
+
+footer {
+  background-color: $theme-navbar-bg-color;
+}
+
+@media (min-width: 768px) {
+  ul {
+    columns: 2;
+  }
+}

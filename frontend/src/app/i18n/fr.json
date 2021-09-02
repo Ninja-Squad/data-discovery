@@ -147,6 +147,9 @@
         "about": "À propos"
       }
     },
+    "footer": {
+      "data-providers": "Fournisseurs de données"
+    },
     "aggregation": {
       "entry": "Type de données",
       "db": "Base de données",

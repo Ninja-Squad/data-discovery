@@ -1,0 +1,19 @@
+<footer>
+  <div class="container pt-3 mt-3">
+    <div class="row">
+      <div class="col-md-6 text-center text-md-left">
+        <h5 translate="faidare.footer.data-providers"></h5>
+        <ul class="list-unstyled">
+          <li *ngFor="let dataProvider of dataProviders">
+            <a [href]="dataProvider.url">{{ dataProvider.name }}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-6 d-flex align-items-center justify-content-center justify-content-md-end">
+        <div>
+          <img src="assets/elixir-logo.png" alt="Elixir" />
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
