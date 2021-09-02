@@ -22,6 +22,11 @@ Use the `yarn build:wheatis` flag for a production build of WheatIS, and `yarn b
 
 Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+## Linting and formatting
+
+Run `ng lint --fix` to lint and format the frontend,
+with automatic fixes (when possible).
+
 ## Internationalization
 
 The application is internationalized: 
