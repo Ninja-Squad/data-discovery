@@ -13,6 +13,7 @@ import { OntologyAggregationModalComponent } from './ontology-aggregation-modal/
 import { TranslateModule } from '@ngx-translate/core';
 import { NodeDetailsComponent } from './node-details/node-details.component';
 import { OntologyNodeTypeComponent } from './ontology-node-type/ontology-node-type.component';
+import { FaidareFooterComponent } from './faidare-footer/faidare-footer.component';
 
 @NgModule({
   imports: [UrgiCommonModule, ReactiveFormsModule, DataDiscoveryNgbModule, TranslateModule],
@@ -23,12 +24,14 @@ import { OntologyNodeTypeComponent } from './ontology-node-type/ontology-node-ty
     FaidareOntologyAggregationComponent,
     OntologyAggregationModalComponent,
     NodeDetailsComponent,
-    OntologyNodeTypeComponent
+    OntologyNodeTypeComponent,
+    FaidareFooterComponent
   ],
   exports: [
     GenericDocumentComponent,
     GenericSelectAllResultsComponent,
     FaidareHeaderComponent,
+    FaidareFooterComponent,
     FaidareOntologyAggregationComponent
   ]
 })
