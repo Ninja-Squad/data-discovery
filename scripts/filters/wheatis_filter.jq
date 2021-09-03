@@ -7,7 +7,7 @@ def filter_wheat_species:
     select(
         if .species != null then
             .species | tostring |
-            ascii_downcase | test("(triticum)|(hordeum)|(aegilops)|(wheat)")
+            ascii_downcase | test("(triticale)|(triticum)|(hordeum)|(aegilops)|(wheat)")
         else
             false
         end
