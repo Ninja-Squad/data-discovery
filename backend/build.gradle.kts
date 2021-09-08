@@ -109,6 +109,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("com.squareup.okhttp3:mockwebserver")
 
     asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE")
 }

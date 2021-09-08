@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -203,6 +204,26 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
         AggregatedPage<FaidareDocument> result =
                 documentDao.search("  ", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
+    }
+
+    @Test
+    void shouldFindAllIds() {
+        documentDao.saveAll(Arrays.asList(
+            FaidareDocument.builder().withId("id1").withDescription("foobar 1").withEntryType("germplasm").build(),
+            FaidareDocument.builder().withId("id2").withDescription("foobar 2").withEntryType("germplasm").build(),
+            FaidareDocument.builder().withId("id3").withDescription("foobar 3").withEntryType("germplasm").build(),
+            FaidareDocument.builder().withId("id4").withDescription("foobar 4").withEntryType("other").build(),
+            FaidareDocument.builder().withId("id5").withDescription("other 5").withEntryType("germplasm").build()
+        ));
+        documentDao.refresh();
+
+        Set<String> ids = documentDao.findAllIds("foobar",
+                                                 false,
+                                                 SearchRefinements.builder()
+                                                                  .withTerm(FaidareAggregation.ENTRY_TYPE,
+                                                                            Collections.singletonList("germplasm"))
+                                                                  .build());
+        assertThat(ids).containsOnly("id1", "id2", "id3");
     }
 
     @Nested
