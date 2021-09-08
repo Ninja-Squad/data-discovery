@@ -1,4 +1,4 @@
-<div class="card mb-1" *ngIf="aggregation.buckets.length">
+<div class="card mb-1" *ngIf="!hideAggregation">
   <div class="card-body">
     <!-- title -->
     <h3 class="card-title" [class.text-muted]="aggregationForm.disabled">

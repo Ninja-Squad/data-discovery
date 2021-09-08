@@ -29,7 +29,7 @@ describe('LargeAggregationComponent', () => {
     }
 
     get inputField() {
-      return this.input('input');
+      return this.input('input')!;
     }
 
     get typeahead() {
@@ -226,8 +226,8 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // an event is emitted
-    expect(emittedEvent.name).toBe('coo');
-    expect(emittedEvent.values).toEqual(['France']);
+    expect(emittedEvent!.name).toBe('coo');
+    expect(emittedEvent!.values).toEqual(['France']);
 
     // the input is emptied
     expect(tester.inputField).toHaveValue('');
@@ -253,8 +253,8 @@ describe('LargeAggregationComponent', () => {
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
-    expect(emittedEvent.name).toBe('coo');
-    expect(emittedEvent.values).toEqual(['France', 'Italy']);
+    expect(emittedEvent!.name).toBe('coo');
+    expect(emittedEvent!.values).toEqual(['France', 'Italy']);
 
     // the focus is given back to the input
     expect(tester.element(':focus')).toEqual(tester.inputField);
@@ -265,13 +265,13 @@ describe('LargeAggregationComponent', () => {
     expect(tester.pills[1]).toContainText('Italy[20]');
 
     // when a pill is removed
-    tester.pills[0].button('button').click();
+    tester.pills[0].button('button')!.click();
     tick();
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
-    expect(emittedEvent.name).toBe('coo');
-    expect(emittedEvent.values).toEqual(['Italy']);
+    expect(emittedEvent!.name).toBe('coo');
+    expect(emittedEvent!.values).toEqual(['Italy']);
 
     // and the pill should disappear
     expect(tester.pills.length).toBe(1);
@@ -310,7 +310,7 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // no event is emitted
-    expect(emittedEvent).toBeUndefined();
+    expect(emittedEvent!).toBeUndefined();
 
     // the input value stays the same
     expect(tester.inputField).toHaveValue('a');
@@ -324,4 +324,15 @@ describe('LargeAggregationComponent', () => {
     // discard the remaining timer
     tick(200);
   }));
+
+  it('should be not be displayed if only NULL bucket', () => {
+    const tester = new LargeAggregationComponentTester();
+
+    // given an aggregation with only the NULL bucket
+    tester.componentInstance.aggregation = toAggregation(NULL_VALUE, []);
+    tester.detectChanges();
+
+    expect(tester.title).toBeNull();
+    expect(tester.inputField).toBeNull();
+  });
 });
