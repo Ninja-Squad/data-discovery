@@ -5,7 +5,8 @@ import {
   NgbModalModule,
   NgbPaginationModule,
   NgbTooltipModule,
-  NgbTypeaheadModule
+  NgbTypeaheadModule,
+  NgbNavModule
 } from '@ng-bootstrap/ng-bootstrap';
 
 const NGB_MODULES = [
@@ -14,7 +15,8 @@ const NGB_MODULES = [
   NgbPaginationModule,
   NgbCollapseModule,
   NgbDropdownModule,
-  NgbModalModule
+  NgbModalModule,
+  NgbNavModule
 ];
 
 /**

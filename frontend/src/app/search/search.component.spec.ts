@@ -32,6 +32,7 @@ import { BasketService } from '../rare/basket.service';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -87,7 +88,8 @@ describe('SearchComponent', () => {
         LoadingSkeletonComponent,
         TruncatableDescriptionComponent,
         DescendantsCheckboxComponent,
-        GenericSelectAllResultsComponent
+        GenericSelectAllResultsComponent,
+        GenericDocumentListComponent
       ],
       providers: [{ provide: BasketService, useValue: basketService }]
     })
@@ -328,7 +330,8 @@ describe('SearchComponent', () => {
         query,
         page: undefined,
         descendants: 'false'
-      }
+      },
+      preserveFragment: true
     });
   });
 
@@ -364,7 +367,8 @@ describe('SearchComponent', () => {
         descendants: 'false',
         coo,
         domain
-      }
+      },
+      preserveFragment: true
     });
   });
 
@@ -569,7 +573,8 @@ describe('SearchComponent', () => {
         page: undefined,
         descendants: 'true',
         annot
-      }
+      },
+      preserveFragment: true
     });
 
     // when unselecting search descendants
@@ -583,7 +588,8 @@ describe('SearchComponent', () => {
         page: undefined,
         descendants: 'false',
         annot
-      }
+      },
+      preserveFragment: true
     });
   });
 });

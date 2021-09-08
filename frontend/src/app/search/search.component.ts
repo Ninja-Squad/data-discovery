@@ -203,7 +203,8 @@ export class SearchComponent implements OnInit {
 
     this.router.navigate(['.'], {
       relativeTo: this.route,
-      queryParams
+      queryParams,
+      preserveFragment: true
     });
   }
 

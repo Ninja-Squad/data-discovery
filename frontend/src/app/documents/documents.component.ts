@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { Page } from '../models/page';
+import { Aggregation, Page } from '../models/page';
 import { DocumentModel } from '../models/document.model';
 import { BasketService } from '../rare/basket.service';
 
@@ -12,6 +12,7 @@ import { BasketService } from '../rare/basket.service';
 })
 export class DocumentsComponent {
   @Input() documents!: Page<DocumentModel>;
+  @Input() aggregations: Array<Aggregation> = [];
   isBasketEnabled: boolean;
 
   constructor(basketService: BasketService) {

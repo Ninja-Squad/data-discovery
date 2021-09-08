@@ -59,7 +59,7 @@
     <div *ngIf="!searchLoading">
       <h2 class="sr-only" translate="search.results"></h2>
       <div *ngIf="results">
-        <dd-documents [documents]="results"></dd-documents>
+        <dd-documents [documents]="results" [aggregations]="aggregations"></dd-documents>
       </div>
 
       <div class="d-flex justify-content-center mt-5" *ngIf="results && results.totalPages > 1">

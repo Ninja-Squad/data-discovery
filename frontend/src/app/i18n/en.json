@@ -167,6 +167,10 @@
     "search": {
       "placeholder": "Examples: yield, fhb"
     },
+    "document-list": {
+      "result-tab": "All",
+      "germplasm-tab": "Germplasm"
+    },
     "ontology-node-type": {
       "ONTOLOGY": "Ontology",
       "TRAIT_CLASS": "Trait class",
