@@ -1,6 +1,9 @@
 package fr.inra.urgi.datadiscovery.dao.faidare;
 
+import java.util.Set;
+
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoCustom;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
 
 /**
@@ -8,4 +11,5 @@ import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
  * @author JB Nizet
  */
 public interface FaidareDocumentDaoCustom extends DocumentDaoCustom<FaidareDocument> {
+    Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements);
 }

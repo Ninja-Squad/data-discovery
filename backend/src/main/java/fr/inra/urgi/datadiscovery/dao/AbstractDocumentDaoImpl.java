@@ -5,7 +5,13 @@ import static fr.inra.urgi.datadiscovery.dao.DocumentDao.PORTAL_URL_AGGREGATION_
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -17,7 +23,11 @@ import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.AbstractQueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
@@ -36,7 +46,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.*;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 /**
  * Base class for implementations of {@link DocumentDao}
@@ -141,7 +153,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
         return annotIds;
     }
 
-    private NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
+    protected NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
         // if the query is empty, rather than showing no result, we show everything.
         // this is necessary in Faidare because we need to show aggregations on the home page, and be able to search
         // only with refinements
@@ -238,17 +250,17 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
      */
     private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term, boolean descendants) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
-        TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
+        TermsQueryBuilder termsQuery = QueryBuilders.termsQuery(term.getField(), acceptedValues);
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         if (term.getName().equals("annot")) {
             List<String> goIds = getAnnotationsIds(refinements);
             boolQuery.should(termsQuery("annotationId.keyword", goIds));
-            if(descendants) {
-                for(int i =0 ; i < goIds.size(); i++) {
+            if (descendants) {
+                for (int i = 0 ; i < goIds.size(); i++) {
                     boolQuery.should(prefixQuery("ancestors.keyword", goIds.get(i))) ;
                 }
             }
-        }else{
+        } else {
             boolQuery.should(termsQuery);
         }
 

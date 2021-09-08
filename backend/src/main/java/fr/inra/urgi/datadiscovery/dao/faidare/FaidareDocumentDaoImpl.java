@@ -9,8 +9,13 @@ import java.util.stream.Stream;
 
 import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 /**
  * Implementation of {@link FaidareDocumentDaoCustom}
@@ -70,5 +75,16 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
     @Override
     protected PillarAggregationDescriptor getPillarAggregationDescriptor() {
         return PILLAR_AGGREGATION_DESCRIPTOR;
+    }
+
+    @Override
+    public Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements) {
+        // construct the query, without paging
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, Pageable.unpaged(), descendants);
+        // only load the id from the document source
+        builder.withFields("id");
+        NativeSearchQuery searchQuery = builder.build();
+        SearchHits<FaidareDocument> hits = elasticsearchTemplate.search(searchQuery, getDocumentClass());
+        return hits.stream().map(hit -> hit.getContent().getId()).collect(Collectors.toSet());
     }
 }
