@@ -1,5 +1,10 @@
 package fr.inra.urgi.datadiscovery.search;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,43 +13,37 @@ import java.util.List;
 import fr.inra.urgi.datadiscovery.config.SecurityConfig;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
-import fr.inra.urgi.datadiscovery.dao.faidare.FaidareAggregationAnalyzer;
+import fr.inra.urgi.datadiscovery.dao.SortAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregation;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
-import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * MVC tests for {@link SearchController}
  */
 @Import(SecurityConfig.class)
 @WebMvcTest(controllers = SearchController.class)
+@SpyBean(RareAggregationAnalyzer.class)
 class SearchControllerTest {
 
     @MockBean
     private RareDocumentDao mockDocumentDao;
 
-    @SpyBean
-    private RareAggregationAnalyzer aggregationAnalyzer;
+    @MockBean
+    private SortAnalyzer mockSortAnalyzer;
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,12 +56,19 @@ class SearchControllerTest {
                                             .withDescription("Xylella fastidiosa subsp. Pauca, risk group = Quarantine")
                                             .build();
 
-        PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
+        Sort sort = Sort.by(Sort.Direction.DESC, "name.keyword");
+        when(mockSortAnalyzer.createSort("name", "desc")).thenReturn(sort);
+
+        PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE, sort);
         String query = "pauca";
         when(mockDocumentDao.search(query, false, false, SearchRefinements.EMPTY, pageRequest))
             .thenReturn(new AggregatedPageImpl<>(Arrays.asList(resource), pageRequest, 1));
 
-        mockMvc.perform(get("/api/search").param("query", query).param("descendants", "false"))
+        mockMvc.perform(get("/api/search")
+                            .param("query", query)
+                            .param("descendants", "false")
+                            .param("sort", "name")
+                            .param("direction", "desc"))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.number").value(0))
                .andExpect(jsonPath("$.maxResults").value(SearchController.MAX_RESULTS))
@@ -119,9 +125,9 @@ class SearchControllerTest {
 
         ResultActions resultActions =
             mockMvc.perform(get("/api/aggregate")
-                                                          .param("query", query)
-                                                          .param("aggregate", "true")
-                                                          .param("descendants", "false"))
+                                .param("query", query)
+                                .param("aggregate", "true")
+                                .param("descendants", "false"))
                    .andExpect(status().isOk())
                    .andExpect(jsonPath("$.number").value(0))
                    .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
@@ -148,6 +154,8 @@ class SearchControllerTest {
         PageRequest pageRequest = PageRequest.of(1, SearchController.PAGE_SIZE);
         String query = "pauca";
 
+        when(mockSortAnalyzer.createSort(null, null)).thenReturn(Sort.unsorted());
+
         SearchRefinements expectedRefinements =
             SearchRefinements.builder()
                              .withTerm(RareAggregation.DOMAIN, Arrays.asList("d1"))
@@ -172,6 +180,8 @@ class SearchControllerTest {
     void shouldThrowIfPageTooLarge() throws Exception {
         int page = SearchController.MAX_RESULTS / SearchController.PAGE_SIZE;
         String query = "pauca";
+
+        when(mockSortAnalyzer.createSort(null, null)).thenReturn(Sort.unsorted());
 
         mockMvc.perform(get("/api/search")
                             .param("query", query)

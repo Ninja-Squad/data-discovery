@@ -3,7 +3,12 @@ package fr.inra.urgi.datadiscovery.search;
 import java.util.List;
 import java.util.Optional;
 
-import fr.inra.urgi.datadiscovery.dao.*;
+import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
+import fr.inra.urgi.datadiscovery.dao.AppAggregation;
+import fr.inra.urgi.datadiscovery.dao.DocumentDao;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.dao.SortAnalyzer;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.dto.AggregatedPageDTO;
@@ -30,11 +35,14 @@ public class SearchController {
 
     private final DocumentDao<?> documentDao;
     private final AggregationAnalyzer aggregationAnalyzer;
+    private final SortAnalyzer sortAnalyzer;
 
     public SearchController(DocumentDao<?> documentDao,
-                            AggregationAnalyzer aggregationAnalyzer) {
+                            AggregationAnalyzer aggregationAnalyzer,
+                            SortAnalyzer sortAnalyzer) {
         this.documentDao = documentDao;
         this.aggregationAnalyzer = aggregationAnalyzer;
+        this.sortAnalyzer = sortAnalyzer;
     }
 
     /**
@@ -52,6 +60,8 @@ public class SearchController {
                                                               @RequestParam("highlight") Optional<Boolean> highlight,
                                                               @RequestParam("descendants") Optional<Boolean> descendants,
                                                               @RequestParam("page") Optional<Integer> page,
+                                                              @RequestParam("sort") Optional<String> sort,
+                                                              @RequestParam("direction") Optional<String> direction,
                                                               @RequestParam MultiValueMap<String, String> parameters) {
         int requestedPage = page.orElse(0);
         validatePage(requestedPage);
@@ -60,7 +70,9 @@ public class SearchController {
                 highlight.orElse(false),
                 descendants.orElse(false),
                 createRefinementsFromParameters(parameters),
-                PageRequest.of(page.orElse(0), PAGE_SIZE)
+                PageRequest.of(page.orElse(0),
+                               PAGE_SIZE,
+                               sortAnalyzer.createSort(sort.orElse(null), direction.orElse(null)))
         );
         return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer);
 
