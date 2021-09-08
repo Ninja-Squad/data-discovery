@@ -1,0 +1,18 @@
+import { DocumentModel } from '../models/document.model';
+
+export interface FaidareDocumentModel extends DocumentModel {
+  entryType: string;
+  databaseName: string;
+  url: string;
+  species: Array<string>;
+  node: string;
+  annotationId: Array<string>;
+  annotationName: Array<string>;
+  ancestors: Array<string>;
+  holdingInstitute: string;
+  biologicalStatus: string;
+  geneticNature: string;
+  countryOfOrigin: string;
+  taxonGroup: Array<string>;
+  observationVariableIds: Array<string>;
+}

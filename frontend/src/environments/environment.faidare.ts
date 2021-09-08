@@ -39,7 +39,7 @@ export const environment: DataDiscoveryEnvironment = {
     // show the main aggregations instead of pillars in Faidare
     showAggregations: true,
     exampleQueries: ['yield', 'fhb', 'University of Oulu', 'metribuzin tolerance']
-  }
+  },
   // taxa links are used in germplasm cards
   // taxaLinks: {
   //  NCBI: 'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=',
@@ -47,6 +47,9 @@ export const environment: DataDiscoveryEnvironment = {
   //  TAXREF: 'https://inpn.mnhn.fr/espece/cd_nom/',
   //  CatalogueOfLife: 'http://www.catalogueoflife.org/col/details/species/id/'
   // }
+  faidare: {
+    germplasmBaseUrl: 'http://localhost:8380/faidare-dev/germplasms'
+  }
 };
 
 /*

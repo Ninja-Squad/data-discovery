@@ -7,5 +7,8 @@ import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   ...devEnvironment,
+  faidare: {
+    germplasmBaseUrl: 'http://https://urgi.versailles.inrae.fr/faidare/germplasms'
+  },
   production: true
 };
