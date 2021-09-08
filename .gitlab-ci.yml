@@ -44,11 +44,13 @@ build-es-synonyms-docker-image:
   - cd data/synonyms
   - gzip -fd all_*.txt.gz
   - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
-  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest .
+  # only build latest tag on master branch
+  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest . ; fi;
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
   # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
   - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
-  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest
+  # only push latest tag on master branch
+  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
  only:
   changes:
    - data/synonyms/*
@@ -61,7 +63,8 @@ build-loader-docker-image:
  script:
   # build the image
   - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG} .
-  - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest .
+  # only build latest tag on master branch
+  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest . ; fi;
   # Login before pushing the image
   - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
   # push the built image

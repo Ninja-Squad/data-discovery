@@ -19,6 +19,7 @@ COPY backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.ma
 COPY backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json /opt/backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
 
 RUN apk add --update --no-cache bash curl jq parallel wget grep gzip sed date coreutils
+RUN apk upgrade -U --available
 
 RUN chmod +x /opt/scripts/index.sh
 RUN mkdir ~/.parallel && touch ~/.parallel/will-cite
