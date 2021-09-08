@@ -65,10 +65,14 @@ describe('Home page', () => {
     cy.contains('h1', 'FAIR Data-finder for Agronomic REsearch');
     cy.get('dd-aggregations')
       .should('have.length', 1)
-      .should('contain', 'Taxon group')
-      .should('contain', 'None')
-      .should('contain', '[21,416]')
+      .should('not.contain', 'Taxon group')
+      .should('not.contain', '[21,416]')
       .should('contain', 'Data type')
+      .should('contain', 'None')
+      .should('contain', 'Genome annotation')
+      .should('contain', '[8,090]')
+      .should('contain', 'Germplasm')
+      .should('contain', '[1,432]')
       .should('contain', 'Database')
       .should('contain', 'Data provider');
   });

@@ -112,4 +112,14 @@ export class LargeAggregationComponent {
   displayableKey(key: string): string {
     return key === NULL_VALUE ? this.translateService.instant(NULL_VALUE_TRANSLATION_KEY) : key;
   }
+
+  /**
+   * The aggregation is hidden if there are no buckets or if the only bucket is the NULL_VALUE bucket
+   */
+  get hideAggregation() {
+    return (
+      this.aggregation.buckets.length === 0 ||
+      (this.aggregation.buckets.length === 1 && this.aggregation.buckets[0].key === NULL_VALUE)
+    );
+  }
 }

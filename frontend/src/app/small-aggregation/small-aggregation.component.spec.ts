@@ -21,7 +21,7 @@ describe('SmallAggregationComponent', () => {
     }
 
     get title() {
-      return this.element('.card-title');
+      return this.element('.card-title')!;
     }
 
     get labels() {
@@ -29,7 +29,7 @@ describe('SmallAggregationComponent', () => {
     }
 
     get firstCheckbox() {
-      return this.input('input');
+      return this.input('input')!;
     }
   }
 
@@ -126,7 +126,7 @@ describe('SmallAggregationComponent', () => {
     const controls = component.aggregationForm.controls;
     expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
     // and France should be checked
-    expect(component.aggregationForm.get('France').value).toBeTruthy();
+    expect(component.aggregationForm.get('France')!.value).toBeTruthy();
   });
 
   it('should emit an event when a checkbox is toggled', fakeAsync(() => {
@@ -148,8 +148,8 @@ describe('SmallAggregationComponent', () => {
     tick();
 
     expect(tester.firstCheckbox).toBeChecked();
-    expect(emittedEvent.name).toBe('coo');
-    expect(emittedEvent.values).toEqual(['France']);
+    expect(emittedEvent!.name).toBe('coo');
+    expect(emittedEvent!.values).toEqual(['France']);
   }));
 
   it('should change the selected values in the form when the selectedValues input changes, without emitting events', () => {
@@ -243,5 +243,16 @@ describe('SmallAggregationComponent', () => {
     expect(tester.firstCheckbox.nativeElement.disabled).toBe(true);
 
     expect(tester.title.nativeElement.classList).toContain('text-muted');
+  });
+
+  it('should be not be displayed if only NULL bucket', () => {
+    const tester = new SmallAggregationComponentTester();
+
+    // given an aggregation with only the NULL bucket
+    tester.componentInstance.aggregation = toAggregation(NULL_VALUE, []);
+    tester.detectChanges();
+
+    expect(tester.title).toBeNull();
+    expect(tester.firstCheckbox).toBeNull();
   });
 });

@@ -107,4 +107,14 @@ export class SmallAggregationComponent implements OnInit {
     this.searchDescendants = event;
     this.searchDescendantsChange.emit(event);
   }
+
+  /**
+   * The aggregation is hidden if there are no buckets or if the only bucket is the NULL_VALUE bucket
+   */
+  get hideAggregation() {
+    return (
+      this.aggregation.buckets.length === 0 ||
+      (this.aggregation.buckets.length === 1 && this.aggregation.buckets[0].key === NULL_VALUE)
+    );
+  }
 }
