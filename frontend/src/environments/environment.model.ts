@@ -59,4 +59,13 @@ export interface DataDiscoveryEnvironment {
      */
     exampleQueries: Array<string>;
   };
+  /**
+   * Only necessary for the faidare application
+   */
+  faidare?: {
+    /**
+     * The base url used to generate links to germplasm documents. The final url has the form `<germplasmBaseUrl>/<documentId>`
+     */
+    germplasmBaseUrl: string;
+  };
 }

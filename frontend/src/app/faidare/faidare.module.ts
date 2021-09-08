@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NodeDetailsComponent } from './node-details/node-details.component';
 import { OntologyNodeTypeComponent } from './ontology-node-type/ontology-node-type.component';
 import { FaidareFooterComponent } from './faidare-footer/faidare-footer.component';
+import { GermplasmResultsComponent } from './germplasm-results/germplasm-results.component';
 
 @NgModule({
   imports: [UrgiCommonModule, ReactiveFormsModule, DataDiscoveryNgbModule, TranslateModule],
@@ -25,7 +26,8 @@ import { FaidareFooterComponent } from './faidare-footer/faidare-footer.componen
     OntologyAggregationModalComponent,
     NodeDetailsComponent,
     OntologyNodeTypeComponent,
-    FaidareFooterComponent
+    FaidareFooterComponent,
+    GermplasmResultsComponent
   ],
   exports: [
     GenericDocumentComponent,

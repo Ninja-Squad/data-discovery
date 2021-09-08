@@ -229,6 +229,14 @@
       "FR": "Français",
       "ES": "Español"
     },
-    "ontology-default-language": "FR"
+    "ontology-default-language": "FR",
+    "germplasm-results": {
+      "name": "Nom du germplasm",
+      "accession": "N° d'accession",
+      "species": "Espèces",
+      "institute": "Institut",
+      "biological-status": "Statut biologique",
+      "country-of-origin": "Pays d'origine"
+    }
   }
 }

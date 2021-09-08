@@ -23,6 +23,9 @@ export const environment: DataDiscoveryEnvironment = {
   home: {
     showAggregations: false,
     exampleQueries: [] as Array<string>
+  },
+  faidare: {
+    germplasmBaseUrl: 'http://localhost:8380/faidare-dev/germplasms'
   }
 };
 
