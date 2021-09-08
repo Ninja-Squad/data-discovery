@@ -1,0 +1,18 @@
+@import 'theme';
+
+// override default table
+
+::ng-deep table {
+  margin-bottom: .5rem;
+}
+
+::ng-deep th,
+::ng-deep td {
+  padding: $table-cell-padding;
+  border: 1px solid $_theme-primary-color;
+}
+
+::ng-deep thead th {
+  background-color: lighten($_theme-primary-color, 50%);
+  border-bottom: 2px solid $_theme-primary-color;
+}

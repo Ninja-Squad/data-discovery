@@ -20,6 +20,10 @@
     "results": "Résultats",
     "paging": "Pagination"
   },
+  "document-list": {
+    "result-tab": "Tous",
+    "germplasm-tab": "Germplasm"
+  },
   "descendants-checkbox": {
     "expand-search": "Étendre la recherche",
     "tooltip": "Rechercher avec des termes d'ontologie associés."

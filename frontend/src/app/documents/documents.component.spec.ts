@@ -16,6 +16,7 @@ import { BasketService } from '../rare/basket.service';
 import { of } from 'rxjs';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
 
 describe('DocumentsComponent', () => {
   class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
@@ -49,6 +50,7 @@ describe('DocumentsComponent', () => {
       imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
       declarations: [
         DocumentsComponent,
+        GenericDocumentListComponent,
         RareDocumentComponent,
         GenericSelectAllResultsComponent,
         TruncatableDescriptionComponent

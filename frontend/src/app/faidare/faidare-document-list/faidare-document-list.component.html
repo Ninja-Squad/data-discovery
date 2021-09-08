@@ -1,0 +1,33 @@
+<div *ngIf="vm$ | async as vm">
+  <div *ngIf="vm.germplasmCount; else allResults" class="mb-2">
+    <ul
+      ngbNav
+      #nav="ngbNav"
+      [activeId]="vm.activeTab"
+      (activeIdChange)="switchTab($event)"
+      class="nav-tabs"
+    >
+      <li ngbNavItem="all">
+        <a ngbNavLink translate="faidare.document-list.result-tab"></a>
+        <ng-template ngbNavContent>
+          <ng-container [ngTemplateOutlet]="allResults"></ng-container>
+        </ng-template>
+      </li>
+      <li ngbNavItem="germplasm">
+        <a ngbNavLink>
+          <span translate="faidare.document-list.germplasm-tab"></span>
+        </a>
+        <ng-template ngbNavContent>
+          <dd-germplasm-results [documents]="$any(documents)"></dd-germplasm-results>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </div>
+  <ng-template #allResults>
+    <div class="mb-4" *ngFor="let document of documents.content">
+      <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
+      <dd-document [document]="$any(document)"></dd-document>
+    </div>
+  </ng-template>
+</div>

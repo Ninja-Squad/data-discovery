@@ -9,6 +9,7 @@ import { RareHeaderComponent } from './rare-header/rare-header.component';
 import { RareBasketComponent } from './rare-basket/rare-basket.component';
 import { I18nModule } from '../i18n/i18n.module';
 import { RareSelectAllResultsComponent } from './rare-select-all-results/rare-select-all-results.component';
+import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
 
 export const LOCATION = new InjectionToken<Location>('Location');
 
@@ -32,7 +33,8 @@ export const LOCATION = new InjectionToken<Location>('Location');
     RareDocumentComponent,
     RareHeaderComponent,
     RareBasketComponent,
-    RareSelectAllResultsComponent
+    RareSelectAllResultsComponent,
+    GenericDocumentListComponent
   ]
 })
 export class RareModule {}

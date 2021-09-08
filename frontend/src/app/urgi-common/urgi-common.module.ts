@@ -5,6 +5,7 @@ import { TruncatableDescriptionComponent } from '../truncatable-description/trun
 import { I18nModule } from '../i18n/i18n.module';
 import { GenericSelectAllResultsComponent } from './generic-select-all-results/generic-select-all-results.component';
 import { GenericOntologyAggregationComponent } from './generic-ontology-aggregation/generic-ontology-aggregation.component';
+import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
 
 @NgModule({
   imports: [CommonModule, I18nModule],
@@ -12,12 +13,14 @@ import { GenericOntologyAggregationComponent } from './generic-ontology-aggregat
     TruncatableDescriptionComponent,
     GenericDocumentComponent,
     GenericSelectAllResultsComponent,
-    GenericOntologyAggregationComponent
+    GenericOntologyAggregationComponent,
+    GenericDocumentListComponent
   ],
   exports: [
     TruncatableDescriptionComponent,
     GenericDocumentComponent,
     GenericSelectAllResultsComponent,
+    GenericDocumentListComponent,
     GenericOntologyAggregationComponent,
     CommonModule
   ]
