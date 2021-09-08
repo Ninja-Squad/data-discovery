@@ -1,6 +1,7 @@
 package fr.inra.urgi.datadiscovery.dao.faidare;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -204,6 +206,36 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
         AggregatedPage<FaidareDocument> result =
                 documentDao.search("  ", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
+    }
+
+    @Test
+    void shouldHonorSort() {
+        documentDao.saveAll(Arrays.asList(
+            FaidareDocument.builder().withId("id1").withDescription("foobar 1").withCountryOfOrigin("France").build(),
+            FaidareDocument.builder().withId("id2").withDescription("foobar foobar foobar 2").withCountryOfOrigin("Germany").build(),
+            FaidareDocument.builder().withId("id3").withDescription("foobar 3").withCountryOfOrigin("Belgium").build(),
+            FaidareDocument.builder().withId("id4").withDescription("foobar 4").withCountryOfOrigin("China").build(),
+            FaidareDocument.builder().withId("id5").withDescription("other 5").withEntryType("France").build()
+        ));
+        documentDao.refresh();
+
+        AggregatedPage<FaidareDocument> result = documentDao.search("foobar",
+                                                                    false,
+                                                                    false,
+                                                                    SearchRefinements.builder().build(),
+                                                                    PageRequest.of(0, 20, FaidareSort.COUNTRY_OF_ORIGIN.toSort(Sort.Direction.ASC)));
+        assertThat(result).extracting(FaidareDocument::getId).containsExactly("id3", "id4", "id1", "id2");
+
+        // all the faidare sorts should not throw
+        for (FaidareSort faidareSort : FaidareSort.values()) {
+            assertThatCode(() -> {
+                documentDao.search("foobar",
+                                   false,
+                                   false,
+                                   SearchRefinements.builder().build(),
+                                   PageRequest.of(0, 20, faidareSort.toSort(Sort.Direction.ASC)));
+            }).doesNotThrowAnyException();
+        }
     }
 
     @Test

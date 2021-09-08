@@ -18,6 +18,7 @@ import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregation;
 import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
+import fr.inra.urgi.datadiscovery.dao.rare.RareSortAnalyzer;
 import fr.inra.urgi.datadiscovery.doc.DocumentationConfig;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.Location;
@@ -25,7 +26,6 @@ import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,7 +34,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.restdocs.request.ParameterDescriptor;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
@@ -43,6 +42,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = SearchController.class)
 @Import(DocumentationConfig.class)
 @AutoConfigureRestDocs
+@SpyBean(RareAggregationAnalyzer.class)
+@SpyBean(RareSortAnalyzer.class)
 class SearchControllerDocTest {
 
     private static final ParameterDescriptor QUERY_PARAM =
@@ -66,9 +67,6 @@ class SearchControllerDocTest {
 
     @MockBean
     private RareDocumentDao mockDocumentDao;
-
-    @SpyBean
-    private RareAggregationAnalyzer aggregationAnalyzer;
 
     @Autowired
     private MockMvc mockMvc;
