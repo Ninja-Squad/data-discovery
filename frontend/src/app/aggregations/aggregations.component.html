@@ -17,19 +17,21 @@
         aggregation.type === 'SMALL' ||
         (aggregation.type === 'LARGE' && aggregation.buckets.length < 10)
       "
-      [aggregation]="aggregation"
       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+      [aggregation]="aggregation"
       (aggregationChange)="onAggregationChange($event)"
+      [searchDescendants]="searchDescendants"
+      (searchDescendantsChange)="onSearchDescendantChange($event)"
     ></dd-small-aggregation>
     <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
     <dd-large-aggregation
       *ngIf="aggregation.type === 'LARGE' && aggregation.buckets.length >= 10"
-      [aggregation]="aggregation"
-      [searchDescendants]="searchDescendants"
       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+      [aggregation]="aggregation"
       (aggregationChange)="onAggregationChange($event)"
-      (searchDescendantsChange)="searchDescendants = $event"
+      [searchDescendants]="searchDescendants"
+      (searchDescendantsChange)="onSearchDescendantChange($event)"
     ></dd-large-aggregation>
   </div>
 </div>

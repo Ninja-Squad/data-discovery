@@ -14,6 +14,7 @@ import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.c
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { environment } from '../../environments/environment';
 
 describe('AggregationsComponent', () => {
   class AggregationsComponentTester extends ComponentTester<AggregationsComponent> {
@@ -23,6 +24,10 @@ describe('AggregationsComponent', () => {
 
     get aggregations() {
       return this.debugElement.queryAll(By.directive(SmallAggregationComponent));
+    }
+
+    get searchDescendants() {
+      return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
     }
 
     get largeAggregations() {
@@ -44,6 +49,8 @@ describe('AggregationsComponent', () => {
       ]
     })
   );
+
+  afterEach(() => (environment.name = 'rare'));
 
   it('should display no aggregations if null', () => {
     const tester = new AggregationsComponentTester();
@@ -158,7 +165,7 @@ describe('AggregationsComponent', () => {
     const small = tester.aggregations[0].componentInstance as SmallAggregationComponent;
     expect(small.aggregation).toBe(domain);
     expect(small.selectedKeys).toEqual([]);
-    const largeAsSmall = tester.aggregations[1].componentInstance as LargeAggregationComponent;
+    const largeAsSmall = tester.aggregations[1].componentInstance as SmallAggregationComponent;
     expect(largeAsSmall.aggregation).toBe(coo);
     expect(largeAsSmall.selectedKeys).toEqual(['France']);
   });
@@ -237,4 +244,68 @@ describe('AggregationsComponent', () => {
     expect(emittedEvent[1].name).toBe('coo');
     expect(emittedEvent[1].values).toEqual(['France']);
   }));
+
+  it('should emit when the search descendant option emits a change for small aggregation', () => {
+    environment.name = 'wheatis'; // annot is not available in the rare version of the app
+    const tester = new AggregationsComponentTester();
+
+    // given an annot aggregation (small)
+    const component = tester.componentInstance;
+    const annot = toAggregation('annot', ['annot1']);
+    component.aggregations = [annot];
+    tester.detectChanges();
+
+    // one small aggregation
+    expect(tester.aggregations.length).toBe(1);
+
+    // then it should emit an event
+    let emittedEvent: boolean | null = null;
+    component.searchDescendantsChange.subscribe((event: boolean) => (emittedEvent = event));
+
+    // when an event is emitted by an aggregation
+    const searchDescendants = tester.searchDescendants
+      .componentInstance as DescendantsCheckboxComponent;
+    searchDescendants.searchDescendantsChange.emit(true);
+    tester.detectChanges();
+
+    expect(emittedEvent!).toBe(true);
+  });
+
+  it('should emit when the search descendant option emits a change for large aggregation', () => {
+    environment.name = 'wheatis'; // annot is not available in the rare version of the app
+    const tester = new AggregationsComponentTester();
+
+    // given an annot aggregation (large)
+    const component = tester.componentInstance;
+    const annot = toAggregation('annot', [
+      'a0',
+      'a1',
+      'a2',
+      'a3',
+      'a4',
+      'a5',
+      'a6',
+      'a7',
+      'a8',
+      'a9'
+    ]);
+    annot.type = 'LARGE';
+    component.aggregations = [annot];
+    tester.detectChanges();
+
+    // one large aggregation
+    expect(tester.largeAggregations.length).toBe(1);
+
+    // then it should emit an event
+    let emittedEvent: boolean | null = null;
+    component.searchDescendantsChange.subscribe((event: boolean) => (emittedEvent = event));
+
+    // when an event is emitted by an aggregation
+    const searchDescendants = tester.searchDescendants
+      .componentInstance as DescendantsCheckboxComponent;
+    searchDescendants.searchDescendantsChange.emit(true);
+    tester.detectChanges();
+
+    expect(emittedEvent!).toBe(true);
+  });
 });
