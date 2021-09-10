@@ -15,6 +15,7 @@ import { NULL_VALUE } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { environment } from '../../environments/environment';
 
 describe('LargeAggregationComponent', () => {
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
@@ -36,10 +37,14 @@ describe('LargeAggregationComponent', () => {
       return this.debugElement.query(By.directive(NgbTypeahead));
     }
 
+    get searchDescendants() {
+      return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
+    }
+
     get results(): NodeListOf<HTMLButtonElement> {
       // Based on the typeahead test itself
       // see https://github.com/ng-bootstrap/ng-bootstrap/blob/master/src/typeahead/typeahead.spec.ts
-      // The dropdown is appended to the body, not to this element, so we can't unfortunatly return an array of
+      // The dropdown is appended to the body, not to this element, so we can't unfortunately return an array of
       // TestButton, but only DOM elements
       return document.querySelectorAll('ngb-typeahead-window.dropdown-menu button.dropdown-item');
     }
@@ -61,6 +66,8 @@ describe('LargeAggregationComponent', () => {
     })
   );
 
+  afterEach(() => (environment.name = 'rare'));
+
   it('should display an aggregation with buckets as a typeahead', () => {
     const tester = new LargeAggregationComponentTester();
 
@@ -73,6 +80,8 @@ describe('LargeAggregationComponent', () => {
     // and the buckets with their name and count in a typeahead
     expect(tester.inputField).not.toBeNull();
     expect(tester.typeahead).not.toBeNull();
+    // no search descendants checkbox as the aggregation is not 'annot'
+    expect(tester.searchDescendants).toBeNull();
   });
 
   it('should not display an aggregation with empty buckets', () => {
@@ -334,5 +343,24 @@ describe('LargeAggregationComponent', () => {
 
     expect(tester.title).toBeNull();
     expect(tester.inputField).toBeNull();
+  });
+
+  it('should display search descendants option if annot bucket', () => {
+    environment.name = 'wheatis'; // annot is not available in the rare version of the app
+    const tester = new LargeAggregationComponentTester();
+
+    // given an aggregation with only the NULL bucket
+    tester.componentInstance.aggregation = toAggregation('annot', ['annot1']);
+    tester.detectChanges();
+
+    expect(tester.searchDescendants).not.toBeNull();
+
+    // when the checkbox emits an event, then we propagate it
+    let received: boolean | null = null;
+    tester.componentInstance.searchDescendantsChange.subscribe(event => (received = event));
+    const searchDescendant = tester.searchDescendants
+      .componentInstance as DescendantsCheckboxComponent;
+    searchDescendant.searchDescendantsChange.emit(true);
+    expect(received!).toBe(true);
   });
 });

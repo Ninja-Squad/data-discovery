@@ -28,17 +28,19 @@ const maxResultsDisplayed = 8;
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class LargeAggregationComponent {
-  @Input() aggregation!: Aggregation;
   @Input() selectedKeys: Array<string> = [];
+
+  @Input() aggregation!: Aggregation;
   // the component emits an event if the user adds or removes a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+
+  @Input() searchDescendants = false;
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
 
   @ViewChild('typeahead') typeahead!: ElementRef<HTMLInputElement>;
 
   focus$ = new Subject<string>();
   criterion = new FormControl('');
-  @Input() searchDescendants = false;
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;

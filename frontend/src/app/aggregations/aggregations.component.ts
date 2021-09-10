@@ -25,7 +25,6 @@ export class AggregationsComponent {
    */
   selectedKeysForAggregation(name: string): Array<string> {
     if (this.selectedCriteria.length) {
-      this.searchDescendantsChange.emit(this.searchDescendants);
       const matchingCriteria = this.selectedCriteria.find(criteria => criteria.name === name);
       if (matchingCriteria) {
         return matchingCriteria.values;
@@ -61,5 +60,10 @@ export class AggregationsComponent {
       }
     }
     this.aggregationsChange.emit(this.selectedCriteria);
+  }
+
+  onSearchDescendantChange(event: boolean) {
+    this.searchDescendants = event;
+    this.searchDescendantsChange.emit(event);
   }
 }

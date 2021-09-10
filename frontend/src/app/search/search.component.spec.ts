@@ -541,4 +541,49 @@ describe('SearchComponent', () => {
     // then it should update the existing criteria
     expect(component.aggregationCriteria).toBe(updatedCriteria);
   });
+
+  it('should update the search if search descendants is selected', () => {
+    // given a component
+    const router = TestBed.inject(Router);
+    spyOn(router, 'navigate');
+    const searchService = TestBed.inject(SearchService);
+    spyOn(searchService, 'search');
+    const query = 'Bacteria';
+    const descendants = false;
+    // and criteria
+    const annot = ['annot1'];
+    const queryParams = of({ query, descendants, annot });
+    const activatedRoute = fakeRoute({ queryParams });
+    const component = new SearchComponent(activatedRoute, router, searchService);
+    component.query = query;
+    component.aggregationCriteria = [{ name: 'annot', values: ['annot1'] }];
+
+    // when selecting search descendants
+    component.updateSearchWithDescendants(true);
+
+    // then it should redirect to the search with correct parameters
+    expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      relativeTo: activatedRoute,
+      queryParams: {
+        query,
+        page: undefined,
+        descendants: 'true',
+        annot
+      }
+    });
+
+    // when unselecting search descendants
+    component.updateSearchWithDescendants(false);
+
+    // then it should redirect to the search with correct parameters
+    expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      relativeTo: activatedRoute,
+      queryParams: {
+        query,
+        page: undefined,
+        descendants: 'false',
+        annot
+      }
+    });
+  });
 });

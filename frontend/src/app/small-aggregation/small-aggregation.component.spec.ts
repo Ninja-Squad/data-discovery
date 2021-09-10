@@ -11,6 +11,8 @@ import { NULL_VALUE } from '../models/document.model';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { environment } from '../../environments/environment';
+import { By } from '@angular/platform-browser';
 
 describe('SmallAggregationComponent', () => {
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
@@ -31,6 +33,10 @@ describe('SmallAggregationComponent', () => {
     get firstCheckbox() {
       return this.input('input')!;
     }
+
+    get searchDescendants() {
+      return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
+    }
   }
 
   beforeEach(() =>
@@ -44,6 +50,8 @@ describe('SmallAggregationComponent', () => {
       ]
     })
   );
+
+  afterEach(() => (environment.name = 'rare'));
 
   it('should display an aggregation with buckets', () => {
     const tester = new SmallAggregationComponentTester();
@@ -254,5 +262,24 @@ describe('SmallAggregationComponent', () => {
 
     expect(tester.title).toBeNull();
     expect(tester.firstCheckbox).toBeNull();
+  });
+
+  it('should display search descendants option if annot bucket', () => {
+    environment.name = 'wheatis'; // annot is not available in the rare version of the app
+    const tester = new SmallAggregationComponentTester();
+
+    // given an aggregation with only the NULL bucket
+    tester.componentInstance.aggregation = toAggregation('annot', ['annot1']);
+    tester.detectChanges();
+
+    expect(tester.searchDescendants).not.toBeNull();
+
+    // when the checkbox emits an event, then we propagate it
+    let received: boolean | null = null;
+    tester.componentInstance.searchDescendantsChange.subscribe(event => (received = event));
+    const searchDescendant = tester.searchDescendants
+      .componentInstance as DescendantsCheckboxComponent;
+    searchDescendant.searchDescendantsChange.emit(true);
+    expect(received!).toBe(true);
   });
 });
