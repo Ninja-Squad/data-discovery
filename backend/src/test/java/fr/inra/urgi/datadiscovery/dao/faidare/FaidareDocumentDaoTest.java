@@ -276,6 +276,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withCountryOfOrigin("France")
                             .withTaxonGroup(Collections.singletonList("Pixies"))
                             .withObservationVariableIds(Collections.singletonList("OV1"))
+                            .withGermplasmList(Collections.singletonList("GL1"))
                             .build();
 
             FaidareDocument document2 =
@@ -291,6 +292,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withCountryOfOrigin("Finland")
                             .withTaxonGroup(Collections.singletonList("Rolling stones"))
                             .withObservationVariableIds(Collections.singletonList("OV2"))
+                            .withGermplasmList(Collections.singletonList("GL2"))
                             .build();
 
             documentDao.saveAll(Arrays.asList(document1, document2));
@@ -352,6 +354,11 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
             assertThat(observationVariableIds.getName()).isEqualTo(FaidareAggregation.ONTOLOGY.getName());
             assertThat(observationVariableIds.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("OV1", "OV2");
             assertThat(observationVariableIds.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+
+            Terms germplasmList = result.getAggregations().get(FaidareAggregation.GERMPLASM_LIST.getName());
+            assertThat(germplasmList.getName()).isEqualTo(FaidareAggregation.GERMPLASM_LIST.getName());
+            assertThat(germplasmList.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("GL1", "GL2");
+            assertThat(germplasmList.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
         }
 
         @Test

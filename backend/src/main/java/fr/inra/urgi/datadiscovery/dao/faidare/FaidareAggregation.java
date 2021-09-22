@@ -30,7 +30,8 @@ public enum FaidareAggregation implements AppAggregation {
     BIOLOGICAL_STATUS("bs", "biologicalStatus.keyword", LARGE),
     GENETIC_NATURE("gn", "geneticNature.keyword", LARGE),
     COUNTRY_OF_ORIGIN("coo", "countryOfOrigin.keyword", LARGE),
-    ONTOLOGY("o", "observationVariableIds.keyword", Type.ONTOLOGY);
+    ONTOLOGY("o", "observationVariableIds.keyword", Type.ONTOLOGY),
+    GERMPLASM_LIST("gl", "germplasmList.keyword", Type.LARGE);
 
     /**
      * The "main" aggregations, i.e. those that are displayed on the home page
