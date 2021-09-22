@@ -43,6 +43,7 @@ public final class FaidareDocument implements SearchDocument {
     private final List<String> taxonGroup;
     private final List<String> observationVariableIds;
     private final List<String> germplasmList;
+    private final String accessionNumber;
 
     @JsonCreator
     @PersistenceConstructor
@@ -63,7 +64,8 @@ public final class FaidareDocument implements SearchDocument {
                            String countryOfOrigin,
                            List<String> taxonGroup,
                            List<String> observationVariableIds,
-                           List<String> germplasmList) {
+                           List<String> germplasmList,
+                           String accessionNumber) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -82,6 +84,7 @@ public final class FaidareDocument implements SearchDocument {
         this.taxonGroup = taxonGroup;
         this.observationVariableIds = observationVariableIds;
         this.germplasmList = germplasmList;
+        this.accessionNumber = accessionNumber;
     }
 
     public FaidareDocument(Builder builder) {
@@ -102,7 +105,8 @@ public final class FaidareDocument implements SearchDocument {
              builder.countryOfOrigin,
              builder.taxonGroup,
              builder.observationVariableIds,
-             builder.germplasmList);
+             builder.germplasmList,
+             builder.accessionNumber);
     }
 
     @Override
@@ -179,6 +183,10 @@ public final class FaidareDocument implements SearchDocument {
         return germplasmList;
     }
 
+    public String getAccessionNumber() {
+        return accessionNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -205,7 +213,8 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
             Objects.equals(taxonGroup, that.taxonGroup) &&
             Objects.equals(observationVariableIds, that.observationVariableIds) &&
-            Objects.equals(germplasmList, that.germplasmList);
+            Objects.equals(germplasmList, that.germplasmList) &&
+            Objects.equals(accessionNumber, that.accessionNumber);
     }
 
     @Override
@@ -227,7 +236,8 @@ public final class FaidareDocument implements SearchDocument {
                             countryOfOrigin,
                             taxonGroup,
                             observationVariableIds,
-                            germplasmList);
+                            germplasmList,
+                            accessionNumber);
     }
 
     @Override
@@ -251,6 +261,7 @@ public final class FaidareDocument implements SearchDocument {
             ", taxonGroup='" + taxonGroup + '\'' +
             ", observationVariableIds='" + observationVariableIds + '\'' +
             ", germplasmList='" + germplasmList + '\'' +
+            ", accessionNumber='" + accessionNumber + '\'' +
             '}';
     }
 
@@ -282,6 +293,7 @@ public final class FaidareDocument implements SearchDocument {
         private List<String> taxonGroup = Collections.emptyList();
         private List<String> observationVariableIds = Collections.emptyList();
         private List<String> germplasmList = Collections.emptyList();
+        private String accessionNumber;
 
         private Builder() {
         }
@@ -305,6 +317,7 @@ public final class FaidareDocument implements SearchDocument {
             this.taxonGroup = document.getTaxonGroup();
             this.observationVariableIds = document.getObservationVariableIds();
             this.germplasmList = document.getGermplasmList();
+            this.accessionNumber = document.getAccessionNumber();
         }
 
         public Builder withId(String id) {
@@ -394,6 +407,11 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withGermplasmList(List<String> germplasmList) {
             this.germplasmList = germplasmList;
+            return this;
+        }
+
+        public Builder withAccessionNumber(String accessionNumber) {
+            this.accessionNumber = accessionNumber;
             return this;
         }
 

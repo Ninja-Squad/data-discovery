@@ -15,4 +15,6 @@ export interface FaidareDocumentModel extends DocumentModel {
   countryOfOrigin: string;
   taxonGroup: Array<string>;
   observationVariableIds: Array<string>;
+  germplasmList: Array<string>;
+  accessionNumber: string;
 }
