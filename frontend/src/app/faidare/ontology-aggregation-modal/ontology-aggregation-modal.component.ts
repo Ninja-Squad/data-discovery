@@ -32,6 +32,7 @@ export class OntologyAggregationModalComponent {
   private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
   highlightedNodeDetails$: Observable<TypedNodeDetails>;
   selectedNodes: Array<NodeInformation<OntologyPayload>> = [];
+  maxSelectedNodes = 20;
 
   constructor(private modal: NgbActiveModal, private ontologyService: OntologyService) {
     this.languageCtrl = new FormControl(ontologyService.getPreferredLanguage());

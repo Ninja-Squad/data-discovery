@@ -221,6 +221,7 @@
       "close": "Close",
       "filter": "Filter",
       "language": "Language",
+      "limit-selection": "{{ actual }} variables selected. Please limit the selection to max {{ max }}.",
       "ok": "OK",
       "cancel": "Cancel"
     },

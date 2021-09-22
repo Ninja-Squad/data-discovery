@@ -221,6 +221,7 @@
       "close": "Fermer",
       "filter": "Filtrer",
       "language": "Langue",
+      "limit-selection": "{{ actual }} variables selectionnées. Veuillez limiter votre sélection à {{ max }} max.",
       "ok": "OK",
       "cancel": "Annuler"
     },

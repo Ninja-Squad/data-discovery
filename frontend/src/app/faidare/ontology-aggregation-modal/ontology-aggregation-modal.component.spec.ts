@@ -59,6 +59,10 @@ class OntologyAggregationModalComponentTester extends ComponentTester<OntologyAg
     return this.element('dd-node-details');
   }
 
+  get limitSelection() {
+    return this.element('#limit-selection');
+  }
+
   get ok() {
     return this.button('#ok-button');
   }
@@ -310,6 +314,28 @@ describe('OntologyAggregationModalComponent', () => {
     it('should cancel', () => {
       tester.cancel.click();
       expect(activeModal.dismiss).toHaveBeenCalled();
+    });
+
+    it('should display an error and disable close if more than max selected', () => {
+      tester.componentInstance.maxSelectedNodes = 2;
+      tester.detectChanges();
+      expect(tester.limitSelection).toBeNull();
+      expect(tester.ok.disabled).toBeFalse();
+
+      tester.nodeCheckboxContaining('V1').check();
+      expect(tester.limitSelection).toBeNull();
+      expect(tester.ok.disabled).toBeFalse();
+
+      tester.nodeCheckboxContaining('V3').check();
+      expect(tester.limitSelection).not.toBeNull();
+      expect(tester.ok.disabled).toBeTrue();
+      expect(tester.limitSelection).toContainText(
+        '3 variables selected. Please limit the selection to max 2.'
+      );
+
+      tester.nodeCheckboxContaining('V2').uncheck();
+      expect(tester.limitSelection).toBeNull();
+      expect(tester.ok.disabled).toBeFalse();
     });
 
     it('should close', () => {
