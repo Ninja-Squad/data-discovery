@@ -64,7 +64,7 @@ class ExportControllerTest {
     void shouldThrowIfEntryTypeAggregationWithMoreThanGermplasm() throws Exception {
         mockMvc.perform(get("/api/germplasms/export")
                             .param(FaidareAggregation.ENTRY_TYPE.getName(), "foo")
-                            .param(FaidareAggregation.ENTRY_TYPE.getName(), "germplasm"))
+                            .param(FaidareAggregation.ENTRY_TYPE.getName(), "Germplasm"))
                .andExpect(status().isBadRequest());
     }
 
@@ -76,7 +76,7 @@ class ExportControllerTest {
                                                false,
                                                SearchRefinements.builder()
                                                                 .withTerm(FaidareAggregation.COUNTRY_OF_ORIGIN, Collections.singletonList("France"))
-                                                                .withTerm(FaidareAggregation.ENTRY_TYPE, Collections.singletonList("germplasm"))
+                                                                .withTerm(FaidareAggregation.ENTRY_TYPE, Collections.singletonList("Germplasm"))
                                                                 .build())
         ).thenReturn(expectedIds);
 
@@ -92,7 +92,7 @@ class ExportControllerTest {
         MvcResult mvcResult = mockMvc.perform(get("/api/germplasms/export")
                                                   .param("query", "something")
                                                   .param(FaidareAggregation.COUNTRY_OF_ORIGIN.getName(), "France")
-                                                  .param(FaidareAggregation.ENTRY_TYPE.getName(), "germplasm"))
+                                                  .param(FaidareAggregation.ENTRY_TYPE.getName(), "Germplasm"))
                                      .andExpect(request().asyncStarted())
                                      .andReturn();
         mockMvc.perform(asyncDispatch(mvcResult))

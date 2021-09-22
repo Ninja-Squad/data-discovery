@@ -37,7 +37,7 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api/germplasms")
 public class ExportController {
 
-    private static final String GERMPLASM_ENTRY_TYPE = "germplasm";
+    private static final String GERMPLASM_ENTRY_TYPE = "Germplasm";
 
     private final FaidareDocumentDao documentDao;
     private final AggregationAnalyzer aggregationAnalyzer;
