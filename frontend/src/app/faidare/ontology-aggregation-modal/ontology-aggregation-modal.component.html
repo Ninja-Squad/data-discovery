@@ -71,10 +71,18 @@
   </div>
 </div>
 <div class="modal-footer">
+  <div
+    id="limit-selection"
+    class="text-danger flex-grow-1"
+    *ngIf="selectedNodes.length > maxSelectedNodes"
+    translate="faidare.ontology-aggregation-modal.limit-selection"
+    [translateParams]="{ actual: selectedNodes.length | number, max: maxSelectedNodes | number }"
+  ></div>
   <button
     id="ok-button"
     type="button"
     class="btn btn-primary mr-1"
+    [disabled]="selectedNodes.length > maxSelectedNodes"
     (click)="ok()"
     translate="faidare.ontology-aggregation-modal.ok"
   ></button>
