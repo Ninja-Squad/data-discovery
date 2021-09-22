@@ -46,7 +46,8 @@ describe('GermplasmResultsComponent', () => {
           species: ['SP1', 'SP2'],
           holdingInstitute: 'Institute 1',
           biologicalStatus: 'Natural',
-          countryOfOrigin: 'France'
+          countryOfOrigin: 'France',
+          accessionNumber: 'Acc1'
         },
         {
           identifier: 'g2',
@@ -54,7 +55,8 @@ describe('GermplasmResultsComponent', () => {
           species: ['SP3', 'SP4'],
           holdingInstitute: 'Institute 2',
           biologicalStatus: 'Cross',
-          countryOfOrigin: 'Germany'
+          countryOfOrigin: 'Germany',
+          accessionNumber: 'Acc2'
         }
       ]
     } as Page<FaidareDocumentModel>;
@@ -70,5 +72,6 @@ describe('GermplasmResultsComponent', () => {
     expect(tester.rows[0]).toContainText('Institute 1');
     expect(tester.rows[0]).toContainText('Natural');
     expect(tester.rows[0]).toContainText('France');
+    expect(tester.rows[0]).toContainText('Acc1');
   });
 });
