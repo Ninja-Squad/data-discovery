@@ -72,6 +72,7 @@
     "karma-jasmine": "4.0.1",
     "karma-jasmine-html-reporter": "1.7.0",
     "karma-junit-reporter": "2.0.1",
+    "karma-mocha-reporter": "2.2.5",
     "mocha-spec-json-output-reporter": "1.1.7",
     "ngx-speculoos": "6.0.0",
     "prettier": "2.3.2",

@@ -12,6 +12,7 @@ module.exports = function (config) {
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
       require('karma-junit-reporter'),
+      require('karma-mocha-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
@@ -28,7 +29,7 @@ module.exports = function (config) {
         { type: 'lcovonly' }
       ]
     },
-    reporters: ['progress', 'kjhtml', 'junit'],
+    reporters: ['mocha', 'kjhtml', 'junit'],
     junitReporter: {
       outputDir: './karma-junit-tests-report', // results will be saved as $outputDir/$browserName.xml
       outputFile: undefined, // if included, results will be saved as $outputDir/$browserName/$outputFile
@@ -51,6 +52,9 @@ module.exports = function (config) {
       }
     },
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    proxies: {
+      '/assets/elixir-logo.png': ''
+    }
   });
 };
