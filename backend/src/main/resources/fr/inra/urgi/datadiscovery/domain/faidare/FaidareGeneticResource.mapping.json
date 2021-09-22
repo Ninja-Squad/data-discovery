@@ -150,6 +150,15 @@
                     "ignore_above": 256
                 }
             }
+        },
+        "germplasmList": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
         }
     }
 }

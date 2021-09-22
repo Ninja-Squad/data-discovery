@@ -161,7 +161,8 @@
       "gn": "Nature génétique",
       "coo": "Pays d'origine",
       "tg": "Groupe taxonomique",
-      "o": "Ontologie"
+      "o": "Ontologie",
+      "gl": "Liste germplasm"
     },
     "search": {
       "placeholder": "Exemples\u00a0: yield, fhb"

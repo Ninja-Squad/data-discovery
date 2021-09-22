@@ -42,6 +42,7 @@ public final class FaidareDocument implements SearchDocument {
     private final String countryOfOrigin;
     private final List<String> taxonGroup;
     private final List<String> observationVariableIds;
+    private final List<String> germplasmList;
 
     @JsonCreator
     @PersistenceConstructor
@@ -61,7 +62,8 @@ public final class FaidareDocument implements SearchDocument {
                            String geneticNature,
                            String countryOfOrigin,
                            List<String> taxonGroup,
-                           List<String> observationVariableIds) {
+                           List<String> observationVariableIds,
+                           List<String> germplasmList) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -79,6 +81,7 @@ public final class FaidareDocument implements SearchDocument {
         this.countryOfOrigin = countryOfOrigin;
         this.taxonGroup = taxonGroup;
         this.observationVariableIds = observationVariableIds;
+        this.germplasmList = germplasmList;
     }
 
     public FaidareDocument(Builder builder) {
@@ -98,7 +101,8 @@ public final class FaidareDocument implements SearchDocument {
              builder.geneticNature,
              builder.countryOfOrigin,
              builder.taxonGroup,
-             builder.observationVariableIds);
+             builder.observationVariableIds,
+             builder.germplasmList);
     }
 
     @Override
@@ -171,6 +175,10 @@ public final class FaidareDocument implements SearchDocument {
         return observationVariableIds;
     }
 
+    public List<String> getGermplasmList() {
+        return germplasmList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -196,7 +204,8 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(geneticNature, that.geneticNature) &&
             Objects.equals(countryOfOrigin, that.countryOfOrigin) &&
             Objects.equals(taxonGroup, that.taxonGroup) &&
-            Objects.equals(observationVariableIds, that.observationVariableIds);
+            Objects.equals(observationVariableIds, that.observationVariableIds) &&
+            Objects.equals(germplasmList, that.germplasmList);
     }
 
     @Override
@@ -217,7 +226,8 @@ public final class FaidareDocument implements SearchDocument {
                             geneticNature,
                             countryOfOrigin,
                             taxonGroup,
-                            observationVariableIds);
+                            observationVariableIds,
+                            germplasmList);
     }
 
     @Override
@@ -240,6 +250,7 @@ public final class FaidareDocument implements SearchDocument {
             ", countryOfOrigin='" + countryOfOrigin + '\'' +
             ", taxonGroup='" + taxonGroup + '\'' +
             ", observationVariableIds='" + observationVariableIds + '\'' +
+            ", germplasmList='" + germplasmList + '\'' +
             '}';
     }
 
@@ -270,6 +281,7 @@ public final class FaidareDocument implements SearchDocument {
         private String countryOfOrigin;
         private List<String> taxonGroup = Collections.emptyList();
         private List<String> observationVariableIds = Collections.emptyList();
+        private List<String> germplasmList = Collections.emptyList();
 
         private Builder() {
         }
@@ -292,6 +304,7 @@ public final class FaidareDocument implements SearchDocument {
             this.countryOfOrigin = document.getCountryOfOrigin();
             this.taxonGroup = document.getTaxonGroup();
             this.observationVariableIds = document.getObservationVariableIds();
+            this.germplasmList = document.getGermplasmList();
         }
 
         public Builder withId(String id) {
@@ -376,6 +389,11 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withObservationVariableIds(List<String> observationVariableIds) {
             this.observationVariableIds = observationVariableIds;
+            return this;
+        }
+
+        public Builder withGermplasmList(List<String> germplasmList) {
+            this.germplasmList = germplasmList;
             return this;
         }
 
