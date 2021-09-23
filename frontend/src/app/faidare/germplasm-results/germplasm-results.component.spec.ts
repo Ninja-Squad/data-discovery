@@ -4,8 +4,12 @@ import { GermplasmResultsComponent } from './germplasm-results.component';
 import { Component } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { Page } from '../../models/page';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, fakeRoute, fakeSnapshot } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { ActivatedRoute } from '@angular/router';
+import { ExportService } from '../export.service';
+import { DownloadService } from '../../download.service';
+import { of } from 'rxjs';
 
 @Component({
   template: '<dd-germplasm-results [documents]="documents"></dd-germplasm-results>'
@@ -26,15 +30,35 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   get links() {
     return this.elements<HTMLAnchorElement>('tbody tr a');
   }
+
+  get download() {
+    return this.button('#download-button');
+  }
 }
 
 describe('GermplasmResultsComponent', () => {
   let tester: TestComponentTester;
+  let exportService: jasmine.SpyObj<ExportService>;
+  let downloadService: jasmine.SpyObj<DownloadService>;
 
   beforeEach(() => {
+    const route = fakeRoute({
+      snapshot: fakeSnapshot({
+        queryParams: { query: 'Bacteria', entry: 'Germplasm' }
+      })
+    });
+
+    exportService = jasmine.createSpyObj<ExportService>('ExportService', ['export']);
+    downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
+
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],
-      declarations: [TestComponent, GermplasmResultsComponent]
+      declarations: [TestComponent, GermplasmResultsComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: route },
+        { provide: ExportService, useValue: exportService },
+        { provide: DownloadService, useValue: downloadService }
+      ]
     });
 
     tester = new TestComponentTester();
@@ -73,5 +97,14 @@ describe('GermplasmResultsComponent', () => {
     expect(tester.rows[0]).toContainText('Natural');
     expect(tester.rows[0]).toContainText('France');
     expect(tester.rows[0]).toContainText('Acc1');
+  });
+
+  it('should download results', () => {
+    const blob = new Blob();
+    exportService.export.and.returnValue(of(blob));
+
+    tester.download.click();
+    expect(exportService.export).toHaveBeenCalledWith({ query: 'Bacteria', entry: 'Germplasm' });
+    expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
   });
 });
