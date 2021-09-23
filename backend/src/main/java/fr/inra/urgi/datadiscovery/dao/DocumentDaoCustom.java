@@ -19,10 +19,10 @@ public interface DocumentDaoCustom<D extends SearchDocument> {
      * documents, and returns the requested page (results are sorted by score, in descending order).
      */
     AggregatedPage<D> search(String query,
-                             boolean highlight,
-                             boolean descendants,
-                             SearchRefinements refinements,
-                             Pageable page);
+                   boolean highlight,
+                   boolean descendants,
+                   SearchRefinements refinements,
+                   Pageable page);
 
     /**
      * Aggregates and return an empty result based on the given text anywhere (except typically in the identifier, the URL and numeric fields) in the

@@ -1,12 +1,52 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Aggregation, Page } from '../../models/page';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
+import { AggregationCriterion } from '../../models/aggregation-criterion';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { DocumentModel } from '../../models/document.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Page } from '../../models/page';
 
 export const ENTRY_AGGREGATION_KEY = 'entry';
 export const GERMPLASM_BUCKET_KEY = 'Germplasm';
+
+interface ViewModel {
+  documents: Page<DocumentModel> | null;
+  // the selected tab in the navbar
+  activeTab: 'germplasm' | 'all';
+  // the number of germplasm documents
+  germplasmCount: number;
+}
+
+function toGermplasmOnlyAggregationCriteria(aggregationCriteria: Array<AggregationCriterion>) {
+  const newAggregationCriteria = aggregationCriteria.filter(
+    criterion => criterion.name !== ENTRY_AGGREGATION_KEY
+  );
+  newAggregationCriteria.push({
+    name: ENTRY_AGGREGATION_KEY,
+    values: [GERMPLASM_BUCKET_KEY]
+  });
+  return newAggregationCriteria;
+}
+
+// public to be tested
+export function toGermplasmTransition(criteria: SearchCriteria): SearchCriteria {
+  return {
+    ...criteria,
+    page: 1,
+    aggregationCriteria: toGermplasmOnlyAggregationCriteria(criteria.aggregationCriteria),
+    sortCriterion: null,
+    fragment: 'germplasm'
+  };
+}
+
+export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
+  return {
+    ...criteria,
+    page: 1,
+    sortCriterion: null,
+    fragment: null
+  };
+}
 
 /**
  * Displays the search results for the Faidare application (by overriding the default DocumentListComponent).
@@ -18,59 +58,50 @@ export const GERMPLASM_BUCKET_KEY = 'Germplasm';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentListComponent {
-  @Input() documents!: Page<DocumentModel>;
-  // internal subject that emits the number of germplasm documents every time the input changes
-  private germplasmCount$ = new Subject<number>();
   // the VM object used in the template
-  vm$: Observable<{
-    // the selected tab in the navbar
-    activeTab: 'germplasm' | 'all';
-    // the number of germplasm documents
-    germplasmCount: number;
-  }>;
+  vm$: Observable<ViewModel>;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(private searchStateService: SearchStateService) {
     // if there is a fragment '#germplasm' in the URL, then set the Germplasm tab as the active one
-    this.vm$ = combineLatest([this.route.fragment, this.germplasmCount$]).pipe(
-      map(([fragment, germplasmCount]) => ({
-        activeTab: fragment ? (fragment as 'all' | 'germplasm') : 'all',
-        germplasmCount
-      })),
-      startWith({
-        activeTab: 'all' as const,
-        germplasmCount: 0
+    this.vm$ = searchStateService.getModel().pipe(
+      map(model => {
+        const germplasmCount = this.findGermplasmCount(model);
+        return {
+          documents: model.documents,
+          activeTab:
+            model.searchCriteria.fragment === 'germplasm' && germplasmCount > 0
+              ? 'germplasm'
+              : 'all',
+          germplasmCount
+        };
       })
     );
+
+    this.vm$
+      .pipe(
+        map(vm => vm.activeTab),
+        distinctUntilChanged()
+      )
+      .subscribe(activeTab => {
+        searchStateService.disableAggregation(
+          activeTab === 'germplasm' ? ENTRY_AGGREGATION_KEY : null
+        );
+      });
   }
 
-  @Input()
-  set aggregations(aggregations: Array<Aggregation>) {
-    // if there is an aggregation named 'entry'
-    const entryAggregation = aggregations.find(
-      aggregation => aggregation.name === ENTRY_AGGREGATION_KEY
+  private findGermplasmCount(model: Model): number {
+    return (
+      model.aggregations
+        .find(aggregation => aggregation.name === ENTRY_AGGREGATION_KEY)
+        ?.buckets?.find(bucket => bucket.key === GERMPLASM_BUCKET_KEY)?.documentCount ?? 0
     );
-    if (entryAggregation) {
-      // with at list one document with the key 'Germplasm'
-      const germplasmBucket = entryAggregation.buckets.find(
-        bucket => bucket.key === GERMPLASM_BUCKET_KEY
-      );
-      // then we emit the new count
-      this.germplasmCount$.next(germplasmBucket ? germplasmBucket.documentCount : 0);
-    } else {
-      // else we emit 0
-      this.germplasmCount$.next(0);
-    }
   }
 
   switchTab(newTab: 'all' | 'germplasm') {
-    // we trigger a navigation with the same parameters,
-    // but with a fragment '#germplasm' if we are on the germplasm tab
-    const queryParams = newTab === 'germplasm' ? { entry: 'Germplasm' } : {};
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      fragment: newTab === 'germplasm' ? 'germplasm' : undefined,
-      queryParams,
-      queryParamsHandling: 'merge'
-    });
+    if (newTab === 'all') {
+      this.searchStateService.applyTransition(toAllTransition);
+    } else {
+      this.searchStateService.applyTransition(toGermplasmTransition);
+    }
   }
 }

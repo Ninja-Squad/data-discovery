@@ -23,6 +23,7 @@ export class FaidareOntologyAggregationComponent implements OnChanges {
   @Input() aggregation!: Aggregation;
   @Input() selectedKeys: Array<string> = [];
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  @Input() disabled = false;
 
   /**
    * The actual bucket length, which is the bucket length minus one if one of the bucket keys is the null value,

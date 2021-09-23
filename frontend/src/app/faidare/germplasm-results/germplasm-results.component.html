@@ -1,82 +1,54 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <div class="my-3">
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      (click)="export()"
-      id="download-button"
-      [disabled]="vm.downloading"
-    >
-      <span class="fa fa-download fa-fw mr-1" *ngIf="!vm.downloading"></span>
-      <span class="fa fa-spinner fa-spin fa-fw mr-1" *ngIf="vm.downloading"></span>
-      <span translate="faidare.germplasm-results.download"></span>
-    </button>
-  </div>
+  <ng-container *ngIf="vm.documents">
+    <div class="my-3">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="export(vm.searchCriteria)"
+        id="download-button"
+        [disabled]="vm.downloading"
+      >
+        <span class="fa fa-download fa-fw mr-1" *ngIf="!vm.downloading"></span>
+        <span class="fa fa-spinner fa-spin fa-fw mr-1" *ngIf="vm.downloading"></span>
+        <span translate="faidare.germplasm-results.download"></span>
+      </button>
+    </div>
 
-  <table class="table table-sm table-striped table-responsive-lg">
-    <thead>
-      <tr>
-        <th
-          sortable="name"
-          [sort]="vm.sort"
-          [direction]="vm.direction"
-          (sorted)="sort($event.sort, $event.direction)"
-        >
-          <span translate="faidare.germplasm-results.name"></span>
-        </th>
-        <th
-          sortable="accession"
-          [sort]="vm.sort"
-          [direction]="vm.direction"
-          (sorted)="sort($event.sort, $event.direction)"
-        >
-          <span translate="faidare.germplasm-results.accession"></span>
-        </th>
-        <th
-          sortable="species"
-          [sort]="vm.sort"
-          [direction]="vm.direction"
-          (sorted)="sort($event.sort, $event.direction)"
-        >
-          <span translate="faidare.germplasm-results.species"></span>
-        </th>
-        <th
-          sortable="institute"
-          [sort]="vm.sort"
-          [direction]="vm.direction"
-          (sorted)="sort($event.sort, $event.direction)"
-        >
-          <span translate="faidare.germplasm-results.institute"></span>
-        </th>
-        <th
-          sortable="biological-status"
-          [sort]="vm.sort"
-          [direction]="vm.direction"
-          (sorted)="sort($event.sort, $event.direction)"
-        >
-          <span translate="faidare.germplasm-results.biological-status"></span>
-        </th>
-        <th
-          sortable="country"
-          [sort]="vm.sort"
-          [direction]="vm.direction"
-          (sorted)="sort($event.sort, $event.direction)"
-        >
-          <span translate="faidare.germplasm-results.country-of-origin"></span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let document of documents.content">
-        <td>
-          <a [href]="faidareUrl(document)">{{ document.name }}</a>
-        </td>
-        <td>{{ document.accessionNumber }}</td>
-        <td>{{ document.species.join(', ') }}</td>
-        <td>{{ document.holdingInstitute }}</td>
-        <td>{{ document.biologicalStatus }}</td>
-        <td>{{ document.countryOfOrigin }}</td>
-      </tr>
-    </tbody>
-  </table>
+    <table class="table table-sm table-striped table-responsive-lg">
+      <thead>
+        <tr>
+          <th sortable="name" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+            <span translate="faidare.germplasm-results.name"></span>
+          </th>
+          <th sortable="accession" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+            <span translate="faidare.germplasm-results.accession"></span>
+          </th>
+          <th sortable="species" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+            <span translate="faidare.germplasm-results.species"></span>
+          </th>
+          <th sortable="institute" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+            <span translate="faidare.germplasm-results.institute"></span>
+          </th>
+          <th sortable="biological-status" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+            <span translate="faidare.germplasm-results.biological-status"></span>
+          </th>
+          <th sortable="country" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+            <span translate="faidare.germplasm-results.country-of-origin"></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let document of vm.documents.content">
+          <td>
+            <a [href]="faidareUrl(document)">{{ document.name }}</a>
+          </td>
+          <td>{{ document.accessionNumber }}</td>
+          <td>{{ document.species.join(', ') }}</td>
+          <td>{{ document.holdingInstitute }}</td>
+          <td>{{ document.biologicalStatus }}</td>
+          <td>{{ document.countryOfOrigin }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
 </ng-container>

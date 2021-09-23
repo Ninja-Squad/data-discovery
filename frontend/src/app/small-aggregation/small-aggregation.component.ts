@@ -3,7 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
+  OnChanges,
   Output
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -19,13 +19,14 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./small-aggregation.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SmallAggregationComponent implements OnInit {
+export class SmallAggregationComponent implements OnChanges {
   @Input() aggregation!: Aggregation;
   @Input() searchDescendants = false;
-  private _selectedKeys: Array<string> = [];
+  @Input() selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or remove a criterion
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
+  @Input() disabled = false;
 
   aggregationForm: FormGroup = new FormGroup({});
 
@@ -57,46 +58,28 @@ export class SmallAggregationComponent implements OnInit {
 
   constructor(private translateService: TranslateService) {}
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     // create as many form control as there are buckets
     const buckets = this.aggregation.buckets;
-    buckets.map(bucket => {
-      const control = new FormControl(false);
-      // if the criteria is selected, set the field to true
-      if (this._selectedKeys.includes(bucket.key)) {
-        control.setValue(true);
+    buckets.forEach(bucket => {
+      let control = this.aggregationForm.get(bucket.key);
+      if (!control) {
+        control = new FormControl(false);
+        this.aggregationForm.addControl(bucket.key, control);
       }
-      this.aggregationForm.addControl(bucket.key, control);
+      (control as FormControl).setValue(this.selectedKeys.includes(bucket.key));
+    });
+    Object.keys(this.aggregationForm.controls).forEach(key => {
+      if (!buckets.find(bucket => bucket.key === key)) {
+        this.aggregationForm.removeControl(key);
+      }
     });
 
-    if (buckets.length <= 1) {
+    if (this.disabled || this.aggregation.buckets.length <= 1) {
       this.aggregationForm.disable();
+    } else {
+      this.aggregationForm.enable();
     }
-
-    // subscribe to form changes
-    // to emit a new event every time a value changes
-    this.aggregationForm.valueChanges.subscribe(formValues => {
-      const values = SmallAggregationComponent.extractKeys(formValues);
-      const event: AggregationCriterion = {
-        name: this.aggregation.name,
-        values
-      };
-      this.aggregationChange.emit(event);
-    });
-  }
-
-  @Input()
-  set selectedKeys(newSelectedKeys: Array<string>) {
-    if (!SmallAggregationComponent.sameSelectedKeys(this._selectedKeys, newSelectedKeys)) {
-      this._selectedKeys = newSelectedKeys;
-      for (const [key, control] of Object.entries(this.aggregationForm.controls)) {
-        control.setValue(newSelectedKeys.includes(key), { emitEvent: false });
-      }
-    }
-  }
-
-  get selectedKeys() {
-    return this._selectedKeys;
   }
 
   displayableKey(key: string): string {
@@ -106,6 +89,15 @@ export class SmallAggregationComponent implements OnInit {
   onSearchDescendants(event: boolean) {
     this.searchDescendants = event;
     this.searchDescendantsChange.emit(event);
+  }
+
+  onChange() {
+    const values = SmallAggregationComponent.extractKeys(this.aggregationForm.value);
+    const event: AggregationCriterion = {
+      name: this.aggregation.name,
+      values
+    };
+    this.aggregationChange.emit(event);
   }
 
   /**

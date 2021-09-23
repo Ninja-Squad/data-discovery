@@ -44,14 +44,20 @@
         class="badge badge-pill badge-secondary mr-1"
         *ngFor="let key of selectedKeys"
         tabindex="0"
-        (keydown.backspace)="removeKey(key)"
+        (keydown.backspace)="!disabled && removeKey(key)"
       >
         <dd-document-count
           [name]="displayableKey(key)"
           [count]="documentCountForKey(key)"
           [muted]="false"
         ></dd-document-count>
-        <button tabindex="-1" type="button" class="btn btn-link" (click)="removeKey(key)">
+        <button
+          tabindex="-1"
+          type="button"
+          class="btn btn-link"
+          (click)="removeKey(key)"
+          [disabled]="disabled"
+        >
           &times;
         </button>
       </span>

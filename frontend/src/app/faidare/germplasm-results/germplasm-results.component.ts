@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Page } from '../../models/page';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { environment } from '../../../environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
 import { BehaviorSubject, combineLatest, finalize, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
 
 interface ViewModel {
+  documents: Page<FaidareDocumentModel> | null;
   downloading: boolean;
-  sort: Sort | null;
-  direction: Direction | null;
+  sortCriterion: SortCriterion | null;
+  searchCriteria: SearchCriteria;
 }
 
 export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-status' | 'country';
@@ -24,22 +25,20 @@ export type Direction = 'asc' | 'desc';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {
-  @Input() documents!: Page<FaidareDocumentModel>;
-
   vm$: Observable<ViewModel>;
   private downloadingSubject = new BehaviorSubject(false);
 
   constructor(
-    private route: ActivatedRoute,
     private exportService: ExportService,
     private downloadService: DownloadService,
-    private router: Router
+    private searchStateService: SearchStateService
   ) {
-    this.vm$ = combineLatest([this.downloadingSubject, route.queryParamMap]).pipe(
-      map(([downloading, paramMap]) => ({
+    this.vm$ = combineLatest([this.downloadingSubject, searchStateService.getModel()]).pipe(
+      map(([downloading, model]) => ({
         downloading,
-        sort: paramMap.get('sort') as Sort,
-        direction: paramMap.get('direction') as Direction
+        sortCriterion: model.searchCriteria.sortCriterion,
+        searchCriteria: model.searchCriteria,
+        documents: model.documents as Page<FaidareDocumentModel> | null
       }))
     );
   }
@@ -48,24 +47,15 @@ export class GermplasmResultsComponent {
     return `${environment.faidare!.germplasmBaseUrl}/${document.identifier}`;
   }
 
-  export() {
+  export(searchCriteria: SearchCriteria) {
     this.downloadingSubject.next(true);
     this.exportService
-      .export(this.route.snapshot.queryParams)
+      .export(searchCriteria.query, searchCriteria.aggregationCriteria, searchCriteria.descendants)
       .pipe(finalize(() => this.downloadingSubject.next(false)))
       .subscribe(blob => this.downloadService.download(blob, 'plant-material.csv'));
   }
 
-  sort(sort: Sort, direction: Direction) {
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      preserveFragment: true,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        sort,
-        direction,
-        page: 1
-      }
-    });
+  sort(sortCriterion: SortCriterion) {
+    this.searchStateService.sort(sortCriterion);
   }
 }

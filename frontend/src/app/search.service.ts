@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 import { DocumentModel } from './models/document.model';
-import { AggregatedPage, Aggregation } from './models/page';
+import { AggregatedPage, Aggregation, Page } from './models/page';
 import { AggregationCriterion } from './models/aggregation-criterion';
+import { SortCriterion } from './search-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,27 +17,34 @@ export class SearchService {
   /**
    * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)
    */
-  search(
-    query: string,
-    aggregationCriteria: Array<AggregationCriterion>,
-    pageAsNumber: number,
-    descendants: boolean
-  ): Observable<AggregatedPage<DocumentModel>> {
+  search(criteria: {
+    query: string;
+    aggregationCriteria: Array<AggregationCriterion>;
+    page: number;
+    descendants: boolean;
+    sortCriterion: SortCriterion | null;
+  }): Observable<Page<DocumentModel>> {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
-    const page = pageAsNumber - 1;
+    const page = criteria.page - 1;
     // we built the search parameters
     const params: { [key: string]: string | number | Array<string> | boolean } = {
-      query: query ?? '',
+      query: criteria.query,
       page,
       highlight: true,
-      descendants
+      descendants: criteria.descendants
     };
+    if (criteria.sortCriterion) {
+      params.sort = criteria.sortCriterion.sort;
+      params.direction = criteria.sortCriterion.direction;
+    }
 
     // if we have aggregation values, add them as domain=Plantae&domain=...
-    if (aggregationCriteria) {
-      aggregationCriteria.forEach(criterion => (params[criterion.name] = criterion.values));
+    if (criteria.aggregationCriteria) {
+      criteria.aggregationCriteria.forEach(
+        criterion => (params[criterion.name] = criterion.values)
+      );
     }
-    return this.http.get<AggregatedPage<DocumentModel>>('api/search', {
+    return this.http.get<Page<DocumentModel>>('api/search', {
       params
     });
   }
@@ -44,21 +52,23 @@ export class SearchService {
   /**
    * Aggregates documents for the given query (full-text search), and return an Aggregated page with aggregations and without results
    */
-  aggregate(
-    query: string,
-    aggregationCriteria: Array<AggregationCriterion>,
-    descendants: boolean
-  ): Observable<AggregatedPage<DocumentModel>> {
+  aggregate(criteria: {
+    query: string;
+    aggregationCriteria: Array<AggregationCriterion>;
+    descendants: boolean;
+  }): Observable<Array<Aggregation>> {
     // we built the search parameters
     const params: { [key: string]: string | Array<string> | boolean } = {
-      query: query ?? '',
-      descendants: descendants
+      query: criteria.query,
+      descendants: criteria.descendants
     };
     // if we have aggregation values, add them as domain=Plantae&domain=...
-    if (aggregationCriteria) {
-      aggregationCriteria.forEach(criterion => (params[criterion.name] = criterion.values));
+    if (criteria.aggregationCriteria) {
+      criteria.aggregationCriteria.forEach(
+        criterion => (params[criterion.name] = criterion.values)
+      );
     }
-    return this.http.get<AggregatedPage<DocumentModel>>('api/aggregate', {
+    return this.http.get<Array<Aggregation>>('api/aggregate', {
       params
     });
   }

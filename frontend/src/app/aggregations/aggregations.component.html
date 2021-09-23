@@ -1,15 +1,15 @@
 <!-- Loading skeleton aka PleaseWaitWidget -->
 <div class="text-center">
-  <dd-loading-skeleton [loading]="aggLoading" [aggregationStyle]="true"></dd-loading-skeleton>
+  <dd-loading-skeleton [loading]="loading" [aggregationStyle]="true"></dd-loading-skeleton>
 </div>
-
-<div *ngIf="aggregations?.length && !aggLoading">
-  <div *ngFor="let aggregation of aggregations">
+<div *ngIf="aggregations?.length && !loading">
+  <div *ngFor="let aggregation of aggregations; trackBy: byAggregationName">
     <dd-ontology-aggregation
       *ngIf="aggregation.type === 'ONTOLOGY'"
       [aggregation]="aggregation"
       [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
       (aggregationChange)="onAggregationChange($event)"
+      [disabled]="aggregation.name === disabledAggregationName"
     ></dd-ontology-aggregation>
     <!-- we display checkboxes if there are only a few options -->
     <dd-small-aggregation
@@ -22,6 +22,7 @@
       (aggregationChange)="onAggregationChange($event)"
       [searchDescendants]="searchDescendants"
       (searchDescendantsChange)="onSearchDescendantChange($event)"
+      [disabled]="aggregation.name === disabledAggregationName"
     ></dd-small-aggregation>
     <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
@@ -32,6 +33,7 @@
       (aggregationChange)="onAggregationChange($event)"
       [searchDescendants]="searchDescendants"
       (searchDescendantsChange)="onSearchDescendantChange($event)"
+      [disabled]="aggregation.name === disabledAggregationName"
     ></dd-large-aggregation>
   </div>
 </div>

@@ -1,18 +1,16 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { of } from 'rxjs';
+import { Observable, of, ReplaySubject } from 'rxjs';
 import { ComponentTester, fakeRoute } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
 import { DocumentsComponent } from '../documents/documents.component';
 import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
-import { SearchService } from '../search.service';
-import { DocumentModel } from '../models/document.model';
 import {
   toAggregation,
   toRareDocument,
@@ -26,13 +24,17 @@ import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
-import { delay } from 'rxjs/operators';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
+import { Model, SearchStateService } from '../search-state.service';
+import { filter, map } from 'rxjs/operators';
+import { DocumentModel } from '../models/document.model';
+import { Page } from '../models/page';
+import { AggregationCriterion } from '../models/aggregation-criterion';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -47,8 +49,12 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
     return this.button('button')!;
   }
 
+  get loaders() {
+    return this.elements('.loading');
+  }
+
   get results() {
-    return this.debugElement.query(By.directive(DocumentsComponent));
+    return this.debugElement.queryAll(By.directive(RareDocumentComponent));
   }
 
   get pagination() {
@@ -56,18 +62,54 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
   }
 
   get aggregations() {
-    return this.debugElement.query(By.directive(AggregationsComponent));
+    return this.debugElement.queryAll(By.directive(SmallAggregationComponent));
+  }
+
+  get aggregationsComponent(): AggregationsComponent | null {
+    return this.debugElement.query(By.directive(AggregationsComponent))?.componentInstance ?? null;
+  }
+
+  get filterToggler() {
+    return this.button('.filter-toggler');
   }
 }
 
 describe('SearchComponent', () => {
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', [
-    'isEnabled',
-    'isAccessionInBasket'
-  ]);
-  basketService.isEnabled.and.returnValue(true);
-  basketService.isAccessionInBasket.and.returnValue(of(false));
-  beforeEach(() =>
+  let basketService: jasmine.SpyObj<BasketService>;
+  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let modelSubject: ReplaySubject<Model>;
+  let route: ActivatedRoute;
+
+  beforeEach(() => {
+    basketService = jasmine.createSpyObj<BasketService>('BasketService', [
+      'isEnabled',
+      'isAccessionInBasket'
+    ]);
+    basketService.isEnabled.and.returnValue(true);
+    basketService.isAccessionInBasket.and.returnValue(of(false));
+
+    modelSubject = new ReplaySubject<Model>();
+    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
+      'initialize',
+      'newSearch',
+      'changeAggregations',
+      'changePage',
+      'changeSearchDescendants',
+      'getDocuments'
+    ]);
+    searchStateService.initialize.and.returnValue(modelSubject);
+    searchStateService.getDocuments.and.returnValue(
+      modelSubject.pipe(
+        map(model => model.documents),
+        filter(d => !!d)
+      ) as Observable<Page<DocumentModel>>
+    );
+
+    route = fakeRoute({});
+
+    TestBed.overrideComponent(SearchComponent, {
+      set: { providers: [{ provide: SearchStateService, useValue: searchStateService }] }
+    });
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -91,505 +133,201 @@ describe('SearchComponent', () => {
         GenericSelectAllResultsComponent,
         GenericDocumentListComponent
       ],
-      providers: [{ provide: BasketService, useValue: basketService }]
-    })
-  );
-
-  it('should search and aggregate on init if there is a query', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    const results = toSinglePage([toRareDocument('Bacteria')]);
-    const aggregationResult = toSinglePage([], [toAggregation('domain', ['Plant'])]);
-    spyOn(searchService, 'search').and.returnValue(of(results));
-    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult));
-
-    // with a query on init
-    const query = 'Bacteria';
-    const descendants = false;
-    const queryParams = of({ query, descendants });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-
-    // when loading
-    component.ngOnInit();
-
-    // then the search should be populated
-    expect(component.searchForm.get('search')!.value).toBe(query);
-    // the search service called with page 1, no criteria and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, [], 1, false);
-    // and the results fetched
-    expect(component.results).toEqual(results);
-    expect(component.aggregations).toEqual(aggregationResult.aggregations);
-  });
-
-  it('should search and aggregate on init if there is a query with long aggregation check', fakeAsync(() => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    const results = toSinglePage([toRareDocument('Bacteria')]);
-    const aggregationResult = toSinglePage([], [toAggregation('domain', ['Plant'])]);
-    spyOn(searchService, 'search').and.returnValue(of(results));
-    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult).pipe(delay(1000)));
-
-    // with a query on init
-    const query = 'Bacteria';
-    const descendants = false;
-    const queryParams = of({ query, descendants });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-
-    // when loading
-    component.ngOnInit();
-
-    // then the search should be populated
-    expect(component.searchForm.get('search')!.value).toBe(query);
-    // the search service called with page 1, no criteria and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, [], 1, false);
-    // and the results fetched
-    expect(component.results).toEqual(results);
-    // First aggregations is not there
-    expect(component.aggregations).toEqual([]);
-    // Then aggregations completes and get displayed
-    tick(1000);
-    expect(component.aggregations).toEqual(aggregationResult.aggregations);
-  }));
-
-  it('should search on init if there is a query and a page', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    const results = toSinglePage([]);
-    spyOn(searchService, 'search').and.returnValue(of(results));
-
-    // with a query on init
-    const query = 'Bacteria';
-    const page = 3;
-    const descendants = false;
-    const queryParams = of({ query, descendants, page });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    // but this query was already the same
-    component.query = query;
-
-    // when loading
-    component.ngOnInit();
-
-    // then the search should be populated
-    expect(component.searchForm.get('search')!.value).toBe(query);
-    // the search service called with page 3, no criteria and and asked for aggregations
-    expect(searchService.search).toHaveBeenCalledWith(query, [], 3, false);
-    // and the results fetched
-    expect(component.results).toEqual(results);
-    expect(component.aggregations).toEqual([]);
-  });
-
-  it('should search on init if there is a query, a page and criteria', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    const results = toSinglePage([]);
-    spyOn(searchService, 'search').and.returnValue(of(results));
-
-    // with a query on init
-    const query = 'Bacteria';
-    const page = 3;
-    // and criteria
-    const domain = 'Plant';
-    const coo = ['France', 'Italy'];
-    const descendants = false;
-    const queryParams = of({ query, descendants, page, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    // but this query was already the same
-    component.query = query;
-
-    // when loading
-    component.ngOnInit();
-
-    // then the search should be populated
-    expect(component.searchForm.get('search')!.value).toBe(query);
-    // the search service called with page 1, the criteria and asked for aggregations
-    const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
-    const domainCriteria = { name: 'domain', values: ['Plant'] };
-    expect(searchService.search).toHaveBeenCalledWith(
-      query,
-      [domainCriteria, cooCriteria],
-      3,
-      false
-    );
-    // and the results fetched
-    expect(component.results).toEqual(results);
-    expect(component.aggregations).toEqual([]);
-  });
-
-  it('should search on init if there is a query, a page and criteria and display aggregations', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    const resource = toRareDocument('Bacteria');
-    const aggregation = toAggregation('coo', ['France', 'Italy']);
-    const expectedResults = toSinglePage([resource]);
-    const aggregationResult = toSinglePage([], [aggregation]);
-
-    spyOn(searchService, 'aggregate').and.returnValue(of(aggregationResult));
-
-    spyOn(searchService, 'search').and.returnValue(of(expectedResults));
-
-    // with a query on init
-    const query = 'Bacteria';
-    const descendants = false;
-    const page = 3;
-    // and criteria
-    const domain = 'Plant';
-    const coo = ['France', 'Italy'];
-    const queryParams = of({ query, descendants, page, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    // but this query was already the same
-    component.query = query;
-
-    // when loading
-    component.ngOnInit();
-
-    // then the search should be populated
-    expect(component.searchForm.get('search')!.value).toBe(query);
-    // the search service called with page 1, the criteria and asked for aggregations
-    const cooCriteria = { name: 'coo', values: ['France', 'Italy'] };
-    const domainCriteria = { name: 'domain', values: ['Plant'] };
-    expect(searchService.search).toHaveBeenCalledWith(
-      query,
-      [domainCriteria, cooCriteria],
-      3,
-      false
-    );
-    // and the results fetched
-    expect(component.results).toEqual(expectedResults);
-    expect(component.aggregations).toEqual([aggregation]);
-  });
-
-  it('should hide results and pagination on a new search', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    const results = toSinglePage([]);
-
-    // with a query on init
-    const query = 'Bacteria';
-    const descendants = false;
-    const page = 3;
-    // and criteria
-    const domain = 'Plant';
-    const coo = ['France', 'Italy'];
-    const queryParams = of({ query, descendants, page, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    // with an existing query and results
-    component.query = 'Rosa';
-    component.results = results;
-
-    // when loading
-    component.ngOnInit();
-
-    // and the results emptied
-    expect(component.results).toBeNull();
-    expect(component.aggregations).toEqual([]);
-  });
-
-  it('should navigate to search and reset the page to default when a query is entered', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    spyOn(searchService, 'search');
-    // with a current query Rosa and a current page 2
-    let query = 'Rosa';
-    // and criteria
-    const domain = 'Plant';
-    const coo = ['France', 'Italy'];
-    const descendants = false;
-    const queryParams = of({ query, descendants, page: 2, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-
-    query = 'Bacteria';
-    component.searchForm.get('search')!.setValue(query);
-    // when searching with a new query Bacteria
-    component.newSearch();
-
-    // then it should redirect to the search with the new query, no page and no criteria
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: activatedRoute,
-      queryParams: {
-        query,
-        page: undefined,
-        descendants: 'false'
-      },
-      preserveFragment: true
+      providers: [
+        { provide: BasketService, useValue: basketService },
+        { provide: ActivatedRoute, useValue: route }
+      ]
     });
   });
 
-  it('should navigate to requested page and keep criteria when pagination is used', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    spyOn(searchService, 'search');
-    const query = 'Bacteria';
-    const descendants = false;
-    // and criteria
-    const domain = ['Plant'];
-    const coo = ['France', 'Italy'];
-    const queryParams = of({ query, descendants, domain, coo });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    component.query = query;
-    component.aggregationCriteria = [
-      { name: 'coo', values: ['France', 'Italy'] },
-      { name: 'domain', values: ['Plant'] }
-    ];
+  it('should initialize state service when created', () => {
+    const tester = new SearchComponentTester();
+    tester.detectChanges();
 
-    // when navigating
-    component.navigateToPage(2);
+    expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
-    // then it should redirect to the search with correct parameters
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: activatedRoute,
-      queryParams: {
-        query,
+    const model: Model = {
+      searchCriteria: {
+        query: 'Bacteria',
+        aggregationCriteria: [{ name: 'domain', values: ['Plant'] }],
         page: 2,
-        descendants: 'false',
-        coo,
-        domain
+        descendants: false,
+        fragment: null,
+        sortCriterion: null
       },
-      preserveFragment: true
+      documents: toSecondPage([toRareDocument('Bacteria'), toRareDocument('Bacteria 2')]),
+      documentsLoading: false,
+      aggregations: [toAggregation('domain', ['Plant']), toAggregation('coo', ['France'])],
+      aggregationsLoading: false,
+      disabledAggregationName: null
+    };
+
+    modelSubject.next({
+      ...model,
+      aggregationsLoading: true,
+      aggregations: [],
+      documentsLoading: true,
+      documents: null
     });
-  });
+    tester.detectChanges();
+    expect(tester.results.length).toBe(0);
+    expect(tester.aggregations.length).toBe(0);
+    expect(tester.loaders.length).toBe(2);
+    expect(tester.pagination).toBeFalsy();
 
-  it('should toggle filters', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    const searchService = TestBed.inject(SearchService);
-    const activatedRoute = fakeRoute({});
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    expect(component.filtersExpanded).toBe(false);
+    modelSubject.next({
+      ...model,
+      documentsLoading: true,
+      documents: null
+    });
+    tester.detectChanges();
+    expect(tester.results.length).toBe(0);
+    expect(tester.aggregations.length).toBe(2);
+    expect(tester.loaders.length).toBe(1);
+    expect(tester.pagination).toBeFalsy();
 
-    // when toggling filters
-    component.toggleFilters();
-
-    // then it should show the filters
-    expect(component.filtersExpanded).toBe(true);
-
-    // when toggling filters again
-    component.toggleFilters();
-
-    // then it should hide the filters
-    expect(component.filtersExpanded).toBe(false);
-  });
-
-  it('should display a search bar and trigger a search', () => {
-    // given a component
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    spyOn(component, 'newSearch');
-
-    // then it should display the search bar containing that query
+    modelSubject.next(model);
     tester.detectChanges();
 
-    expect(tester.searchBar).toHaveValue('');
-
-    // with a query
-    const query = 'Bacteria';
-    tester.searchBar.fillWith(query);
-
-    // trigger search
-    tester.searchButton.click();
-    expect(component.newSearch).toHaveBeenCalled();
-    expect(component.searchForm.get('search')!.value).toBe(query);
+    // then the search should be populated
+    expect(tester.searchBar).toHaveValue('Bacteria');
+    // and the results fetched
+    expect(tester.results.length).toBe(2);
+    expect(tester.aggregations.length).toBe(2);
+    expect(tester.loaders.length).toBe(0);
+    expect(tester.pagination).toBeTruthy();
   });
 
-  it('should display results and pagination', () => {
-    // given a component
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    tester.detectChanges();
+  describe('after initialization', () => {
+    let tester: SearchComponentTester;
+    let initialModel: Model;
 
-    // Simulate search done, remove skeleton
-    component.aggLoading = false;
-    component.searchLoading = false;
+    beforeEach(() => {
+      tester = new SearchComponentTester();
+      tester.detectChanges();
 
-    // then it should not display results if empty
-    expect(tester.results).toBeNull();
+      expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
-    // when it has results
-    const resource = toRareDocument('Bacteria');
-    component.results = toSecondPage([resource]);
-    tester.detectChanges();
+      initialModel = {
+        searchCriteria: {
+          query: 'Bacteria',
+          aggregationCriteria: [{ name: 'domain', values: ['Plant'] }],
+          page: 2,
+          descendants: false,
+          fragment: null,
+          sortCriterion: null
+        },
+        documents: toSecondPage([toRareDocument('Bacteria'), toRareDocument('Bacteria 2')]),
+        documentsLoading: false,
+        aggregations: [toAggregation('domain', ['Plant']), toAggregation('coo', ['France'])],
+        aggregationsLoading: false,
+        disabledAggregationName: null
+      };
 
-    // then it should display them
-    expect(tester.results).not.toBeNull();
-    const componentInstance = tester.results.componentInstance as DocumentsComponent;
-    expect(componentInstance.documents).toEqual(component.results);
-
-    // and a pagination with one page
-    expect(tester.pagination).not.toBeNull();
-    const paginationComponent = tester.pagination.componentInstance as NgbPagination;
-    expect(paginationComponent.page).toBe(2);
-    expect(paginationComponent.pageCount).toBe(2);
-  });
-
-  it('should limit pagination to 500 pages, even if more results', () => {
-    // given a component
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    tester.detectChanges();
-
-    // Simulate search done, remove skeleton
-    component.aggLoading = false;
-    component.searchLoading = false;
-
-    // when it has results
-    const content: Array<DocumentModel> = [];
-    for (let i = 0; i < 20; i++) {
-      content.push(toRareDocument(`Bacteria ${i}`));
-    }
-
-    // in page 200 on a limited number of pages
-    component.results = toSinglePage(content);
-    component.results.totalElements = 12000;
-    component.results.totalPages = 500;
-    component.results.number = 200;
-    tester.detectChanges();
-
-    // then it should limit the pagination to 500 pages in the pagination
-    // and a pagination with one page
-    expect(tester.pagination).not.toBeNull();
-    const paginationComponent = tester.pagination.componentInstance as NgbPagination;
-    expect(paginationComponent.page).toBe(201);
-    expect(paginationComponent.pageCount).toBe(500);
-  });
-
-  it('should not display pagination if no result yet', () => {
-    // given a component with no result yet
-    const tester = new SearchComponentTester();
-
-    // then it should not display the pagination bar
-    expect(tester.pagination).toBeNull();
-  });
-
-  it('should not display pagination if empty result', () => {
-    // given a component with an empty result
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    component.results = toSinglePage([]);
-    tester.detectChanges();
-
-    // then it should display results even if empty
-    expect(tester.pagination).toBeNull();
-  });
-
-  it('should not display pagination if only one page of results', () => {
-    // given a component with a single page result
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    component.results = toSinglePage([toRareDocument('Bacteria')]);
-    tester.detectChanges();
-
-    // then it should display results even if empty
-    expect(tester.pagination).toBeNull();
-  });
-
-  it('should display aggregations if there are some', () => {
-    // given a component and a result with some aggregations
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    component.results = toSinglePage(
-      [toRareDocument('Bacteria')],
-      [toAggregation('coo', ['France', 'Italy'])]
-    );
-    tester.detectChanges();
-
-    // then it should display the aggregation
-    expect(tester.aggregations).not.toBeNull();
-  });
-
-  it('should update criteria when they change', () => {
-    // given a component and a result with some aggregations
-    const tester = new SearchComponentTester();
-    const component = tester.componentInstance;
-    component.results = toSinglePage(
-      [toRareDocument('Bacteria')],
-      [toAggregation('coo', ['France', 'Italy'])]
-    );
-    tester.detectChanges();
-    expect(component.aggregationCriteria.length).toBe(0);
-
-    // when the aggregation emits an event
-    const aggregationsComponent = tester.aggregations.componentInstance as AggregationsComponent;
-    const criteria = [{ name: 'coo', values: ['France'] }];
-    aggregationsComponent.aggregationsChange.emit(criteria);
-
-    // then it should add a criteria
-    expect(component.aggregationCriteria).toBe(criteria);
-
-    // when the aggregation emits an event with another value
-    const updatedCriteria = [{ name: 'coo', values: ['France', 'Italy'] }];
-    aggregationsComponent.aggregationsChange.emit(updatedCriteria);
-
-    // then it should update the existing criteria
-    expect(component.aggregationCriteria).toBe(updatedCriteria);
-  });
-
-  it('should update the search if search descendants is selected', () => {
-    // given a component
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-    const searchService = TestBed.inject(SearchService);
-    spyOn(searchService, 'search');
-    const query = 'Bacteria';
-    const descendants = false;
-    // and criteria
-    const annot = ['annot1'];
-    const queryParams = of({ query, descendants, annot });
-    const activatedRoute = fakeRoute({ queryParams });
-    const component = new SearchComponent(activatedRoute, router, searchService);
-    component.query = query;
-    component.aggregationCriteria = [{ name: 'annot', values: ['annot1'] }];
-
-    // when selecting search descendants
-    component.updateSearchWithDescendants(true);
-
-    // then it should redirect to the search with correct parameters
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: activatedRoute,
-      queryParams: {
-        query,
-        page: undefined,
-        descendants: 'true',
-        annot
-      },
-      preserveFragment: true
+      modelSubject.next(initialModel);
+      tester.detectChanges();
     });
 
-    // when unselecting search descendants
-    component.updateSearchWithDescendants(false);
+    it('should change aggregation', () => {
+      const event: Array<AggregationCriterion> = [];
+      tester.aggregationsComponent.aggregationsChange.emit(event);
+      tester.detectChanges();
 
-    // then it should redirect to the search with correct parameters
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: activatedRoute,
-      queryParams: {
-        query,
-        page: undefined,
-        descendants: 'false',
-        annot
-      },
-      preserveFragment: true
+      expect(searchStateService.changeAggregations).toHaveBeenCalledWith(event);
+    });
+
+    it('should change page', fakeAsync(() => {
+      (tester.pagination.componentInstance as NgbPagination).pageChange.emit(1);
+      tester.detectChanges();
+      tick();
+      tester.detectChanges();
+
+      expect(searchStateService.changePage).toHaveBeenCalledWith(1);
+    }));
+
+    it('should change search descendants', () => {
+      const event = true;
+      tester.aggregationsComponent.searchDescendantsChange.emit(event);
+      tester.detectChanges();
+
+      expect(searchStateService.changeSearchDescendants).toHaveBeenCalledWith(event);
+    });
+
+    it('should trigger new search', () => {
+      tester.searchBar.fillWith('hello');
+      tester.searchButton.click();
+
+      expect(searchStateService.newSearch).toHaveBeenCalledWith('hello');
+    });
+
+    it('should toggle filters', () => {
+      expect(tester.element('.fa-caret-up')).toBeNull();
+      expect(tester.element('.fa-caret-down')).not.toBeNull();
+
+      tester.filterToggler.click();
+
+      expect(tester.element('.fa-caret-up')).not.toBeNull();
+      expect(tester.element('.fa-caret-down')).toBeNull();
+
+      tester.filterToggler.click();
+
+      expect(tester.element('.fa-caret-up')).toBeNull();
+      expect(tester.element('.fa-caret-down')).not.toBeNull();
+    });
+
+    it('should limit pagination to 500 pages, even if more results', () => {
+      const content: Array<DocumentModel> = [];
+      for (let i = 0; i < 20; i++) {
+        content.push(toRareDocument(`Bacteria ${i}`));
+      }
+
+      const documents = {
+        ...toSinglePage(content),
+        totalElements: 12000,
+        totalPages: 500,
+        number: 200
+      };
+      modelSubject.next({
+        ...initialModel,
+        documents
+      });
+      tester.detectChanges();
+
+      // then it should limit the pagination to 500 pages in the pagination
+      // and a pagination with one page
+      expect(tester.pagination).not.toBeNull();
+      const paginationComponent = tester.pagination.componentInstance as NgbPagination;
+      expect(paginationComponent.page).toBe(201);
+      expect(paginationComponent.pageCount).toBe(500);
+    });
+
+    it('should not display pagination if empty result', () => {
+      modelSubject.next({
+        ...initialModel,
+        documents: toSinglePage([])
+      });
+      tester.detectChanges();
+      expect(tester.pagination).toBeNull();
+    });
+
+    it('should not display pagination if only one page of results', () => {
+      modelSubject.next({
+        ...initialModel,
+        documents: toSinglePage([toRareDocument('Bacteria')])
+      });
+      tester.detectChanges();
+
+      expect(tester.pagination).toBeNull();
+    });
+
+    it('should update criteria when they change', () => {
+      modelSubject.next({
+        ...initialModel,
+        aggregations: [toAggregation('coo', ['France', 'Italy'])]
+      });
+      tester.detectChanges();
+
+      expect(tester.aggregations.length).toBe(1);
     });
   });
 });
