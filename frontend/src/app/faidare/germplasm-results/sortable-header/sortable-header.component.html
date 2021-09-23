@@ -1,0 +1,10 @@
+<div role="button" (click)="onSort()">
+  <span
+    class="fa mr-1"
+    [class.not-sorted]="sortable !== sort"
+    [class.fa-arrows-v]="sortable !== sort"
+    [class.fa-long-arrow-up]="sortable === sort && direction !== 'desc'"
+    [class.fa-long-arrow-down]="sortable === sort && direction === 'desc'"
+  ></span>
+  <ng-content></ng-content>
+</div>

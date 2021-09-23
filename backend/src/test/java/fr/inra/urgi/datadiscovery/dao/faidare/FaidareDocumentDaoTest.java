@@ -234,7 +234,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                                    false,
                                    SearchRefinements.builder().build(),
                                    PageRequest.of(0, 20, faidareSort.toSort(Sort.Direction.ASC)));
-            }).doesNotThrowAnyException();
+            }).withFailMessage("Sorting with faidareSort " + faidareSort).doesNotThrowAnyException();
         }
     }
 

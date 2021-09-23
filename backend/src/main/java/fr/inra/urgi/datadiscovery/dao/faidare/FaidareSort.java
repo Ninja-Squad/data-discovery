@@ -8,8 +8,7 @@ import org.springframework.data.domain.Sort;
  */
 public enum FaidareSort {
     NAME("name", "name.keyword"),
-    // FIXME: what is the field associated with accession number?
-    ACCESSION_NUMBER("accession", "name.keyword"),
+    ACCESSION_NUMBER("accession", "accessionNumber.keyword"),
     SPECIES("species", "species.keyword"),
     INSTITUTE("institute", "holdingInstitute.keyword"),
     BOLOGICAL_STATUS("biological-status", "biologicalStatus.keyword"),

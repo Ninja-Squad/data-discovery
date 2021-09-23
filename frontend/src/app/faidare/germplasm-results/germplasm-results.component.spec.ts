@@ -6,10 +6,11 @@ import { FaidareDocumentModel } from '../faidare-document.model';
 import { Page } from '../../models/page';
 import { ComponentTester, fakeRoute, fakeSnapshot } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
 
 @Component({
   template: '<dd-germplasm-results [documents]="documents"></dd-germplasm-results>'
@@ -38,30 +39,56 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   get downloadSpinner() {
     return this.download.element('.fa-spinner');
   }
+
+  get headers() {
+    return this.elements<HTMLElement>('th div');
+  }
+
+  get sortedAscHeaders() {
+    return this.elements('th div').filter(
+      testElement => !!testElement.element('.fa-long-arrow-up')
+    );
+  }
+
+  get sortedDescHeaders() {
+    return this.elements('th div').filter(
+      testElement => !!testElement.element('.fa-long-arrow-down')
+    );
+  }
 }
 
 describe('GermplasmResultsComponent', () => {
   let tester: TestComponentTester;
   let exportService: jasmine.SpyObj<ExportService>;
   let downloadService: jasmine.SpyObj<DownloadService>;
+  let router: jasmine.SpyObj<Router>;
+
+  let queryParams$: BehaviorSubject<Params>;
+  let route: ActivatedRoute;
+  const initialQueryParams: Params = { query: 'Bacteria', entry: 'Germplasm' };
 
   beforeEach(() => {
-    const route = fakeRoute({
+    queryParams$ = new BehaviorSubject<Params>(initialQueryParams);
+
+    route = fakeRoute({
+      queryParams: queryParams$,
       snapshot: fakeSnapshot({
-        queryParams: { query: 'Bacteria', entry: 'Germplasm' }
+        queryParams: initialQueryParams
       })
     });
 
     exportService = jasmine.createSpyObj<ExportService>('ExportService', ['export']);
     downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
+    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],
-      declarations: [TestComponent, GermplasmResultsComponent],
+      declarations: [TestComponent, GermplasmResultsComponent, SortableHeaderComponent],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: ExportService, useValue: exportService },
-        { provide: DownloadService, useValue: downloadService }
+        { provide: DownloadService, useValue: downloadService },
+        { provide: Router, useValue: router }
       ]
     });
 
@@ -121,5 +148,74 @@ describe('GermplasmResultsComponent', () => {
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
     expect(tester.downloadSpinner).toBeNull();
+  });
+
+  it('should sort', () => {
+    expect(tester.sortedAscHeaders.length).toBe(0);
+    expect(tester.sortedDescHeaders.length).toBe(0);
+
+    const speciesHeader = tester.headers[2];
+    speciesHeader.click();
+
+    expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      relativeTo: route,
+      preserveFragment: true,
+      queryParamsHandling: 'merge',
+      queryParams: {
+        sort: 'species',
+        direction: 'asc',
+        page: 1
+      }
+    });
+
+    // simulate the query params changing
+    queryParams$.next({ ...initialQueryParams, sort: 'species', direction: 'asc' });
+    tester.detectChanges();
+
+    expect(tester.sortedAscHeaders.length).toBe(1);
+    expect(tester.sortedAscHeaders[0]).toContainText('Species');
+    expect(tester.sortedDescHeaders.length).toBe(0);
+
+    speciesHeader.click();
+
+    expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      relativeTo: route,
+      preserveFragment: true,
+      queryParamsHandling: 'merge',
+      queryParams: {
+        sort: 'species',
+        direction: 'desc',
+        page: 1
+      }
+    });
+
+    // simulate the query params changing
+    queryParams$.next({ ...initialQueryParams, sort: 'species', direction: 'desc' });
+    tester.detectChanges();
+
+    expect(tester.sortedAscHeaders.length).toBe(0);
+    expect(tester.sortedDescHeaders.length).toBe(1);
+    expect(tester.sortedDescHeaders[0]).toContainText('Species');
+
+    speciesHeader.click();
+
+    expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      relativeTo: route,
+      preserveFragment: true,
+      queryParamsHandling: 'merge',
+      queryParams: {
+        sort: 'species',
+        direction: 'asc',
+        page: 1
+      }
+    });
+
+    // simulate the query params changing
+    queryParams$.next({ ...initialQueryParams, sort: 'species', direction: 'asc' });
+    tester.detectChanges();
+
+    expect(tester.sortedAscHeaders.length).toBe(1);
+    expect(tester.sortedAscHeaders[0]).toContainText('Species');
+    expect(tester.sortedDescHeaders.length).toBe(0);
   });
 });

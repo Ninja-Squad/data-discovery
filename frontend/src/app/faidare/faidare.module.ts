@@ -16,6 +16,7 @@ import { OntologyNodeTypeComponent } from './ontology-node-type/ontology-node-ty
 import { FaidareFooterComponent } from './faidare-footer/faidare-footer.component';
 import { GermplasmResultsComponent } from './germplasm-results/germplasm-results.component';
 import { FaidareDocumentListComponent } from './faidare-document-list/faidare-document-list.component';
+import { SortableHeaderComponent } from './germplasm-results/sortable-header/sortable-header.component';
 
 @NgModule({
   imports: [UrgiCommonModule, ReactiveFormsModule, DataDiscoveryNgbModule, TranslateModule],
@@ -29,7 +30,8 @@ import { FaidareDocumentListComponent } from './faidare-document-list/faidare-do
     OntologyNodeTypeComponent,
     FaidareFooterComponent,
     GermplasmResultsComponent,
-    FaidareDocumentListComponent
+    FaidareDocumentListComponent,
+    SortableHeaderComponent
   ],
   exports: [
     GenericDocumentComponent,
