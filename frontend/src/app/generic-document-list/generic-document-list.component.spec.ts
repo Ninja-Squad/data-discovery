@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 import { Aggregation, Page } from '../models/page';
 import { DocumentModel } from '../models/document.model';
 import { toSinglePage } from '../models/test-model-generators';
+import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 
 @Component({
   template:
@@ -35,7 +36,12 @@ describe('GenericDocumentListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, GenericDocumentListComponent, GenericDocumentComponent]
+      declarations: [
+        TestComponent,
+        GenericDocumentListComponent,
+        GenericDocumentComponent,
+        TruncatableDescriptionComponent
+      ]
     });
     tester = new TestComponentTester();
     tester.detectChanges();
