@@ -16,12 +16,54 @@
   <table class="table table-sm table-striped table-responsive-lg">
     <thead>
       <tr>
-        <th translate="faidare.germplasm-results.name"></th>
-        <th translate="faidare.germplasm-results.accession"></th>
-        <th translate="faidare.germplasm-results.species"></th>
-        <th translate="faidare.germplasm-results.institute"></th>
-        <th translate="faidare.germplasm-results.biological-status"></th>
-        <th translate="faidare.germplasm-results.country-of-origin"></th>
+        <th
+          sortable="name"
+          [sort]="vm.sort"
+          [direction]="vm.direction"
+          (sorted)="sort($event.sort, $event.direction)"
+        >
+          <span translate="faidare.germplasm-results.name"></span>
+        </th>
+        <th
+          sortable="accession"
+          [sort]="vm.sort"
+          [direction]="vm.direction"
+          (sorted)="sort($event.sort, $event.direction)"
+        >
+          <span translate="faidare.germplasm-results.accession"></span>
+        </th>
+        <th
+          sortable="species"
+          [sort]="vm.sort"
+          [direction]="vm.direction"
+          (sorted)="sort($event.sort, $event.direction)"
+        >
+          <span translate="faidare.germplasm-results.species"></span>
+        </th>
+        <th
+          sortable="institute"
+          [sort]="vm.sort"
+          [direction]="vm.direction"
+          (sorted)="sort($event.sort, $event.direction)"
+        >
+          <span translate="faidare.germplasm-results.institute"></span>
+        </th>
+        <th
+          sortable="biological-status"
+          [sort]="vm.sort"
+          [direction]="vm.direction"
+          (sorted)="sort($event.sort, $event.direction)"
+        >
+          <span translate="faidare.germplasm-results.biological-status"></span>
+        </th>
+        <th
+          sortable="country"
+          [sort]="vm.sort"
+          [direction]="vm.direction"
+          (sorted)="sort($event.sort, $event.direction)"
+        >
+          <span translate="faidare.germplasm-results.country-of-origin"></span>
+        </th>
       </tr>
     </thead>
     <tbody>

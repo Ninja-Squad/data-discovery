@@ -17,6 +17,7 @@ import { GermplasmResultsComponent } from '../germplasm-results/germplasm-result
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SortableHeaderComponent } from '../germplasm-results/sortable-header/sortable-header.component';
 
 @Component({
   template:
@@ -65,7 +66,8 @@ describe('FaidareDocumentListComponent', () => {
         FaidareDocumentListComponent,
         GenericDocumentComponent,
         TruncatableDescriptionComponent,
-        GermplasmResultsComponent
+        GermplasmResultsComponent,
+        SortableHeaderComponent
       ],
       imports: [
         RouterTestingModule,
