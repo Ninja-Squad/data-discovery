@@ -4,26 +4,14 @@ import { GenericDocumentListComponent } from './generic-document-list.component'
 import { ComponentTester } from 'ngx-speculoos';
 import { By } from '@angular/platform-browser';
 import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
-import { Component } from '@angular/core';
-import { Aggregation, Page } from '../models/page';
-import { DocumentModel } from '../models/document.model';
-import { toSinglePage } from '../models/test-model-generators';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
+import { SearchStateService } from '../search-state.service';
+import { toSinglePage } from '../models/test-model-generators';
+import { of } from 'rxjs';
 
-@Component({
-  template:
-    '<dd-document-list [documents]="documents" [aggregations]="aggregations"></dd-document-list>'
-})
-class TestComponent {
-  documents: Page<DocumentModel> = toSinglePage([
-    { name: 'doc 1', description: 'desc 1', identifier: 'd1', species: [] }
-  ]);
-  aggregations: Array<Aggregation> = [];
-}
-
-class TestComponentTester extends ComponentTester<TestComponent> {
+class GenericDocumentListComponentTester extends ComponentTester<GenericDocumentListComponent> {
   constructor() {
-    super(TestComponent);
+    super(GenericDocumentListComponent);
   }
 
   get results() {
@@ -32,22 +20,30 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 }
 
 describe('GenericDocumentListComponent', () => {
-  let tester: TestComponentTester;
+  let tester: GenericDocumentListComponentTester;
+  let searchStateService: jasmine.SpyObj<SearchStateService>;
 
   beforeEach(() => {
+    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
+      'getDocuments'
+    ]);
+    searchStateService.getDocuments.and.returnValue(
+      of(toSinglePage([{ name: 'doc 1', description: 'desc 1', identifier: 'd1', species: [] }]))
+    );
+
     TestBed.configureTestingModule({
       declarations: [
-        TestComponent,
         GenericDocumentListComponent,
         GenericDocumentComponent,
         TruncatableDescriptionComponent
-      ]
+      ],
+      providers: [{ provide: SearchStateService, useValue: searchStateService }]
     });
-    tester = new TestComponentTester();
+    tester = new GenericDocumentListComponentTester();
     tester.detectChanges();
   });
 
-  it('list documents', () => {
+  it('should list documents', () => {
     expect(tester.results.length).toBe(1);
   });
 });

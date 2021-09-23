@@ -9,7 +9,7 @@ import {
   toSinglePage
 } from './models/test-model-generators';
 import { SearchService } from './search.service';
-import { AggregatedPage } from './models/page';
+import { Aggregation, Page } from './models/page';
 import { DocumentModel } from './models/document.model';
 
 describe('SearchService', () => {
@@ -26,8 +26,16 @@ describe('SearchService', () => {
   });
 
   it('should search for the query', () => {
-    let actualResults: AggregatedPage<DocumentModel>;
-    service.search('Bacteria', [], 1, false).subscribe(results => (actualResults = results));
+    let actualResults: Page<DocumentModel>;
+    service
+      .search({
+        query: 'Bacteria',
+        aggregationCriteria: [],
+        page: 1,
+        descendants: false,
+        sortCriterion: null
+      })
+      .subscribe(results => (actualResults = results));
 
     const resource = toRareDocument('Bacteria');
     const expectedResults = toSinglePage([resource]);
@@ -38,24 +46,58 @@ describe('SearchService', () => {
     expect(actualResults).toEqual(expectedResults);
   });
 
-  it('should fetch the aggregations only', () => {
-    let actualResults: AggregatedPage<DocumentModel>;
-    service.aggregate('Bacteria', [], false).subscribe(results => (actualResults = results));
+  it('should search for the query with sort', () => {
+    let actualResults: Page<DocumentModel>;
+    service
+      .search({
+        query: 'Bacteria',
+        aggregationCriteria: [],
+        page: 1,
+        descendants: false,
+        sortCriterion: { sort: 'name', direction: 'desc' }
+      })
+      .subscribe(results => (actualResults = results));
 
     const resource = toRareDocument('Bacteria');
+    const expectedResults = toSinglePage([resource]);
+
+    http
+      .expectOne(
+        'api/search?query=Bacteria&page=0&highlight=true&descendants=false&sort=name&direction=desc'
+      )
+      .flush(expectedResults);
+    expect(actualResults).toEqual(expectedResults);
+  });
+
+  it('should fetch the aggregations only', () => {
+    let actualResults: Array<Aggregation>;
+    service
+      .aggregate({
+        query: 'Bacteria',
+        aggregationCriteria: [],
+        descendants: false
+      })
+      .subscribe(results => (actualResults = results));
+
     const aggregation = toAggregation('coo', ['France', 'Italy']);
-    const expectedResults = toSinglePage([resource], [aggregation]);
+    const expectedResults = [aggregation];
 
     http.expectOne('api/aggregate?query=Bacteria&descendants=false').flush(expectedResults);
     expect(actualResults).toEqual(expectedResults);
   });
 
   it('should search for the query and add the aggregations selected', () => {
-    let actualResults: AggregatedPage<DocumentModel>;
+    let actualResults: Page<DocumentModel>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
     service
-      .search('Bacteria', [cooCriteria, domainCriteria], 1, false)
+      .search({
+        query: 'Bacteria',
+        aggregationCriteria: [cooCriteria, domainCriteria],
+        page: 1,
+        descendants: false,
+        sortCriterion: null
+      })
       .subscribe(results => (actualResults = results));
 
     const resource = toRareDocument('Bacteria');
@@ -69,22 +111,32 @@ describe('SearchService', () => {
     expect(actualResults).toEqual(expectedResults);
   });
 
-  it('should search for the query, fetch the aggregations and add the aggregations selected', () => {
-    let actualResults: AggregatedPage<DocumentModel>;
-    let actualAggregations: AggregatedPage<DocumentModel>;
+  it('should fetch the aggregations and add the aggregations selected', () => {
+    let actualResults: Page<DocumentModel>;
+    let actualAggregations: Array<Aggregation>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
     service
-      .search('Bacteria', [cooCriteria, domainCriteria], 1, false)
+      .search({
+        query: 'Bacteria',
+        aggregationCriteria: [cooCriteria, domainCriteria],
+        page: 1,
+        descendants: false,
+        sortCriterion: null
+      })
       .subscribe(results => (actualResults = results));
     service
-      .aggregate('Bacteria', [cooCriteria, domainCriteria], false)
+      .aggregate({
+        query: 'Bacteria',
+        aggregationCriteria: [cooCriteria, domainCriteria],
+        descendants: false
+      })
       .subscribe(agg => (actualAggregations = agg));
 
     const resource = toRareDocument('Bacteria');
     const aggregation = toAggregation('coo', ['France', 'Italy']);
     const expectedResults = toSinglePage([resource]);
-    const expectedAggregations = toSinglePage([resource], [aggregation]);
+    const expectedAggregations = [aggregation];
 
     http
       .expectOne(

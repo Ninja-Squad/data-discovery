@@ -74,8 +74,7 @@ class SearchControllerTest {
                .andExpect(jsonPath("$.maxResults").value(SearchController.MAX_RESULTS))
                .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
                .andExpect(jsonPath("$.content[0].name").value(resource.getName()))
-               .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()))
-               .andExpect(jsonPath("$.aggregations").isEmpty());
+               .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()));
     }
 
     @Test
@@ -129,22 +128,18 @@ class SearchControllerTest {
                                 .param("aggregate", "true")
                                 .param("descendants", "false"))
                    .andExpect(status().isOk())
-                   .andExpect(jsonPath("$.number").value(0))
-                   .andExpect(jsonPath("$.content[0].identifier").value(resource.getId()))
-                   .andExpect(jsonPath("$.content[0].name").value(resource.getName()))
-                   .andExpect(jsonPath("$.content[0].description").value(resource.getDescription()))
-                   .andExpect(jsonPath("$.aggregations").isArray())
-                   .andExpect(jsonPath("$.aggregations[0].name").value(RareAggregation.DOMAIN.getName()))
-                   .andExpect(jsonPath("$.aggregations[0].buckets").isArray())
-                   .andExpect(jsonPath("$.aggregations[0].buckets[0].key").value("Plantae"))
-                   .andExpect(jsonPath("$.aggregations[0].buckets[0].documentCount").value(123))
-                   .andExpect(jsonPath("$.aggregations[0].buckets[1].key").value("Fungi"))
-                   .andExpect(jsonPath("$.aggregations[0].buckets[1].documentCount").value(2))
-                   .andExpect(jsonPath("$.aggregations[0].type").value(RareAggregation.Type.LARGE.toString()));
+                   .andExpect(jsonPath("$").isArray())
+                   .andExpect(jsonPath("$[0].name").value(RareAggregation.DOMAIN.getName()))
+                   .andExpect(jsonPath("$[0].buckets").isArray())
+                   .andExpect(jsonPath("$[0].buckets[0].key").value("Plantae"))
+                   .andExpect(jsonPath("$[0].buckets[0].documentCount").value(123))
+                   .andExpect(jsonPath("$[0].buckets[1].key").value("Fungi"))
+                   .andExpect(jsonPath("$[0].buckets[1].documentCount").value(2))
+                   .andExpect(jsonPath("$[0].type").value(RareAggregation.Type.LARGE.toString()));
 
         // check that the aggregations are sorted in the order of the enum
         for (int i = 0; i < RareAggregation.values().length; i++) {
-            resultActions.andExpect(jsonPath("$.aggregations[" + i + "].name")
+            resultActions.andExpect(jsonPath("$[" + i + "].name")
                                         .value(RareAggregation.values()[i].getName()));
         }
     }

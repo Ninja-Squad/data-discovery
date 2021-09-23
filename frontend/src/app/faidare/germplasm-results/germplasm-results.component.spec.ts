@@ -1,27 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GermplasmResultsComponent } from './germplasm-results.component';
-import { Component } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { Page } from '../../models/page';
-import { ComponentTester, fakeRoute, fakeSnapshot } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
+import { Model, SearchStateService } from '../../search-state.service';
+import { DocumentModel } from '../../models/document.model';
 
-@Component({
-  template: '<dd-germplasm-results [documents]="documents"></dd-germplasm-results>'
-})
-class TestComponent {
-  documents!: Page<FaidareDocumentModel>;
-}
-
-class TestComponentTester extends ComponentTester<TestComponent> {
+class GermplasmResultsComponentTester extends ComponentTester<GermplasmResultsComponent> {
   constructor() {
-    super(TestComponent);
+    super(GermplasmResultsComponent);
   }
 
   get rows() {
@@ -58,42 +51,37 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 }
 
 describe('GermplasmResultsComponent', () => {
-  let tester: TestComponentTester;
+  let tester: GermplasmResultsComponentTester;
   let exportService: jasmine.SpyObj<ExportService>;
   let downloadService: jasmine.SpyObj<DownloadService>;
-  let router: jasmine.SpyObj<Router>;
+  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let modelSubject: ReplaySubject<Model>;
 
-  let queryParams$: BehaviorSubject<Params>;
-  let route: ActivatedRoute;
-  const initialQueryParams: Params = { query: 'Bacteria', entry: 'Germplasm' };
+  let initialModel: Model;
 
   beforeEach(() => {
-    queryParams$ = new BehaviorSubject<Params>(initialQueryParams);
-
-    route = fakeRoute({
-      queryParams: queryParams$,
-      snapshot: fakeSnapshot({
-        queryParams: initialQueryParams
-      })
-    });
+    modelSubject = new ReplaySubject<Model>(1);
+    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
+      'getModel',
+      'sort'
+    ]);
+    searchStateService.getModel.and.returnValue(modelSubject);
 
     exportService = jasmine.createSpyObj<ExportService>('ExportService', ['export']);
     downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
-    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],
-      declarations: [TestComponent, GermplasmResultsComponent, SortableHeaderComponent],
+      declarations: [GermplasmResultsComponent, SortableHeaderComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: route },
         { provide: ExportService, useValue: exportService },
         { provide: DownloadService, useValue: downloadService },
-        { provide: Router, useValue: router }
+        { provide: SearchStateService, useValue: searchStateService }
       ]
     });
 
-    tester = new TestComponentTester();
-    tester.componentInstance.documents = {
+    tester = new GermplasmResultsComponentTester();
+    const documents: Page<FaidareDocumentModel> = {
       content: [
         {
           identifier: 'g1',
@@ -116,6 +104,16 @@ describe('GermplasmResultsComponent', () => {
       ]
     } as Page<FaidareDocumentModel>;
 
+    initialModel = {
+      documents: documents as Page<DocumentModel>,
+      searchCriteria: {
+        sortCriterion: null,
+        query: 'test',
+        aggregationCriteria: [{ name: 'entry', values: ['Germplasm'] }],
+        descendants: true
+      }
+    } as Model;
+    modelSubject.next(initialModel);
     tester.detectChanges();
   });
 
@@ -140,7 +138,11 @@ describe('GermplasmResultsComponent', () => {
     tester.download.click();
 
     expect(tester.downloadSpinner).not.toBeNull();
-    expect(exportService.export).toHaveBeenCalledWith({ query: 'Bacteria', entry: 'Germplasm' });
+    expect(exportService.export).toHaveBeenCalledWith(
+      'test',
+      [{ name: 'entry', values: ['Germplasm'] }],
+      true
+    );
 
     blobSubject.next(blob);
     blobSubject.complete();
@@ -157,19 +159,22 @@ describe('GermplasmResultsComponent', () => {
     const speciesHeader = tester.headers[2];
     speciesHeader.click();
 
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: route,
-      preserveFragment: true,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        sort: 'species',
-        direction: 'asc',
-        page: 1
-      }
+    expect(searchStateService.sort).toHaveBeenCalledWith({
+      sort: 'species',
+      direction: 'asc'
     });
 
-    // simulate the query params changing
-    queryParams$.next({ ...initialQueryParams, sort: 'species', direction: 'asc' });
+    // simulate the model changing
+    modelSubject.next({
+      ...initialModel,
+      searchCriteria: {
+        ...initialModel.searchCriteria,
+        sortCriterion: {
+          sort: 'species',
+          direction: 'asc'
+        }
+      }
+    });
     tester.detectChanges();
 
     expect(tester.sortedAscHeaders.length).toBe(1);
@@ -178,19 +183,22 @@ describe('GermplasmResultsComponent', () => {
 
     speciesHeader.click();
 
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: route,
-      preserveFragment: true,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        sort: 'species',
-        direction: 'desc',
-        page: 1
-      }
+    expect(searchStateService.sort).toHaveBeenCalledWith({
+      sort: 'species',
+      direction: 'desc'
     });
 
     // simulate the query params changing
-    queryParams$.next({ ...initialQueryParams, sort: 'species', direction: 'desc' });
+    modelSubject.next({
+      ...initialModel,
+      searchCriteria: {
+        ...initialModel.searchCriteria,
+        sortCriterion: {
+          sort: 'species',
+          direction: 'desc'
+        }
+      }
+    });
     tester.detectChanges();
 
     expect(tester.sortedAscHeaders.length).toBe(0);
@@ -199,19 +207,22 @@ describe('GermplasmResultsComponent', () => {
 
     speciesHeader.click();
 
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      relativeTo: route,
-      preserveFragment: true,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        sort: 'species',
-        direction: 'asc',
-        page: 1
-      }
+    expect(searchStateService.sort).toHaveBeenCalledWith({
+      sort: 'species',
+      direction: 'asc'
     });
 
-    // simulate the query params changing
-    queryParams$.next({ ...initialQueryParams, sort: 'species', direction: 'asc' });
+    // simulate the model changing
+    modelSubject.next({
+      ...initialModel,
+      searchCriteria: {
+        ...initialModel.searchCriteria,
+        sortCriterion: {
+          sort: 'species',
+          direction: 'asc'
+        }
+      }
+    });
     tester.detectChanges();
 
     expect(tester.sortedAscHeaders.length).toBe(1);

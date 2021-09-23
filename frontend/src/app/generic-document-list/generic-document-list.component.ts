@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Page } from '../models/page';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DocumentModel } from '../models/document.model';
+import { Page } from '../models/page';
+import { SearchStateService } from '../search-state.service';
+import { Observable } from 'rxjs';
 
 /**
  * Default implementation of the document list (the search results).
@@ -14,6 +16,9 @@ import { DocumentModel } from '../models/document.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericDocumentListComponent {
-  @Input() documents!: Page<DocumentModel>;
-  @Input() aggregations!: Page<DocumentModel>;
+  documents$: Observable<Page<DocumentModel>>;
+
+  constructor(serachStateService: SearchStateService) {
+    this.documents$ = serachStateService.getDocuments();
+  }
 }

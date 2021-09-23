@@ -1,7 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
@@ -10,54 +9,80 @@ import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DocumentCountComponent } from '../document-count/document-count.component';
-import { Bucket } from '../models/page';
+import { Aggregation, Bucket } from '../models/page';
 import { NULL_VALUE } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { environment } from '../../environments/environment';
+import { Component } from '@angular/core';
+import { of } from 'rxjs';
+
+@Component({
+  template: `<dd-large-aggregation
+    [aggregation]="aggregation"
+    (aggregationChange)="aggregationChanged = $event"
+    [searchDescendants]="searchDescendants"
+    (searchDescendantsChange)="searchDescendantsChanged = $event"
+    [selectedKeys]="selectedKeys"
+    [disabled]="disabled"
+  ></dd-large-aggregation>`
+})
+class TestComponent {
+  aggregation: Aggregation;
+  aggregationChanged: AggregationCriterion;
+  searchDescendants = false;
+  searchDescendantsChanged: boolean;
+  selectedKeys: Array<string> = [];
+  disabled = false;
+}
+
+class TestComponentTester extends ComponentTester<TestComponent> {
+  constructor() {
+    super(TestComponent);
+  }
+
+  get title() {
+    return this.element('.card-title');
+  }
+
+  get inputField() {
+    return this.input('input')!;
+  }
+
+  get typeahead() {
+    return this.debugElement.query(By.directive(NgbTypeahead));
+  }
+
+  get searchDescendants() {
+    return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
+  }
+
+  get results(): NodeListOf<HTMLButtonElement> {
+    // Based on the typeahead test itself
+    // see https://github.com/ng-bootstrap/ng-bootstrap/blob/master/src/typeahead/typeahead.spec.ts
+    // The dropdown is appended to the body, not to this element, so we can't unfortunately return an array of
+    // TestButton, but only DOM elements
+    return document.querySelectorAll('ngb-typeahead-window.dropdown-menu button.dropdown-item');
+  }
+
+  get pills() {
+    return this.elements('.badge-pill');
+  }
+
+  get component(): LargeAggregationComponent {
+    return this.debugElement.query(By.directive(LargeAggregationComponent)).componentInstance;
+  }
+}
 
 describe('LargeAggregationComponent', () => {
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
-
-  class LargeAggregationComponentTester extends ComponentTester<LargeAggregationComponent> {
-    constructor() {
-      super(LargeAggregationComponent);
-    }
-
-    get title() {
-      return this.element('.card-title');
-    }
-
-    get inputField() {
-      return this.input('input')!;
-    }
-
-    get typeahead() {
-      return this.debugElement.query(By.directive(NgbTypeahead));
-    }
-
-    get searchDescendants() {
-      return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
-    }
-
-    get results(): NodeListOf<HTMLButtonElement> {
-      // Based on the typeahead test itself
-      // see https://github.com/ng-bootstrap/ng-bootstrap/blob/master/src/typeahead/typeahead.spec.ts
-      // The dropdown is appended to the body, not to this element, so we can't unfortunately return an array of
-      // TestButton, but only DOM elements
-      return document.querySelectorAll('ngb-typeahead-window.dropdown-menu button.dropdown-item');
-    }
-
-    get pills() {
-      return this.elements('.badge-pill');
-    }
-  }
 
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
       declarations: [
+        TestComponent,
         LargeAggregationComponent,
         AggregationNamePipe,
         DocumentCountComponent,
@@ -69,7 +94,7 @@ describe('LargeAggregationComponent', () => {
   afterEach(() => (environment.name = 'rare'));
 
   it('should display an aggregation with buckets as a typeahead', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
 
     // given an aggregation
     tester.componentInstance.aggregation = aggregation;
@@ -85,7 +110,7 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should not display an aggregation with empty buckets', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
 
     // given an aggregation
     tester.componentInstance.aggregation = toAggregation('coo', []);
@@ -101,10 +126,9 @@ describe('LargeAggregationComponent', () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France', 'Italy', NULL_VALUE];
 
-    const tester = new LargeAggregationComponentTester();
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
-    component.selectedKeys = selectedKeys;
+    const tester = new TestComponentTester();
+    tester.componentInstance.aggregation = aggregation;
+    tester.componentInstance.selectedKeys = selectedKeys;
 
     // when displaying the component
     tester.detectChanges();
@@ -120,14 +144,14 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should find one results containing the term entered', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
+    tester.componentInstance.aggregation = aggregation;
+    tester.detectChanges();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('anc')).subscribe(results => (actualResults = results));
+    tester.component.search(of('anc')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -135,14 +159,14 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should find one results containing the term entered when it is the null value translation', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
+    tester.componentInstance.aggregation = aggregation;
+    tester.detectChanges();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('non')).subscribe(results => (actualResults = results));
+    tester.component.search(of('non')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -150,14 +174,14 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should find the results containing the term entered and ignore the case', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
+    tester.componentInstance.aggregation = aggregation;
+    tester.detectChanges();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('A')).subscribe(results => (actualResults = results));
+    tester.component.search(of('A')).subscribe(results => (actualResults = results));
 
     // then it should have matches  (NULL_VALUE is None in English, so it does not contains 'A')
     expect(actualResults.length).toBe(3);
@@ -166,7 +190,7 @@ describe('LargeAggregationComponent', () => {
     expect((actualResults[2] as Bucket).key).toBe('New Zealand');
 
     // when searching for another result
-    component.search(of('n')).subscribe(results => (actualResults = results));
+    tester.component.search(of('n')).subscribe(results => (actualResults = results));
 
     // then it should have matches (NULL_VALUE is None in English, so it contains 'n')
     expect(actualResults.length).toBe(3);
@@ -176,29 +200,28 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should not find the results containing the term entered if it is already selected', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
-    component.selectedKeys = ['France'];
+    tester.componentInstance.aggregation = aggregation;
+    tester.componentInstance.selectedKeys = ['France'];
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('anc')).subscribe(results => (actualResults = results));
+    tester.component.search(of('anc')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(0);
   });
 
   it('should find 8 results max + a fake refine result', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    const component = tester.componentInstance;
-    component.aggregation = toAggregation('coo', Array(30).fill('a'));
+    tester.componentInstance.aggregation = toAggregation('coo', Array(30).fill('a'));
+    tester.detectChanges();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    component.search(of('a')).subscribe(results => (actualResults = results));
+    tester.component.search(of('a')).subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(9);
@@ -209,18 +232,14 @@ describe('LargeAggregationComponent', () => {
   });
 
   it('should emit an event when a value is added or removed and update pills', fakeAsync(() => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
 
     // given an aggregation
-    const component = tester.componentInstance;
-    component.aggregation = aggregation;
+    tester.componentInstance.aggregation = aggregation;
     tester.detectChanges();
+
     expect(tester.inputField).toHaveValue('');
     expect(tester.pills.length).toBe(0);
-
-    // then it should emit an event
-    let emittedEvent: AggregationCriterion;
-    component.aggregationChange.subscribe((event: AggregationCriterion) => (emittedEvent = event));
 
     // when a value is entered
     tester.inputField.fillWith('fr');
@@ -235,8 +254,10 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // an event is emitted
-    expect(emittedEvent!.name).toBe('coo');
-    expect(emittedEvent!.values).toEqual(['France']);
+    expect(tester.componentInstance.aggregationChanged).toEqual({
+      name: 'coo',
+      values: ['France']
+    });
 
     // the input is emptied
     expect(tester.inputField).toHaveValue('');
@@ -262,8 +283,10 @@ describe('LargeAggregationComponent', () => {
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
-    expect(emittedEvent!.name).toBe('coo');
-    expect(emittedEvent!.values).toEqual(['France', 'Italy']);
+    expect(tester.componentInstance.aggregationChanged).toEqual({
+      name: 'coo',
+      values: ['France', 'Italy']
+    });
 
     // the focus is given back to the input
     expect(tester.element(':focus')).toEqual(tester.inputField);
@@ -279,8 +302,10 @@ describe('LargeAggregationComponent', () => {
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
-    expect(emittedEvent!.name).toBe('coo');
-    expect(emittedEvent!.values).toEqual(['Italy']);
+    expect(tester.componentInstance.aggregationChanged).toEqual({
+      name: 'coo',
+      values: ['Italy']
+    });
 
     // and the pill should disappear
     expect(tester.pills.length).toBe(1);
@@ -291,18 +316,14 @@ describe('LargeAggregationComponent', () => {
   }));
 
   it('should not do anything if REFINE is selected', fakeAsync(() => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
 
     // given an aggregation
-    const component = tester.componentInstance;
-    component.aggregation = toAggregation('coo', Array(30).fill('a'));
+    tester.componentInstance.aggregation = toAggregation('coo', Array(30).fill('a'));
     tester.detectChanges();
+
     expect(tester.inputField).toHaveValue('');
     expect(tester.pills.length).toBe(0);
-
-    // then it should not emit an event
-    let emittedEvent: AggregationCriterion;
-    component.aggregationChange.subscribe((event: AggregationCriterion) => (emittedEvent = event));
 
     // when a value is entered
     tester.inputField.fillWith('a');
@@ -319,7 +340,7 @@ describe('LargeAggregationComponent', () => {
     tester.detectChanges();
 
     // no event is emitted
-    expect(emittedEvent!).toBeUndefined();
+    expect(tester.componentInstance.aggregationChanged).toBeUndefined();
 
     // the input value stays the same
     expect(tester.inputField).toHaveValue('a');
@@ -335,7 +356,7 @@ describe('LargeAggregationComponent', () => {
   }));
 
   it('should be not be displayed if only NULL bucket', () => {
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
 
     // given an aggregation with only the NULL bucket
     tester.componentInstance.aggregation = toAggregation(NULL_VALUE, []);
@@ -347,7 +368,7 @@ describe('LargeAggregationComponent', () => {
 
   it('should display search descendants option if annot bucket', () => {
     environment.name = 'wheatis'; // annot is not available in the rare version of the app
-    const tester = new LargeAggregationComponentTester();
+    const tester = new TestComponentTester();
 
     // given an aggregation with only the NULL bucket
     tester.componentInstance.aggregation = toAggregation('annot', ['annot1']);
@@ -356,11 +377,31 @@ describe('LargeAggregationComponent', () => {
     expect(tester.searchDescendants).not.toBeNull();
 
     // when the checkbox emits an event, then we propagate it
-    let received: boolean | null = null;
-    tester.componentInstance.searchDescendantsChange.subscribe(event => (received = event));
     const searchDescendant = tester.searchDescendants
       .componentInstance as DescendantsCheckboxComponent;
     searchDescendant.searchDescendantsChange.emit(true);
-    expect(received!).toBe(true);
+    expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
+  });
+
+  it('should be disabled', () => {
+    // given an aggregation with a bucket and a selected value
+    const selectedKeys = ['France', 'Italy', NULL_VALUE];
+
+    const tester = new TestComponentTester();
+    tester.componentInstance.aggregation = aggregation;
+    tester.componentInstance.selectedKeys = selectedKeys;
+
+    // when displaying the component
+    tester.detectChanges();
+
+    // then it should have several removable pills
+    expect(tester.pills.length).toBe(3);
+    expect(tester.inputField.disabled).toBeFalse();
+    tester.pills.forEach(pill => expect(pill.button('button')?.disabled).toBeFalse());
+
+    tester.componentInstance.disabled = true;
+    tester.detectChanges();
+    expect(tester.inputField.disabled).toBeTrue();
+    tester.pills.forEach(pill => expect(pill.button('button')?.disabled).toBeTrue());
   });
 });

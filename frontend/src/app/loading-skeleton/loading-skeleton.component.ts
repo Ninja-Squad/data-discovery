@@ -26,9 +26,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 @Component({
   selector: 'dd-loading-skeleton',
   template: `
-    <ng-container *ngIf="loading">
-      <ng-container *ngIf="aggregationStyle; then aggSkeleton; else searchSkeleton"> </ng-container>
-    </ng-container>
+    <div class="loading" *ngIf="loading">
+      <ng-container *ngIf="aggregationStyle; then aggSkeleton; else searchSkeleton"></ng-container>
+    </div>
 
     <ng-template #aggSkeleton>
       <div *ngFor="let iAgg of [].constructor(3)" class="card skeleton-loading-aggregation">

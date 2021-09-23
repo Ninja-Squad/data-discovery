@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-
-import { Aggregation, Page } from '../models/page';
-import { DocumentModel } from '../models/document.model';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BasketService } from '../rare/basket.service';
+import { map, Observable } from 'rxjs';
+import { DocumentModel } from '../models/document.model';
+import { Page } from '../models/page';
+import { SearchStateService } from '../search-state.service';
+
+interface ViewModel {
+  documents: Page<DocumentModel>;
+  firstResultIndex: number;
+  lastResultIndex: number;
+  resultLimited: boolean;
+}
 
 @Component({
   selector: 'dd-documents',
@@ -11,23 +19,30 @@ import { BasketService } from '../rare/basket.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentsComponent {
-  @Input() documents!: Page<DocumentModel>;
-  @Input() aggregations: Array<Aggregation> = [];
+  vm$: Observable<ViewModel>;
   isBasketEnabled: boolean;
 
-  constructor(basketService: BasketService) {
+  constructor(basketService: BasketService, searchStateService: SearchStateService) {
     this.isBasketEnabled = basketService.isEnabled();
+    this.vm$ = searchStateService.getDocuments().pipe(
+      map(documents => ({
+        documents,
+        firstResultIndex: this.firstResultIndex(documents),
+        lastResultIndex: this.lastResultIndex(documents),
+        resultLimited: this.resultLimited(documents)
+      }))
+    );
   }
 
-  get firstResultIndex() {
-    return this.documents.number * this.documents.size + 1;
+  private firstResultIndex(documents: Page<DocumentModel>): number {
+    return documents.number * documents.size + 1;
   }
 
-  get lastResultIndex() {
-    return this.firstResultIndex + this.documents.content.length - 1;
+  private lastResultIndex(documents: Page<DocumentModel>): number {
+    return this.firstResultIndex(documents) + documents.content.length - 1;
   }
 
-  get resultLimited() {
-    return this.documents.totalElements > this.documents.maxResults;
+  private resultLimited(documents: Page<DocumentModel>): boolean {
+    return documents.totalElements > documents.maxResults;
   }
 }

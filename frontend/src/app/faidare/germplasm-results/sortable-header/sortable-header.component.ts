@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Direction, Sort } from '../germplasm-results.component';
+import { Sort } from '../germplasm-results.component';
+import { SortCriterion } from '../../../search-state.service';
 
 @Component({
   selector: 'th[sortable]',
@@ -9,15 +10,19 @@ import { Direction, Sort } from '../germplasm-results.component';
 })
 export class SortableHeaderComponent {
   @Input() sortable!: Sort;
-  @Input() sort: Sort | null | undefined;
-  @Input() direction: Direction | null | undefined;
+  @Input() criterion: SortCriterion | null = null;
 
-  @Output() sorted = new EventEmitter<{ sort: Sort; direction: Direction }>();
+  @Output() sorted = new EventEmitter<SortCriterion>();
 
   onSort(): void {
     this.sorted.emit({
       sort: this.sortable,
-      direction: this.sortable === this.sort ? (this.direction === 'desc' ? 'asc' : 'desc') : 'asc'
+      direction:
+        this.sortable === this.criterion?.sort
+          ? this.criterion.direction === 'desc'
+            ? 'asc'
+            : 'desc'
+          : 'asc'
     });
   }
 }

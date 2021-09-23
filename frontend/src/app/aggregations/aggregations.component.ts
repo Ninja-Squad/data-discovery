@@ -12,10 +12,11 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 export class AggregationsComponent {
   @Input() aggregations: Array<Aggregation> = [];
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
-  @Input() aggLoading = false;
+  @Input() loading = false;
   @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
   @Input() searchDescendants = false;
+  @Input() disabledAggregationName: string | null = null;
 
   /**
    * Extracts the selected criteria for the aggregation.
@@ -40,30 +41,19 @@ export class AggregationsComponent {
    * then emits the updated criteria.
    */
   onAggregationChange(criterionChanged: AggregationCriterion): void {
-    const index = this.selectedCriteria.findIndex(
-      criterion => criterion.name === criterionChanged.name
+    const newSelectedCriteria = this.selectedCriteria.filter(
+      criterion => criterion.name !== criterionChanged.name
     );
-    // if it already exists in the criteria
-    if (index !== -1) {
-      // and the new criterion has values
-      if (criterionChanged.values && criterionChanged.values.length) {
-        // replace the old one with the new one
-        this.selectedCriteria[index] = criterionChanged;
-      } else {
-        // else remove it
-        this.selectedCriteria.splice(index, 1);
-      }
-    } else {
-      // if it doesn't already exist, add it if necessary
-      if (criterionChanged.values && criterionChanged.values.length) {
-        this.selectedCriteria.push(criterionChanged);
-      }
-    }
-    this.aggregationsChange.emit(this.selectedCriteria);
+    newSelectedCriteria.push(criterionChanged);
+    this.aggregationsChange.emit(newSelectedCriteria);
   }
 
   onSearchDescendantChange(event: boolean) {
     this.searchDescendants = event;
     this.searchDescendantsChange.emit(event);
+  }
+
+  byAggregationName(index: number, aggregation: Aggregation) {
+    return aggregation.name;
   }
 }

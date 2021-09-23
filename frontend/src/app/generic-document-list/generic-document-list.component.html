@@ -1,6 +1,8 @@
-<div class="mb-4" *ngFor="let document of documents.content">
-  <!-- the following component will not be the same depending on the environment.resourceModule value -->
-  <!-- for example, if the module is `RareModule` it will be a `RareDocumentComponent` -->
-  <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
-  <dd-document [document]="$any(document)"></dd-document>
-</div>
+<ng-container *ngIf="documents$ | async as documents">
+  <div class="mb-4" *ngFor="let document of documents.content">
+    <!-- the following component will not be the same depending on the environment.resourceModule value -->
+    <!-- for example, if the module is `RareModule` it will be a `RareDocumentComponent` -->
+    <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
+    <dd-document [document]="$any(document)"></dd-document>
+  </div>
+</ng-container>

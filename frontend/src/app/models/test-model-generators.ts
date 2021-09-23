@@ -1,35 +1,27 @@
-import { AggregatedPage, Aggregation, Bucket } from './page';
+import { Aggregation, Bucket, Page } from './page';
 import { AggregationCriterion } from './aggregation-criterion';
 import { RareDocumentModel } from '../rare/rare-document.model';
 import { GenericDocumentModel } from '../urgi-common/generic-document.model';
 
-export function toSinglePage<T>(
-  content: Array<T>,
-  aggregations?: Array<Aggregation>
-): AggregatedPage<T> {
+export function toSinglePage<T>(content: Array<T>): Page<T> {
   return {
     content,
     number: 0,
     size: 20,
     totalElements: content.length,
     totalPages: 1,
-    maxResults: 10000,
-    aggregations: aggregations || []
+    maxResults: 10000
   };
 }
 
-export function toSecondPage<T>(
-  content: Array<T>,
-  aggregations?: Array<Aggregation>
-): AggregatedPage<T> {
+export function toSecondPage<T>(content: Array<T>): Page<T> {
   return {
     content,
     number: 1,
     size: 20,
     totalElements: 20 + content.length,
     totalPages: 2,
-    maxResults: 10000,
-    aggregations: aggregations || []
+    maxResults: 10000
   };
 }
 

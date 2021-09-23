@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
   ViewChild
 } from '@angular/core';
@@ -27,7 +28,7 @@ const maxResultsDisplayed = 8;
   styleUrls: ['./large-aggregation.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class LargeAggregationComponent {
+export class LargeAggregationComponent implements OnChanges {
   @Input() selectedKeys: Array<string> = [];
 
   @Input() aggregation!: Aggregation;
@@ -36,6 +37,8 @@ export class LargeAggregationComponent {
 
   @Input() searchDescendants = false;
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
+
+  @Input() disabled = false;
 
   @ViewChild('typeahead') typeahead!: ElementRef<HTMLInputElement>;
 
@@ -71,13 +74,12 @@ export class LargeAggregationComponent {
 
   constructor(private translateService: TranslateService) {}
 
-  emitEvent(): void {
-    // to emit a new event every time a value changes
-    const event: AggregationCriterion = {
-      name: this.aggregation.name,
-      values: this.selectedKeys
-    };
-    this.aggregationChange.emit(event);
+  ngOnChanges() {
+    if (this.disabled) {
+      this.criterion.disable({ emitEvent: false });
+    } else {
+      this.criterion.enable({ emitEvent: false });
+    }
   }
 
   onSearchDescendants(event: boolean) {
@@ -86,12 +88,13 @@ export class LargeAggregationComponent {
   }
 
   removeKey(key: string) {
-    const index = this.selectedKeys.indexOf(key);
-    this.selectedKeys = [
-      ...this.selectedKeys.slice(0, index),
-      ...this.selectedKeys.slice(index + 1)
-    ];
-    this.emitEvent();
+    const newSelectedKeys = this.selectedKeys.filter(k => k !== key);
+    this.selectedKeys = newSelectedKeys;
+
+    this.aggregationChange.emit({
+      name: this.aggregation.name,
+      values: newSelectedKeys
+    });
   }
 
   selectKey(event: NgbTypeaheadSelectItemEvent) {
@@ -100,15 +103,19 @@ export class LargeAggregationComponent {
     if (selected !== 'REFINE') {
       // the item field of the event contains the bucket
       // we push the selected key to our collection of keys
-      this.selectedKeys = [...this.selectedKeys, event.item.key];
+      const newSelectedKeys = [...this.selectedKeys, event.item.key];
+      this.selectedKeys = newSelectedKeys;
       this.criterion.setValue('');
-      this.emitEvent();
+      this.aggregationChange.emit({
+        name: this.aggregation.name,
+        values: newSelectedKeys
+      });
     }
     this.typeahead.nativeElement.focus();
   }
 
   documentCountForKey(key: string) {
-    return this.aggregation.buckets.find(bucket => bucket.key === key)!.documentCount;
+    return this.aggregation.buckets.find(bucket => bucket.key === key)?.documentCount ?? 0;
   }
 
   displayableKey(key: string): string {

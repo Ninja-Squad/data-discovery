@@ -19,11 +19,13 @@ describe('ExportService', () => {
   it('should export', () => {
     let actualResults: Blob;
     service
-      .export({ query: 'Bacteria', entry: 'Germplasm' })
+      .export('Bacteria', [{ name: 'entry', values: ['Germplasm'] }], true)
       .subscribe(blob => (actualResults = blob));
 
     const expectedResults = new Blob();
-    http.expectOne('api/germplasms/export?query=Bacteria&entry=Germplasm').flush(expectedResults);
+    http
+      .expectOne('api/germplasms/export?query=Bacteria&descendants=true&entry=Germplasm')
+      .flush(expectedResults);
     expect(actualResults).toBe(expectedResults);
   });
 });

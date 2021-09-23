@@ -14,6 +14,7 @@
             type="checkbox"
             [id]="aggregation.name + bucket.key"
             [formControlName]="bucket.key"
+            (change)="onChange()"
           />
           <label class="form-check-label" [for]="aggregation.name + bucket.key">
             <dd-document-count

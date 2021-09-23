@@ -2,6 +2,7 @@ package fr.inra.urgi.datadiscovery.search;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
@@ -12,6 +13,7 @@ import fr.inra.urgi.datadiscovery.dao.SortAnalyzer;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.dto.AggregatedPageDTO;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import fr.inra.urgi.datadiscovery.dto.PageDTO;
 import fr.inra.urgi.datadiscovery.exception.BadRequestException;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +58,7 @@ public class SearchController {
      * @see AppAggregation
      */
     @GetMapping("/api/search")
-    public AggregatedPageDTO<? extends SearchDocument> search(@RequestParam(value = "query", defaultValue = "") String query,
+    public PageDTO<? extends SearchDocument> search(@RequestParam(value = "query", defaultValue = "") String query,
                                                               @RequestParam("highlight") Optional<Boolean> highlight,
                                                               @RequestParam("descendants") Optional<Boolean> descendants,
                                                               @RequestParam("page") Optional<Integer> page,
@@ -74,22 +76,27 @@ public class SearchController {
                                PAGE_SIZE,
                                sortAnalyzer.createSort(sort.orElse(null), direction.orElse(null)))
         );
-        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer);
-
+        try {
+            Thread.sleep(new Random().nextInt(600));
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return PageDTO.fromPage(aggregatedPage);
     }
 
     @GetMapping("/api/aggregate")
-    public AggregatedPageDTO<? extends SearchDocument> aggregate(@RequestParam(value = "query", defaultValue = "") String query,
-                                                                 @RequestParam MultiValueMap<String, String> parameters,
-                                                                 @RequestParam("descendants") Optional<Boolean> descendants,
-                                                                 @RequestParam("main") Optional<Boolean> mainAggregationsOnly) {
+    public List<AggregationDTO> aggregate(@RequestParam(value = "query", defaultValue = "") String query,
+                                          @RequestParam MultiValueMap<String, String> parameters,
+                                          @RequestParam("descendants") Optional<Boolean> descendants,
+                                          @RequestParam("main") Optional<Boolean> mainAggregationsOnly) {
 
         AggregationSelection aggregationSelection = mainAggregationsOnly.orElse(false) ? AggregationSelection.MAIN : AggregationSelection.ALL;
         AggregatedPage<? extends SearchDocument> aggregatedPage = documentDao.aggregate(query,
                 createRefinementsFromParameters(parameters),
                 aggregationSelection,
                 descendants.orElse(false));
-        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer);
+        return AggregatedPageDTO.fromPage(aggregatedPage, aggregationAnalyzer).getAggregations();
     }
 
     private SearchRefinements createRefinementsFromParameters(MultiValueMap<String, String> parameters) {

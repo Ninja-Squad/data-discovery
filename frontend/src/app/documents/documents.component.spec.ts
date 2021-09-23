@@ -13,38 +13,51 @@ import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../rare/basket.service';
-import { of } from 'rxjs';
+import { of, ReplaySubject } from 'rxjs';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
+import { SearchStateService } from '../search-state.service';
+import { Page } from '../models/page';
 
-describe('DocumentsComponent', () => {
-  class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
-    constructor() {
-      super(DocumentsComponent);
-    }
-
-    get results() {
-      return this.debugElement.queryAll(By.directive(RareDocumentComponent));
-    }
-
-    get noResults() {
-      return this.element('#no-results');
-    }
-
-    get resume() {
-      return this.element('#resume');
-    }
+class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
+  constructor() {
+    super(DocumentsComponent);
   }
 
-  const basketService = jasmine.createSpyObj<BasketService>('BasketService', [
-    'isEnabled',
-    'isAccessionInBasket'
-  ]);
-  basketService.isEnabled.and.returnValue(true);
-  basketService.isAccessionInBasket.and.returnValue(of(false));
+  get results() {
+    return this.debugElement.queryAll(By.directive(RareDocumentComponent));
+  }
+
+  get noResults() {
+    return this.element('#no-results');
+  }
+
+  get resume() {
+    return this.element('#resume');
+  }
+}
+
+describe('DocumentsComponent', () => {
+  let basketService: jasmine.SpyObj<BasketService>;
+  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let documentsSubject: ReplaySubject<Page<DocumentModel>>;
+  let tester: DocumentsComponentTester;
 
   beforeEach(() => {
+    basketService = jasmine.createSpyObj<BasketService>('BasketService', [
+      'isEnabled',
+      'isAccessionInBasket'
+    ]);
+    basketService.isEnabled.and.returnValue(true);
+    basketService.isAccessionInBasket.and.returnValue(of(false));
+
+    documentsSubject = new ReplaySubject<Page<DocumentModel>>(1);
+    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
+      'getDocuments'
+    ]);
+    searchStateService.getDocuments.and.returnValue(documentsSubject);
+
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
@@ -57,17 +70,16 @@ describe('DocumentsComponent', () => {
       ],
       providers: [
         { provide: LOCALE_ID, useValue: 'fr-FR' },
-        { provide: BasketService, useValue: basketService }
+        { provide: BasketService, useValue: basketService },
+        { provide: SearchStateService, useValue: searchStateService }
       ]
     });
+
+    tester = new DocumentsComponentTester();
   });
 
   it('should display no results if empty', () => {
-    const tester = new DocumentsComponentTester();
-    const component = tester.componentInstance;
-
-    // given no results
-    component.documents = toSinglePage([]);
+    documentsSubject.next(toSinglePage([]));
     tester.detectChanges();
 
     // then it should display a message
@@ -77,13 +89,10 @@ describe('DocumentsComponent', () => {
   });
 
   it('should display results if there are some', () => {
-    const tester = new DocumentsComponentTester();
-    const component = tester.componentInstance;
-
     // given two results
     const bacteria1 = toRareDocument('Bacteria1');
     const bacteria2 = toRareDocument('Bacteria2');
-    component.documents = toSinglePage([bacteria1, bacteria2]);
+    documentsSubject.next(toSinglePage([bacteria1, bacteria2]));
     tester.detectChanges();
 
     // then it should display each result
@@ -100,21 +109,20 @@ describe('DocumentsComponent', () => {
   });
 
   it('should display limited results in resume, and format numbers in French', () => {
-    const tester = new DocumentsComponentTester();
-    const component = tester.componentInstance;
-
     // given results
     const content: Array<DocumentModel> = [];
     for (let i = 0; i < 20; i++) {
       content.push(toRareDocument(`Bacteria ${i}`));
     }
 
-    // in page 200 on a limited number of pages
-    component.documents = toSinglePage(content);
-    component.documents.totalElements = 12000;
-    component.documents.totalPages = 500;
-    component.documents.number = 200;
-
+    documentsSubject.next({
+      content,
+      totalElements: 12000,
+      totalPages: 500,
+      number: 200,
+      size: 20,
+      maxResults: 10000
+    });
     tester.detectChanges();
 
     // then it should display each result
