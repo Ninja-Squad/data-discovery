@@ -9,7 +9,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ActivatedRoute } from '@angular/router';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
-import { of } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   template: '<dd-germplasm-results [documents]="documents"></dd-germplasm-results>'
@@ -33,6 +33,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 
   get download() {
     return this.button('#download-button');
+  }
+
+  get downloadSpinner() {
+    return this.download.element('.fa-spinner');
   }
 }
 
@@ -101,10 +105,21 @@ describe('GermplasmResultsComponent', () => {
 
   it('should download results', () => {
     const blob = new Blob();
-    exportService.export.and.returnValue(of(blob));
+    const blobSubject = new Subject<Blob>();
+    exportService.export.and.returnValue(blobSubject);
+
+    expect(tester.downloadSpinner).toBeNull();
 
     tester.download.click();
+
+    expect(tester.downloadSpinner).not.toBeNull();
     expect(exportService.export).toHaveBeenCalledWith({ query: 'Bacteria', entry: 'Germplasm' });
+
+    blobSubject.next(blob);
+    blobSubject.complete();
+    tester.detectChanges();
+
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
+    expect(tester.downloadSpinner).toBeNull();
   });
 });

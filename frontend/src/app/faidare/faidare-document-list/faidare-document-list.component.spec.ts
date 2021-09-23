@@ -16,6 +16,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 @Component({
   template:
@@ -66,7 +67,12 @@ describe('FaidareDocumentListComponent', () => {
         TruncatableDescriptionComponent,
         GermplasmResultsComponent
       ],
-      imports: [RouterTestingModule, DataDiscoveryNgbTestingModule, I18nTestingModule]
+      imports: [
+        RouterTestingModule,
+        DataDiscoveryNgbTestingModule,
+        I18nTestingModule,
+        HttpClientTestingModule
+      ]
     });
     tester = new TestComponentTester();
     tester.detectChanges();
