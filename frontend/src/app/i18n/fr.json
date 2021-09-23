@@ -237,6 +237,7 @@
     },
     "ontology-default-language": "FR",
     "germplasm-results": {
+      "download": "Exporter au format CSV",
       "name": "Nom du germplasm",
       "accession": "N° d'accession",
       "species": "Espèces",
