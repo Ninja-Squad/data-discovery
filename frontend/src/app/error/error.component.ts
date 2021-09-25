@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
-import { merge, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, merge, Observable } from 'rxjs';
 
 /**
  * Component which displays the errors emitted by the error-interceptor service, until the user navigates elsewhere

@@ -9,8 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { merge, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
 

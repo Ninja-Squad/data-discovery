@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
-import { distinctUntilChanged } from 'rxjs/operators';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RareDocumentModel } from './rare-document.model';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { rareBasket } from '../../environments/rare-no-basket';
 
