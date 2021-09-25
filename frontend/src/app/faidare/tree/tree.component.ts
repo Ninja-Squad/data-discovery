@@ -14,8 +14,16 @@ import {
   TreeNode,
   TreeService
 } from './tree.service';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
-import { distinctUntilChanged, map, skip, switchMap, tap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  map,
+  merge,
+  Observable,
+  skip,
+  switchMap,
+  tap
+} from 'rxjs';
 
 interface BaseAction {
   type: 'FILTER' | 'CHANGE_TEXT';

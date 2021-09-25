@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, of, ReplaySubject } from 'rxjs';
+import { filter, map, Observable, of, ReplaySubject } from 'rxjs';
 import { ComponentTester, fakeRoute } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
@@ -31,7 +31,6 @@ import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendant
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
 import { Model, SearchStateService } from '../search-state.service';
-import { filter, map } from 'rxjs/operators';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';

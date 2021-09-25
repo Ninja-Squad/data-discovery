@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -7,7 +7,6 @@ import {
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
 
 export interface HttpError {
   status: number | null;

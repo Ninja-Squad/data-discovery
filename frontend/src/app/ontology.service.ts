@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TreeNode } from './faidare/tree/tree.service';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, Observable, shareReplay } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 export type OntologyNodeType = 'ONTOLOGY' | 'TRAIT_CLASS' | 'TRAIT' | 'VARIABLE';

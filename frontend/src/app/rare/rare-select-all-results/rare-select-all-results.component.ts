@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@a
 import { Page } from '../../models/page';
 import { RareDocumentModel } from '../rare-document.model';
 import { BasketService } from '../basket.service';
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, map } from 'rxjs';
 
 @Component({
   selector: 'dd-select-all-results',

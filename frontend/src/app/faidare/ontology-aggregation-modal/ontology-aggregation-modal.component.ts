@@ -1,8 +1,17 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
-import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
-import { combineLatest, defer, EMPTY, Observable, Subject } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  defer,
+  EMPTY,
+  map,
+  Observable,
+  startWith,
+  Subject,
+  switchMap
+} from 'rxjs';
 import { NodeInformation, TextAccessor, TreeNode } from '../tree/tree.service';
 import {
   ONTOLOGY_LANGUAGES,

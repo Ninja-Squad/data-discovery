@@ -3,8 +3,7 @@ import { Title } from '@angular/platform-browser';
 
 import { environment } from '../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
-import { catchError, mapTo } from 'rxjs/operators';
+import { catchError, mapTo, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'dd-root',

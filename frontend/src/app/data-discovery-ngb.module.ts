@@ -3,10 +3,10 @@ import {
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
+  NgbNavModule,
   NgbPaginationModule,
   NgbTooltipModule,
-  NgbTypeaheadModule,
-  NgbNavModule
+  NgbTypeaheadModule
 } from '@ng-bootstrap/ng-bootstrap';
 
 const NGB_MODULES = [

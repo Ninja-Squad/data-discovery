@@ -4,8 +4,7 @@ import { FaidareDocumentModel } from '../faidare-document.model';
 import { environment } from '../../../environments/environment';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
-import { BehaviorSubject, combineLatest, finalize, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, finalize, map, Observable } from 'rxjs';
 import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
 
 interface ViewModel {

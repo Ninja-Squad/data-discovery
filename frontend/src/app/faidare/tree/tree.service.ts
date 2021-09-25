@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 export type NodeSelectionState = 'CHECKED' | 'UNCHECKED' | 'INDETERMINATE';
 
