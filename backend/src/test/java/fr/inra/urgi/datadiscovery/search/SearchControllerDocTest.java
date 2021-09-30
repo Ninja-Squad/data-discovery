@@ -152,8 +152,7 @@ class SearchControllerDocTest {
                                    fieldWithPath("maxResults").description("The limit in terms of number of documents that you can navigate to. For example, if the page size is 20, and the total number of elements is 11000, you won't be able to navigate to the last 1000 elements"),
                                    fieldWithPath("totalPages").description("The total number of pages of documents that you can navigate to"),
                                    fieldWithPath("content").description("The array of documents contained in the requested page"),
-                                   subsectionWithPath("content[]").ignored(),
-                                   fieldWithPath("aggregations").description("see the following section about aggregations"))));
+                                   subsectionWithPath("content[]").ignored())));
     }
 
     @Test
@@ -221,22 +220,14 @@ class SearchControllerDocTest {
                .andDo(document("search/aggregate",
                                requestParameters(QUERY_PARAM, MAIN_PARAM),
                                responseFields(
-                                   fieldWithPath("number").ignored(),
-                                   fieldWithPath("size").ignored(),
-                                   fieldWithPath("totalElements").ignored(),
-                                   fieldWithPath("maxResults").ignored(),
-                                   fieldWithPath("totalPages").ignored(),
-                                   fieldWithPath("content").ignored(),
-                                   subsectionWithPath("content[]").ignored(),
-                                   fieldWithPath("aggregations").description("The array of computed aggregations"),
-                                   fieldWithPath("aggregations[].name").description("The name of the aggregation, used as a request parameter to apply a filter for this aggregation (see later)"),
-                                   fieldWithPath("aggregations[].type")
+                                   fieldWithPath("[].name").description("The name of the aggregation, used as a request parameter to apply a filter for this aggregation (see later)"),
+                                   fieldWithPath("[].type")
                                        .type(Stream.of(RareAggregation.Type.values()).map(type -> "\"" + type.name() + "\"").collect(
                                            Collectors.joining(" or ")))
                                        .description("The type of the aggregation, used to decide if it should be displayed using checkboxes or using a typeahead input field"),
-                                   fieldWithPath("aggregations[].buckets").description("The buckets for this aggregation. A bucket exists for each distinct value of the property"),
-                                   fieldWithPath("aggregations[].buckets[].key").description("One of the distinct values of the property"),
-                                   fieldWithPath("aggregations[].buckets[].documentCount").description("The number of documents matched by the full-text search which fall into the bucket, i.e. have this distinct value for the property"))));
+                                   fieldWithPath("[].buckets").description("The buckets for this aggregation. A bucket exists for each distinct value of the property"),
+                                   fieldWithPath("[].buckets[].key").description("One of the distinct values of the property"),
+                                   fieldWithPath("[].buckets[].documentCount").description("The number of documents matched by the full-text search which fall into the bucket, i.e. have this distinct value for the property"))));
     }
 
     @Test
