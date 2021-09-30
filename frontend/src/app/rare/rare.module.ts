@@ -30,6 +30,7 @@ export const LOCATION = new InjectionToken<Location>('Location');
   ],
   providers: [{ provide: LOCATION, useValue: window.location }],
   exports: [
+    UrgiCommonModule,
     RareDocumentComponent,
     RareHeaderComponent,
     RareBasketComponent,

@@ -6,6 +6,7 @@ import { I18nModule } from '../i18n/i18n.module';
 import { GenericSelectAllResultsComponent } from './generic-select-all-results/generic-select-all-results.component';
 import { GenericOntologyAggregationComponent } from './generic-ontology-aggregation/generic-ontology-aggregation.component';
 import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
+import { GenericFooterComponent } from './generic-footer/generic-footer.component';
 
 @NgModule({
   imports: [CommonModule, I18nModule],
@@ -14,7 +15,8 @@ import { GenericDocumentListComponent } from '../generic-document-list/generic-d
     GenericDocumentComponent,
     GenericSelectAllResultsComponent,
     GenericOntologyAggregationComponent,
-    GenericDocumentListComponent
+    GenericDocumentListComponent,
+    GenericFooterComponent
   ],
   exports: [
     TruncatableDescriptionComponent,
@@ -22,6 +24,7 @@ import { GenericDocumentListComponent } from '../generic-document-list/generic-d
     GenericSelectAllResultsComponent,
     GenericDocumentListComponent,
     GenericOntologyAggregationComponent,
+    GenericFooterComponent,
     CommonModule
   ]
 })
