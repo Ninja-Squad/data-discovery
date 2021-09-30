@@ -11,7 +11,7 @@ import {
 } from 'rxjs';
 
 import { DocumentModel } from './models/document.model';
-import { AggregatedPage, Aggregation, Page } from './models/page';
+import { Aggregation, Page } from './models/page';
 import { AggregationCriterion } from './models/aggregation-criterion';
 import { SortCriterion } from './search-state.service';
 
@@ -115,10 +115,8 @@ export class SearchService {
   }
 
   getMainAggregations(): Observable<Array<Aggregation>> {
-    return this.http
-      .get<AggregatedPage<DocumentModel>>('api/aggregate', {
-        params: { main: true }
-      })
-      .pipe(map(aggregatedPage => aggregatedPage.aggregations));
+    return this.http.get<Array<Aggregation>>('api/aggregate', {
+      params: { main: true }
+    });
   }
 }
