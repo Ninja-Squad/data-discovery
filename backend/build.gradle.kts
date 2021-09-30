@@ -52,6 +52,21 @@ tasks {
         destinationDir = file("$buildDir/buildInfo")
     }
 
+    processResources {
+        inputs.property("app", project.app)
+
+        filesMatching("application.yml") {
+            filter {
+                if (it.trim().startsWith("active:")) {
+                    it.replace("rare", project.app)
+                }
+                else {
+                    it
+                }
+            }
+        }
+    }
+
     val bootJar by getting(BootJar::class) {
         archiveFileName.set("${project.app}.jar")
         dependsOn(":frontend:assemble")

@@ -23,6 +23,12 @@ spring:
   codec:
     max-in-memory-size: 5MB
 
+  profiles:
+    # This default active profile is replaced at gradle build time by the app passed using -Papp=wheatis for example
+    # Leave this line exactly as it is
+    # During development (i.e. in the ID, it can be superseded by setting the property directly
+    active: rare-app
+
 management:
   endpoint:
     health:
