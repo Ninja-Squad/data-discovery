@@ -2,7 +2,6 @@ package fr.inra.urgi.datadiscovery.search;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
@@ -76,12 +75,6 @@ public class SearchController {
                                PAGE_SIZE,
                                sortAnalyzer.createSort(sort.orElse(null), direction.orElse(null)))
         );
-        try {
-            Thread.sleep(new Random().nextInt(600));
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return PageDTO.fromPage(aggregatedPage);
     }
 
