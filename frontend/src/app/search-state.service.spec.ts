@@ -406,7 +406,6 @@ describe('SearchStateService', () => {
       const documents = toSecondPage([toRareDocument('Test2')]);
 
       const documentsSubject = new Subject<Page<DocumentModel>>();
-      const aggregationsSubject = new Subject<Array<Aggregation>>();
       searchService.search.and.returnValue(documentsSubject);
 
       service.sort({ sort: 'accession', direction: 'asc' });
