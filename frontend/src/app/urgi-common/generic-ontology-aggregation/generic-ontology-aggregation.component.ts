@@ -13,6 +13,7 @@ import { AggregationCriterion } from '../../models/aggregation-criterion';
 })
 export class GenericOntologyAggregationComponent {
   @Input() aggregation!: Aggregation;
-  @Input() selectedKeys: Array<string> = [];
   @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  @Input() selectedKeys: Array<string> = [];
+  @Input() disabled = false;
 }

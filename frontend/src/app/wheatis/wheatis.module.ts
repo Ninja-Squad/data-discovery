@@ -8,6 +8,11 @@ import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-
 @NgModule({
   imports: [UrgiCommonModule],
   declarations: [WheatisHeaderComponent],
-  exports: [GenericDocumentComponent, GenericSelectAllResultsComponent, WheatisHeaderComponent]
+  exports: [
+    GenericDocumentComponent,
+    GenericSelectAllResultsComponent,
+    WheatisHeaderComponent,
+    UrgiCommonModule
+  ]
 })
 export class WheatisModule {}
