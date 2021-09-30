@@ -147,7 +147,7 @@ export class SearchStateService {
   }
 
   newSearch(query: string) {
-    this.applyTransition(criteria => ({
+    this.applyTransition(() => ({
       query,
       aggregationCriteria: [],
       page: 1,
@@ -200,7 +200,8 @@ export class SearchStateService {
     criteria: SearchCriteria
   ): Observable<{ loading: boolean; documents: Page<DocumentModel> | null }> {
     const loaded$ = new Subject<void>();
-    const loading$ = of({ loading: true, documents: null }).pipe(delay(500), takeUntil(loaded$));
+    // for now, we want a short delay here so that the loader is always displayed when a search is done
+    const loading$ = of({ loading: true, documents: null }).pipe(delay(10), takeUntil(loaded$));
     const search$ = this.searchService.search(criteria).pipe(
       tap(() => loaded$.next()),
       map(aggregatedPage => ({ loading: false, documents: aggregatedPage })),
@@ -214,6 +215,8 @@ export class SearchStateService {
     criteria: SearchCriteria
   ): Observable<{ loading: boolean; aggregations: Array<Aggregation> }> {
     const loaded$ = new Subject<void>();
+    // for now, we want a relatively long delay here so that the loader is only displayed when it really takes time:
+    // a long delay avoids a flickering effect, and also avoids losing the focus
     const loading$ = of({ loading: true, aggregations: [] }).pipe(delay(500), takeUntil(loaded$));
     const aggregations$ = this.searchService.aggregate(criteria).pipe(
       tap(() => loaded$.next()),
