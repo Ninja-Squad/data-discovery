@@ -34,7 +34,7 @@
     <div [ngbNavOutlet]="nav" class="mt-2"></div>
   </div>
   <ng-template #allResults>
-    <ng-container *ngIf="vm.activeTab === 'all' && vm.documents">
+    <ng-container *ngIf="vm.documents">
       <div class="mb-4" *ngFor="let document of vm.documents.content">
         <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
         <dd-document [document]="$any(document)"></dd-document>

@@ -113,8 +113,7 @@ export class SearchStateService {
         aggregationsLoading: aggregations.loading,
         aggregations: aggregations.aggregations,
         disabledAggregationName
-      })),
-      shareReplay(1)
+      }))
     );
 
     const navigation$ = this.criteria$.pipe(
@@ -126,10 +125,12 @@ export class SearchStateService {
           fragment: newCriteria.fragment ?? undefined
         });
       }),
+      // we will merge this observable with the model$ one so that, when subscribing to the model, we also trigger the navigation changes
+      // but we don't want the events emitted by this observable to actually be emitted by the merged observable, so we ignore its elements
       ignoreElements()
     );
 
-    return merge(this.model$, navigation$);
+    return merge(this.model$, navigation$).pipe(shareReplay(1));
   }
 
   getModel(): Observable<Model> {
