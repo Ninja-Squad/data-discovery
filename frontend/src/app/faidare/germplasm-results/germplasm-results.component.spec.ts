@@ -25,12 +25,20 @@ class GermplasmResultsComponentTester extends ComponentTester<GermplasmResultsCo
     return this.elements<HTMLAnchorElement>('tbody tr a');
   }
 
-  get download() {
-    return this.button('#download-button');
+  get downloadMcpd() {
+    return this.button('#download-mcpd-button');
   }
 
-  get downloadSpinner() {
-    return this.download.element('.fa-spinner');
+  get downloadPlantMaterial() {
+    return this.button('#download-plant-material-button');
+  }
+
+  get downloadMcpdSpinner() {
+    return this.downloadMcpd.element('.fa-spinner');
+  }
+
+  get downloadPlantMaterialSpinner() {
+    return this.downloadPlantMaterial.element('.fa-spinner');
   }
 
   get headers() {
@@ -128,20 +136,39 @@ describe('GermplasmResultsComponent', () => {
     expect(tester.rows[0]).toContainText('Acc1');
   });
 
-  it('should download results', () => {
+  it('should download MCPD results', () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
     exportService.export.and.returnValue(blobSubject);
 
-    expect(tester.downloadSpinner).toBeNull();
+    expect(tester.downloadMcpdSpinner).toBeNull();
 
-    tester.download.click();
+    tester.downloadMcpd.click();
 
-    expect(tester.downloadSpinner).not.toBeNull();
+    expect(tester.downloadMcpdSpinner).not.toBeNull();
+    expect(exportService.export).toHaveBeenCalledWith(initialModel.searchCriteria, 'mcpd');
+
+    blobSubject.next(blob);
+    blobSubject.complete();
+    tester.detectChanges();
+
+    expect(downloadService.download).toHaveBeenCalledWith(blob, 'mcpd.csv');
+    expect(tester.downloadMcpdSpinner).toBeNull();
+  });
+
+  it('should download plant material results', () => {
+    const blob = new Blob();
+    const blobSubject = new Subject<Blob>();
+    exportService.export.and.returnValue(blobSubject);
+
+    expect(tester.downloadPlantMaterialSpinner).toBeNull();
+
+    tester.downloadPlantMaterial.click();
+
+    expect(tester.downloadPlantMaterialSpinner).not.toBeNull();
     expect(exportService.export).toHaveBeenCalledWith(
-      'test',
-      [{ name: 'entry', values: ['Germplasm'] }],
-      true
+      initialModel.searchCriteria,
+      'plant-material'
     );
 
     blobSubject.next(blob);
@@ -149,7 +176,7 @@ describe('GermplasmResultsComponent', () => {
     tester.detectChanges();
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
-    expect(tester.downloadSpinner).toBeNull();
+    expect(tester.downloadPlantMaterialSpinner).toBeNull();
   });
 
   it('should sort', () => {

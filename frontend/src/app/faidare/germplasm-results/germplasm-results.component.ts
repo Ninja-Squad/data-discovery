@@ -9,13 +9,12 @@ import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-
 
 interface ViewModel {
   documents: Page<FaidareDocumentModel> | null;
-  downloading: boolean;
+  downloading: null | 'mcpd' | 'plant-material';
   sortCriterion: SortCriterion | null;
   searchCriteria: SearchCriteria;
 }
 
 export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-status' | 'country';
-export type Direction = 'asc' | 'desc';
 
 @Component({
   selector: 'dd-germplasm-results',
@@ -25,7 +24,7 @@ export type Direction = 'asc' | 'desc';
 })
 export class GermplasmResultsComponent {
   vm$: Observable<ViewModel>;
-  private downloadingSubject = new BehaviorSubject(false);
+  private downloadingSubject = new BehaviorSubject<null | 'mcpd' | 'plant-material'>(null);
 
   constructor(
     private exportService: ExportService,
@@ -46,12 +45,12 @@ export class GermplasmResultsComponent {
     return `${environment.faidare!.germplasmBaseUrl}/${document.identifier}`;
   }
 
-  export(searchCriteria: SearchCriteria) {
-    this.downloadingSubject.next(true);
+  export(searchCriteria: SearchCriteria, exportType: 'mcpd' | 'plant-material') {
+    this.downloadingSubject.next(exportType);
     this.exportService
-      .export(searchCriteria.query, searchCriteria.aggregationCriteria, searchCriteria.descendants)
-      .pipe(finalize(() => this.downloadingSubject.next(false)))
-      .subscribe(blob => this.downloadService.download(blob, 'plant-material.csv'));
+      .export(searchCriteria, exportType)
+      .pipe(finalize(() => this.downloadingSubject.next(null)))
+      .subscribe(blob => this.downloadService.download(blob, `${exportType}.csv`));
   }
 
   sort(sortCriterion: SortCriterion) {

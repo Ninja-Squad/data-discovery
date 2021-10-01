@@ -48,7 +48,36 @@ class FaidareApiServiceTest {
     }
 
     @Test
-    void shouldExportGermplasms() throws InterruptedException, JSONException {
+    void shouldExportMcpds() throws InterruptedException, JSONException {
+        String expectedCsv = createLargeCsv();
+        server.enqueue(
+            new MockResponse()
+                .addHeader("Content-Type", MediaType.parseMediaType("text/csv"))
+                .setBody(expectedCsv)
+        );
+        GermplasmMcpdExportCommand command = new GermplasmMcpdExportCommand(
+            new HashSet<>(Arrays.asList("a", "b")),
+            Collections.emptyList()
+        );
+        Flux<DataBuffer> result = faidareApiService.exportMcpd(command);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataBufferUtils.write(result, baos).blockLast();
+        String actualBody = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+        assertThat(actualBody).isEqualTo(expectedCsv);
+
+        RecordedRequest request = server.takeRequest();
+        //language=JSON
+        String expectedJson = "{\n" +
+            "  \"ids\":" +
+            " [\"a\", \"b\"],\n" +
+            "  \"fields\": []\n" +
+            "}";
+        JSONAssert.assertEquals(expectedJson, request.getBody().readUtf8(), false);
+    }
+
+    @Test
+    void shouldExportPlantMaterial() throws InterruptedException, JSONException {
         String expectedCsv = createLargeCsv();
         server.enqueue(
             new MockResponse()
@@ -59,7 +88,7 @@ class FaidareApiServiceTest {
             new HashSet<>(Arrays.asList("a", "b")),
             Collections.emptyList()
         );
-        Flux<DataBuffer> result = faidareApiService.export(command);
+        Flux<DataBuffer> result = faidareApiService.exportPlantMaterial(command);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataBufferUtils.write(result, baos).blockLast();
         String actualBody = new String(baos.toByteArray(), StandardCharsets.UTF_8);

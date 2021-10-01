@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +10,22 @@ export class ExportService {
   constructor(private http: HttpClient) {}
 
   export(
-    query: string,
-    aggregationCriteria: Array<AggregationCriterion>,
-    descendants: boolean
+    criteria: {
+      query: string;
+      aggregationCriteria: Array<AggregationCriterion>;
+      descendants: boolean;
+    },
+    exportType: 'mcpd' | 'plant-material'
   ): Observable<Blob> {
     const params: { [key: string]: string | number | Array<string> | boolean } = {
-      query: query ?? '',
-      descendants
+      query: criteria.query ?? '',
+      descendants: criteria.descendants
     };
 
-    aggregationCriteria.forEach(criterion => (params[criterion.name] = criterion.values));
-    return this.http.get('api/germplasms/export', { params, responseType: 'blob' });
+    criteria.aggregationCriteria.forEach(criterion => (params[criterion.name] = criterion.values));
+    return this.http.get(`api/germplasms/exports/${exportType}`, {
+      params,
+      responseType: 'blob'
+    });
   }
 }
