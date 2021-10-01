@@ -21,8 +21,17 @@ def to_string:
     end
 ;
 
+def add_group_id:
+        if has("groupId") then
+            .|= . + { "groupId" : (.groupId | tonumber) }
+        else
+            .|= . + { "groupId" : 0 }
+        end
+;
+
 def to_bulk($identifier):
     .[] |
+        add_group_id |
         if has($identifier) then
             . |= { "index": { "_id": ( .[$identifier] | to_string)}}, . # add a bulk header with value of field 'identifier' to the object
         elif ((.name?|to_string) + "#" + (.identifier?|to_string) + "#" + .entryType? + "#" + .databaseName? + "#" + (.url?|to_string) + "#" + (.species?|to_string) != "#####") then
@@ -36,8 +45,10 @@ if (type != "array") then
     "[ERROR]: the input is expected to be an array in order to produce JSON lines bulk file.\n" | halt_error(2)
 else
     to_bulk($ENV.ID_FIELD) |
-    if ($ENV.APP_NAME != "rare") then
+    if (($ENV.APP_NAME != "rare") and ($ENV.APP_NAME != "brc4env")) then
         del (.identifier) # remove identifier field for some documents having it
+    elif (($ENV.APP_NAME == "rare") or ($ENV.APP_NAME == "brc4env")) then
+        del (.groupId) # remove groupId field for some documents having it
     else
         .
     end
