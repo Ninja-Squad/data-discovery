@@ -17,6 +17,7 @@ import fr.inra.urgi.datadiscovery.dao.faidare.FaidareAggregation;
 import fr.inra.urgi.datadiscovery.dao.faidare.FaidareDocumentDao;
 import fr.inra.urgi.datadiscovery.germplasm.api.FaidareApiService;
 import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmExportCommand;
+import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmMcpdExportCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,20 +57,53 @@ class ExportControllerTest {
 
     @Test
     void shouldThrowIfNoEntryTypeAggregation() throws Exception {
-        mockMvc.perform(get("/api/germplasms/export"))
+        mockMvc.perform(get("/api/germplasms/exports/mcpd"))
                .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldThrowIfEntryTypeAggregationWithMoreThanGermplasm() throws Exception {
-        mockMvc.perform(get("/api/germplasms/export")
+        mockMvc.perform(get("/api/germplasms/exports/mcpd")
                             .param(FaidareAggregation.ENTRY_TYPE.getName(), "foo")
                             .param(FaidareAggregation.ENTRY_TYPE.getName(), "Germplasm"))
                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void shouldExportGermplasms() throws Exception {
+    void shouldExportMcpds() throws Exception {
+        HashSet<String> expectedIds = new HashSet<>(Arrays.asList("a", "b"));
+        GermplasmMcpdExportCommand expectedCommand = new GermplasmMcpdExportCommand(expectedIds, Collections.emptyList());
+        when(mockFaidareDocumentDao.findAllIds("something",
+                                               false,
+                                               SearchRefinements.builder()
+                                                                .withTerm(FaidareAggregation.COUNTRY_OF_ORIGIN, Collections.singletonList("France"))
+                                                                .withTerm(FaidareAggregation.ENTRY_TYPE, Collections.singletonList("Germplasm"))
+                                                                .build())
+        ).thenReturn(expectedIds);
+
+        DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
+        when(mockFaidareApiService.exportMcpd(expectedCommand)).thenReturn(
+            Flux.fromArray(new DataBuffer[] {
+                dataBufferFactory.wrap("A;B;C\n".getBytes(StandardCharsets.UTF_8)),
+                dataBufferFactory.wrap("a1;b1;c1\n".getBytes(StandardCharsets.UTF_8)),
+                dataBufferFactory.wrap("a2;b2;c2\n".getBytes(StandardCharsets.UTF_8))
+            })
+        );
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/germplasms/exports/mcpd")
+                                                  .param("query", "something")
+                                                  .param(FaidareAggregation.COUNTRY_OF_ORIGIN.getName(), "France")
+                                                  .param(FaidareAggregation.ENTRY_TYPE.getName(), "Germplasm"))
+                                     .andExpect(request().asyncStarted())
+                                     .andReturn();
+        mockMvc.perform(asyncDispatch(mvcResult))
+               .andExpect(status().isOk())
+               .andExpect(content().contentType("text/csv"))
+               .andExpect(content().string("A;B;C\na1;b1;c1\na2;b2;c2\n"));
+    }
+
+    @Test
+    void shouldExportPlantMaterial() throws Exception {
         HashSet<String> expectedIds = new HashSet<>(Arrays.asList("a", "b"));
         GermplasmExportCommand expectedCommand = new GermplasmExportCommand(expectedIds, Collections.emptyList());
         when(mockFaidareDocumentDao.findAllIds("something",
@@ -81,7 +115,7 @@ class ExportControllerTest {
         ).thenReturn(expectedIds);
 
         DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
-        when(mockFaidareApiService.export(expectedCommand)).thenReturn(
+        when(mockFaidareApiService.exportPlantMaterial(expectedCommand)).thenReturn(
             Flux.fromArray(new DataBuffer[] {
                 dataBufferFactory.wrap("A;B;C\n".getBytes(StandardCharsets.UTF_8)),
                 dataBufferFactory.wrap("a1;b1;c1\n".getBytes(StandardCharsets.UTF_8)),
@@ -89,7 +123,7 @@ class ExportControllerTest {
             })
         );
 
-        MvcResult mvcResult = mockMvc.perform(get("/api/germplasms/export")
+        MvcResult mvcResult = mockMvc.perform(get("/api/germplasms/exports/plant-material")
                                                   .param("query", "something")
                                                   .param(FaidareAggregation.COUNTRY_OF_ORIGIN.getName(), "France")
                                                   .param(FaidareAggregation.ENTRY_TYPE.getName(), "Germplasm"))

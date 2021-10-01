@@ -1,17 +1,38 @@
 <ng-container *ngIf="vm$ | async as vm">
   <ng-container *ngIf="vm.documents">
-    <div class="my-3">
-      <button
-        type="button"
-        class="btn btn-outline-primary"
-        (click)="export(vm.searchCriteria)"
-        id="download-button"
-        [disabled]="vm.downloading"
-      >
-        <span class="fa fa-download fa-fw mr-1" *ngIf="!vm.downloading"></span>
-        <span class="fa fa-spinner fa-spin fa-fw mr-1" *ngIf="vm.downloading"></span>
-        <span translate="faidare.germplasm-results.download"></span>
-      </button>
+    <div class="row my-3">
+      <div class="col-md-6 mb-2 mb-md-0 text-center">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="export(vm.searchCriteria, 'mcpd')"
+          id="download-mcpd-button"
+          [disabled]="!!vm.downloading"
+        >
+          <span class="fa fa-download fa-fw mr-1" *ngIf="vm.downloading !== 'mcpd'"></span>
+          <span class="fa fa-spinner fa-spin fa-fw mr-1" *ngIf="vm.downloading === 'mcpd'"></span>
+          <span translate="faidare.germplasm-results.download-mcpd"></span>
+        </button>
+      </div>
+      <div class="col-md-6 text-center">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="export(vm.searchCriteria, 'plant-material')"
+          id="download-plant-material-button"
+          [disabled]="!!vm.downloading"
+        >
+          <span
+            class="fa fa-download fa-fw mr-1"
+            *ngIf="vm.downloading !== 'plant-material'"
+          ></span>
+          <span
+            class="fa fa-spinner fa-spin fa-fw mr-1"
+            *ngIf="vm.downloading === 'plant-material'"
+          ></span>
+          <span translate="faidare.germplasm-results.download-plant-material"></span>
+        </button>
+      </div>
     </div>
 
     <table class="table table-sm table-striped table-responsive-lg">

@@ -23,9 +23,18 @@ public class FaidareApiService {
         this.webClient = webClient;
     }
 
-    public Flux<DataBuffer> export(GermplasmExportCommand command) {
+    public Flux<DataBuffer> exportMcpd(GermplasmMcpdExportCommand command) {
         return webClient.post()
-                        .uri("/germplasms/exports")
+                        .uri("/germplasms/exports/mcpd")
+                        .bodyValue(command)
+                        .accept(MediaType.parseMediaType("text/csv"))
+                        .retrieve()
+                        .bodyToFlux(DataBuffer.class);
+    }
+
+    public Flux<DataBuffer> exportPlantMaterial(GermplasmExportCommand command) {
+        return webClient.post()
+                        .uri("/germplasms/exports/plant-material")
                         .bodyValue(command)
                         .accept(MediaType.parseMediaType("text/csv"))
                         .retrieve()

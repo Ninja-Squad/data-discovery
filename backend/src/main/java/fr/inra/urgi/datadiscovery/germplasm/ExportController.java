@@ -15,6 +15,7 @@ import fr.inra.urgi.datadiscovery.dao.faidare.FaidareDocumentDao;
 import fr.inra.urgi.datadiscovery.exception.BadRequestException;
 import fr.inra.urgi.datadiscovery.germplasm.api.FaidareApiService;
 import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmExportCommand;
+import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmMcpdExportCommand;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -62,24 +63,54 @@ public class ExportController {
      *
      * @see AppAggregation
      */
-    @GetMapping("/export")
-    public ResponseEntity<StreamingResponseBody> exportGermplasm(
+    @GetMapping("/exports/mcpd")
+    public ResponseEntity<StreamingResponseBody> exportGermplasmMcpds(
             @RequestParam(value = "query", defaultValue = "") String query,
             @RequestParam("descendants") Optional<Boolean> descendants,
             @RequestParam MultiValueMap<String, String> parameters) {
+        Set<String> germplasmIds = findGermplasmIds(query, descendants, parameters);
+
+        GermplasmMcpdExportCommand command = new GermplasmMcpdExportCommand(germplasmIds, Collections.emptyList());
+        Flux<DataBuffer> result = faidareApiService.exportMcpd(command);
+        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).subscribe();
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
+    }
+
+    /**
+     * Searches for the given query and export the results by delegating to the Faidare application.
+     * This can only be called with parameters leading to only germplasm results, i.e. the parameters must have
+     * the document type aggregation with germplasm as the only value. If not, an error is thrown
+     * @param query the query
+     * @param parameters all the parameters, containing the refinements based on the aggregations. The names
+     * of the other parameters are the names of the aggregations, and the values are one of the values for that
+     * aggregation.
+     *
+     * @see AppAggregation
+     */
+    @GetMapping("/exports/plant-material")
+    public ResponseEntity<StreamingResponseBody> exportGermplasmPlantMaterial(
+            @RequestParam(value = "query", defaultValue = "") String query,
+            @RequestParam("descendants") Optional<Boolean> descendants,
+            @RequestParam MultiValueMap<String, String> parameters) {
+        Set<String> germplasmIds = findGermplasmIds(query, descendants, parameters);
+
+        GermplasmExportCommand command = new GermplasmExportCommand(germplasmIds, Collections.emptyList());
+        Flux<DataBuffer> result = faidareApiService.exportPlantMaterial(command);
+        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).subscribe();
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
+    }
+
+    private Set<String> findGermplasmIds(String query,
+                                         Optional<Boolean> descendants,
+                                         MultiValueMap<String, String> parameters) {
         SearchRefinements refinements = createRefinementsFromParameters(parameters);
         checkGermplasmOnlyEntryType(refinements);
 
-        Set<String> germplasmIds = documentDao.findAllIds(
+        return documentDao.findAllIds(
             query,
             descendants.orElse(false),
             refinements
         );
-
-        GermplasmExportCommand command = new GermplasmExportCommand(germplasmIds, Collections.emptyList());
-        Flux<DataBuffer> result = faidareApiService.export(command);
-        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).subscribe();
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
     }
 
     private SearchRefinements createRefinementsFromParameters(MultiValueMap<String, String> parameters) {
