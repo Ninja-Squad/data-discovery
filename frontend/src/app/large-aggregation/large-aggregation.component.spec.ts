@@ -204,6 +204,7 @@ describe('LargeAggregationComponent', () => {
     // given an aggregation with a bucket
     tester.componentInstance.aggregation = aggregation;
     tester.componentInstance.selectedKeys = ['France'];
+    tester.detectChanges();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
