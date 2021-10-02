@@ -25,7 +25,7 @@ const maxResultsDisplayed = 8;
   selector: 'dd-large-aggregation',
   templateUrl: './large-aggregation.component.html',
   styleUrls: ['./large-aggregation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LargeAggregationComponent implements OnChanges {
   @Input() selectedKeys: Array<string> = [];
