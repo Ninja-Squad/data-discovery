@@ -67,7 +67,6 @@ export interface Model {
 
 @Injectable()
 export class SearchStateService {
-  private criteria$!: Observable<SearchCriteria>;
   private transitionSubject = new Subject<(criteria: SearchCriteria) => SearchCriteria>();
   private disabledAggregationNameSubject = new BehaviorSubject<string | null>(null);
 
@@ -79,7 +78,7 @@ export class SearchStateService {
     const queryParams$ = route.queryParamMap;
     const fragment$ = route.fragment;
 
-    this.criteria$ = combineLatest([queryParams$, fragment$]).pipe(
+    const criteria$ = combineLatest([queryParams$, fragment$]).pipe(
       map(([queryParams, fragment]) => ({
         query: this.extractQueryFromParameters(queryParams),
         aggregationCriteria: this.extractAggregationCriteriaFromParameters(queryParams),
@@ -92,16 +91,16 @@ export class SearchStateService {
     );
 
     const aggregations$: Observable<{ loading: boolean; aggregations: Array<Aggregation> }> =
-      this.criteria$.pipe(
+      criteria$.pipe(
         distinctUntilChanged(compareForAggregation),
         switchMap(criteria => this.aggregateWithDelayedLoading(criteria))
       );
 
     const documents$: Observable<{ loading: boolean; documents: Page<DocumentModel> | null }> =
-      this.criteria$.pipe(switchMap(criteria => this.searchWithDelayedLoading(criteria)));
+      criteria$.pipe(switchMap(criteria => this.searchWithDelayedLoading(criteria)));
 
-    this.model$ = combineLatest([
-      this.criteria$,
+    const model$ = combineLatest([
+      criteria$,
       documents$,
       aggregations$,
       this.disabledAggregationNameSubject
@@ -116,7 +115,7 @@ export class SearchStateService {
       }))
     );
 
-    const navigation$ = this.criteria$.pipe(
+    const navigation$ = criteria$.pipe(
       switchMap(criteria => this.transitionSubject.pipe(map(transition => transition(criteria)))),
       tap(newCriteria => {
         this.router.navigate(['.'], {
@@ -130,7 +129,8 @@ export class SearchStateService {
       ignoreElements()
     );
 
-    return merge(this.model$, navigation$).pipe(shareReplay(1));
+    this.model$ = merge(model$, navigation$).pipe(shareReplay(1));
+    return this.model$;
   }
 
   getModel(): Observable<Model> {
