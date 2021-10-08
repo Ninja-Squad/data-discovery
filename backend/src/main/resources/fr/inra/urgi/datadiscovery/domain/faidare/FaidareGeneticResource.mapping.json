@@ -168,6 +168,9 @@
                     "ignore_above": 256
                 }
             }
+        },
+        "groupId": {
+            "type": "integer"
         }
     }
 }

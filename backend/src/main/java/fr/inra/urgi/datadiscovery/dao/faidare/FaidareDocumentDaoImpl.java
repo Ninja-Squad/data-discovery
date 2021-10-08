@@ -11,6 +11,9 @@ import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
+import fr.inra.urgi.datadiscovery.filter.faidare.FaidareCurrentUser;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -47,9 +50,16 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
         new PillarAggregationDescriptor("node.keyword",
                                         "databaseName.keyword",
                                         null);
+    private final FaidareCurrentUser currentUser;
 
-    public FaidareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate) {
+    public FaidareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate, FaidareCurrentUser currentUser) {
         super(elasticsearchTemplate, new FaidareDocumentHighlighter());
+        this.currentUser = currentUser;
+    }
+
+    @Override
+    protected QueryBuilder getContextualQuery() {
+        return QueryBuilders.termsQuery("groupId", currentUser.get().getAccessibleGroupIds());
     }
 
     @Override
