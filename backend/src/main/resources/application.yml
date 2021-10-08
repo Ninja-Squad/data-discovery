@@ -71,7 +71,8 @@ spring:
   cloud:
     config:
       name: rare
-  security.user:
+  security:
+    user:
       name: rare
       password: f01a7031fc17
 
@@ -91,9 +92,10 @@ spring:
   cloud:
     config:
       name: brc4env
-  security.user:
-    name: rare
-    password: f01a7031fc17
+  security:
+    user:
+      name: rare
+      password: f01a7031fc17
 
 ## Below properties should not be enabled here because it makes tests failing.
 ## But they may be enabled in cloud-config server if relevant to apply the 
@@ -119,7 +121,8 @@ spring:
   cloud:
     config:
       name: wheatis
-  security.user:
+  security:
+    user:
       name: wheatis
       password: f01a7031fc17
 
@@ -139,7 +142,8 @@ spring:
   cloud:
     config:
       name: faidare
-  security.user:
+  security:
+    user:
       name: faidare
       password: f01a7031fc17
 
@@ -147,6 +151,9 @@ data-discovery:
   elasticsearch-prefix: 'faidare-dev-'
   faidare:
     base-url: http://localhost:8380/faidare-dev
+    user-groups:
+      url: http://localhost:8989/groups.json
+      token: abcd
 
 server:
   port: 8280

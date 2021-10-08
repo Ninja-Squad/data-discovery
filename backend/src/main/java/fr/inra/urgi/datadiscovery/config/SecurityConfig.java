@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 /**
  * Security configuration. It makes sure that harvest endpoints and the actuator endpoints are only accessible to
  * authenticated users
+ *
  * @author JB Nizet
  */
 @Configuration
@@ -16,17 +17,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-                .requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated() // EndpointRequest.toAnyEndpoint()
-                                                                                  // only targets the **actuator**
-                                                                                  // endpoints.
-                .antMatchers("/**").permitAll()
+        // the configuration only applies to requests to actuator endpoints
+        http.requestMatchers(
+                requestMatchers ->
+                    requestMatchers.requestMatchers(EndpointRequest.toAnyEndpoint())
+                // EndpointRequest.toAnyEndpoint() only targets the **actuator** endpoints.
+            )
+            // it requires to be authenticated whatever the request is
+            .authorizeRequests().anyRequest().authenticated()
             .and()
-                .httpBasic()
+            // using http basic auth
+            .httpBasic()
             .and()
-                .csrf().disable()
+            // without csrf or session management
+            .csrf().disable()
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }

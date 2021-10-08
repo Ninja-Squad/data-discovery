@@ -1,7 +1,7 @@
 FROM alpine
 LABEL Author="Raphaël FLORES <raphael.flores@inrae.fr>"
 
-COPY scripts/createSuggestions.sh scripts/index.sh scripts/createIndexAndAliases4CI.sh scripts/harvestCI.sh scripts/to_bulk.jq /opt/scripts/
+COPY scripts/createSuggestions.sh scripts/index.sh scripts/createIndexAndAliases4CI.sh scripts/harvestCI.sh scripts/to_bulk.jq scripts/clean_fields.jq /opt/scripts/
 COPY scripts/filters/* /opt/scripts/filters/
 
 # COPY dao settings

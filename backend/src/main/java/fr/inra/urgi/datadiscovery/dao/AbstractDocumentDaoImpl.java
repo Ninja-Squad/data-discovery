@@ -23,10 +23,8 @@ import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -159,9 +157,13 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
         // only with refinements
 
         // this full text query is executed, and its results are used to compute aggregations
-        AbstractQueryBuilder<?> fullTextQuery = query.trim().isEmpty()
+        QueryBuilder fullTextQuery = query.trim().isEmpty()
                 ? matchAllQuery()
                 : multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
+        QueryBuilder contextualQuery = this.getContextualQuery();
+        if (contextualQuery != null) {
+            fullTextQuery = boolQuery().must(fullTextQuery).must(contextualQuery);
+        }
 
         // this post filter query is applied, after the aggregation have been computed, to apply the
         // refinements (i.e. the aggregation/facet criteria).
@@ -250,8 +252,8 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
      */
     private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term, boolean descendants) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
-        TermsQueryBuilder termsQuery = QueryBuilders.termsQuery(term.getField(), acceptedValues);
-        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
+        BoolQueryBuilder boolQuery = boolQuery();
         if (term.getName().equals("annot")) {
             List<String> goIds = getAnnotationsIds(refinements);
             boolQuery.should(termsQuery("annotationId.keyword", goIds));
@@ -420,7 +422,16 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
     protected SearchRefinements getImplicitSearchRefinements() {
         return SearchRefinements.EMPTY;
-    };
+    }
+
+    /**
+     * Gets a contextual query, or null, which is added to the main search query.
+     * A contextual query is, for example, a query that depends on the current user.
+     * This implementation returns null by default, but can be overridden by subclasses
+     */
+    protected QueryBuilder getContextualQuery() {
+        return null;
+    }
 
     /**
      * A Pageable implementation allowing to avoid loading any page (i.e. with a size equal to 0), because we

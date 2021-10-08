@@ -44,6 +44,7 @@ public final class FaidareDocument implements SearchDocument {
     private final List<String> observationVariableIds;
     private final List<String> germplasmList;
     private final String accessionNumber;
+    private final int groupId;
 
     @JsonCreator
     @PersistenceConstructor
@@ -65,7 +66,8 @@ public final class FaidareDocument implements SearchDocument {
                            List<String> taxonGroup,
                            List<String> observationVariableIds,
                            List<String> germplasmList,
-                           String accessionNumber) {
+                           String accessionNumber,
+                           Integer groupId) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -85,6 +87,7 @@ public final class FaidareDocument implements SearchDocument {
         this.observationVariableIds = observationVariableIds;
         this.germplasmList = germplasmList;
         this.accessionNumber = accessionNumber;
+        this.groupId = groupId == null ? 0 : groupId;
     }
 
     public FaidareDocument(Builder builder) {
@@ -106,7 +109,8 @@ public final class FaidareDocument implements SearchDocument {
              builder.taxonGroup,
              builder.observationVariableIds,
              builder.germplasmList,
-             builder.accessionNumber);
+             builder.accessionNumber,
+             builder.groupId);
     }
 
     @Override
@@ -187,6 +191,10 @@ public final class FaidareDocument implements SearchDocument {
         return accessionNumber;
     }
 
+    public int getGroupId() {
+        return groupId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -214,7 +222,8 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(taxonGroup, that.taxonGroup) &&
             Objects.equals(observationVariableIds, that.observationVariableIds) &&
             Objects.equals(germplasmList, that.germplasmList) &&
-            Objects.equals(accessionNumber, that.accessionNumber);
+            Objects.equals(accessionNumber, that.accessionNumber) &&
+            groupId == that.groupId;
     }
 
     @Override
@@ -237,7 +246,8 @@ public final class FaidareDocument implements SearchDocument {
                             taxonGroup,
                             observationVariableIds,
                             germplasmList,
-                            accessionNumber);
+                            accessionNumber,
+                            groupId);
     }
 
     @Override
@@ -262,6 +272,7 @@ public final class FaidareDocument implements SearchDocument {
             ", observationVariableIds='" + observationVariableIds + '\'' +
             ", germplasmList='" + germplasmList + '\'' +
             ", accessionNumber='" + accessionNumber + '\'' +
+            ", groupId='" + groupId + '\'' +
             '}';
     }
 
@@ -294,6 +305,7 @@ public final class FaidareDocument implements SearchDocument {
         private List<String> observationVariableIds = Collections.emptyList();
         private List<String> germplasmList = Collections.emptyList();
         private String accessionNumber;
+        private Integer groupId;
 
         private Builder() {
         }
@@ -318,6 +330,7 @@ public final class FaidareDocument implements SearchDocument {
             this.observationVariableIds = document.getObservationVariableIds();
             this.germplasmList = document.getGermplasmList();
             this.accessionNumber = document.getAccessionNumber();
+            this.groupId = document.getGroupId();
         }
 
         public Builder withId(String id) {
@@ -412,6 +425,11 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withAccessionNumber(String accessionNumber) {
             this.accessionNumber = accessionNumber;
+            return this;
+        }
+
+        public Builder withGroupId(int groupId) {
+            this.groupId = groupId;
             return this;
         }
 

@@ -2,9 +2,11 @@ package fr.inra.urgi.datadiscovery.dao.faidare;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -20,6 +22,8 @@ import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
+import fr.inra.urgi.datadiscovery.filter.faidare.FaidareCurrentUser;
+import fr.inra.urgi.datadiscovery.filter.faidare.FaidareUser;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -32,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +53,9 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-faidare-resource-physical-index";
     private static final String SUGGESTION_INDEX = "test-faidare-suggestions";
+
+    @MockBean
+    private FaidareCurrentUser mockCurrentUser;
 
     @Autowired
     private FaidareDocumentDao documentDao;
@@ -71,6 +79,8 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
 
     @BeforeEach
     void prepare() {
+        when(mockCurrentUser.get()).thenReturn(FaidareUser.ANONYMOUS);
+
         documentDao.deleteAll();
         documentDao.deleteAllSuggestions();
         elasticsearchTemplate.indexOps(elasticsearchTemplate.getIndexCoordinatesFor(SuggestionDocument.class)).refresh();
@@ -166,6 +176,25 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                 false,
                 SearchRefinements.EMPTY,
                 firstPage).getContent()).isEmpty();
+    }
+
+    @Test
+    void shouldOnlySearchAccessibleDocuments() {
+        when(mockCurrentUser.get()).thenReturn(new FaidareUser("john", new HashSet<>(Arrays.asList(0, 2))));
+        documentDao.saveAll(Arrays.asList(
+            FaidareDocument.builder().withId("id1").withDescription("foobar 1").withGroupId(0).build(),
+            FaidareDocument.builder().withId("id2").withDescription("foobar 2").withGroupId(1).build(),
+            FaidareDocument.builder().withId("id3").withDescription("foobar 3").withGroupId(2).build(),
+            FaidareDocument.builder().withId("id5").withDescription("other").withGroupId(0).build()
+        ));
+        documentDao.refresh();
+
+        AggregatedPage<FaidareDocument> result = documentDao.search("foobar",
+                                                                    false,
+                                                                    false,
+                                                                    SearchRefinements.builder().build(),
+                                                                    PageRequest.of(0, 20));
+        assertThat(result).extracting(FaidareDocument::getId).containsOnly("id1", "id3");
     }
 
     @Test
@@ -277,6 +306,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withTaxonGroup(Collections.singletonList("Pixies"))
                             .withObservationVariableIds(Collections.singletonList("OV1"))
                             .withGermplasmList(Collections.singletonList("GL1"))
+                            .withGroupId(0)
                             .build();
 
             FaidareDocument document2 =
@@ -293,7 +323,10 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withTaxonGroup(Collections.singletonList("Rolling stones"))
                             .withObservationVariableIds(Collections.singletonList("OV2"))
                             .withGermplasmList(Collections.singletonList("GL2"))
+                            .withGroupId(1)
                             .build();
+
+            when(mockCurrentUser.get()).thenReturn(new FaidareUser("john", new HashSet<>(Arrays.asList(0, 1))));
 
             documentDao.saveAll(Arrays.asList(document1, document2));
             documentDao.refresh();
@@ -374,6 +407,17 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
             AggregatedPage<FaidareDocument> result =
                     documentDao.aggregate("  ", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
             assertThat(result.getAggregations()).hasSize(FaidareAggregation.values().length);
+        }
+
+        @Test
+        void shouldHonorAccessibleGroupIds() {
+            when(mockCurrentUser.get()).thenReturn(new FaidareUser("john", new HashSet<>(Arrays.asList(0))));
+            AggregatedPage<FaidareDocument> result =
+                documentDao.aggregate("  ", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
+            Terms databaseName = result.getAggregations().get(FaidareAggregation.DATABASE_NAME.getName());
+            assertThat(databaseName.getName()).isEqualTo(FaidareAggregation.DATABASE_NAME.getName());
+            assertThat(databaseName.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae");
+            assertThat(databaseName.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
         }
     }
 
