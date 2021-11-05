@@ -5,6 +5,7 @@ import { ComponentTester } from 'ngx-speculoos';
 import { TestBed } from '@angular/core/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: '<dd-node-details [node]="node"></dd-node-details>'
@@ -21,6 +22,10 @@ class TestComponent {
 class TestComponentTester extends ComponentTester<TestComponent> {
   constructor() {
     super(TestComponent);
+  }
+
+  get nodeDetailsComponent(): NodeDetailsComponent {
+    return this.debugElement.query(By.directive(NodeDetailsComponent)).componentInstance;
   }
 }
 
@@ -82,5 +87,11 @@ describe('NodeDetailsComponent', () => {
 
     expect(tester.testElement).toContainText('Test 1');
     expect(tester.testElement).toContainText('Variable');
+  });
+
+  it('should tell if a value is a URL or not', () => {
+    expect(tester.nodeDetailsComponent.isUrl('foo')).toBeFalse();
+    expect(tester.nodeDetailsComponent.isUrl('http://foo.com')).toBeTrue();
+    expect(tester.nodeDetailsComponent.isUrl('https://foo.com')).toBeTrue();
   });
 });

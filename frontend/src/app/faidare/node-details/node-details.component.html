@@ -110,7 +110,14 @@
     <div class="form-row" *ngIf="node.details.xref">
       <label class="col-4" translate="faidare.node-details.xref"></label>
       <div class="col-8">
-        <a [href]="node.details.xref" target="_blank" class="truncated">{{ node.details.xref }}</a>
+        <a
+          *ngIf="isUrl(node.details.xref); else noLinkTraitXref"
+          [href]="node.details.xref"
+          target="_blank"
+          class="truncated"
+          >{{ node.details.xref }}</a
+        >
+        <ng-template #noLinkTraitXref>{{ node.details.xref }}</ng-template>
       </div>
     </div>
   </ng-container>
@@ -154,6 +161,20 @@
     <div class="form-row" *ngIf="node.details.crop">
       <label class="col-4" translate="faidare.node-details.crop"></label>
       <div class="col-8">{{ node.details.crop }}</div>
+    </div>
+    <div class="form-row" *ngIf="node.details.xref">
+      <label class="col-4" translate="faidare.node-details.xref"></label>
+      <div class="col-8">
+        <a
+          *ngIf="isUrl(node.details.xref); else noLinkVariableXref"
+          [href]="node.details.xref"
+          target="_blank"
+          class="truncated"
+        >
+          {{ node.details.xref }}
+        </a>
+        <ng-template #noLinkVariableXref>{{ node.details.xref }}</ng-template>
+      </div>
     </div>
 
     <h6 class="mt-2">
@@ -211,9 +232,15 @@
     <div class="form-row" *ngIf="node.details.trait.xref">
       <label class="col-4" translate="faidare.node-details.xref"></label>
       <div class="col-8">
-        <a [href]="node.details.trait.xref" target="_blank" class="truncated">{{
-          node.details.trait.xref
-        }}</a>
+        <a
+          *ngIf="isUrl(node.details.trait.xref); else noLinkVariableTraitXref"
+          [href]="node.details.trait.xref"
+          target="_blank"
+          class="truncated"
+        >
+          {{ node.details.trait.xref }}
+        </a>
+        <ng-template #noLinkVariableTraitXref>{{ node.details.trait.xref }}</ng-template>
       </div>
     </div>
 
@@ -293,21 +320,19 @@
       <div class="form-row" *ngIf="node.details.scale.xref">
         <label class="col-4" translate="faidare.node-details.xref"></label>
         <div class="col-8">
-          <a [href]="node.details.scale.xref" target="_blank" class="truncated">{{
-            node.details.scale.xref
-          }}</a>
+          <a
+            *ngIf="isUrl(node.details.scale.xref); else noLinkScaleXref"
+            [href]="node.details.scale.xref"
+            target="_blank"
+            class="truncated"
+          >
+            {{ node.details.scale.xref }}
+          </a>
+          <ng-template #noLinkScaleXref>{{ node.details.scale.xref }}</ng-template>
         </div>
       </div>
     </ng-container>
 
-    <div class="form-row mt-2" *ngIf="node.details.documentationURL">
-      <label class="col-4" translate="faidare.node-details.documentation-url"></label>
-      <div class="col-8">
-        <a [href]="node.details.documentationURL" target="_blank" class="truncated">{{
-          node.details.documentationURL
-        }}</a>
-      </div>
-    </div>
     <div class="form-row" *ngIf="node.details.contextOfUse?.length">
       <label class="col-4" translate="faidare.node-details.context-of-use"></label>
       <div class="col-8">
@@ -325,12 +350,6 @@
     <div class="form-row" *ngIf="node.details.status">
       <label class="col-4" translate="faidare.node-details.status"></label>
       <div class="col-8">{{ node.details.status }}</div>
-    </div>
-    <div class="form-row" *ngIf="node.details.xref">
-      <label class="col-4" translate="faidare.node-details.xref"></label>
-      <div class="col-8">
-        <a [href]="node.details.xref" target="_blank" class="truncated">{{ node.details.xref }}</a>
-      </div>
     </div>
     <div class="form-row" *ngIf="node.details.defaultValue">
       <label class="col-4" translate="faidare.node-details.default-value"></label>

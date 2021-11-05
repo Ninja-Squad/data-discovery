@@ -9,4 +9,8 @@ import { TypedNodeDetails } from '../ontology.model';
 })
 export class NodeDetailsComponent {
   @Input() node!: TypedNodeDetails;
+
+  isUrl(value: string) {
+    return value.startsWith('http://') || value.startsWith('https://');
+  }
 }
