@@ -108,7 +108,7 @@ elif [ "${APP_NAME}" == "brc4env" ]; then
 elif [ "${APP_NAME}" == "wheatis" ]; then
     FILTER_DATA_SCRIPT="${WHEATIS_FILTER_DATA_SCRIPT}"
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
-    DATADIR=$(readlink -f "$BASEDIR/../data/data-discovery")
+    DATADIR=$(readlink -f "$BASEDIR/../data/faidare")
 elif [ "${APP_NAME}" == "faidare" ]; then
     FIELDS_TO_EXTRACT="${FAIDARE_FIELDS_TO_EXTRACT}"
     [ ! -d "${DATADIR}/private-suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/private-suggestions"
@@ -227,12 +227,12 @@ if [ "${APP_NAME}" == "faidare" ]; then
     parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/private-suggestions/${APP_NAME}_bulk_{#}.gz"
 
   time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_public_suggestions | \
-      LC_ALL=C sort -u | \
-      parallel --pipe -k \
-          "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
-                  s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
-      " | \
-      parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
+LC_ALL=C sort -u | \
+parallel --pipe -k \
+    "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+            s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
+" | \
+parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
 
 else
   time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
