@@ -166,7 +166,7 @@ export -f index_resources index_suggestions
 {
     # set -x
     echo "Indexing files into ${DATADIR} towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
-    find ${DATADIR} -maxdepth 1 -name "*.json.gz" | \
+    find ${DATADIR}/data/ -maxdepth 2 -name "*.json.gz" | \
         parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} {1/.} {2} \
         :::: - ::: ${ES_HOSTS}
 } || {

@@ -164,7 +164,7 @@ extract_suggestions() {
 }
 export -f extract_suggestions
 
-time find ${DATADIR} -maxdepth 1 -name "*.gz" | parallel --bar extract_suggestions | \
+time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
 LC_ALL=C sort -u | \
 parallel --pipe -k \
     "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
