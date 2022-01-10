@@ -1,0 +1,15 @@
+Les documents JSON sont tous formatés comme suit :
+
+  {
+    "entryType": "type de document, similaire à RARE:materialType, monovalué",
+    "databaseName": "nom de la base, similaire à RARE:databaseSource, monovalué",
+    "description": "champ de recherche full text, similaire à RARE:description, monovalué",
+    "url": "similaire à RARE:dataURL",
+    "species": [ "similaire à RARE:species","mais multivalué: ", "tableau de strings", "ou simple chaine caractère si un seul élément", "également nullable" ],
+    "node": "nom du noeud hébergeant les données, similaire à RARE:pillarName, monovalué",
+    "name": "nom de l'entité, devrait pouvoir être utilisé en tant qu'identifiant, mais pas sûr. similaire à RARE:name, monovalué"
+  }
+
+  Généralement, chaque fichier correspond à une base de données différente et contient un tableau d'objets JSON comme dans le cas de RARE.
+
+  Les champs sur lesquels on pourrait appliquer des filtres (facettes) sont les suivants :  entryType, databaseName, node, species (attention à ce dernier qui est multivalué).
