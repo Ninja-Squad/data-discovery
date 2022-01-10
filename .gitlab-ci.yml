@@ -761,7 +761,7 @@ test-lint-build:
 #  # Do fetch of GIT LFS files only for data integration steps for given app
 #  - git checkout -f origin/$CI_COMMIT_REF_NAME
 #  - git pull origin $CI_COMMIT_REF_NAME
-#  - git lfs pull -I "data/${DATA_DIR}/*.gz"
+#  - git lfs pull -I "data/${DATA_DIR}/data/*"
 #  - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
 #  - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
 # environment:
@@ -788,7 +788,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/rare_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -802,7 +802,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/rare_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -816,7 +816,7 @@ test-lint-build:
 # <<: *data-integration-proxmox
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/rare_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -831,7 +831,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/rare_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -845,7 +845,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/brc4env_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -859,7 +859,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/brc4env_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -876,7 +876,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/rare/*.json.gz
+#   - data/rare/data/*.json.gz
 #   - data/rare/suggestions/brc4env_bulk*.json.gz
 #   - scripts/*
 #  refs:
@@ -890,7 +890,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/wheatis/*.json.gz
+#   - data/wheatis/data/*.json.gz
 #   - data/wheatis/suggestions/wheatis_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -905,7 +905,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/wheatis/*.json.gz
+#   - data/wheatis/data/*.json.gz
 #   - data/wheatis/suggestions/wheatis_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -920,7 +920,7 @@ test-lint-build:
 # <<: *data-integration-proxmox
 # only:
 #  changes:
-#   - data/wheatis/*.json.gz
+#   - data/wheatis/data/*.json.gz
 #   - data/wheatis/suggestions/wheatis_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -936,7 +936,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/wheatis/*.json.gz
+#   - data/wheatis/data/*.json.gz
 #   - data/wheatis/suggestions/wheatis_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -951,7 +951,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/faidare/*.json.gz
+#   - data/faidare/data/*
 #   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -966,7 +966,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/faidare/*.json.gz
+#   - data/faidare/data/*
 #   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -981,7 +981,7 @@ test-lint-build:
 # <<: *data-integration-proxmox
 # only:
 #  changes:
-#   - data/faidare/*.json.gz
+#   - data/faidare/data/*
 #   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
@@ -997,7 +997,7 @@ test-lint-build:
 # <<: *data-integration-openstack
 # only:
 #  changes:
-#   - data/faidare/*.json.gz
+#   - data/faidare/data/*
 #   - data/faidare/suggestions/faidare_bulk*.json.gz
 #   - data/synonyms/all_*
 #   - scripts/*
