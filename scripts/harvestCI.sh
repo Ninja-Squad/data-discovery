@@ -94,7 +94,6 @@ DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
 BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
 WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
 FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
-
 if [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
     echo -e "${RED}ERROR: -app and -env parameters are mandatory!${NC}"
     echo && help
@@ -105,17 +104,15 @@ if [ -z "$ES_HOST" ]; then
     echo && help
 	exit 4
 fi
-
 ID_FIELD=""
+APP_SETTINGS_NAME="${APP_NAME}"
 if [ "$APP_NAME" == "rare" ]; then
     ID_FIELD=identifier
 elif [ "$APP_NAME" == "brc4env"  ] ; then
     ID_FIELD=identifier
     FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
+    APP_SETTINGS_NAME="rare"
     DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
-elif [ "$APP_NAME" == "wheatis"  ] ; then
-    FILTER_DATA_SCRIPT="${WHEATIS_FILTER_DATA_SCRIPT}"
-    DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/data-discovery")
 fi
 export ID_FIELD APP_NAME
 
@@ -149,7 +146,7 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 [ -d "$OUTDIR" ] && rm -rf "$OUTDIR"
 mkdir -p "$OUTDIR"
 
-FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
+FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
 export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS FILTER_DATA_SCRIPT
 
 index_resources() {
