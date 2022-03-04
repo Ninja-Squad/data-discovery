@@ -6,6 +6,7 @@ import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { By } from '@angular/platform-browser';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/generic-rare-basket.component';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -44,7 +45,7 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 describe('NavbarComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      declarations: [NavbarComponent],
+      declarations: [NavbarComponent, GenericRareBasketComponent],
       imports: [I18nTestingModule, DataDiscoveryNgbTestingModule]
     })
   );
