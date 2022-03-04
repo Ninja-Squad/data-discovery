@@ -99,10 +99,12 @@ if [ -z "$ES_HOST" ]; then
     echo && help
 	exit 4
 fi
+APP_SETTINGS_NAME="${APP_NAME}"
 if [ "$APP_NAME" == "rare" ]; then
     ID_FIELD=identifier
 elif [ "$APP_NAME" == "brc4env"  ] ; then
     ID_FIELD=identifier
+    APP_SETTINGS_NAME="rare"
     DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
 else
     ID_FIELD=""
@@ -139,7 +141,7 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 [ -d "$OUTDIR" ] && rm -rf "$OUTDIR"
 mkdir -p "$OUTDIR"
 
-FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_NAME}/*.mapping.json)
+FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
 export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS
 
 index_resources() {
