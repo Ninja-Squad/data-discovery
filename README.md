@@ -185,7 +185,7 @@ Before all, if you have cloned the repository without fetching the data (see [Da
 
 ### TL;DR
 
-Data indexing to your local Elasticsearch is done using the following command. Note that your local Elasticsearch instance should be already runing using `docker-compose up`:
+Data (from master branch) indexing to your local Elasticsearch is done using the following command. Note that your local Elasticsearch instance should be already runing using `docker-compose up`:
 
 ```sh
 docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest --help
@@ -202,6 +202,14 @@ If you need to spread the load on several CPUs, duplicate the value of `host` ar
 ```sh
 docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
 ```
+
+Take care to use your branch's `CI_COMMIT_REF_SLUG` instead of `latest` docker tag if you have modified the indexing scripts, Elasticsearch mappings or settings, see <https://docs.gitlab.com/ee/ci/variables/predefined_variables.html>. Example for branch `story/faidare-fusion`, use docker tag `story-faidare-fusion`:
+
+```sh
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:story-faidare-fusion -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
+```
+
+If you need to test the docker loader with your local changes, look at job named `build-loader-docker-image` in the `.gitlab-ci.yml` at the root of the project to see how to build the image with your custom docker tag.
 
 Output logs should be available in directory `/tmp/bulk/rare-dev`.
 
