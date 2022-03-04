@@ -7,11 +7,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { timer } from 'rxjs';
 
 @Component({
-  // the selector is not a custom element as usual
-  // but a simple div, so we can add it in the navbar
-  // without disturbing the other applications.
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'div.navbar-rare-basket',
+  selector: 'dd-rare-basket',
   templateUrl: './rare-basket.component.html',
   styleUrls: ['./rare-basket.component.scss']
 })

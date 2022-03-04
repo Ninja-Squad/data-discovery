@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-
-import { UrgiCommonModule } from '../urgi-common/urgi-common.module';
 import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
 import { FaidareHeaderComponent } from './faidare-header/faidare-header.component';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
@@ -17,10 +15,16 @@ import { FaidareFooterComponent } from './faidare-footer/faidare-footer.componen
 import { GermplasmResultsComponent } from './germplasm-results/germplasm-results.component';
 import { FaidareDocumentListComponent } from './faidare-document-list/faidare-document-list.component';
 import { SortableHeaderComponent } from './germplasm-results/sortable-header/sortable-header.component';
+import { CommonModule } from '@angular/common';
+import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
+import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/generic-rare-basket.component';
 
 @NgModule({
-  imports: [UrgiCommonModule, ReactiveFormsModule, DataDiscoveryNgbModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, DataDiscoveryNgbModule, TranslateModule],
   declarations: [
+    GenericDocumentComponent,
+    GenericSelectAllResultsComponent,
+    TruncatableDescriptionComponent,
     FaidareHeaderComponent,
     TreeComponent,
     NodeComponent,
@@ -31,15 +35,16 @@ import { SortableHeaderComponent } from './germplasm-results/sortable-header/sor
     FaidareFooterComponent,
     GermplasmResultsComponent,
     FaidareDocumentListComponent,
-    SortableHeaderComponent
+    SortableHeaderComponent,
+    GenericRareBasketComponent
   ],
   exports: [
-    GenericDocumentComponent,
     GenericSelectAllResultsComponent,
     FaidareHeaderComponent,
     FaidareFooterComponent,
     FaidareOntologyAggregationComponent,
-    FaidareDocumentListComponent
+    FaidareDocumentListComponent,
+    GenericRareBasketComponent
   ]
 })
 export class FaidareModule {}

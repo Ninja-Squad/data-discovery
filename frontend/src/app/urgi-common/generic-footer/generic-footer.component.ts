@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 /**
  * Generic footer that doesn't display anything.
- * It's replaces in Faidare (at least) by a specific footer
+ * It's replaced in Faidare (at least) by a specific footer
  */
 @Component({
   selector: 'dd-footer',
