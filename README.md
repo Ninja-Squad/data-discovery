@@ -54,11 +54,11 @@ git config lfs.https://forgemia.inra.fr/urgi-is/data-discovery.git/info/lfs.lock
 
 ### Backend
 
-The project uses Spring (5.x) for the backend, with Spring Boot.
+The project uses Spring Boot for the backend.
 
 You need to install:
 
-- a recent enough JDK8
+- a recent enough JDK11
 
 The docker images need quite a bit of resources,
 so make sure you have at least 4g of RAM configured (Docker Desktop / Resources / Memory).
@@ -67,7 +67,7 @@ The application expects to connect on an Elasticsearch instance running on `http
 To have such an instance, simply run:
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
 And this will start Elasticsearch and a Kibana instance (allowing to explore the data on <http://localhost:5601>).
@@ -78,18 +78,18 @@ Then run `./gradlew bootRun` to start the app.
 You can stop the Elasticsearch and Kibana instances by running:
 
 ```sh
-docker-compose stop
+docker compose stop
 ```
 
 or run the following command to also remove the stopped containers as well as any networks that were created:
 
 ```sh
-docker-compose down
+docker compose down
 ```
 
 ### Frontend
 
-The project uses Angular (8.x) for the frontend, with the Angular CLI.
+The project uses Angular for the frontend, with the Angular CLI.
 
 You need to install:
 
@@ -173,7 +173,7 @@ gitlab-runner exec docker test
 
 An API documentation describing most of the webservices can be generated using the
 build task `asciidoctor`, which executes tests and generates documentation based on snippets generated
-by these tests. The documentation is generated in the folder `backend/build/asciidoc/html5/index.html`
+by these tests. The documentation is generated in the folder `backend/build/docs/asciidoc/index.html`
 
 ```sh
 ./gradlew asciidoctor
