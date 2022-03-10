@@ -119,7 +119,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
         aggregations.forEach(appAggregation -> {
             FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements, descendants);
-            builder.addAggregation(filterAggregation);
+            builder.withAggregations(filterAggregation);
         });
 
         AggregatedPage<D> result = AggregatedPage.fromSearchHits(
@@ -369,11 +369,11 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
         }
         NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
             .withQuery(refinementQuery)
-            .addAggregation(pillar)
+            .withAggregations(pillar)
             .withPageable(NoPage.INSTANCE);
 
         SearchHits<D> searchHits = elasticsearchTemplate.search(builder.build(), getDocumentClass());
-        return searchHits.getAggregations().get(pillarAggregationName);
+        return ((Aggregations) searchHits.getAggregations().aggregations()).get(pillarAggregationName);
     }
 
     @Override

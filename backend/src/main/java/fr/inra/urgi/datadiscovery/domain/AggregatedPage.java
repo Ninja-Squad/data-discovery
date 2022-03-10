@@ -5,7 +5,6 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchPage;
@@ -22,7 +21,10 @@ public interface AggregatedPage<D> extends Page<D> {
     static <D extends SearchDocument> AggregatedPage<D> fromSearchHits(SearchHits<D> searchHits, Pageable pageable, AbstractDocumentHighlighter<D> highlighter) {
         SearchPage<D> searchPage = SearchHitSupport.searchPageFor(searchHits, pageable);
         Page<D> page = searchPage.map(highlighter::highlight);
-        Aggregations aggregations = searchPage.getSearchHits().getAggregations();
+        Aggregations aggregations =
+            searchPage.getSearchHits().getAggregations() == null
+                ? null :
+                (Aggregations) searchPage.getSearchHits().getAggregations().aggregations();
         return new AggregatedPageImpl<D>(page, aggregations);
     }
 }
