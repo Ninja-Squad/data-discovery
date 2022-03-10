@@ -39,7 +39,7 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   }
 
   get modalClose(): HTMLElement {
-    return document.querySelector('.close');
+    return document.querySelector('.btn-close');
   }
 
   get sendBasket(): HTMLElement {

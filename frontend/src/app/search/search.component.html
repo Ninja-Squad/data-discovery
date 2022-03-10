@@ -1,11 +1,11 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <h1 class="sr-only" translate="search.title"></h1>
+  <h1 class="visually-hidden" translate="search.title"></h1>
 
   <div class="row">
     <div class="col-12 col-md-8 offset-md-4 col-lg-9 offset-lg-3 d-flex align-items-center">
-      <h2 class="sr-only" translate="search.new-search"></h2>
+      <h2 class="visually-hidden" translate="search.new-search"></h2>
       <form class="flex-fill" [formGroup]="searchForm" (ngSubmit)="newSearch()">
-        <label class="sr-only" for="query" translate="search.search"></label>
+        <label class="visually-hidden" for="query" translate="search.search"></label>
         <div class="input-group">
           <input
             id="query"
@@ -15,9 +15,7 @@
             [ngbTypeahead]="suggesterTypeahead"
             [focusFirst]="false"
           />
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary" translate="search.search"></button>
-          </div>
+          <button class="btn btn-outline-secondary" translate="search.search"></button>
         </div>
       </form>
     </div>
@@ -40,7 +38,7 @@
     <!-- `collapse-md` is used in the CSS of the component to always show the aggregations when on desktop (md screen and larger) -->
     <!-- even if `filtersExpanded` is false -->
     <div class="col-12 col-md-4 col-lg-3 filters collapse-md" [ngbCollapse]="!vm.filtersExpanded">
-      <h2 class="sr-only" translate="search.filters">Filters</h2>
+      <h2 class="visually-hidden" translate="search.filters">Filters</h2>
       <dd-aggregations
         [aggregations]="vm.aggregations"
         [searchDescendants]="vm.searchCriteria.descendants"
@@ -58,7 +56,7 @@
       </div>
 
       <div *ngIf="!vm.documentsLoading">
-        <h2 class="sr-only" translate="search.results"></h2>
+        <h2 class="visually-hidden" translate="search.results"></h2>
         <div>
           <dd-documents></dd-documents>
         </div>
@@ -67,7 +65,7 @@
           class="d-flex justify-content-center mt-5"
           *ngIf="vm.documents && vm.documents.totalPages > 1"
         >
-          <h2 class="sr-only" translate="search.paging"></h2>
+          <h2 class="visually-hidden" translate="search.paging"></h2>
           <!-- we add 1 to the page because ngb-pagination is 1 based -->
           <ngb-pagination
             [page]="vm.documents.number + 1"

@@ -1,7 +1,7 @@
 <ng-template #resultTemplate let-bucket="result" let-t="term">
   <ng-container *ngIf="bucket !== 'REFINE'; else refine">
     <ngb-highlight [result]="displayableKey(bucket.key)" [term]="t"></ngb-highlight>
-    <small class="ml-1 text-muted">[{{ bucket.documentCount | number }}]</small>
+    <small class="ms-1 text-muted">[{{ bucket.documentCount | number }}]</small>
   </ng-container>
   <ng-template #refine>
     <div class="text-muted small">
@@ -33,7 +33,7 @@
     </ng-template>
     <h3 class="card-title">
       {{ aggregation.name | aggregationName }}
-      <small class="text-muted ml-1" [ngbTooltip]="tooltipContent" placement="top" container="body"
+      <small class="text-muted ms-1" [ngbTooltip]="tooltipContent" placement="top" container="body"
         >({{ aggregation.buckets.length | number }})</small
       >
     </h3>
@@ -41,7 +41,7 @@
     <!-- values as pills and a typeahead to add them -->
     <div class="mb-2">
       <span
-        class="badge badge-pill badge-secondary mr-1"
+        class="badge rounded-pill bg-secondary me-1"
         *ngFor="let key of selectedKeys"
         tabindex="0"
         (keydown.backspace)="!disabled && removeKey(key)"

@@ -2,12 +2,10 @@
   <h4 class="modal-title" translate="faidare.ontology-aggregation-modal.title"></h4>
   <button
     type="button"
-    class="close"
+    class="btn-close"
     [attr.aria-label]="'faidare.ontology-aggregation-modal.close' | translate"
     (click)="cancel()"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
+  ></button>
 </div>
 <div class="modal-body">
   <ng-template #payloadTemplate let-node="node">
@@ -16,11 +14,11 @@
   </ng-template>
   <div class="content" *ngIf="treeView$ | async as treeView">
     <div class="tree-section">
-      <div class="form-row">
+      <div class="row gx-1">
         <div class="col col-md-8">
-          <div class="form-group">
+          <div class="mb-3">
             <label
-              class="sr-only"
+              class="visually-hidden"
               for="tree-filter"
               translate="faidare.ontology-aggregation-modal.filter"
             ></label>
@@ -34,13 +32,13 @@
           </div>
         </div>
         <div class="col col-md-4">
-          <div class="form-group">
+          <div class="mb-3">
             <label
-              class="sr-only"
+              class="visually-hidden"
               for="language"
               translate="faidare.ontology-aggregation-modal.language"
             ></label>
-            <select [formControl]="languageCtrl" id="language" class="custom-select">
+            <select [formControl]="languageCtrl" id="language" class="form-select">
               <option
                 *ngFor="let language of languages"
                 [ngValue]="language"
@@ -81,7 +79,7 @@
   <button
     id="ok-button"
     type="button"
-    class="btn btn-primary mr-1"
+    class="btn btn-primary me-1"
     [disabled]="selectedNodes.length > maxSelectedNodes"
     (click)="ok()"
     translate="faidare.ontology-aggregation-modal.ok"
