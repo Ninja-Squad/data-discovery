@@ -51,7 +51,7 @@ registerLocaleData(localeFr);
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled',
+      scrollPositionRestoration: 'disabled', // when enabled, every click on an aggregation scrolls the page to the top, which is annoying
       anchorScrolling: 'enabled'
     }),
     ReactiveFormsModule,
