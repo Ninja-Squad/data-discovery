@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
@@ -50,7 +50,7 @@ describe('PillarsComponent', () => {
 
   beforeEach(() => {
     registerLocaleData(localeFr);
-    pillarService = jasmine.createSpyObj<PillarService>('PillarService', ['list']);
+    pillarService = createMock(PillarService);
     pillarService.list.and.returnValue(pillars$);
     TestBed.configureTestingModule({
       declarations: [PillarsComponent, DocumentCountComponent],

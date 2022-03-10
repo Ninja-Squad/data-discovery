@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GenericDocumentListComponent } from './generic-document-list.component';
-import { ComponentTester } from 'ngx-speculoos';
-import { By } from '@angular/platform-browser';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { SearchStateService } from '../search-state.service';
@@ -15,7 +14,7 @@ class GenericDocumentListComponentTester extends ComponentTester<GenericDocument
   }
 
   get results() {
-    return this.debugElement.queryAll(By.directive(GenericDocumentComponent));
+    return this.elements(GenericDocumentComponent);
   }
 }
 
@@ -24,9 +23,7 @@ describe('GenericDocumentListComponent', () => {
   let searchStateService: jasmine.SpyObj<SearchStateService>;
 
   beforeEach(() => {
-    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
-      'getDocuments'
-    ]);
+    searchStateService = createMock(SearchStateService);
     searchStateService.getDocuments.and.returnValue(
       of(toSinglePage([{ name: 'doc 1', description: 'desc 1', identifier: 'd1', species: [] }]))
     );

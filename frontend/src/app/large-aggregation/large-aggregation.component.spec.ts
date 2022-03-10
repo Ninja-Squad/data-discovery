@@ -1,6 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
@@ -51,11 +50,11 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get typeahead() {
-    return this.debugElement.query(By.directive(NgbTypeahead));
+    return this.element(NgbTypeahead);
   }
 
   get searchDescendants() {
-    return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
+    return this.component(DescendantsCheckboxComponent);
   }
 
   get results(): NodeListOf<HTMLButtonElement> {
@@ -70,8 +69,8 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.elements('.badge-pill');
   }
 
-  get component(): LargeAggregationComponent {
-    return this.debugElement.query(By.directive(LargeAggregationComponent)).componentInstance;
+  get largeAggregationComponent(): LargeAggregationComponent {
+    return this.component(LargeAggregationComponent);
   }
 }
 
@@ -151,7 +150,9 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    tester.component.search(of('anc')).subscribe(results => (actualResults = results));
+    tester.largeAggregationComponent
+      .search(of('anc'))
+      .subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -166,7 +167,9 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    tester.component.search(of('non')).subscribe(results => (actualResults = results));
+    tester.largeAggregationComponent
+      .search(of('non'))
+      .subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(1);
@@ -181,7 +184,9 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    tester.component.search(of('A')).subscribe(results => (actualResults = results));
+    tester.largeAggregationComponent
+      .search(of('A'))
+      .subscribe(results => (actualResults = results));
 
     // then it should have matches  (NULL_VALUE is None in English, so it does not contains 'A')
     expect(actualResults.length).toBe(3);
@@ -190,7 +195,9 @@ describe('LargeAggregationComponent', () => {
     expect((actualResults[2] as Bucket).key).toBe('New Zealand');
 
     // when searching for another result
-    tester.component.search(of('n')).subscribe(results => (actualResults = results));
+    tester.largeAggregationComponent
+      .search(of('n'))
+      .subscribe(results => (actualResults = results));
 
     // then it should have matches (NULL_VALUE is None in English, so it contains 'n')
     expect(actualResults.length).toBe(3);
@@ -208,7 +215,9 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    tester.component.search(of('anc')).subscribe(results => (actualResults = results));
+    tester.largeAggregationComponent
+      .search(of('anc'))
+      .subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(0);
@@ -222,7 +231,9 @@ describe('LargeAggregationComponent', () => {
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
-    tester.component.search(of('a')).subscribe(results => (actualResults = results));
+    tester.largeAggregationComponent
+      .search(of('a'))
+      .subscribe(results => (actualResults = results));
 
     // then it should have no match
     expect(actualResults.length).toBe(9);
@@ -378,9 +389,7 @@ describe('LargeAggregationComponent', () => {
     expect(tester.searchDescendants).not.toBeNull();
 
     // when the checkbox emits an event, then we propagate it
-    const searchDescendant = tester.searchDescendants
-      .componentInstance as DescendantsCheckboxComponent;
-    searchDescendant.searchDescendantsChange.emit(true);
+    tester.searchDescendants.searchDescendantsChange.emit(true);
     expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
   });
 

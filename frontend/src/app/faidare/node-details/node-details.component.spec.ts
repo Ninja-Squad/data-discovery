@@ -5,7 +5,6 @@ import { ComponentTester } from 'ngx-speculoos';
 import { TestBed } from '@angular/core/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
-import { By } from '@angular/platform-browser';
 
 @Component({
   template: '<dd-node-details [node]="node"></dd-node-details>'
@@ -25,7 +24,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get nodeDetailsComponent(): NodeDetailsComponent {
-    return this.debugElement.query(By.directive(NodeDetailsComponent)).componentInstance;
+    return this.component(NodeDetailsComponent);
   }
 }
 

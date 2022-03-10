@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { ErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { I18nTestingModule } from './i18n/i18n-testing.module.spec';
+import { ComponentTester } from 'ngx-speculoos';
 
 describe('AppComponent', () => {
   beforeEach(() =>
@@ -16,8 +17,8 @@ describe('AppComponent', () => {
   );
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
+    const tester = new ComponentTester(AppComponent);
+    const app = tester.componentInstance;
     expect(app).toBeTruthy();
   });
 });

@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 
 import { environment } from '../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, mapTo, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'dd-root',
@@ -18,7 +18,7 @@ export class AppComponent {
 
     // we just want to make sure the translations are loaded. Whether the key exists of not doesn't actually matter
     this.i18nReady$ = this.translateService.get('navbar.more').pipe(
-      mapTo(true),
+      map(() => true),
       catchError(() => of(true))
     );
   }

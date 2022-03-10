@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ComponentTester } from 'ngx-speculoos';
 
@@ -41,15 +40,15 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get smallAggregations() {
-    return this.debugElement.queryAll(By.directive(SmallAggregationComponent));
+    return this.components(SmallAggregationComponent);
   }
 
   get searchDescendants() {
-    return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
+    return this.component(DescendantsCheckboxComponent);
   }
 
   get largeAggregations() {
-    return this.debugElement.queryAll(By.directive(LargeAggregationComponent));
+    return this.components(LargeAggregationComponent);
   }
 }
 
@@ -122,10 +121,10 @@ describe('AggregationsComponent', () => {
 
     // then it should display each aggregation
     expect(tester.smallAggregations.length).toBe(2);
-    const aggregation1 = tester.smallAggregations[0].componentInstance as SmallAggregationComponent;
+    const aggregation1 = tester.smallAggregations[0];
     expect(aggregation1.aggregation).toBe(domain);
     expect(aggregation1.selectedKeys).toEqual([]);
-    const aggregation2 = tester.smallAggregations[1].componentInstance as SmallAggregationComponent;
+    const aggregation2 = tester.smallAggregations[1];
     expect(aggregation2.aggregation).toBe(coo);
     expect(aggregation2.selectedKeys).toEqual(['France']);
   });
@@ -155,12 +154,12 @@ describe('AggregationsComponent', () => {
 
     // then it should display an aggregation of each type
     expect(tester.smallAggregations.length).toBe(1);
-    const small = tester.smallAggregations[0].componentInstance as SmallAggregationComponent;
+    const small = tester.smallAggregations[0];
     expect(small.aggregation).toBe(domain);
     expect(small.selectedKeys).toEqual([]);
 
     expect(tester.largeAggregations.length).toBe(1);
-    const large = tester.largeAggregations[0].componentInstance as LargeAggregationComponent;
+    const large = tester.largeAggregations[0];
     expect(large.aggregation).toBe(coo);
     expect(large.selectedKeys).toEqual(['France']);
   });
@@ -179,10 +178,10 @@ describe('AggregationsComponent', () => {
 
     // then it should display 2 small aggregations
     expect(tester.smallAggregations.length).toBe(2);
-    const small = tester.smallAggregations[0].componentInstance as SmallAggregationComponent;
+    const small = tester.smallAggregations[0];
     expect(small.aggregation).toBe(domain);
     expect(small.selectedKeys).toEqual([]);
-    const largeAsSmall = tester.smallAggregations[1].componentInstance as SmallAggregationComponent;
+    const largeAsSmall = tester.smallAggregations[1];
     expect(largeAsSmall.aggregation).toBe(coo);
     expect(largeAsSmall.selectedKeys).toEqual(['France']);
   });
@@ -198,8 +197,7 @@ describe('AggregationsComponent', () => {
     tester.detectChanges();
 
     // when the aggregation emits an event
-    const aggregationComponent = tester.smallAggregations[0]
-      .componentInstance as SmallAggregationComponent;
+    const aggregationComponent = tester.smallAggregations[0];
     const criteria = { name: 'coo', values: ['France'] };
     aggregationComponent.aggregationChange.emit(criteria);
 
@@ -238,8 +236,7 @@ describe('AggregationsComponent', () => {
     tester.detectChanges();
 
     // when an event is emitted by an aggregation
-    const aggregationComponent = tester.smallAggregations[0]
-      .componentInstance as SmallAggregationComponent;
+    const aggregationComponent = tester.smallAggregations[0];
     aggregationComponent.aggregationChange.emit({
       name: 'coo',
       values: ['France']
@@ -266,8 +263,7 @@ describe('AggregationsComponent', () => {
     expect(tester.smallAggregations.length).toBe(1);
 
     // when an event is emitted by an aggregation
-    const searchDescendants = tester.searchDescendants
-      .componentInstance as DescendantsCheckboxComponent;
+    const searchDescendants = tester.searchDescendants;
     searchDescendants.searchDescendantsChange.emit(true);
     tester.detectChanges();
 
@@ -300,9 +296,7 @@ describe('AggregationsComponent', () => {
     expect(tester.largeAggregations.length).toBe(1);
 
     // when an event is emitted by an aggregation
-    const searchDescendants = tester.searchDescendants
-      .componentInstance as DescendantsCheckboxComponent;
-    searchDescendants.searchDescendantsChange.emit(true);
+    tester.searchDescendants.searchDescendantsChange.emit(true);
     tester.detectChanges();
 
     expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();

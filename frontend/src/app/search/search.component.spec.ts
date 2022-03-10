@@ -3,10 +3,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { filter, map, Observable, of, ReplaySubject } from 'rxjs';
-import { ComponentTester, fakeRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
 import { DocumentsComponent } from '../documents/documents.component';
@@ -53,19 +52,19 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
   }
 
   get results() {
-    return this.debugElement.queryAll(By.directive(RareDocumentComponent));
+    return this.elements(RareDocumentComponent);
   }
 
   get pagination() {
-    return this.debugElement.query(By.directive(NgbPagination));
+    return this.component(NgbPagination);
   }
 
   get aggregations() {
-    return this.debugElement.queryAll(By.directive(SmallAggregationComponent));
+    return this.elements(SmallAggregationComponent);
   }
 
-  get aggregationsComponent(): AggregationsComponent | null {
-    return this.debugElement.query(By.directive(AggregationsComponent))?.componentInstance ?? null;
+  get aggregationsComponent() {
+    return this.component(AggregationsComponent);
   }
 
   get filterToggler() {
@@ -80,22 +79,12 @@ describe('SearchComponent', () => {
   let route: ActivatedRoute;
 
   beforeEach(() => {
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', [
-      'isEnabled',
-      'isAccessionInBasket'
-    ]);
+    basketService = createMock(BasketService);
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(of(false));
 
     modelSubject = new ReplaySubject<Model>();
-    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
-      'initialize',
-      'newSearch',
-      'changeAggregations',
-      'changePage',
-      'changeSearchDescendants',
-      'getDocuments'
-    ]);
+    searchStateService = createMock(SearchStateService);
     searchStateService.initialize.and.returnValue(modelSubject);
     searchStateService.getDocuments.and.returnValue(
       modelSubject.pipe(
@@ -104,7 +93,7 @@ describe('SearchComponent', () => {
       ) as Observable<Page<DocumentModel>>
     );
 
-    route = fakeRoute({});
+    route = stubRoute();
 
     TestBed.overrideComponent(SearchComponent, {
       set: { providers: [{ provide: SearchStateService, useValue: searchStateService }] }
@@ -236,7 +225,7 @@ describe('SearchComponent', () => {
     });
 
     it('should change page', fakeAsync(() => {
-      (tester.pagination.componentInstance as NgbPagination).pageChange.emit(1);
+      tester.pagination.pageChange.emit(1);
       tester.detectChanges();
       tick();
       tester.detectChanges();
@@ -295,9 +284,8 @@ describe('SearchComponent', () => {
       // then it should limit the pagination to 500 pages in the pagination
       // and a pagination with one page
       expect(tester.pagination).not.toBeNull();
-      const paginationComponent = tester.pagination.componentInstance as NgbPagination;
-      expect(paginationComponent.page).toBe(201);
-      expect(paginationComponent.pageCount).toBe(500);
+      expect(tester.pagination.page).toBe(201);
+      expect(tester.pagination.pageCount).toBe(500);
     });
 
     it('should not display pagination if empty result', () => {

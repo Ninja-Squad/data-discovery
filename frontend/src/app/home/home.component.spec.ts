@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { By } from '@angular/platform-browser';
 import { ComponentTester } from 'ngx-speculoos';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -36,7 +35,7 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
   }
 
   get pillarsComponent() {
-    return this.debugElement.query(By.directive(PillarsComponent)) ?? null;
+    return this.element(PillarsComponent);
   }
 
   get exampleQueriesSection() {
@@ -48,7 +47,7 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
   }
 
   get aggregations(): AggregationsComponent | null {
-    return this.debugElement.query(By.directive(AggregationsComponent))?.componentInstance ?? null;
+    return this.component(AggregationsComponent);
   }
 }
 

@@ -1,5 +1,5 @@
 import { OntologyAggregationModalComponent } from './ontology-aggregation-modal.component';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -84,17 +84,8 @@ describe('OntologyAggregationModalComponent', () => {
   let treeI18n: TreeI18n;
 
   beforeEach(() => {
-    activeModal = jasmine.createSpyObj<NgbActiveModal>('NgbActiveModal', ['close', 'dismiss']);
-    ontologyService = jasmine.createSpyObj<OntologyService>('OntologyService', [
-      'getPreferredLanguage',
-      'setPreferredLanguage',
-      'getTree',
-      'getTreeI18n',
-      'getOntology',
-      'getTraitClass',
-      'getTrait',
-      'getVariable'
-    ]);
+    activeModal = createMock(NgbActiveModal);
+    ontologyService = createMock(OntologyService);
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],

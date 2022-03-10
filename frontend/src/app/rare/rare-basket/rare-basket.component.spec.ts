@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { RareBasketComponent } from './rare-basket.component';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
 import { of, Subject } from 'rxjs';
 import { LOCATION } from '../rare.module';
@@ -74,13 +74,7 @@ describe('RareBasketComponent', () => {
   const basketEvents = new Subject<Basket>();
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', [
-      'isEnabled',
-      'getBasket',
-      'removeFromBasket',
-      'sendBasket',
-      'clearBasket'
-    ]);
+    service = createMock(BasketService);
     service.isEnabled.and.returnValue(true);
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);

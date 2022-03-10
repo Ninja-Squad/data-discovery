@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { toAggregation } from '../../models/test-model-generators';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
@@ -94,10 +94,7 @@ describe('FaidareOntologyAggregationComponent', () => {
     // then it should emit an event
     // when the modal is closed with selected variables
     const modalService = TestBed.inject(NgbModal);
-    const mockOntologyAggregationModal = jasmine.createSpyObj<OntologyAggregationModalComponent>(
-      'OntologyAggregationModalComponent',
-      ['prepare']
-    );
+    const mockOntologyAggregationModal = createMock(OntologyAggregationModalComponent);
     spyOn(modalService, 'open').and.returnValue({
       componentInstance: mockOntologyAggregationModal,
       result: Promise.resolve(['v2', 'v3'])
