@@ -1,6 +1,6 @@
 <div class="basket-counter navbar-text" *ngIf="isEnabled && itemCounter === 0">
   <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-  <span class="badge badge-pill badge-light">0</span>
+  <span class="badge rounded-pill bg-light text-black">0</span>
 </div>
 <button
   class="basket-counter btn"
@@ -9,7 +9,7 @@
   (click)="viewItems(basketModal)"
 >
   <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-  <span class="badge badge-pill badge-light">{{ itemCounter | number }}</span>
+  <span class="badge rounded-pill bg-light text-black">{{ itemCounter | number }}</span>
 </button>
 
 <ng-template #buttonTooltip>
@@ -29,9 +29,12 @@
 <ng-template #basketModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title" translate="rare-basket.modal-title"></h4>
-    <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button
+      type="button"
+      class="btn btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    ></button>
   </div>
   <div class="modal-body">
     <ng-container *ngIf="basket && basket.items.length > 0; else emptyBasket">
@@ -56,7 +59,7 @@
             <a href="./eula" target="_blank" translate="rare-basket.eula-link"></a>&ngsp;
             <span translate="rare-basket.eula-end"></span>
           </div>
-          <div class="form-group form-check mb-0">
+          <div class="form-check">
             <input
               [formControl]="eulaAgreementControl"
               type="checkbox"

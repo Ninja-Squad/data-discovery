@@ -37,15 +37,13 @@
     </div>
   </h3>
   <div>
-    <span class="mr-4">
+    <span class="me-4">
       <a class="datasource-link" [href]="document.portalURL" target="_blank">{{
         document.databaseSource
       }}</a>
     </span>
-    <span class="taxon mr-4">
-      <span *ngFor="let taxon of document.taxon" class="badge badge-secondary mr-2">{{
-        taxon
-      }}</span>
+    <span class="taxon me-4">
+      <span *ngFor="let taxon of document.taxon" class="badge bg-secondary me-2">{{ taxon }}</span>
     </span>
     <span class="type">
       {{ document.materialType?.join(', ') }}

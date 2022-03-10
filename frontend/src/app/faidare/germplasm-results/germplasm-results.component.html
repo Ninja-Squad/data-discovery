@@ -9,8 +9,8 @@
           id="download-mcpd-button"
           [disabled]="!!vm.downloading"
         >
-          <span class="fa fa-download fa-fw mr-1" *ngIf="vm.downloading !== 'mcpd'"></span>
-          <span class="fa fa-spinner fa-spin fa-fw mr-1" *ngIf="vm.downloading === 'mcpd'"></span>
+          <span class="fa fa-download fa-fw me-1" *ngIf="vm.downloading !== 'mcpd'"></span>
+          <span class="fa fa-spinner fa-spin fa-fw me-1" *ngIf="vm.downloading === 'mcpd'"></span>
           <span translate="faidare.germplasm-results.download-mcpd"></span>
         </button>
       </div>
@@ -23,11 +23,11 @@
           [disabled]="!!vm.downloading"
         >
           <span
-            class="fa fa-download fa-fw mr-1"
+            class="fa fa-download fa-fw me-1"
             *ngIf="vm.downloading !== 'plant-material'"
           ></span>
           <span
-            class="fa fa-spinner fa-spin fa-fw mr-1"
+            class="fa fa-spinner fa-spin fa-fw me-1"
             *ngIf="vm.downloading === 'plant-material'"
           ></span>
           <span translate="faidare.germplasm-results.download-plant-material"></span>

@@ -7,6 +7,7 @@ $component-active-bg: $_theme-primary-color;
 // override default link colors
 $link-color: #a43544;
 $link-hover-color: $_theme-secondary-color;
+$link-decoration: none;
 
 // override default shadows behavior
 $enable-shadows: true;
@@ -14,6 +15,7 @@ $enable-shadows: true;
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';
 
 // public custom variables used in this theme, and in component styles
 

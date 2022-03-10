@@ -8,7 +8,7 @@
 
 ::ng-deep th,
 ::ng-deep td {
-  padding: $table-cell-padding;
+  padding: $table-cell-padding-y $table-cell-padding-x;
   border: 1px solid $_theme-primary-color;
 }
 

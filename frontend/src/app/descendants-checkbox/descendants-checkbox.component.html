@@ -1,19 +1,19 @@
-<div class="custom-control custom-switch">
+<div class="form-check form-switch">
   <input
     #checkbox
     type="checkbox"
-    class="custom-control-input"
+    class="form-check-input"
     id="descendants-checkbox"
     (change)="onDescendantsChecked(checkbox.checked)"
     [checked]="searchDescendants"
   />
   <label
-    class="custom-control-label"
+    class="form-check-label"
     for="descendants-checkbox"
     translate="descendants-checkbox.expand-search"
   ></label>
   <span
-    class="ml-1 fa fa-question-circle-o icon-size"
+    class="ms-1 fa fa-question-circle-o icon-size"
     aria-hidden="true"
     [ngbTooltip]="'descendants-checkbox.tooltip' | translate"
     placement="top"

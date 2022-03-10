@@ -9,6 +9,7 @@ $component-active-bg: $_theme-blue;
 // override default link colors
 $link-color: lighten($_theme-blue, 0.4);
 $link-hover-color: $_theme-primary-color;
+$link-decoration: none;
 
 // override default shadows behavior
 $enable-shadows: true;
@@ -16,6 +17,7 @@ $enable-shadows: true;
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';
 
 // custom button
 $theme-btn-color: $white;

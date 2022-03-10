@@ -66,7 +66,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get pills() {
-    return this.elements('.badge-pill');
+    return this.elements('.rounded-pill');
   }
 
   get largeAggregationComponent(): LargeAggregationComponent {
