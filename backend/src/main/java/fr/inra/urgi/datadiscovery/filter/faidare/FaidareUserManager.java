@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import org.elasticsearch.common.cache.Cache;
 import org.elasticsearch.common.cache.CacheBuilder;
-import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.core.TimeValue;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

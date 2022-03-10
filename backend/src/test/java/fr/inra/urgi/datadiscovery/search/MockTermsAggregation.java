@@ -36,7 +36,7 @@ public final class MockTermsAggregation implements Terms {
     }
 
     @Override
-    public long getDocCountError() {
+    public Long getDocCountError() {
         throw new UnsupportedOperationException();
     }
 
