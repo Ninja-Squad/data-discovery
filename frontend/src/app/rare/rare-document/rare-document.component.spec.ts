@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
@@ -68,12 +68,7 @@ describe('RareDocumentComponent', () => {
   const basketEvents = new Subject<boolean>();
 
   beforeEach(() => {
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', [
-      'isEnabled',
-      'isAccessionInBasket',
-      'addToBasket',
-      'removeFromBasket'
-    ]);
+    basketService = createMock(BasketService);
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({

@@ -2,10 +2,10 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { Model, SearchStateService } from './search-state.service';
 import { SearchService } from './search.service';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { fakeRoute } from 'ngx-speculoos';
+import { Params, Router } from '@angular/router';
+import { ActivatedRouteStub, createMock, stubRoute } from 'ngx-speculoos';
 import { toAggregation, toRareDocument, toSecondPage } from './models/test-model-generators';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { DocumentModel } from './models/document.model';
 import { Aggregation, Page } from './models/page';
 
@@ -15,8 +15,8 @@ describe('SearchStateService', () => {
   let router!: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    searchService = jasmine.createSpyObj<SearchService>('SearchService', ['search', 'aggregate']);
-    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    searchService = createMock(SearchService);
+    router = createMock(Router);
 
     TestBed.configureTestingModule({
       providers: [
@@ -30,8 +30,8 @@ describe('SearchStateService', () => {
   });
 
   it('should initialize state with query parameters and fragment', () => {
-    const route = fakeRoute({
-      queryParams: of({
+    const route = stubRoute({
+      queryParams: {
         query: 'Test',
         page: '2',
         entry: 'Germplasm',
@@ -39,8 +39,8 @@ describe('SearchStateService', () => {
         sort: 'name',
         direction: 'desc',
         descendants: 'true'
-      }),
-      fragment: of('germplasm')
+      },
+      fragment: 'germplasm'
     });
 
     const model$ = service.initialize(route);
@@ -85,11 +85,10 @@ describe('SearchStateService', () => {
   });
 
   it('should initialize state without loading status if it does not take too much time', fakeAsync(() => {
-    const route = fakeRoute({
-      queryParams: of({
+    const route = stubRoute({
+      queryParams: {
         query: 'Test'
-      }),
-      fragment: of(undefined as unknown as string)
+      }
     });
 
     const model$ = service.initialize(route);
@@ -131,11 +130,10 @@ describe('SearchStateService', () => {
   }));
 
   it('should initialize state with loading status if it does takes too much time', fakeAsync(() => {
-    const route = fakeRoute({
-      queryParams: of({
+    const route = stubRoute({
+      queryParams: {
         query: 'Test'
-      }),
-      fragment: of(undefined as unknown as string)
+      }
     });
 
     const model$ = service.initialize(route);
@@ -207,29 +205,23 @@ describe('SearchStateService', () => {
 
   describe('once initialized', () => {
     let model: Model;
-    let route: ActivatedRoute;
-
-    let queryParamsSubject: BehaviorSubject<Params>;
-    let fragmentSubject: BehaviorSubject<string | undefined>;
+    let route: ActivatedRouteStub;
 
     let initialDocuments: Page<DocumentModel>;
     let initialAggregations: Array<Aggregation>;
 
     beforeEach(() => {
-      queryParamsSubject = new BehaviorSubject<Params>({
-        query: 'Test',
-        page: '2',
-        entry: 'Germplasm',
-        coo: ['FR', 'IT'],
-        sort: 'name',
-        direction: 'desc',
-        descendants: 'true'
-      });
-      fragmentSubject = new BehaviorSubject<string | undefined>('germplasm');
-
-      route = fakeRoute({
-        queryParams: queryParamsSubject,
-        fragment: fragmentSubject as Observable<string>
+      route = stubRoute({
+        queryParams: {
+          query: 'Test',
+          page: '2',
+          entry: 'Germplasm',
+          coo: ['FR', 'IT'],
+          sort: 'name',
+          direction: 'desc',
+          descendants: 'true'
+        },
+        fragment: 'germplasm'
       });
 
       const model$ = service.initialize(route);
@@ -268,9 +260,10 @@ describe('SearchStateService', () => {
         fragment: undefined
       });
 
-      queryParamsSubject.next(expectedQueryParams);
-      fragmentSubject.next(undefined);
-
+      route.triggerNavigation({
+        queryParams: expectedQueryParams,
+        fragment: null
+      });
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).toHaveBeenCalled();
 
@@ -318,7 +311,7 @@ describe('SearchStateService', () => {
         fragment: 'germplasm'
       });
 
-      queryParamsSubject.next(expectedQueryParams);
+      route.setQueryParams(expectedQueryParams);
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).toHaveBeenCalled();
@@ -371,7 +364,7 @@ describe('SearchStateService', () => {
         fragment: 'germplasm'
       });
 
-      queryParamsSubject.next(expectedQueryParams);
+      route.setQueryParams(expectedQueryParams);
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).toHaveBeenCalled();
@@ -424,7 +417,7 @@ describe('SearchStateService', () => {
         fragment: 'germplasm'
       });
 
-      queryParamsSubject.next(expectedQueryParams);
+      route.setQueryParams(expectedQueryParams);
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).not.toHaveBeenCalled();
@@ -489,8 +482,10 @@ describe('SearchStateService', () => {
       searchService.search.and.returnValue(documentsSubject);
       searchService.aggregate.and.returnValue(aggregationsSubject);
 
-      queryParamsSubject.next({ query: 'foo' });
-      fragmentSubject.next(undefined);
+      route.triggerNavigation({
+        queryParams: { query: 'foo' },
+        fragment: null
+      });
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).toHaveBeenCalled();

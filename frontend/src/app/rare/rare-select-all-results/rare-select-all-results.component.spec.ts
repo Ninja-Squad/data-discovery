@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { RareSelectAllResultsComponent } from './rare-select-all-results.component';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -36,11 +36,7 @@ describe('RareSelectAllResultsComponent', () => {
   const rosaWithoutAccessionHolder = { name: 'Rosa3', identifier: 'rosa3' } as RareDocumentModel;
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<BasketService>('BasketService', [
-      'isAccessionInBasket',
-      'removeFromBasket',
-      'addToBasket'
-    ]);
+    service = createMock(BasketService);
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],
       declarations: [TestComponent, RareSelectAllResultsComponent],

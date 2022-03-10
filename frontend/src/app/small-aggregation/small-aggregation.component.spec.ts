@@ -12,7 +12,6 @@ import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendant
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { environment } from '../../environments/environment';
-import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { Aggregation } from '../models/page';
 
@@ -57,11 +56,11 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get searchDescendants() {
-    return this.debugElement.query(By.directive(DescendantsCheckboxComponent));
+    return this.component(DescendantsCheckboxComponent);
   }
 
-  get component(): SmallAggregationComponent {
-    return this.debugElement.query(By.directive(SmallAggregationComponent)).componentInstance;
+  get smallAggregationComponent(): SmallAggregationComponent {
+    return this.component(SmallAggregationComponent);
   }
 }
 
@@ -143,7 +142,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should have a form with several fields
-    const controls = tester.component.aggregationForm.controls;
+    const controls = tester.smallAggregationComponent.aggregationForm.controls;
     expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
   });
 
@@ -159,10 +158,10 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // then it should have a form with several fields
-    const controls = tester.component.aggregationForm.controls;
+    const controls = tester.smallAggregationComponent.aggregationForm.controls;
     expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
     // and France should be checked
-    expect(tester.component.aggregationForm.get('France')!.value).toBeTruthy();
+    expect(tester.smallAggregationComponent.aggregationForm.get('France')!.value).toBeTruthy();
   });
 
   it('should emit an event when a checkbox is toggled', () => {
@@ -195,7 +194,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // it should have a form with no selected checkbox
-    expect(tester.component.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
       France: false,
       Italy: false,
       'New Zealand': false,
@@ -207,7 +206,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // it should update the form selected checkbox
-    expect(tester.component.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
       France: true,
       Italy: false,
       'New Zealand': false,
@@ -219,7 +218,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // it should update the form selected checkboxes
-    expect(tester.component.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
       France: true,
       Italy: true,
       'New Zealand': false,
@@ -231,7 +230,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // it should leave the form selected checkboxes as they are
-    expect(tester.component.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
       France: true,
       Italy: true,
       'New Zealand': false,
@@ -243,7 +242,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // it should update the form selected checkboxes
-    expect(tester.component.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
       France: true,
       Italy: false,
       'New Zealand': false,
@@ -255,7 +254,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
 
     // it should update the form selected checkboxes
-    expect(tester.component.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
       France: false,
       Italy: false,
       'New Zealand': false,
@@ -273,7 +272,7 @@ describe('SmallAggregationComponent', () => {
     tester.componentInstance.aggregation = toAggregation('coo', ['Italy']);
     tester.detectChanges();
 
-    expect(tester.component.aggregationForm.disabled).toBe(true);
+    expect(tester.smallAggregationComponent.aggregationForm.disabled).toBe(true);
     expect(tester.firstCheckbox.nativeElement.disabled).toBe(true);
 
     expect(tester.title.nativeElement.classList).toContain('text-muted');
@@ -286,12 +285,12 @@ describe('SmallAggregationComponent', () => {
     tester.componentInstance.aggregation = aggregation;
     tester.detectChanges();
 
-    expect(tester.component.aggregationForm.disabled).toBeFalse();
+    expect(tester.smallAggregationComponent.aggregationForm.disabled).toBeFalse();
     expect(tester.firstCheckbox.nativeElement.disabled).toBeFalse();
 
     tester.componentInstance.disabled = true;
     tester.detectChanges();
-    expect(tester.component.aggregationForm.disabled).toBeTrue();
+    expect(tester.smallAggregationComponent.aggregationForm.disabled).toBeTrue();
     expect(tester.firstCheckbox.nativeElement.disabled).toBeTrue();
     expect(tester.title.nativeElement.classList).toContain('text-muted');
   });
@@ -318,9 +317,7 @@ describe('SmallAggregationComponent', () => {
     expect(tester.searchDescendants).not.toBeNull();
 
     // when the checkbox emits an event, then we propagate it
-    const searchDescendant = tester.searchDescendants
-      .componentInstance as DescendantsCheckboxComponent;
-    searchDescendant.searchDescendantsChange.emit(true);
+    tester.searchDescendants.searchDescendantsChange.emit(true);
     expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
   });
 

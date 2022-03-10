@@ -35,10 +35,9 @@ describe('ErrorInterceptorService', () => {
     });
 
     httpClient.get('/test').subscribe({ error: noop });
-    http.expectOne('/test').error(new ErrorEvent('unknown', { message: 'not good' }));
+    http.expectOne('/test').error(new ProgressEvent('unknown'));
 
-    expect(error.status).toBeNull();
-    expect(error.message).toBe('not good');
+    expect(error.status).toBe(0);
   });
 
   it('should emit error when error is an HTTP response', () => {

@@ -5,8 +5,7 @@ import {
   toAllTransition,
   toGermplasmTransition
 } from './faidare-document-list.component';
-import { ComponentTester } from 'ngx-speculoos';
-import { By } from '@angular/platform-browser';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { GenericDocumentComponent } from '../../urgi-common/generic-document/generic-document.component';
 import { Aggregation } from '../../models/page';
 import { NgbNavLink } from '@ng-bootstrap/ng-bootstrap';
@@ -25,15 +24,15 @@ class FaidareDocumentListComponentTester extends ComponentTester<FaidareDocument
   }
 
   get documents() {
-    return this.debugElement.queryAll(By.directive(GenericDocumentComponent));
+    return this.elements(GenericDocumentComponent);
   }
 
   get germplasmResults() {
-    return this.debugElement.query(By.directive(GermplasmResultsStubComponent));
+    return this.element(GermplasmResultsStubComponent);
   }
 
   get tabs() {
-    return this.debugElement.queryAll(By.directive(NgbNavLink));
+    return this.elements(NgbNavLink);
   }
 
   get firstTab() {
@@ -58,11 +57,7 @@ describe('FaidareDocumentListComponent', () => {
 
   beforeEach(() => {
     modelSubject = new ReplaySubject<Model>(1);
-    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
-      'getModel',
-      'disableAggregation',
-      'applyTransition'
-    ]);
+    searchStateService = createMock(SearchStateService);
     searchStateService.getModel.and.returnValue(modelSubject);
 
     TestBed.configureTestingModule({

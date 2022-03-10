@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { GermplasmResultsComponent } from './germplasm-results.component';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { Page } from '../../models/page';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
@@ -69,14 +69,11 @@ describe('GermplasmResultsComponent', () => {
 
   beforeEach(() => {
     modelSubject = new ReplaySubject<Model>(1);
-    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
-      'getModel',
-      'sort'
-    ]);
+    searchStateService = createMock(SearchStateService);
     searchStateService.getModel.and.returnValue(modelSubject);
 
-    exportService = jasmine.createSpyObj<ExportService>('ExportService', ['export']);
-    downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
+    exportService = createMock(ExportService);
+    downloadService = createMock(DownloadService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],

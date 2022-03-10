@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { DocumentsComponent } from './documents.component';
 import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
@@ -26,7 +25,7 @@ class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
   }
 
   get results() {
-    return this.debugElement.queryAll(By.directive(RareDocumentComponent));
+    return this.components(RareDocumentComponent);
   }
 
   get noResults() {
@@ -45,17 +44,12 @@ describe('DocumentsComponent', () => {
   let tester: DocumentsComponentTester;
 
   beforeEach(() => {
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', [
-      'isEnabled',
-      'isAccessionInBasket'
-    ]);
+    basketService = createMock(BasketService);
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(of(false));
 
     documentsSubject = new ReplaySubject<Page<DocumentModel>>(1);
-    searchStateService = jasmine.createSpyObj<SearchStateService>('SearchStateService', [
-      'getDocuments'
-    ]);
+    searchStateService = createMock(SearchStateService);
     searchStateService.getDocuments.and.returnValue(documentsSubject);
 
     registerLocaleData(localeFr);
@@ -99,9 +93,9 @@ describe('DocumentsComponent', () => {
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(2);
 
-    const result1 = tester.results[0].componentInstance as RareDocumentComponent;
+    const result1 = tester.results[0];
     expect(result1.document).toBe(bacteria1);
-    const result2 = tester.results[1].componentInstance as RareDocumentComponent;
+    const result2 = tester.results[1];
     expect(result2.document).toBe(bacteria2);
 
     expect(tester.resume).toContainText('Results 1 to 2 of 2');

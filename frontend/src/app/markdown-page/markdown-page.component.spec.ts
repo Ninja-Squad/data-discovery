@@ -3,18 +3,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MarkdownPageComponent } from './markdown-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { of } from 'rxjs';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { HttpClient } from '@angular/common/http';
 import { markedOptionsFactory } from '../app.module';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { fakeRoute } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { stubRoute } from 'ngx-speculoos';
 
 describe('MarkdownPageComponent', () => {
   let component: MarkdownPageComponent;
   let fixture: ComponentFixture<MarkdownPageComponent>;
-  const route = fakeRoute({ data: of({ mdFile: environment.helpMdFile }) });
+  const route = stubRoute({
+    data: { mdFile: environment.helpMdFile }
+  });
 
   beforeEach(() =>
     TestBed.configureTestingModule({

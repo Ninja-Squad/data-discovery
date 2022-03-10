@@ -4,7 +4,6 @@ import { ComponentTester } from 'ngx-speculoos';
 import { NavbarComponent } from './navbar.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { By } from '@angular/platform-browser';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/generic-rare-basket.component';
 
@@ -17,8 +16,8 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
     return this.element('#navbar');
   }
 
-  get ngbCollapse(): NgbCollapse {
-    return this.debugElement.query(By.directive(NgbCollapse)).injector.get(NgbCollapse);
+  get ngbCollapse() {
+    return this.token(NgbCollapse, NgbCollapse);
   }
 
   get toggler() {
@@ -30,7 +29,7 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   }
 
   get firstLink() {
-    return this.element('li').element('a');
+    return this.element('li a');
   }
 
   get title() {
