@@ -1,8 +1,5 @@
-import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
 
 buildscript {
     repositories {
@@ -16,7 +13,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "2.6.4"
     id("com.gorylenko.gradle-git-properties") version "2.4.0"
-    id("org.asciidoctor.convert") version "1.5.9.2"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.sonarqube")
 }
@@ -48,7 +45,7 @@ tasks {
     // but it's better to do that than using the bootInfo() method of the springBoot closure, because that
     // makes the test task out of date, which makes the build much longer.
     // See https://github.com/spring-projects/spring-boot/issues/13152
-    val buildInfo by creating(BuildInfo::class) {
+    val buildInfo by registering(BuildInfo::class) {
         destinationDir = file("$buildDir/buildInfo")
     }
 
@@ -67,7 +64,7 @@ tasks {
         }
     }
 
-    val bootJar by getting(BootJar::class) {
+    bootJar {
         archiveFileName.set("${project.app}.jar")
         dependsOn(":frontend:assemble")
         dependsOn(buildInfo)
@@ -76,16 +73,16 @@ tasks {
             from("${project(":frontend").projectDir}/dist/data-discovery-frontend")
         }
         into("BOOT-INF/classes/META-INF") {
-            from(buildInfo.destinationDir)
+            from(buildInfo.map { it.destinationDir })
         }
         launchScript()
     }
 
-    val bootRun by getting(BootRun::class) {
+    bootRun {
         jvmArgs("-Dspring.profiles.active=${project.app}-app")
     }
 
-    val test by getting(Test::class) {
+    test {
         useJUnitPlatform()
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
@@ -93,14 +90,15 @@ tasks {
         outputs.dir(snippetsDir)
     }
 
-    val jacocoTestReport by getting(JacocoReport::class) {
+    jacocoTestReport {
         reports {
             xml.required.set(true)
             html.required.set(true)
         }
     }
 
-    val asciidoctor by getting(AsciidoctorTask::class) {
+    asciidoctor {
+        configurations("asciidoctorExt")
         inputs.dir(snippetsDir)
         dependsOn(test)
         sourceDir("src/main/asciidoc")
@@ -112,6 +110,8 @@ dependencyManagement {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
 }
+
+configurations.create("asciidoctorExt")
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -126,6 +126,6 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("com.squareup.okhttp3:mockwebserver")
 
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE")
+    "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
 
