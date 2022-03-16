@@ -97,6 +97,7 @@ else
     APP_SETTINGS_NAME="${APP_NAME}"
 fi
 
+PREFIX_ES="${APP_NAME}-search-${APP_ENV}"
 CODE=0
 
 check_acknowledgment() {
@@ -109,10 +110,10 @@ check_acknowledgment() {
 # each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output
 
 ### SETTINGS & MAPPINGS TEMPLATE
-echo ; echo "Create settings/mappings template: ${APP_NAME}-${APP_ENV}-settings-template"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template?pretty" -H 'Content-Type: application/json' -d"
+echo ; echo "Create settings/mappings template: ${PREFIX_ES}-settings-template"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${PREFIX_ES}-settings-template?pretty" -H 'Content-Type: application/json' -d"
 {
-  \"index_patterns\": [\"${APP_NAME}-${APP_ENV}-tmstp*-resource*\"],
+  \"index_patterns\": [\"${PREFIX_ES}-tmstp*-resource*\"],
   \"order\": 101,
   \"mappings\":
         $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
@@ -124,18 +125,18 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-
 > ${TMP_FILE}
 check_acknowledgment
 echo "You can check the state of the settings template with:"
-echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${APP_NAME}-${APP_ENV}-settings-template?pretty'"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${PREFIX_ES}-settings-template?pretty'"
 
 ## CREATE FIRST INDEX ALIASED BY THE ROLLOVER
-echo ; echo "Create index to write first in: ${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index?pretty" > ${TMP_FILE}
+echo ; echo "Create index to write first in: ${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index?pretty" > ${TMP_FILE}
 check_acknowledgment
 echo "You can check the state of the aliased index with:"
-echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/?pretty'"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index/?pretty'"
 
 ## CREATE SUGGESTION INDEX
-echo ; echo "Create index aiming to store all suggestions: ${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions?pretty"\
+echo ; echo "Create index aiming to store all suggestions: ${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index?pretty"\
  -H 'Content-Type: application/json' -d"
 {
     \"mappings\":
@@ -148,7 +149,24 @@ curl -s -X PUT "${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-s
 > ${TMP_FILE}
 check_acknowledgment
 echo "You can check the state of the index index with:"
-echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions?pretty'"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index?pretty'"
+
+## CREATE PRIVATE SUGGESTION INDEX
+echo ; echo "Create index aiming to store all suggestions: ${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index"
+curl -s -X PUT "${ES_HOST}:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index?pretty"\
+ -H 'Content-Type: application/json' -d"
+{
+    \"mappings\":
+        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
+        ,
+    \"settings\":
+            $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
+}
+"\
+> ${TMP_FILE}
+check_acknowledgment
+echo "You can check the state of the index index with:"
+echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index?pretty'"
 
 rm -f $TMP_FILE
 
