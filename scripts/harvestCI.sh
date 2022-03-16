@@ -110,6 +110,7 @@ else
     ID_FIELD=""
 fi
 export ID_FIELD APP_NAME
+PREFIX_ES="${APP_NAME}-search-${APP_ENV}"
 
 DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 [ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
@@ -142,7 +143,7 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 mkdir -p "$OUTDIR"
 
 FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
-export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS
+export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS PREFIX_ES
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
@@ -151,21 +152,27 @@ index_resources() {
             | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index/_bulk\"\
+                -XPOST \"$3:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index/_bulk\"\
                 --data-binary '@-' > ${OUTDIR}/$2-resources.log.gz "
 }
 
 index_suggestions() {
     bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"$3:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions/_bulk\"\
+                -XPOST \"$3:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index/_bulk\"\
                 --data-binary '@$1' > ${OUTDIR}/$2-suggestions.log.gz"
 }
 
-export -f index_resources index_suggestions
+index_private_suggestions() {
+    bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
+                -XPOST \"$3:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index/_bulk\"\
+                --data-binary '@$1' > ${OUTDIR}/$2-suggestions.log.gz"
+}
+
+export -f index_resources index_suggestions index_private_suggestions
 
 {
     # set -x
-    echo "Indexing files into ${DATADIR} towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index ..."
+    echo "Indexing files into ${DATADIR} towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index ..."
     find ${DATADIR}/data/ -maxdepth 2 -name "*.json.gz" | \
         parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} {1/.} {2} \
         :::: - ::: ${ES_HOSTS}
@@ -182,7 +189,7 @@ FILES_IN_ERROR=$(find "${OUTDIR}" -size "+0" -name "*jq.err")
 [ -n "${FILES_IN_ERROR}" ] && { echo -e "${RED}ERROR: some problems occured with JQ processing, look at files:${ORANGE} ${FILES_IN_ERROR}${NC}" ; exit 4 ; }
 
 echo "Indexing has finished, updating settings"
-curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource/_settings\" --data-binary '@-' <<EOF
+curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index/_settings\" --data-binary '@-' <<EOF
 {
     "number_of_replicas": 0,
     "refresh_interval": "30s",
@@ -191,7 +198,7 @@ EOF
 
 {
     # set -x
-    echo "Indexing suggestions into ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions ..."
+    echo "Indexing suggestions into ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index ..."
     find ${DATADIR}/suggestions/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
         parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
         :::: - ::: ${ES_HOSTS}
@@ -202,6 +209,21 @@ EOF
 	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
 	exit $code
 }
+
+#Suggestions private
+{
+    # set -x
+    echo "Indexing private suggestions into ${DATADIR}/private-suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index ..."
+    find ${DATADIR}/private-suggestions/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
+        parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_private_suggestions {1} {1/.} {2} \
+        :::: - ::: ${ES_HOSTS}
+} || {
+	code=$?
+	echo -e "${RED}A problem occurred (code=$code) when trying to index private suggestions \n"\
+		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
+	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/private/bulk*.log.gz
+	exit $code
+}
 # set -x
 PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -2 | tail -1) # current timestamp index has already been created so looking for the 2nd last one
 {
@@ -209,10 +231,14 @@ PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${A
     curl -s -H 'Content-Type: application/json' -XPOST "${ES_HOST}:${ES_PORT}/_aliases?pretty" --data-binary '@-' <<EOF
     {
         "actions" : [
-            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-*suggestion*", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
-            { "remove" : { "index" : "${APP_NAME}-${APP_ENV}-*resource*", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } },
-            { "add" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-suggestions", "alias" : "${APP_NAME}-${APP_ENV}-suggestions-alias" } },
-            { "add" : { "index" : "${APP_NAME}-${APP_ENV}-tmstp${TIMESTAMP}-resource-index", "alias" : "${APP_NAME}-${APP_ENV}-resource-alias" } }
+            { "remove" : { "index" : "${PREFIX_ES}-*suggestion*", "alias" : "${PREFIX_ES}-suggestions-alias" } },
+            { "remove" : { "index" : "${PREFIX_ES}-*resource*", "alias" : "${PREFIX_ES}-resource-alias" } },
+            { "remove" : { "index" : "${PREFIX_ES}-private-*suggestion*", "alias" : "${PREFIX_ES}-private-suggestions-alias" } },
+            { "remove" : { "index" : "${PREFIX_ES}-*resource*", "alias" : "${PREFIX_ES}-private-resource-alias" } },
+            { "add" : { "index" : "${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index", "alias" : "${PREFIX_ES}-suggestions-alias" } },
+            { "add" : { "index" : "${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index", "alias" : "${PREFIX_ES}-resource-alias" } },
+            { "add" : { "index" : "${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index", "alias" : "${PREFIX_ES}-private-suggestions-alias" } },
+            { "add" : { "index" : "${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index", "alias" : "${PREFIX_ES}-private-resource-alias" } }
         ]
     }
 EOF
