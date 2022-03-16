@@ -125,7 +125,7 @@ else
 fi
 export ID_FIELD APP_NAME URL_CARD
 
-PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
+PREFIX_ES="${APP_NAME}-search-${APP_ENV}"
 
 DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 [ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }

@@ -77,8 +77,7 @@ if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_EN
     echo && help
     exit 4
 fi
-
-PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
+PREFIX_ES="${APP_NAME}-search-${APP_ENV}"
 
 # Check ES node connectivity
 curl -s -m 5 ${ES_HOST}:${ES_PORT} > /dev/null

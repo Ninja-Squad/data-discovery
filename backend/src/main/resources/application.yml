@@ -148,7 +148,7 @@ spring:
       password: f01a7031fc17
 
 data-discovery:
-  elasticsearch-prefix: 'faidare_search_dev-'
+  elasticsearch-prefix: 'faidare-search-dev-'
   faidare:
     base-url: http://localhost:8380/faidare-dev
     user-groups:
