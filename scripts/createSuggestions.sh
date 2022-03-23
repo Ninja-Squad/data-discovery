@@ -235,11 +235,11 @@ parallel --pipe -k \
 parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
 
 else
-  time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
-  LC_ALL=C sort -u | \
-  parallel --pipe -k \
-      "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
-              s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
-  " | \
-  parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
+time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
+LC_ALL=C sort -u | \
+parallel --pipe -k \
+    "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+            s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
+" | \
+parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
 fi
