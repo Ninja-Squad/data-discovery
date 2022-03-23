@@ -108,6 +108,7 @@ elif [ "${APP_NAME}" == "wheatis" ]; then
     FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
 elif [ "${APP_NAME}" == "faidare" ]; then
     FIELDS_TO_EXTRACT="${FAIDARE_FIELDS_TO_EXTRACT}"
+    [ ! -d "${DATADIR}/private-suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/private-suggestions"
 else
     echo -e "${RED_BOLD}ERROR: app value is invalid, please specify one among following: ${GREEN}rare${RED}, ${GREEN}brc4env${RED}, ${GREEN}wheatis${RED}, or ${GREEN}faidare${RED}.${NC}" && help && exit 5
 fi
@@ -164,11 +165,78 @@ extract_suggestions() {
 }
 export -f extract_suggestions
 
-time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
-LC_ALL=C sort -u | \
-parallel --pipe -k \
-    "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
-            s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
-" | \
-parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
+extract_public_suggestions() {
+    bash -c "set -o pipefail; gunzip -c $1 |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for brc4env)
+    jq '.[] | select(.groupId == 0 or .groupId == null) | [.]' |
+    jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
+    tee \
+        >(
+            jq -r '.[]| [ ${FIELDS_TO_EXTRACT} ] | flatten' |
+            sed -r '
+                s/\"//g ;                                           # remove double quotes
+                s/,$//g ;                                           # remove line ending commas
+                s/[][]//g ;                                         # remove brackets
+                s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
+                s/[_-]$//g ;                                        # remove trailing dash and underscore
+                /^$/d ;                                             # drop empty lines
+                /^.{0,2}$/d ;                                       # drop words which length is lower than 3
+                /^[0-9:#]{2,}/d ;                                   # drop words starting with at least 2 digits or some special characters
+            ' |
+            tr '[:upper:]' '[:lower:]' | LC_ALL=C sort -u
+        ) \
+        >/dev/null \
+        >(
+            jq '.[]|.description' |
+            sed -r '
+                s/\\n/\n/g ;                                        # split on all literal backslash+n (\n)
+                s/__/\n/g ;                                         # split on double underscores
+                s/\.\s/\n/g ;                                       # split on dot followed by space
+                s/[^[:alnum:]\._-]/\n/g ;                           # split on any special character except underscore dot and dash (only keep sequences of alphanum+dot+underscore+dash)
+            ' |                                                     # above sed is separated from the one below since the first splits lines and would interfere with changes and line drops if both were merged
+            sed -r '
+                s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
+                s/[_-]$//g ;                                        # remove trailing dash and underscore
+                /^.{0,2}$/d ;                                       # drop words which length is lower than 3
+                /^[^[:alpha:]]*[[:alpha:]]{,1}[^[:alpha:]]*$/d ;    # drop words having only 0 or 1 alphabetical characters rounded by non alphabetical characters (such as: _0001G000023), considering them as not relevant
+                /^[0-9]{2,}/d ;                                     # drop words starting with at least 2 digits
+                /_[0-9]{4,}_/d ;                                    # drop words containing sequence of at least 4 digits, rounded by underscores
+                /match_part/d ;                                     # drop words containing match_part literal
+                /mp[0-9]{4,}/d ;                                    # drop words containing mp literal followed by sequence of at least 4 digits
+                /match[0-9]{4,}/d ;                                 # drop words containing match literal followed by sequence of at least 4 digits
+                /^_.*/d ;                                           # drop words starting by an underscore
+                /^[ATGCatgc]+$/d ;                                  # drop sequence of nucleotides (sequence of ATGC case insensitive)
+                /^0.*/d ;                                           # drop words starting with a 0
+            ' |
+            tr '[:upper:]' '[:lower:]' |
+            LC_ALL=C sort -u
+        ) |
+    LC_ALL=C sort -u"
+}
+export -f extract_public_suggestions
 
+if [ "${APP_NAME}" == "faidare" ]; then
+  time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
+    LC_ALL=C sort -u | \
+    parallel --pipe -k \
+        "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+                s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
+    " | \
+    parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/private-suggestions/${APP_NAME}_bulk_{#}.gz"
+
+  time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_public_suggestions | \
+      LC_ALL=C sort -u | \
+      parallel --pipe -k \
+          "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+                  s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
+      " | \
+      parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
+
+else
+  time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
+  LC_ALL=C sort -u | \
+  parallel --pipe -k \
+      "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+              s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
+  " | \
+  parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
+fi
