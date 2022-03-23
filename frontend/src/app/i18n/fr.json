@@ -54,7 +54,7 @@
     "only-one-value": "Une seule valeur possible pour",
     "several-values": "{{ count }} valeurs possibles pour",
     "filter-on": "Filtrer sur",
-    "none": "Aucun"
+    "none": "Non renseigné"
   },
   "truncatable-description": {
     "expand": "... (voir la suite)",
