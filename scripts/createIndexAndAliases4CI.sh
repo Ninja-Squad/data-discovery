@@ -135,38 +135,26 @@ echo "You can check the state of the aliased index with:"
 echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index/?pretty'"
 
 ## CREATE SUGGESTION INDEX
-echo ; echo "Create index aiming to store all suggestions: ${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index?pretty"\
- -H 'Content-Type: application/json' -d"
-{
-    \"mappings\":
-        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
-        ,
-    \"settings\":
-            $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
+create_suggestions() {
+  echo ; echo "Create index aiming to store all suggestions: $1-tmstp${TIMESTAMP}-suggestions-index"
+  curl -s -X PUT "${ES_HOST}:${ES_PORT}/$1-tmstp${TIMESTAMP}-suggestions-index?pretty"\
+   -H 'Content-Type: application/json' -d"
+  {
+      \"mappings\":
+          $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
+          ,
+      \"settings\":
+              $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
+  }
+  "\
+  > ${TMP_FILE}
+  check_acknowledgment
+  echo "You can check the state of the index index with:"
+  echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/$1-tmstp${TIMESTAMP}-suggestions-index?pretty'"
 }
-"\
-> ${TMP_FILE}
-check_acknowledgment
-echo "You can check the state of the index index with:"
-echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index?pretty'"
 
-## CREATE PRIVATE SUGGESTION INDEX
-echo ; echo "Create index aiming to store all suggestions: ${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index"
-curl -s -X PUT "${ES_HOST}:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index?pretty"\
- -H 'Content-Type: application/json' -d"
-{
-    \"mappings\":
-        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
-        ,
-    \"settings\":
-            $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
-}
-"\
-> ${TMP_FILE}
-check_acknowledgment
-echo "You can check the state of the index index with:"
-echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index?pretty'"
+create_suggestions ${PREFIX_ES}
+create_suggestions ${PREFIX_ES}-private
 
 rm -f $TMP_FILE
 
