@@ -97,7 +97,7 @@ else
     APP_SETTINGS_NAME="${APP_NAME}"
 fi
 
-PREFIX_ES="${APP_NAME}-search-${APP_ENV}"
+PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
 CODE=0
 
 check_acknowledgment() {
