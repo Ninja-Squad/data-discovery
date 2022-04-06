@@ -114,7 +114,14 @@ elif [ "$APP_NAME" == "brc4env"  ] ; then
     APP_SETTINGS_NAME="rare"
     DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
 fi
-export ID_FIELD APP_NAME
+if [ "$APP_ENV" == "prod" ]; then
+    URL_CARD="https://urgi.versailles.inrae.fr/faidare/"
+elif [ "$APP_ENV" == "dev"  ] ; then
+    URL_CARD="localhost:8380/faidare-dev/"
+else
+    URL_CARD=" "
+fi
+export ID_FIELD APP_NAME URL_CARD
 
 PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
 
@@ -153,6 +160,7 @@ export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS FILTER_DATA_SCRI
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
+            | jq --arg card '${URL_CARD}' -f ${BASEDIR}/link_card.jq \
             | jq --argjson fields '${FIELDS}' -f ${BASEDIR}/clean_fields.jq \
             | jq -c '.[] | .name = (.name|tostring) | [.]' 2>> ${OUTDIR}/$2.jq.err \
             | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
