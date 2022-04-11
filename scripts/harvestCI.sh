@@ -113,7 +113,7 @@ if [ "$APP_ENV" == "prod" ]; then
     URL_CARD="https://urgi.versailles.inrae.fr/faidare/"
 elif [ "$APP_ENV" == "dev"  ] ; then
     URL_CARD="http://localhost:8380/faidare-dev/"
-if [ "$APP_ENV" == "staging" ]; then
+elif [ "$APP_ENV" == "staging" ]; then
     URL_CARD="https://urgi-staging.versailles.inrae.fr/faidare/"
 else
     URL_CARD=" "
