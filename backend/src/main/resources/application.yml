@@ -141,7 +141,7 @@ spring:
       on-profile: faidare-app
   cloud:
     config:
-      name: faidare
+      name: faidare-search
   security:
     user:
       name: faidare
