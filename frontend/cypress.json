@@ -1,4 +1,5 @@
 {
+  "baseUrl": "http://localhost:4200/faidare-dev",
   "video": false,
   "reporter": "mocha-spec-json-output-reporter",
   "reporterOptions": {
