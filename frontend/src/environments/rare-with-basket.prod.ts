@@ -7,5 +7,5 @@
  */
 export const rareBasket = {
   isBasketEnabled: true,
-  url: 'https://urgi.versailles.inrae.fr/rare-basket'
+  url: '/rare-basket'
 };
