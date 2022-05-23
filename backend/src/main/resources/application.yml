@@ -77,7 +77,7 @@ spring:
       password: f01a7031fc17
 
 data-discovery:
-  elasticsearch-prefix: 'rare-dev-'
+  elasticsearch-prefix: 'rare_search_dev-'
 
 server:
   port: 8080
@@ -106,7 +106,7 @@ spring:
 #       - Pilier Environnement
 
 data-discovery:
-  elasticsearch-prefix: 'brc4env-dev-'
+  elasticsearch-prefix: 'brc4env_search_dev-'
 
 server:
   port: 8580
@@ -127,7 +127,7 @@ spring:
       password: f01a7031fc17
 
 data-discovery:
-  elasticsearch-prefix: 'wheatis-dev-'
+  elasticsearch-prefix: 'wheatis_search_dev-'
 
 server:
   port: 8180
