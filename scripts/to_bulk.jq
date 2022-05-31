@@ -45,7 +45,7 @@ if (type != "array") then
     "[ERROR]: the input is expected to be an array in order to produce JSON lines bulk file.\n" | halt_error(2)
 else
     to_bulk($ENV.ID_FIELD) |
-    if (($ENV.APP_NAME != "rare") and ($ENV.APP_NAME != "brc4env")) then
+    if (($ENV.APP_NAME == "wheatis")) then
         del (.identifier) # remove identifier field for some documents having it
     elif (($ENV.APP_NAME == "rare") or ($ENV.APP_NAME == "brc4env")) then
         del (.groupId) # remove groupId field for some documents having it
