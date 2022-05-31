@@ -152,7 +152,7 @@ DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
 echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
 
 WHEATIS_ID_FIELD=""
-FAIDARE_ID_FIELD=""
+FAIDARE_ID_FIELD="identifier"
 RARE_ID_FIELD="identifier"
 BRC4ENV_ID_FIELD=${RARE_ID_FIELD}
 
