@@ -7,6 +7,8 @@ BOLD='\033[1m'
 RED_BOLD="${RED}${BOLD}"
 NC='\033[0m' # No format
 
+APPS="rare, brc4env, wheatis, faidare"
+
 help() {
 	cat <<EOF
 DESCRIPTION: 
@@ -32,10 +34,12 @@ DESCRIPTION:
         Script used to create index and aliases for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -app <application name> [-h|--help]
+	$0 -app <application name> -data <data directory> [-h|--help]
 
 PARAMS:
-	-app           the application for which to create the suggestions: rare, wheatis or faidare
+	-app           the application for which to create the suggestions: $APPS
+	-data          the data directory in which the JSON files can be found and the suggestion files will be generated (e.g. /mnt/index-data-is/[app])
+	               NB: use rare directory for brc4env
 	-h or --help   print this help
 
 EOF
@@ -43,11 +47,11 @@ EOF
 }
 
 check_command() {
-  command -v $1 >/dev/null || {
-    echo -e "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
-    return 1
-  }
-  return 0
+	command -v $1 >/dev/null || {
+		echo -e "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
+		return 1
+	}
+	return 0
 }
 
 MISSING_COUNT=0
@@ -61,8 +65,8 @@ check_command gunzip || ((MISSING_COUNT += 1))
 check_command parallel || ((MISSING_COUNT += 1))
 
 [ $MISSING_COUNT -ne 0 ] && {
-  echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
-  exit $MISSING_COUNT
+	echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
+	exit $MISSING_COUNT
 }
 
 # any params
@@ -74,169 +78,129 @@ while [ -n "$1" ]; do
 		-h) help;shift 1;;
 		--help) help;shift 1;;
 		-app) APP_NAME=$2;shift 2;;
+		-data) DATADIR=$2;shift 2;;
 		--) shift;break;;
 		-*) echo -e "${RED_BOLD}Unknown option: $1 ${NC}\n"&& help && echo;exit 1;;
 		*) break;;
 	esac
 done
 
-if  [ -z "${APP_NAME}" ] ; then
-    echo -e "${RED_BOLD}ERROR: app parameter is mandatory!${NC}"
-    echo && help
+if  [ -z "${APP_NAME}" ] || [[ ${APPS} != *${APP_NAME}* ]] ; then
+	echo -e "${RED_BOLD}ERROR: app parameter is mandatory: the value is empty or invalid!${NC}"
+	echo && help
 	exit 4
 fi
 
-BASEDIR=$(dirname "$0")
-SCRIPT_DIR=$(readlink -f "$BASEDIR")
-DATADIR=$(readlink -f "$BASEDIR/../data/$APP_NAME")
-
-DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
-BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
-FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
-
-WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
-FAIDARE_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
-RARE_FIELDS_TO_EXTRACT=".pillar , .databaseSource , .name , .domain, .taxon, .family, .genus, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect, [.species]"
-
-if [ "${APP_NAME}" == "rare" ] ; then
-    FIELDS_TO_EXTRACT="${RARE_FIELDS_TO_EXTRACT}"
-elif [ "${APP_NAME}" == "brc4env" ]; then
-    FIELDS_TO_EXTRACT="${RARE_FIELDS_TO_EXTRACT}"
-    FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
-    DATADIR=$(readlink -f "$BASEDIR/../data/rare")
-elif [ "${APP_NAME}" == "wheatis" ]; then
-    FIELDS_TO_EXTRACT="${WHEATIS_FIELDS_TO_EXTRACT}"
-elif [ "${APP_NAME}" == "faidare" ]; then
-    FIELDS_TO_EXTRACT="${FAIDARE_FIELDS_TO_EXTRACT}"
-    [ ! -d "${DATADIR}/private-suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/private-suggestions"
-else
-    echo -e "${RED_BOLD}ERROR: app value is invalid, please specify one among following: ${GREEN}rare${RED}, ${GREEN}brc4env${RED}, ${GREEN}wheatis${RED}, or ${GREEN}faidare${RED}.${NC}" && help && exit 5
+if [ -z "${DATADIR}" ] || [ ! -d "${DATADIR}" ] ; then
+	echo -e "${RED_BOLD}ERROR: data parameter is mandatory if no-data parameter is not used: the value is empty or invalid!${NC}"
+	echo && help
+	exit 4
+elif [ ! -d "${DATADIR}/data" ] || [ $(find ${DATADIR}/data -type f -name "*.json.gz" -ls | wc -l) -eq 0 ] ; then
+	echo -e "${RED_BOLD}ERROR: data directory is absent from ${DATADIR} or it contains no files to index!${NC}"
+	echo && help
+	exit 4
+elif [ ! -d "${DATADIR}/suggestions" ] || [ $(find ${DATADIR}/suggestions -type f -name "*.gz" -ls | wc -l) -eq 0 ] ; then
+	echo -e "${RED_BOLD}ERROR: suggestions directory is absent from ${DATADIR} or it contains no files to index!${NC}"
+	echo && help
+	exit 4
 fi
 
-[ ! -d "${DATADIR}/suggestions" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/suggestions"
+SCRIPT_DIR=$(dirname "$0")
+DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
+WHEATIS_FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
+FAIDARE_FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
+RARE_FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
+BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
 
+WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
+FAIDARE_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]" #, germplasmList, taxonGroup"
+RARE_FIELDS_TO_EXTRACT=".pillarName , .databaseSource , .name , .domain, .taxon, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect"
+BRC4ENV_FIELDS_TO_EXTRACT=${RARE_FIELDS_TO_EXTRACT}
+
+# get app name to upper case, (i.e. rare -> RARE)
+APP_VAR=$(eval echo $APP_NAME | tr '[a-z]' '[A-Z]')
+# get values for app (i.e. get $RARE_FILTER_DATA_SCRIPT for RARE FILTER_DATA_SCRIPT var)
+FILTER_DATA_SCRIPT=$(eval "echo \$$(eval echo $APP_VAR'_FILTER_DATA_SCRIPT')")
+FIELDS_TO_EXTRACT=$(eval "echo \$$(eval echo $APP_VAR'_FIELDS_TO_EXTRACT')")
 export FILTER_DATA_SCRIPT FIELDS_TO_EXTRACT
 
 extract_suggestions() {
-    bash -c "set -o pipefail; gunzip -c $1 |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for brc4env)
-    jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
-    tee \
-        >(
-            jq -r '.[]| [ ${FIELDS_TO_EXTRACT} ] | flatten' |
-            sed -r '
-                s/\"//g ;                                           # remove double quotes
-                s/,$//g ;                                           # remove line ending commas
-                s/[][]//g ;                                         # remove brackets
-                s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
-                s/[_-]$//g ;                                        # remove trailing dash and underscore
-                /^$/d ;                                             # drop empty lines
-                /^.{0,2}$/d ;                                       # drop words which length is lower than 3
-                /^[0-9:#]{2,}/d ;                                   # drop words starting with at least 2 digits or some special characters
-            ' |
-            tr '[:upper:]' '[:lower:]' | LC_ALL=C sort -u
-        ) \
-        >/dev/null \
-        >(
-            jq '.[]|.description' |
-            sed -r '
-                s/\\n/\n/g ;                                        # split on all literal backslash+n (\n)
-                s/__/\n/g ;                                         # split on double underscores
-                s/\.\s/\n/g ;                                       # split on dot followed by space
-                s/[^[:alnum:]\._-]/\n/g ;                           # split on any special character except underscore dot and dash (only keep sequences of alphanum+dot+underscore+dash)
-            ' |                                                     # above sed is separated from the one below since the first splits lines and would interfere with changes and line drops if both were merged
-            sed -r '
-                s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
-                s/[_-]$//g ;                                        # remove trailing dash and underscore
-                /^.{0,2}$/d ;                                       # drop words which length is lower than 3
-                /^[^[:alpha:]]*[[:alpha:]]{,1}[^[:alpha:]]*$/d ;    # drop words having only 0 or 1 alphabetical characters rounded by non alphabetical characters (such as: _0001G000023), considering them as not relevant
-                /^[0-9]{2,}/d ;                                     # drop words starting with at least 2 digits
-                /_[0-9]{4,}_/d ;                                    # drop words containing sequence of at least 4 digits, rounded by underscores
-                /match_part/d ;                                     # drop words containing match_part literal
-                /mp[0-9]{4,}/d ;                                    # drop words containing mp literal followed by sequence of at least 4 digits
-                /match[0-9]{4,}/d ;                                 # drop words containing match literal followed by sequence of at least 4 digits
-                /^_.*/d ;                                           # drop words starting by an underscore
-                /^[ATGCatgc]+$/d ;                                  # drop sequence of nucleotides (sequence of ATGC case insensitive)
-                /^0.*/d ;                                           # drop words starting with a 0
-            ' |
-            tr '[:upper:]' '[:lower:]' |
-            LC_ALL=C sort -u
-        ) |
-    LC_ALL=C sort -u" 
+	if [[ $PUBLIC_ONLY -eq 1 ]] ; then
+		GROUP_FILTER="jq '.[] | select(.groupId == 0 or .groupId == null) | [.]' |"
+	else
+		GROUP_FILTER=""
+	fi
+	
+	bash -c "set -o pipefail; gunzip -c $1 |                        # tee below allows to redirect gunzip stdout to several processes using: >(subprocess)
+	${GROUP_FILTER}													# add a filter based on groupId field to get only public data if needed (only for faidare)
+	jq -rc -f ${FILTER_DATA_SCRIPT} |                               # add a filter on some data if needed (noop by default, only brc4env pillar for brc4env)
+	tee \
+		>(
+			jq -r '.[]| [ ${FIELDS_TO_EXTRACT} ] | flatten' |
+			sed -r '
+				s/\"//g ;                                           # remove double quotes
+				s/,$//g ;                                           # remove line ending commas
+				s/[][]//g ;                                         # remove brackets
+				s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
+				s/[_-]$//g ;                                        # remove trailing dash and underscore
+				/^$/d ;                                             # drop empty lines
+				/^.{0,2}$/d ;                                       # drop words which length is lower than 3
+				/^[0-9:#]{2,}/d ;                                   # drop words starting with at least 2 digits or some special characters
+			' |
+			tr '[:upper:]' '[:lower:]' | LC_ALL=C sort -u
+		) \
+		>/dev/null \
+		>(
+			jq '.[]|.description' |
+			sed -r '
+				s/\\n/\n/g ;                                        # split on all literal backslash+n (\n)
+				s/__/\n/g ;                                         # split on double underscores
+				s/\.\s/\n/g ;                                       # split on dot followed by space
+				s/[^[:alnum:]\._-]/\n/g ;                           # split on any special character except underscore dot and dash (only keep sequences of alphanum+dot+underscore+dash)
+			' |                                                     # above sed is separated from the one below since the first splits lines and would interfere with changes and line drops if both were merged
+			sed -r '
+				s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
+				s/[_-]$//g ;                                        # remove trailing dash and underscore
+				/^.{0,2}$/d ;                                       # drop words which length is lower than 3
+				/^[^[:alpha:]]*[[:alpha:]]{,1}[^[:alpha:]]*$/d ;    # drop words having only 0 or 1 alphabetical characters rounded by non alphabetical characters (such as: _0001G000023), considering them as not relevant
+				/^[0-9]{2,}/d ;                                     # drop words starting with at least 2 digits
+				/_[0-9]{4,}_/d ;                                    # drop words containing sequence of at least 4 digits, rounded by underscores
+				/match_part/d ;                                     # drop words containing match_part literal
+				/mp[0-9]{4,}/d ;                                    # drop words containing mp literal followed by sequence of at least 4 digits
+				/match[0-9]{4,}/d ;                                 # drop words containing match literal followed by sequence of at least 4 digits
+				/^_.*/d ;                                           # drop words starting by an underscore
+				/^[ATGCatgc]+$/d ;                                  # drop sequence of nucleotides (sequence of ATGC case insensitive)
+				/^0.*/d ;                                           # drop words starting with a 0
+			' |
+			tr '[:upper:]' '[:lower:]' |
+			LC_ALL=C sort -u
+		) |
+	LC_ALL=C sort -u"
 }
 export -f extract_suggestions
 
-extract_public_suggestions() {
-    bash -c "set -o pipefail; gunzip -c $1 |                                                 # jq below add a filter on some data if needed (noop by default, or only brc4env pillar for brc4env)
-    jq '.[] | select(.groupId == 0 or .groupId == null) | [.]' |
-    jq -rc -f ${FILTER_DATA_SCRIPT} |                               # tee below allows to redirect previous gunzip stdout to several processes using:    >(subprocess)
-    tee \
-        >(
-            jq -r '.[]| [ ${FIELDS_TO_EXTRACT} ] | flatten' |
-            sed -r '
-                s/\"//g ;                                           # remove double quotes
-                s/,$//g ;                                           # remove line ending commas
-                s/[][]//g ;                                         # remove brackets
-                s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
-                s/[_-]$//g ;                                        # remove trailing dash and underscore
-                /^$/d ;                                             # drop empty lines
-                /^.{0,2}$/d ;                                       # drop words which length is lower than 3
-                /^[0-9:#]{2,}/d ;                                   # drop words starting with at least 2 digits or some special characters
-            ' |
-            tr '[:upper:]' '[:lower:]' | LC_ALL=C sort -u
-        ) \
-        >/dev/null \
-        >(
-            jq '.[]|.description' |
-            sed -r '
-                s/\\n/\n/g ;                                        # split on all literal backslash+n (\n)
-                s/__/\n/g ;                                         # split on double underscores
-                s/\.\s/\n/g ;                                       # split on dot followed by space
-                s/[^[:alnum:]\._-]/\n/g ;                           # split on any special character except underscore dot and dash (only keep sequences of alphanum+dot+underscore+dash)
-            ' |                                                     # above sed is separated from the one below since the first splits lines and would interfere with changes and line drops if both were merged
-            sed -r '
-                s/^[[:space:].-]*//g ;                              # remove leading spaces, dashes and dots
-                s/[_-]$//g ;                                        # remove trailing dash and underscore
-                /^.{0,2}$/d ;                                       # drop words which length is lower than 3
-                /^[^[:alpha:]]*[[:alpha:]]{,1}[^[:alpha:]]*$/d ;    # drop words having only 0 or 1 alphabetical characters rounded by non alphabetical characters (such as: _0001G000023), considering them as not relevant
-                /^[0-9]{2,}/d ;                                     # drop words starting with at least 2 digits
-                /_[0-9]{4,}_/d ;                                    # drop words containing sequence of at least 4 digits, rounded by underscores
-                /match_part/d ;                                     # drop words containing match_part literal
-                /mp[0-9]{4,}/d ;                                    # drop words containing mp literal followed by sequence of at least 4 digits
-                /match[0-9]{4,}/d ;                                 # drop words containing match literal followed by sequence of at least 4 digits
-                /^_.*/d ;                                           # drop words starting by an underscore
-                /^[ATGCatgc]+$/d ;                                  # drop sequence of nucleotides (sequence of ATGC case insensitive)
-                /^0.*/d ;                                           # drop words starting with a 0
-            ' |
-            tr '[:upper:]' '[:lower:]' |
-            LC_ALL=C sort -u
-        ) |
-    LC_ALL=C sort -u"
+process_suggestions() {
+	[ ! -d "${DATADIR}/${SUGGESTION_DIR}" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/${SUGGESTION_DIR}"
+	
+	time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
+	LC_ALL=C sort -u | \
+	parallel --pipe -k \
+		"sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
+		         s/[\\]+\"/\"/g'                                            # remove any backslash before double quote to prevent any malformed JSON
+		"| \
+	parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_{#}.gz"
 }
-export -f extract_public_suggestions
 
 if [ "${APP_NAME}" == "faidare" ]; then
-  time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
-    LC_ALL=C sort -u | \
-    parallel --pipe -k \
-        "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
-                s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
-    " | \
-    parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/private-suggestions/${APP_NAME}_bulk_{#}.gz"
-
-  time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_public_suggestions | \
-      LC_ALL=C sort -u | \
-      parallel --pipe -k \
-          "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
-                  s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
-      " | \
-      parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
-
+	export SUGGESTION_DIR="private-suggestions"
+	export PUBLIC_ONLY=0
+	process_suggestions
+	
+	export SUGGESTION_DIR="suggestions"
+	export PUBLIC_ONLY=1
+	process_suggestions
 else
-  time find ${DATADIR} -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
-  LC_ALL=C sort -u | \
-  parallel --pipe -k \
-      "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
-              s/[\\]+\"/\"/g'                                             # remove any backslash before double quote to prevent any malformed JSON
-  " | \
-  parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/suggestions/${APP_NAME}_bulk_{#}.gz"
+	export SUGGESTION_DIR="suggestions"
+	export PUBLIC_ONLY=0
+	process_suggestions
 fi

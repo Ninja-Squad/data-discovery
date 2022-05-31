@@ -7,6 +7,16 @@ BOLD='\033[1m'
 RED_BOLD="${RED}${BOLD}"
 NC='\033[0m' # No format
 
+BASEDIR=$(dirname "$0")
+ES_HOST="localhost"
+ES_PORT="9200"
+APP_NAME=""
+APP_ENV=""
+TIMESTAMP=$(date +%s)
+
+APPS="rare, brc4env, wheatis, faidare"
+ENVS="dev, beta, staging, prod"
+
 help() {
 	cat <<EOF
 DESCRIPTION: 
@@ -16,10 +26,10 @@ USAGE:
 	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> -timestamp <epoch timestamp>  [-h|--help]
 
 PARAMS:
-	-host          the host name of the targeted Elasticsearch endpoint
+	-host          the host name of the targeted Elasticsearch endpoint ($ES_HOST by default)
 	-port          the port value of the targeted Elasticsearch endpoint ($ES_PORT by default)
-	-app           the name of the targeted application: rare, wheatis or faidare
-	-env           the environment name of the targeted application (dev, beta, prod ...)
+	-app           the name of the targeted application: $APPS
+	-env           the environment name of the targeted application: $ENVS
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
 	-h or --help   print this help
 
@@ -29,32 +39,25 @@ EOF
 
 DATE_CMD="date"
 if [[ $OSTYPE == darwin* ]]; then
-    # Use gdate on the mac
-    DATE_CMD="gdate"
+	# Use gdate on the mac
+	DATE_CMD="gdate"
 fi
 
 check_command() {
-  command -v $1 >/dev/null || {
-    echo -e "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
-    return 1
-  }
-  return 0
+	command -v $1 >/dev/null || {
+		echo -e "${RED_BOLD}Program $1 is missing, cannot continue...${NC}"
+		return 1
+	}
+	return 0
 }
 
 MISSING_COUNT=0
 check_command jq || _=$((MISSING_COUNT += 1))
 
 [ $MISSING_COUNT -ne 0 ] && {
-  echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
-  exit $MISSING_COUNT
+	echo -e "${RED_BOLD}Please, install the $MISSING_COUNT missing program(s). Exiting.${NC}"
+	exit $MISSING_COUNT
 }
-
-BASEDIR=$(dirname "$0")
-ES_HOST=""
-ES_PORT="9200"
-APP_NAME=""
-APP_ENV=""
-TIMESTAMP=""
 
 # any params
 [ -z "$1" ] && echo && help
@@ -75,54 +78,56 @@ while [ -n "$1" ]; do
 	esac
 done
 
-if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] || [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
-    echo -e "${RED}ERROR: host, port, app and env parameters are mandatory!${NC}"
-    echo && help
+if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ]; then
+	echo "ERROR: host and port parameters are mandatory!${NC}"
+	echo && help
 	exit 4
 fi
 
-DATE_CMD="date"
-if [[ $OSTYPE == darwin* ]]; then
-  # Use gdate on the mac
-  DATE_CMD="gdate"
+if  [ -z "${APP_NAME}" ] || [[ ${APPS} != *${APP_NAME}* ]] ; then
+	echo -e "${RED_BOLD}ERROR: app parameter is mandatory: the value is empty or invalid!${NC}"
+	echo && help
+	exit 4
 fi
+
+if  [ -z "${APP_ENV}" ] || [[ ${ENVS} != *${APP_ENV}* ]] ; then
+	echo -e "${RED_BOLD}ERROR: env parameter is mandatory: the value is empty or invalid!${NC}"
+	echo && help
+	exit 4
+fi
+
 DATE_TMSTP=$(${DATE_CMD} -d @${TIMESTAMP})
-[ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date." ; exit 1; }
+[ $? != 0 ] && { echo -e "Given timestamp ($TIMESTAMP) is malformed and cannot be transformed to a valid date."; exit 1; }
 echo "Using timestamp corresponding to date: ${DATE_TMSTP}"
 
 TMP_FILE=$(mktemp)
-if [ "${APP_NAME}" == "brc4env" ]; then
-    APP_SETTINGS_NAME="rare"
-else
-    APP_SETTINGS_NAME="${APP_NAME}"
-fi
-
 PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
 CODE=0
 
 check_acknowledgment() {
-    jq '.acknowledged? == true' ${TMP_FILE} | grep 'true' >/dev/null || {
-        CODE=$((CODE+=1)) ;
-        echo -e "${RED_BOLD}ERROR: unexpected response from previous command:${NC}${ORANGE}"; echo ; cat "${TMP_FILE}" ; echo -e "${NC}";
-    }
+	jq '.acknowledged? == true' ${TMP_FILE} | grep 'true' >/dev/null || {
+		CODE=$((CODE+=1)) ;
+		echo -e "${RED_BOLD}ERROR: unexpected response from previous command:${NC}${ORANGE}"; echo ; cat "${TMP_FILE}" ; echo -e "${NC}";
+	}
 }
-
 # each curl command below sees its output checked for acknowledgment from Elasticsearch, else display an error with colorized output
 
 ### SETTINGS & MAPPINGS TEMPLATE
+APP_SETTINGS="${APP_NAME}"
+[ "$APP_NAME" == "brc4env"  ] && APP_SETTINGS=$(echo $APP_SETTINGS | sed "s/brc4env/rare/")
+
 echo ; echo "Create settings/mappings template: ${PREFIX_ES}-settings-template"
 curl -s -X PUT "${ES_HOST}:${ES_PORT}/_template/${PREFIX_ES}-settings-template?pretty" -H 'Content-Type: application/json' -d"
-{
-  \"index_patterns\": [\"${PREFIX_ES}-tmstp*-resource*\"],
-  \"order\": 101,
-  \"mappings\":
-        $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
-    ,
-  \"settings\":
-    $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/${APP_SETTINGS_NAME}/settings.json )
-}
-"\
-> ${TMP_FILE}
+	{
+		\"index_patterns\": [\"${PREFIX_ES}-tmstp*-resource*\"],
+		\"order\": 101,
+		\"mappings\":
+			$(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS}/*.mapping.json)
+		,
+		\"settings\":
+			$(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/${APP_SETTINGS}/settings.json )
+	}
+" > ${TMP_FILE}
 check_acknowledgment
 echo "You can check the state of the settings template with:"
 echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/_template/${PREFIX_ES}-settings-template?pretty'"
@@ -136,28 +141,27 @@ echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resou
 
 ## CREATE SUGGESTION INDEX
 create_suggestions() {
-  echo ; echo "Create index aiming to store all suggestions: $1-tmstp${TIMESTAMP}-suggestions-index"
-  curl -s -X PUT "${ES_HOST}:${ES_PORT}/$1-tmstp${TIMESTAMP}-suggestions-index?pretty"\
-   -H 'Content-Type: application/json' -d"
-  {
-      \"mappings\":
-          $(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
-          ,
-      \"settings\":
-              $(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
-  }
-  "\
-  > ${TMP_FILE}
-  check_acknowledgment
-  echo "You can check the state of the index index with:"
-  echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/$1-tmstp${TIMESTAMP}-suggestions-index?pretty'"
+	echo ; echo "Create index aiming to store all suggestions: $1-tmstp${TIMESTAMP}-suggestions-index"
+	curl -s -X PUT "${ES_HOST}:${ES_PORT}/$1-tmstp${TIMESTAMP}-suggestions-index?pretty" -H 'Content-Type: application/json' -d"
+		{
+			\"mappings\":
+				$(cat ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json)
+			,
+			\"settings\":
+				$(cat ${BASEDIR}/../backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json)
+		}
+	" > ${TMP_FILE}
+	check_acknowledgment
+	echo "You can check the state of the index index with:"
+	echo "curl -s -X GET '${ES_HOST}:${ES_PORT}/$1-tmstp${TIMESTAMP}-suggestions-index?pretty'"
 }
 
-create_suggestions ${PREFIX_ES}
-create_suggestions ${PREFIX_ES}-private
+create_suggestions "${PREFIX_ES}"
+if [ "${APP_NAME}" == "faidare" ]; then
+	create_suggestions "${PREFIX_ES}-private"
+fi
 
 rm -f $TMP_FILE
 
 [ $CODE -gt 0 ] && { echo "${RED_BOLD}ERROR: a problem occurred during previous steps. Found ${CODE} errors.${NC}" ; exit ${CODE} ; }
-
 echo ; echo -e "${GREEN}${BOLD}All seems OK.${NC}"
