@@ -7,10 +7,12 @@ BOLD='\033[1m'
 RED_BOLD="${RED}${BOLD}"
 NC='\033[0m' # No format
 
-ES_HOST=localhost
+BASEDIR=$(dirname "$0")
+SCRIPT_DIR=$(readlink -f "$BASEDIR")
+ES_HOST="localhost"
 ES_HOSTS="${ES_HOST}"
-ES_PORT=9200
-TIMESTAMP=""
+ES_PORT="9200"
+TIMESTAMP=$(date +%s)
 
 READLINK_CMD="readlink"
 DATE_CMD="date"
@@ -24,19 +26,29 @@ if [[ $OSTYPE == darwin* ]]; then
   SED_CMD="gsed"
 fi
 
+APPS="rare, brc4env, wheatis, faidare"
+ENVS="dev, beta, staging, prod"
+
+DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
+BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
+WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
+FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
+
 help() {
 	cat <<EOF
 DESCRIPTION: 
 	Script used to index data in Data Discovery portals (RARe, WheatIS and Faidare)
 
 USAGE:
-	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -timestamp <epoch timestamp> [-h|--help]
+	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -data <data directory> -timestamp <epoch timestamp> [-h|--help]
 
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
 	-app           the name of the targeted application: rare, wheatis or faidare
 	-env           the environment name of the targeted application (dev, beta, prod ...)
+	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[app])
+	               NB: use rare directory for brc4env
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
 	-h or --help   print this help
 
@@ -79,6 +91,7 @@ while [ -n "$1" ]; do
 		-port) ES_PORT=$2;shift 2;;
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
+		-data) DATADIR=$2;shift 2;;
 		-timestamp) TIMESTAMP=$2;shift 2;;
 		--) shift;break;;
 		-*) echo -e "${RED}ERROR: Unknown option: $1${NC}" && echo && help && echo;exit 1;;
@@ -86,43 +99,60 @@ while [ -n "$1" ]; do
 	esac
 done
 
-BASEDIR=$(dirname "$0")
-SCRIPT_DIR=$(readlink -f "$BASEDIR")
-DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/$APP_NAME/")
+if  [ -z "$APP_NAME" ] || [[ ${APPS} != *${APP_NAME}* ]]; then
+	echo -e "${RED_BOLD}ERROR: app parameter is mandatory: the value is empty or invalid!${NC}"
+    echo && help
+	exit 4
+fi
 
-DEFAULT_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/noop_filter.jq"
-BRC4ENV_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/pillar_filter_brc4env.jq"
-WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
-FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
-if [ -z "$APP_NAME" ] || [ -z "$APP_ENV" ]; then
-    echo -e "${RED}ERROR: -app and -env parameters are mandatory!${NC}"
-    echo && help
+if  [ -z "$APP_ENV" ] || [[ ${ENVS} != *${APP_ENV}* ]] ; then
+	echo -e "${RED_BOLD}ERROR: env parameter is mandatory: the value is empty or invalid!${NC}"
+	echo && help
 	exit 4
 fi
-if [ -z "$ES_HOST" ]; then
-    echo -e "${RED}ERROR: -host parameter has been misconfigured!${NC}"
-    echo && help
+
+if [ -z "${DATADIR}" ] || [ ! -d "${DATADIR}" ] ; then
+	echo -e "${RED_BOLD}ERROR: data parameter is mandatory if no-data parameter is not used: the value is empty or invalid!${NC}"
+	echo && help
+	exit 4
+elif [ ! -d "${DATADIR}/data" ] || [ $(find ${DATADIR}/data -type f -name "*.json.gz" -ls | wc -l) -eq 0 ] ; then
+	echo -e "${RED_BOLD}ERROR: data directory is absent from ${DATADIR} or it contains no files to index!${NC}"
+	echo && help
+	exit 4
+elif [ ! -d "${DATADIR}/suggestions" ] || [ $(find ${DATADIR}/suggestions -type f -name "*.gz" -ls | wc -l) -eq 0 ] ; then
+	echo -e "${RED_BOLD}ERROR: suggestions directory is absent from ${DATADIR} or it contains no files to index!${NC}"
+	echo && help
 	exit 4
 fi
+
+if [ -z "$ES_HOST" ] || [ -z "$ES_PORT" ] ; then
+	echo -e "${RED}ERROR: host and port parameters are mandatory!${NC}"
+	echo && help
+	exit 4
+fi
+
 ID_FIELD=""
 APP_SETTINGS_NAME="${APP_NAME}"
 if [ "$APP_NAME" == "rare" ]; then
     ID_FIELD=identifier
 elif [ "$APP_NAME" == "brc4env"  ] ; then
     ID_FIELD=identifier
-    FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
     APP_SETTINGS_NAME="rare"
     DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
 fi
+
 if [ "$APP_ENV" == "prod" ]; then
     URL_CARD="https://urgi.versailles.inrae.fr/faidare/"
 elif [ "$APP_ENV" == "dev"  ] ; then
     URL_CARD="http://localhost:8380/faidare-dev/"
 elif [ "$APP_ENV" == "staging" ]; then
     URL_CARD="https://staging-urgi.versailles.inrae.fr/faidare/"
+elif [ "$APP_ENV" == "beta" ]; then
+    URL_CARD="https://beta-urgi.versailles.inrae.fr/faidare/"
 else
     URL_CARD=" "
 fi
+
 export ID_FIELD APP_NAME URL_CARD
 
 PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
@@ -158,7 +188,7 @@ OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 mkdir -p "$OUTDIR"
 
 FIELDS=$(jq '.["properties"] | keys' ${BASEDIR}/../backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/${APP_SETTINGS_NAME}/*.mapping.json)
-export BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP FIELDS FILTER_DATA_SCRIPT PREFIX_ES
+export NC GREEN ORANGE RED BOLD RED_BOLD BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV TIMESTAMP ID_FIELD URL_CARD FIELDS FILTER_DATA_SCRIPT PREFIX_ES DATADIR
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
@@ -174,21 +204,51 @@ index_resources() {
 
 index_suggestions() {
     bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"$3:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index/_bulk\"\
+                -XPOST \"$3:${ES_PORT}/${PREFIX_INDEX}-tmstp${TIMESTAMP}-suggestions-index/_bulk\"\
                 --data-binary '@$1' > ${OUTDIR}/$2-suggestions.log.gz"
 }
 
-index_private_suggestions() {
-    bash -c "set -o pipefail; curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
-                -XPOST \"$3:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index/_bulk\"\
-                --data-binary '@$1' > ${OUTDIR}/$2-suggestions.log.gz"
+process_suggestions() {
+	{
+		echo "Indexing suggestions into ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index ..."
+		find ${DATADIR}/${SUGGESTION_DIR}/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
+			parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
+			:::: - ::: ${ES_HOSTS}
+	} || {
+		code=$?
+		echo -e "${RED}A problem occurred (code=$code) when trying to index ${SUGGESTION_DIR}\n"\
+			"\tfrom ${DATADIR}/${SUGGESTION_DIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
+		parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/${APP_NAME}_bulk*.log.gz
+		exit $code
+	}
 }
 
-export -f index_resources index_suggestions index_private_suggestions
+manage_aliases() {
+	{
+		echo "Updating aliases for latest resources and suggestions indices with timestamp ${TIMESTAMP} instead of previous ${PREVIOUS_TIMESTAMP}..."
+		curl -s -H 'Content-Type: application/json' -XPOST "${ES_HOST}:${ES_PORT}/_aliases?pretty" --data-binary '@-' <<EOF
+		{
+			"actions" : [
+				{ "remove" : { "index" : "${PREFIX_INDEX_SUGGESTION}-*suggestion*", "alias" : "${PREFIX_ALIAS}-suggestions-alias" } },
+				{ "remove" : { "index" : "${PREFIX_INDEX_RESOURCE}-*resource*", "alias" : "${PREFIX_ALIAS}-resource-alias" } },
+				{ "add" : { "index" : "${PREFIX_INDEX_SUGGESTION}-tmstp${TIMESTAMP}-suggestions-index", "alias" : "${PREFIX_ALIAS}-suggestions-alias" } },
+				{ "add" : { "index" : "${PREFIX_INDEX_RESOURCE}-tmstp${TIMESTAMP}-resource-index", "alias" : "${PREFIX_ALIAS}-resource-alias" } }
+			]
+		}
+EOF
+	} || {
+		code=$?
+		echo -e "${RED}A problem occurred (code=$code) when trying to update aliases for resource and suggestions indices having timestamp $TIMESTAMP \n"\
+			"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
+		exit $code
+	}
+}
+
+export -f index_resources index_suggestions process_suggestions
 
 {
     # set -x
-    echo "Indexing files from ${DATADIR} into index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index ..."
+    echo "Indexing files from ${DATADIR}/data into index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index ..."
     find ${DATADIR}/data/ -maxdepth 2 -name "*.json.gz" | \
         parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} {1/.} {2} \
         :::: - ::: ${ES_HOSTS}
@@ -212,55 +272,30 @@ curl -s -H 'Content-Type: application/x-ndjson' -XPOST \"${ES_HOST}:${ES_PORT}/$
 }
 EOF
 
-{
-    # set -x
-    echo "Indexing suggestions from ${DATADIR}/suggestions/${APP_NAME}_bulk_*.gz into index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions ..."
-    find ${DATADIR}/suggestions/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
-        parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
-        :::: - ::: ${ES_HOSTS}
-} || {
-	code=$?
-	echo -e "${RED}A problem occurred (code=$code) when trying to index suggestions \n"\
-		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
-	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/bulk*.log.gz
-	exit $code
-}
+## ADD DATA IN SUGGESTIONS INDEX
+export SUGGESTION_DIR="suggestions"
+export PREFIX_INDEX="${PREFIX_ES}"
+process_suggestions
 
-#Suggestions private
-{
-    # set -x
-    echo "Indexing private suggestions into ${DATADIR}/private-suggestions/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index ..."
-    find ${DATADIR}/private-suggestions/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
-        parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_private_suggestions {1} {1/.} {2} \
-        :::: - ::: ${ES_HOSTS}
-} || {
-	code=$?
-	echo -e "${RED}A problem occurred (code=$code) when trying to index private suggestions \n"\
-		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
-	parallel "gunzip -c {} | jq '.errors' | grep -q true  && echo -e '${ORANGE}ERROR found indexing in {}${NC}' ;" ::: ${OUTDIR}/private/bulk*.log.gz
-	exit $code
-}
+if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-suggestions/ -type f -name "*.json" -ls | wc -l) -eq 0 ] ; then
+	export SUGGESTION_DIR="private-suggestions"
+	export PREFIX_INDEX="${PREFIX_ES}-private"
+	process_suggestions
+fi
+
+## UPDATE ALIASES
 # set -x
-PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -2 | tail -1) # current timestamp index has already been created so looking for the 2nd last one
-{
-    echo -e "Updating aliases for latest resources and suggestions indices with timestamp ${TIMESTAMP} instead of previous ${PREVIOUS_TIMESTAMP}..."
-    curl -s -H 'Content-Type: application/json' -XPOST "${ES_HOST}:${ES_PORT}/_aliases?pretty" --data-binary '@-' <<EOF
-    {
-        "actions" : [
-            { "remove" : { "index" : "${PREFIX_ES}-*suggestion*", "alias" : "${PREFIX_ES}-suggestions-alias" } },
-            { "remove" : { "index" : "${PREFIX_ES}-*resource*", "alias" : "${PREFIX_ES}-resource-alias" } },
-            { "remove" : { "index" : "${PREFIX_ES}-private-*suggestion*", "alias" : "${PREFIX_ES}-private-suggestions-alias" } },
-            { "remove" : { "index" : "${PREFIX_ES}-*resource*", "alias" : "${PREFIX_ES}-private-resource-alias" } },
-            { "add" : { "index" : "${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index", "alias" : "${PREFIX_ES}-suggestions-alias" } },
-            { "add" : { "index" : "${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index", "alias" : "${PREFIX_ES}-resource-alias" } },
-            { "add" : { "index" : "${PREFIX_ES}-private-tmstp${TIMESTAMP}-suggestions-index", "alias" : "${PREFIX_ES}-private-suggestions-alias" } },
-            { "add" : { "index" : "${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index", "alias" : "${PREFIX_ES}-private-resource-alias" } }
-        ]
-    }
-EOF
-} || {
-	code=$?
-	echo -e "${RED}A problem occurred (code=$code) when trying to update aliases for resource and suggestions indices having timestamp $TIMESTAMP \n"\
-		"\tfrom ${DATADIR} on ${APP_NAME} application and on ${APP_ENV} environment${NC}"
-	exit $code
-}
+export PREVIOUS_TIMESTAMP=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${APP_NAME}*${APP_ENV}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | head -2 | tail -1)
+# current timestamp index has already been created so looking for the 2nd last one
+
+export PREFIX_INDEX_SUGGESTION="${PREFIX_ES}"
+export PREFIX_INDEX_RESOURCE="${PREFIX_ES}"
+export PREFIX_ALIAS="${PREFIX_ES}"
+manage_aliases
+
+if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-suggestions/ -type f -name "*.json" -ls | wc -l) -eq 0 ] ; then
+	export PREFIX_INDEX_SUGGESTION="${PREFIX_ES}-private"
+	export PREFIX_INDEX_RESOURCE="${PREFIX_ES}"
+	export PREFIX_ALIAS="${PREFIX_ES}-private"
+	manage_aliases
+fi
