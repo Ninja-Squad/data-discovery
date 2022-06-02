@@ -95,7 +95,8 @@ describe('GermplasmResultsComponent', () => {
           holdingInstitute: 'Institute 1',
           biologicalStatus: 'Natural',
           countryOfOrigin: 'France',
-          accessionNumber: 'Acc1'
+          accessionNumber: 'Acc1',
+          url: 'http://localhost:8380/faidare-dev/germplasms/g1'
         },
         {
           identifier: 'g2',
