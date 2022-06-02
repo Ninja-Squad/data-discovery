@@ -42,7 +42,7 @@ export class GermplasmResultsComponent {
   }
 
   faidareUrl(document: FaidareDocumentModel) {
-    return `${environment.faidare!.germplasmBaseUrl}/${document.identifier}`;
+    return `${document.url}`;
   }
 
   export(searchCriteria: SearchCriteria, exportType: 'mcpd' | 'plant-material') {
