@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Page } from '../../models/page';
 import { FaidareDocumentModel } from '../faidare-document.model';
-import { environment } from '../../../environments/environment';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
 import { BehaviorSubject, combineLatest, finalize, map, Observable } from 'rxjs';
@@ -42,7 +41,7 @@ export class GermplasmResultsComponent {
   }
 
   faidareUrl(document: FaidareDocumentModel) {
-    return `${environment.faidare!.germplasmBaseUrl}/${document.identifier}`;
+    return `${document.url}`;
   }
 
   export(searchCriteria: SearchCriteria, exportType: 'mcpd' | 'plant-material') {
