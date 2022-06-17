@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
   combineLatest,
   debounceTime,
@@ -34,8 +34,8 @@ export interface TreeViewModel {
   styleUrls: ['./ontology-aggregation-modal.component.scss']
 })
 export class OntologyAggregationModalComponent {
-  treeFilterCtrl = new FormControl();
-  languageCtrl: FormControl;
+  treeFilterCtrl = new UntypedFormControl();
+  languageCtrl: UntypedFormControl;
   languages = ONTOLOGY_LANGUAGES;
   treeView$: Observable<TreeViewModel> = EMPTY;
   private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
@@ -44,7 +44,7 @@ export class OntologyAggregationModalComponent {
   maxSelectedNodes = 20;
 
   constructor(private modal: NgbActiveModal, private ontologyService: OntologyService) {
-    this.languageCtrl = new FormControl(ontologyService.getPreferredLanguage());
+    this.languageCtrl = new UntypedFormControl(ontologyService.getPreferredLanguage());
     this.languageCtrl.valueChanges.subscribe(language =>
       this.ontologyService.setPreferredLanguage(language)
     );

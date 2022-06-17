@@ -3,7 +3,7 @@ import { Basket, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LOCATION } from '../rare.module';
 import { rareBasket } from '../../../environments/rare-no-basket';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { timer } from 'rxjs';
 
 @Component({
@@ -14,7 +14,7 @@ import { timer } from 'rxjs';
 export class RareBasketComponent implements OnInit {
   itemCounter = 0;
   basket: Basket | null = null;
-  eulaAgreementControl!: FormControl;
+  eulaAgreementControl!: UntypedFormControl;
   submitted = false;
   confirmForbidden = false;
   isEnabled = false;
@@ -22,7 +22,7 @@ export class RareBasketComponent implements OnInit {
   constructor(
     private basketService: BasketService,
     private modalService: NgbModal,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(LOCATION) private location: Location
   ) {}
 

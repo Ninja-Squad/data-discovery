@@ -6,7 +6,7 @@ import {
   OnChanges,
   Output
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -28,7 +28,7 @@ export class SmallAggregationComponent implements OnChanges {
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
   @Input() disabled = false;
 
-  aggregationForm: FormGroup = new FormGroup({});
+  aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * This extracts the keys with a truthy value from an object.
@@ -64,10 +64,10 @@ export class SmallAggregationComponent implements OnChanges {
     buckets.forEach(bucket => {
       let control = this.aggregationForm.get(bucket.key);
       if (!control) {
-        control = new FormControl(false);
+        control = new UntypedFormControl(false);
         this.aggregationForm.addControl(bucket.key, control);
       }
-      (control as FormControl).setValue(this.selectedKeys.includes(bucket.key));
+      (control as UntypedFormControl).setValue(this.selectedKeys.includes(bucket.key));
     });
     Object.keys(this.aggregationForm.controls).forEach(key => {
       if (!buckets.find(bucket => bucket.key === key)) {

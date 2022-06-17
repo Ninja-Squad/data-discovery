@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
@@ -42,7 +42,7 @@ export class LargeAggregationComponent implements OnChanges {
   @ViewChild('typeahead') typeahead!: ElementRef<HTMLInputElement>;
 
   focus$ = new Subject<string>();
-  criterion = new FormControl('');
+  criterion = new UntypedFormControl('');
 
   search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
