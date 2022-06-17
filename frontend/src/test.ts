@@ -6,7 +6,6 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-import { ɵDomSharedStylesHost } from '@angular/platform-browser';
 import { speculoosMatchers } from 'ngx-speculoos';
 
 declare const require: any;
@@ -16,10 +15,9 @@ beforeEach(() => {
 });
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-// https://github.com/angular/angular/issues/31834
-afterEach(() => {
-  getTestBed().inject(ɵDomSharedStylesHost).ngOnDestroy();
+getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
+  errorOnUnknownElements: true,
+  errorOnUnknownProperties: true
 });
 // Then we find all the tests.
 const context = require.context('./', true, /\.spec\.ts$/);
