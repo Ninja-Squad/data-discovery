@@ -6,7 +6,7 @@ import {
   OnChanges,
   Output
 } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormRecord, NonNullableFormBuilder } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -28,7 +28,7 @@ export class SmallAggregationComponent implements OnChanges {
   @Output() searchDescendantsChange = new EventEmitter<boolean>();
   @Input() disabled = false;
 
-  aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
+  aggregationForm = new FormRecord<FormControl<boolean>>({});
 
   /**
    * This extracts the keys with a truthy value from an object.
@@ -37,37 +37,27 @@ export class SmallAggregationComponent implements OnChanges {
    * returns
    * [ 'France' ]
    */
-  static extractKeys(formValues: { [key: string]: boolean | null }) {
+  static extractKeys(formValues: { [key: string]: boolean | null | undefined }) {
     return (
-      Object.entries<boolean | null>(formValues)
+      Object.entries(formValues)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([key, value]) => value)
         .map(([key]) => key)
     );
   }
 
-  static sameSelectedKeys(a: Array<string>, b: Array<string>) {
-    if (a.length !== b.length) {
-      return false;
-    }
-
-    const secondSet = new Set(b);
-
-    return a.every(value => secondSet.has(value));
-  }
-
-  constructor(private translateService: TranslateService) {}
+  constructor(private fb: NonNullableFormBuilder, private translateService: TranslateService) {}
 
   ngOnChanges(): void {
     // create as many form control as there are buckets
     const buckets = this.aggregation.buckets;
     buckets.forEach(bucket => {
-      let control = this.aggregationForm.get(bucket.key);
+      let control = this.aggregationForm.get(bucket.key) as FormControl<boolean>;
       if (!control) {
-        control = new UntypedFormControl(false);
+        control = this.fb.control(false);
         this.aggregationForm.addControl(bucket.key, control);
       }
-      (control as UntypedFormControl).setValue(this.selectedKeys.includes(bucket.key));
+      control.setValue(this.selectedKeys.includes(bucket.key));
     });
     Object.keys(this.aggregationForm.controls).forEach(key => {
       if (!buckets.find(bucket => bucket.key === key)) {

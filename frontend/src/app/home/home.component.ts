@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { NonNullableFormBuilder } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
 
@@ -7,7 +7,6 @@ import { SearchService } from '../search.service';
 import { environment } from '../../environments/environment';
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { OntologyService } from '../ontology.service';
 
 @Component({
   selector: 'dd-home',
@@ -15,7 +14,9 @@ import { OntologyService } from '../ontology.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  searchForm: UntypedFormGroup;
+  searchForm = this.fb.group({
+    search: ''
+  });
   appName = environment.name;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
@@ -24,13 +25,10 @@ export class HomeComponent {
   exampleQueries: Array<string> = environment.home.exampleQueries;
 
   constructor(
+    private fb: NonNullableFormBuilder,
     private router: Router,
-    private searchService: SearchService,
-    private ontologyService: OntologyService
+    private searchService: SearchService
   ) {
-    this.searchForm = new UntypedFormGroup({
-      search: new UntypedFormControl()
-    });
     this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
     if (this.showAggregations) {
       this.mainAggregations$ = this.searchService.getMainAggregations();
