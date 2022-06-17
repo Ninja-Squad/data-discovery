@@ -360,6 +360,5 @@
     "@schematics/angular:component": {
       "style": "scss"
     }
-  },
-  "defaultProject": "data-discovery-frontend"
+  }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Params, Router } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { OntologyService } from '../ontology.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  searchForm: FormGroup;
+  searchForm: UntypedFormGroup;
   appName = environment.name;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
@@ -28,8 +28,8 @@ export class HomeComponent {
     private searchService: SearchService,
     private ontologyService: OntologyService
   ) {
-    this.searchForm = new FormGroup({
-      search: new FormControl()
+    this.searchForm = new UntypedFormGroup({
+      search: new UntypedFormControl()
     });
     this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
     if (this.showAggregations) {

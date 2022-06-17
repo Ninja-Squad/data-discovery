@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 
 import { SearchService } from '../search.service';
@@ -23,8 +23,8 @@ interface ViewModel extends Model {
 })
 export class SearchComponent {
   appName = environment.name;
-  searchCtrl: FormControl;
-  searchForm: FormGroup;
+  searchCtrl: UntypedFormControl;
+  searchForm: UntypedFormGroup;
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
   // hide or show the filters on small devices
@@ -37,8 +37,8 @@ export class SearchComponent {
     searchService: SearchService,
     private searchStateService: SearchStateService
   ) {
-    this.searchCtrl = new FormControl();
-    this.searchForm = new FormGroup({
+    this.searchCtrl = new UntypedFormControl();
+    this.searchForm = new UntypedFormGroup({
       search: this.searchCtrl
     });
     this.suggesterTypeahead = searchService.getSuggesterTypeahead();
