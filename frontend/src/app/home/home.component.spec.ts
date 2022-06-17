@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { ComponentTester } from 'ngx-speculoos';
@@ -79,17 +79,18 @@ describe('HomeComponent', () => {
   describe('when not showing aggregations', () => {
     it('should navigate to search when a query is entered', () => {
       // given a component
+      const fb = TestBed.inject(NonNullableFormBuilder);
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
       const searchService = TestBed.inject(SearchService);
 
-      const component = new HomeComponent(router, searchService, null);
+      const component = new HomeComponent(fb, router, searchService);
 
       // with a query
       const query = 'Bacteria';
       const descendants = false;
-      component.searchForm.get('search').setValue(query);
+      component.searchForm.get('search')!.setValue(query);
       // when searching
       component.search();
 
