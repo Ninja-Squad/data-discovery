@@ -3,12 +3,9 @@ stages:
  - pre-build
  - test
  - build
-# - deploy-beta
-# - data-integration-beta
+ - deploy-beta
  - deploy-staging
-# - data-integration-staging
 # - deploy-production
-# - data-integration-production
 
 # The image contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
@@ -136,9 +133,9 @@ test-lint-build:
  script:
   - ./gradlew --parallel check jacocoTestReport :frontend:lint
   # - ./gradlew assemble -Papp=${APP_NAME}
-#  - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
-#  - export PATH="/tmp/node/:$PATH"
-#  - ./gradlew sonarqube -x test
+  - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
+  - export PATH="/tmp/node/:$PATH"
+  - ./gradlew sonarqube -x test
 # cache:
 #   #key: "$CI_COMMIT_REF_NAME"
 #   key: "${CI_JOB_NAME}"
@@ -196,23 +193,23 @@ test-lint-build:
     - .gitlab-ci.yml
   interruptible: true
 
-# build-rare:
-#   variables:
-#    APP_NAME: ${RARE_APP_NAME}
-#   <<: *build_app           # Merge the contents of the 'build_app' alias
-#   when: manual # for speeding up pipelines during Ninja Squad devs
+build-rare:
+  variables:
+   APP_NAME: ${RARE_APP_NAME}
+  <<: *build_app           # Merge the contents of the 'build_app' alias
+  when: manual # for speeding up pipelines during Ninja Squad devs
 
-# build-brc4env:
-#   variables:
-#    APP_NAME: "brc4env"
-#   <<: *build_app           # Merge the contents of the 'build_app' alias
-#   when: manual # for speeding up pipelines during Ninja Squad devs
+build-brc4env:
+  variables:
+   APP_NAME: "brc4env"
+  <<: *build_app           # Merge the contents of the 'build_app' alias
+  when: manual # for speeding up pipelines during Ninja Squad devs
 
-# build-wheatis:
-#   variables:
-#    APP_NAME: ${WHEATIS_APP_NAME}
-#   <<: *build_app           # Merge the contents of the 'build_app' alias
-#   when: manual # for speeding up pipelines during Ninja Squad devs
+build-wheatis:
+  variables:
+   APP_NAME: ${WHEATIS_APP_NAME}
+  <<: *build_app           # Merge the contents of the 'build_app' alias
+  when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-faidare:
   variables:
@@ -272,38 +269,25 @@ build-faidare:
    APP_PORT: ${BETA_RARE_PORT}
    DATA_DIR: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-   SERVER_USER: ${SERVER_USER_OPENSTACK}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
    ES_HOST: ${ES_DEV_HOST_OPENSTACK}
    ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
    ES_PORT: ${ES_DEV_PORT}
    APP_CONTEXT: ${APP_NAME}-${ENV}
-#
-#.variables-rare-staging-openstack: &variables-rare-staging-openstack
-# variables:
-#  ENV: staging
-#  APP_NAME: rare
-#  APP_PORT: ${STAGING_RARE_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-#  ES_PORT: ${ES_DEV_PORT}
-#  APP_CONTEXT: ${APP_NAME}-${ENV}
-#
-#.variables-rare-prod-proxmox: &variables-rare-prod-proxmox
-# variables:
-#  ENV: prod
-#  APP_NAME: rare
-#  APP_PORT: ${PROD_RARE_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_PROXMOX}
-#  SERVER_USER: ${SERVER_USER_PROXMOX}
-#  ES_HOST: ${ES_PROD_HOST}
-#  ES_HOSTS: ${ES_PROD_HOSTS}
-#  ES_PORT: ${ES_PROD_PORT}
-#  APP_CONTEXT: ${APP_NAME}
-#
+
+.variables-rare-staging-openstack: &variables-rare-staging-openstack
+  variables:
+   ENV: staging
+   APP_NAME: rare
+   APP_PORT: ${STAGING_RARE_PORT}
+   DATA_DIR: ${APP_NAME}
+   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_DEV_PORT}
+   APP_CONTEXT: ${APP_NAME}-${ENV}
+
 ## ALPHA
 #.variables-rare-prod-openstack: &variables-rare-prod-openstack
 # variables:
@@ -318,31 +302,31 @@ build-faidare:
 #  ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  APP_CONTEXT: ${APP_NAME}
 #
-#.variables-brc4env-beta-openstack: &variables-brc4env-beta-openstack
-# variables:
-#  ENV: beta
-#  APP_NAME: brc4env
-#  APP_PORT: ${BETA_BRC4ENV_PORT}
-#  DATA_DIR: rare
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-#  ES_PORT: ${ES_DEV_PORT}
-#  APP_CONTEXT: ${APP_NAME}
-#
-#.variables-brc4env-staging-openstack: &variables-brc4env-staging-openstack
-# variables:
-#  ENV: staging
-#  APP_NAME: brc4env
-#  APP_PORT: ${STAGING_BRC4ENV_PORT}
-#  DATA_DIR: rare
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-#  ES_PORT: ${ES_DEV_PORT}
-#  APP_CONTEXT: ${APP_NAME}
+.variables-brc4env-beta-openstack: &variables-brc4env-beta-openstack
+  variables:
+   ENV: beta
+   APP_NAME: brc4env
+   APP_PORT: ${BETA_BRC4ENV_PORT}
+   DATA_DIR: rare
+   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_DEV_PORT}
+   APP_CONTEXT: ${APP_NAME}
+
+.variables-brc4env-staging-openstack: &variables-brc4env-staging-openstack
+  variables:
+   ENV: staging
+   APP_NAME: brc4env
+   APP_PORT: ${STAGING_BRC4ENV_PORT}
+   DATA_DIR: rare
+   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_DEV_PORT}
+   APP_CONTEXT: ${APP_NAME}
 #
 #.variables-brc4env-prod-openstack: &variables-brc4env-prod-openstack
 # variables:
@@ -351,51 +335,39 @@ build-faidare:
 #  APP_PORT: ${PROD_BRC4ENV_PORT}
 #  DATA_DIR: rare
 #  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
+#  SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
 #  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  APP_CONTEXT: ${APP_NAME}
 #
-#.variables-wheatis-beta-openstack: &variables-wheatis-beta-openstack
-# variables:
-#  ENV: beta
-#  APP_NAME: wheatis
-#  APP_PORT: ${BETA_WHEATIS_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-#  ES_PORT: ${ES_DEV_PORT}
-#  APP_CONTEXT: ${APP_NAME}-${ENV}
-#
-#.variables-wheatis-staging-openstack: &variables-wheatis-staging-openstack
-# variables:
-#  ENV: staging
-#  APP_NAME: wheatis
-#  APP_PORT: ${STAGING_WHEATIS_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-#  ES_PORT: ${ES_DEV_PORT}
-#  APP_CONTEXT: ${APP_NAME}-${ENV}
-#
-#.variables-wheatis-prod-proxmox: &variables-wheatis-prod-proxmox
-# variables:
-#  ENV: prod
-#  APP_NAME: wheatis
-#  APP_PORT: ${PROD_WHEATIS_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_PROXMOX}
-#  SERVER_USER: ${SERVER_USER_PROXMOX}
-#  ES_HOST: ${ES_PROD_HOST}
-#  ES_HOSTS: ${ES_PROD_HOSTS}
-#  ES_PORT: ${ES_PROD_PORT}
-#  APP_CONTEXT: ${APP_NAME}
-#
+.variables-wheatis-beta-openstack: &variables-wheatis-beta-openstack
+  variables:
+   ENV: beta
+   APP_NAME: wheatis
+   APP_PORT: ${BETA_WHEATIS_PORT}
+   DATA_DIR: ${APP_NAME}
+   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_DEV_PORT}
+   APP_CONTEXT: ${APP_NAME}-${ENV}
+
+.variables-wheatis-staging-openstack: &variables-wheatis-staging-openstack
+  variables:
+   ENV: staging
+   APP_NAME: wheatis
+   APP_PORT: ${STAGING_WHEATIS_PORT}
+   DATA_DIR: ${APP_NAME}
+   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_DEV_PORT}
+   APP_CONTEXT: ${APP_NAME}-${ENV}
+
+
 ## ALPHA
 #.variables-wheatis-prod-openstack: &variables-wheatis-prod-openstack
 # variables:
@@ -404,25 +376,25 @@ build-faidare:
 #  APP_PORT: ${PROD_WHEATIS_PORT}
 #  DATA_DIR: ${APP_NAME}
 #  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
+#  SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
 #  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
 #  ES_PORT: ${ES_PROD_PORT}
 #  APP_CONTEXT: ${APP_NAME}
-#
-#.variables-faidare-beta-openstack: &variables-faidare-beta-openstack
-# variables:
-#  ENV: beta
-#  APP_NAME: faidare
-#  APP_PORT: ${BETA_FAIDARE_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-#  ES_PORT: ${ES_DEV_PORT}
-#  APP_CONTEXT: ${APP_NAME}-${ENV}
-#
+
+.variables-faidare-beta-openstack: &variables-faidare-beta-openstack
+  variables:
+   ENV: beta
+   APP_NAME: faidare
+   APP_PORT: ${BETA_FAIDARE_PORT}
+   DATA_DIR: ${APP_NAME}
+   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_DEV_PORT}
+   APP_CONTEXT: ${APP_NAME}-${ENV}
+
 .variables-faidare-staging-openstack: &variables-faidare-staging-openstack
   variables:
     ENV: staging
@@ -435,20 +407,7 @@ build-faidare:
     ES_HOSTS: ${ES_HOSTS_OPENSTACK}
     ES_PORT: ${ES_PORT}
     APP_CONTEXT: ${APP_NAME}-${ENV}
-#
-#.variables-faidare-prod-proxmox: &variables-faidare-prod-proxmox
-# variables:
-#  ENV: prod
-#  APP_NAME: faidare
-#  APP_PORT: ${PROD_FAIDARE_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_PROXMOX}
-#  SERVER_USER: ${SERVER_USER_PROXMOX}
-#  ES_HOST: ${ES_PROD_HOST}
-#  ES_HOSTS: ${ES_PROD_HOSTS}
-#  ES_PORT: ${ES_PROD_PORT}
-#  APP_CONTEXT: faidare
-#
+
 ## ALPHA
 #.variables-faidare-prod-openstack: &variables-faidare-prod-openstack
 # variables:
@@ -463,52 +422,40 @@ build-faidare:
 #  ES_PORT: ${ES_PROD_PORT}
 #  APP_CONTEXT: faidare
 #
-#deploy-rare-to-beta-openstack:
-# stage: deploy-beta
-# tags:
-#  - openstack
-# <<: *variables-rare-beta-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-# allow_failure: false # mandatory to block the execution of the pipeline
-# needs: ["build-rare"]
-# when: manual # for speeding up pipelines during Ninja Squad devs
-#
-#deploy-rare-to-staging-openstack:
-# stage: deploy-staging
-# tags:
-#  - openstack
-# <<: *variables-rare-staging-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-# needs: ["build-rare"]
-#
-#deploy-rare-to-prod-proxmox:
-# stage: deploy-production
-# <<: *variables-rare-prod-proxmox
-# <<: *deploy_to_vm_proxmox
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-rare"]
-#
+deploy-rare-to-beta-openstack:
+  stage: deploy-beta
+  tags:
+   - openstack
+  <<: *variables-rare-beta-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+  allow_failure: false # mandatory to block the execution of the pipeline
+  needs: ["build-rare"]
+  when: manual # for speeding up pipelines during Ninja Squad devs
+
+deploy-rare-to-staging-openstack:
+  stage: deploy-staging
+  tags:
+   - openstack
+  <<: *variables-rare-staging-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+    - master
+  when: manual
+  needs: ["build-rare"]
+
 ## ALPHA
 #deploy-rare-to-prod-openstack:
 # stage: deploy-production
@@ -520,44 +467,47 @@ build-faidare:
 #  changes:
 #   - backend/src/**/*
 #   - frontend/**/*
+#   - .gitlab-ci.yml
 #  refs:
 #   - master
 # when: manual
 # allow_failure: false
 # needs: ["build-rare"]
-#
-#deploy-brc4env-to-beta-openstack:
-# stage: deploy-beta
-# tags:
-#  - openstack
-# <<: *variables-brc4env-beta-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-# allow_failure: false # mandatory to block the execution of the pipeline
-# needs: ["build-brc4env"]
-# when: manual # for speeding up pipelines during Ninja Squad devs
-#
-#deploy-brc4enTODO: remove before merging.v-to-staging-openstack:
-# stage: deploy-staging
-# tags:
-#  - openstack
-# <<: *variables-brc4env-staging-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-# needs: ["build-brc4env"]
-#
+
+deploy-brc4env-to-beta-openstack:
+  stage: deploy-beta
+  tags:
+   - openstack
+  <<: *variables-brc4env-beta-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+  allow_failure: false # mandatory to block the execution of the pipeline
+  needs: ["build-brc4env"]
+  when: manual # for speeding up pipelines during Ninja Squad devs
+
+deploy-brc4env-to-staging-openstack:
+  stage: deploy-staging
+  tags:
+   - openstack
+  <<: *variables-brc4env-staging-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+    - master
+  when: manual
+  needs: ["build-brc4env"]
+
 #deploy-brc4env-to-prod-openstack:
 # stage: deploy-production
 # tags:
@@ -568,58 +518,47 @@ build-faidare:
 #  changes:
 #   - backend/src/**/*
 #   - frontend/**/*
+#   - .gitlab-ci.yml
 #  refs:
 #   - master
 # when: manual
 # allow_failure: false
 # needs: ["build-brc4env"]
-#
-#deploy-wheatis-to-beta-openstack:
-# stage: deploy-beta
-# tags:
-#  - openstack
-# <<: *variables-wheatis-beta-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-# allow_failure: false
-# needs: ["build-wheatis"]
-# when: manual # for speeding up pipelines during Ninja Squad devs
-#
-#deploy-wheatis-to-staging-openstack:
-# stage: deploy-staging
-# tags:
-#  - openstack
-# <<: *variables-wheatis-staging-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-# needs: ["build-wheatis"]
-#
-#deploy-wheatis-to-prod-proxmox:
-# stage: deploy-production
-# <<: *variables-wheatis-prod-proxmox
-# <<: *deploy_to_vm_proxmox
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-wheatis"]
-#
+
+deploy-wheatis-to-beta-openstack:
+  stage: deploy-beta
+  tags:
+   - openstack
+  <<: *variables-wheatis-beta-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+  allow_failure: false
+  needs: ["build-wheatis"]
+  when: manual # for speeding up pipelines during Ninja Squad devs
+
+deploy-wheatis-to-staging-openstack:
+  stage: deploy-staging
+  tags:
+   - openstack
+  <<: *variables-wheatis-staging-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+    - master
+  when: manual
+  needs: ["build-wheatis"]
+
 ## ALPHA
 #deploy-wheatis-to-prod-openstack:
 # stage: deploy-production
@@ -631,28 +570,30 @@ build-faidare:
 #  changes:
 #   - backend/src/**/*
 #   - frontend/**/*
+#   - .gitlab-ci.yml
 #  refs:
 #   - master
 # when: manual
 # allow_failure: false
 # needs: ["build-wheatis"]
 #
-#deploy-faidare-to-beta-openstack:
-# stage: deploy-beta
-# tags:
-#  - openstack
-# <<: *variables-faidare-beta-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - merge_requests
-# allow_failure: false
-# needs: ["build-faidare"]
-# when: manual # for speeding up pipelines during Ninja Squad devs
-#
+deploy-faidare-to-beta-openstack:
+  stage: deploy-beta
+  tags:
+   - openstack
+  <<: *variables-faidare-beta-openstack
+  <<: *deploy_to_vm_openstack
+  only:
+   changes:
+    - backend/src/**/*
+    - frontend/**/*
+    - .gitlab-ci.yml
+   refs:
+    - merge_requests
+  allow_failure: false
+  needs: ["build-faidare"]
+  when: manual # for speeding up pipelines during Ninja Squad devs
+
 deploy-faidare-to-staging-openstack:
   stage: deploy-staging
   tags:
@@ -669,21 +610,7 @@ deploy-faidare-to-staging-openstack:
     - master
   when: manual
   needs: ["build-faidare"]
-#
-#deploy-faidare-to-prod-proxmox:
-# stage: deploy-production
-# <<: *variables-faidare-prod-proxmox
-# <<: *deploy_to_vm_proxmox
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-faidare"]
-#
+
 ## ALPHA
 #deploy-faidare-to-prod-openstack:
 # stage: deploy-production
@@ -695,258 +622,9 @@ deploy-faidare-to-staging-openstack:
 #  changes:
 #   - backend/src/**/*
 #   - frontend/**/*
+#   - .gitlab-ci.yml
 #  refs:
 #   - master
 # when: manual
 # allow_failure: false
 # needs: ["build-faidare"]
-#
-#.data-integration-proxmox: &data-integration-proxmox
-# # do not retry to avoid overloading the Elasticsearch cluster
-# retry: 0
-# script:
-#  # Do fetch of GIT LFS files only for data integration steps for given app
-#  - git checkout -f origin/$CI_COMMIT_REF_NAME
-#  - git pull origin $CI_COMMIT_REF_NAME
-#  - git lfs pull -I "data/${DATA_DIR}/data/*"
-#  - git lfs pull -I "data/${DATA_DIR}/suggestions/*.gz"
-#  - ./scripts/index.sh -host "${ES_HOSTS}" -app ${APP_NAME} -env ${ENV} --clean ; sleep 1 ; echo
-# environment:
-#  # take care that some variables cannot be expanded according to where they are
-#  # defined. Info: https://forgemia.inra.fr/help/ci/variables/where_variables_can_be_used.md
-#  name: ${ENV}-${APP_NAME}
-#  # DO NOT specify environment's url here if it is already defined in the
-#  # Environments settings, it would cause the build not being visible in the
-#  # Deployments view because of a known bug:
-#  # https://gitlab.com/gitlab-org/gitlab-ce/issues/26537
-# when: manual
-# interruptible: true
-#
-#.data-integration-openstack: &data-integration-openstack
-# tags:
-#  - openstack
-# <<: *data-integration-proxmox
-#
-#data-integration-rare-beta-openstack:
-# stage: data-integration-beta
-# tags:
-#  - openstack
-# <<: *variables-rare-beta-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/rare_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#
-#data-integration-rare-staging-openstack:
-# stage: data-integration-staging
-# tags:
-#  - openstack
-# <<: *variables-rare-staging-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/rare_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-#
-#data-integration-rare-prod-proxmox:
-# stage: data-integration-production
-# <<: *variables-rare-prod-proxmox
-# <<: *data-integration-proxmox
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/rare_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - master
-#
-## ALPHA
-#data-integration-rare-prod-openstack:
-# stage: data-integration-production
-# tags:
-#  - openstack
-# <<: *variables-rare-prod-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/rare_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - master
-#
-#data-integration-brc4env-beta-openstack:
-# stage: data-integration-beta
-# tags:
-#  - openstack
-# <<: *variables-brc4env-beta-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/brc4env_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#
-#data-integration-brc4env-staging-openstack:
-# stage: data-integration-staging
-# tags:
-#  - openstack
-# <<: *variables-brc4env-staging-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/brc4env_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-#
-## ALPHA
-#data-integration-brc4env-prod-openstack:
-# stage: data-integration-production
-# tags:
-#  - openstack
-# <<: *variables-brc4env-prod-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/rare/data/*.json.gz
-#   - data/rare/suggestions/brc4env_bulk*.json.gz
-#   - scripts/*
-#  refs:
-#   - master
-#
-#data-integration-wheatis-beta-openstack:
-# stage: data-integration-beta
-# tags:
-#  - openstack
-# <<: *variables-wheatis-beta-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/wheatis/data/*.json.gz
-#   - data/wheatis/suggestions/wheatis_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#
-#data-integration-wheatis-staging-openstack:
-# stage: data-integration-staging
-# tags:
-#  - openstack
-# <<: *variables-wheatis-staging-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/wheatis/data/*.json.gz
-#   - data/wheatis/suggestions/wheatis_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-#
-#data-integration-wheatis-prod-proxmox:
-# stage: data-integration-production
-# <<: *variables-wheatis-prod-proxmox
-# <<: *data-integration-proxmox
-# only:
-#  changes:
-#   - data/wheatis/data/*.json.gz
-#   - data/wheatis/suggestions/wheatis_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - master
-#
-## ALPHA
-#data-integration-wheatis-prod-openstack:
-# stage: data-integration-production
-# tags:
-#  - openstack
-# <<: *variables-wheatis-prod-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/wheatis/data/*.json.gz
-#   - data/wheatis/suggestions/wheatis_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - master
-#
-#data-integration-faidare-beta-openstack:
-# stage: data-integration-beta
-# tags:
-#  - openstack
-# <<: *variables-faidare-beta-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/faidare/data/*
-#   - data/faidare/suggestions/faidare_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#
-#data-integration-faidare-staging-openstack:
-# stage: data-integration-staging
-# tags:
-#  - openstack
-# <<: *variables-faidare-staging-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/faidare/data/*
-#   - data/faidare/suggestions/faidare_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - merge_requests
-#   - master
-# when: manual
-#
-#data-integration-faidare-prod-proxmox:
-# stage: data-integration-production
-# <<: *variables-faidare-prod-proxmox
-# <<: *data-integration-proxmox
-# only:
-#  changes:
-#   - data/faidare/data/*
-#   - data/faidare/suggestions/faidare_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - master
-#
-## ALPHA
-#data-integration-faidare-prod-openstack:
-# stage: data-integration-production
-# tags:
-#  - openstack
-# <<: *variables-faidare-prod-openstack
-# <<: *data-integration-openstack
-# only:
-#  changes:
-#   - data/faidare/data/*
-#   - data/faidare/suggestions/faidare_bulk*.json.gz
-#   - data/synonyms/all_*
-#   - scripts/*
-#  refs:
-#   - master
