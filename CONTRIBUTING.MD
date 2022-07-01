@@ -56,6 +56,10 @@
 - Merge requests should be reviewed by at least 1 developper
 - Continuous Integration is launched automatically by Gitlab on each commit push or merge request creation.
 
+## Pipeline optimization
+
+If you don't need to build and deploy the application, you can add `SKIP_DEPLOY` into your commit message which will avoid the related job to be added to the pipeline, hence speed-up its execution.
+
 ## Data management
 
 - Git LFS is used to store with the application the JSON data ready to be loaded in elasticsearch. If you clone the repository without installing git LFS, the data will not be cloned. To get the JSON data, you must install git LFS (look at [how to install](https://git-lfs.github.com/)).

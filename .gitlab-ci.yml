@@ -181,6 +181,8 @@ test-lint-build:
     - frontend/.gradle/
     - frontend/node_modules/
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    refs:
     - merge_requests
     - master
@@ -197,19 +199,16 @@ build-rare:
   variables:
    APP_NAME: ${RARE_APP_NAME}
   <<: *build_app           # Merge the contents of the 'build_app' alias
-  when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-brc4env:
   variables:
    APP_NAME: "brc4env"
   <<: *build_app           # Merge the contents of the 'build_app' alias
-  when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-wheatis:
   variables:
    APP_NAME: ${WHEATIS_APP_NAME}
   <<: *build_app           # Merge the contents of the 'build_app' alias
-  when: manual # for speeding up pipelines during Ninja Squad devs
 
 build-faidare:
   variables:
@@ -256,10 +255,6 @@ build-faidare:
    - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/ ; sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
    - eval $(ssh-agent -k)
    - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
-  only:
-   refs:
-    - merge_requests
-    - master
   interruptible: true
 
 .variables-rare-beta-openstack: &variables-rare-beta-openstack
@@ -429,6 +424,8 @@ deploy-rare-to-beta-openstack:
   <<: *variables-rare-beta-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -446,6 +443,8 @@ deploy-rare-to-staging-openstack:
   <<: *variables-rare-staging-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -481,6 +480,8 @@ deploy-brc4env-to-beta-openstack:
   <<: *variables-brc4env-beta-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -498,6 +499,8 @@ deploy-brc4env-to-staging-openstack:
   <<: *variables-brc4env-staging-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -532,6 +535,8 @@ deploy-wheatis-to-beta-openstack:
   <<: *variables-wheatis-beta-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -549,6 +554,8 @@ deploy-wheatis-to-staging-openstack:
   <<: *variables-wheatis-staging-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -584,6 +591,8 @@ deploy-faidare-to-beta-openstack:
   <<: *variables-faidare-beta-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -601,6 +610,8 @@ deploy-faidare-to-staging-openstack:
   <<: *variables-faidare-staging-openstack
   <<: *deploy_to_vm_openstack
   only:
+   variables:
+    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
