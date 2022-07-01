@@ -188,7 +188,7 @@ test-lint-build:
       - build.gradle.kts
       - docker.env
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "master"
   interruptible: true
@@ -426,7 +426,7 @@ deploy-rare-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "master"
   rules:
@@ -434,7 +434,7 @@ deploy-rare-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["build-rare"]
@@ -451,7 +451,7 @@ deploy-rare-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "master"
   when: manual
@@ -486,7 +486,7 @@ deploy-brc4env-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["build-brc4env"]
@@ -503,7 +503,7 @@ deploy-brc4env-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "master"
   when: manual
@@ -537,7 +537,7 @@ deploy-wheatis-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false
   needs: ["build-wheatis"]
@@ -554,7 +554,7 @@ deploy-wheatis-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "master"
   when: manual
@@ -589,7 +589,7 @@ deploy-faidare-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false
   needs: ["build-faidare"]
@@ -606,7 +606,7 @@ deploy-faidare-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "master"
   when: manual
