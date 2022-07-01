@@ -180,19 +180,17 @@ test-lint-build:
     - .gradle
     - frontend/.gradle/
     - frontend/node_modules/
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   refs:
-    - merge_requests
-    - master
-   changes:
-    - backend/src/**/*
-    - backend/build.gradle.kts
-    - frontend/**/*
-    - build.gradle.kts
-    - docker.env
-    - .gitlab-ci.yml
+  rules:
+    - changes:
+      - backend/src/**/*
+      - backend/build.gradle.kts
+      - frontend/**/*
+      - build.gradle.kts
+      - docker.env
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
   interruptible: true
 
 build-rare:
@@ -423,15 +421,21 @@ deploy-rare-to-beta-openstack:
    - openstack
   <<: *variables-rare-beta-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["build-rare"]
   when: manual # for speeding up pipelines during Ninja Squad devs
@@ -442,16 +446,14 @@ deploy-rare-to-staging-openstack:
    - openstack
   <<: *variables-rare-staging-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
-    - master
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
   when: manual
   needs: ["build-rare"]
 
@@ -479,15 +481,13 @@ deploy-brc4env-to-beta-openstack:
    - openstack
   <<: *variables-brc4env-beta-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["build-brc4env"]
   when: manual # for speeding up pipelines during Ninja Squad devs
@@ -498,16 +498,14 @@ deploy-brc4env-to-staging-openstack:
    - openstack
   <<: *variables-brc4env-staging-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
-    - master
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
   when: manual
   needs: ["build-brc4env"]
 
@@ -534,15 +532,13 @@ deploy-wheatis-to-beta-openstack:
    - openstack
   <<: *variables-wheatis-beta-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false
   needs: ["build-wheatis"]
   when: manual # for speeding up pipelines during Ninja Squad devs
@@ -553,16 +549,14 @@ deploy-wheatis-to-staging-openstack:
    - openstack
   <<: *variables-wheatis-staging-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
-    - master
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
   when: manual
   needs: ["build-wheatis"]
 
@@ -590,15 +584,13 @@ deploy-faidare-to-beta-openstack:
    - openstack
   <<: *variables-faidare-beta-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false
   needs: ["build-faidare"]
   when: manual # for speeding up pipelines during Ninja Squad devs
@@ -609,16 +601,14 @@ deploy-faidare-to-staging-openstack:
    - openstack
   <<: *variables-faidare-staging-openstack
   <<: *deploy_to_vm_openstack
-  only:
-   variables:
-    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
-   changes:
-    - backend/src/**/*
-    - frontend/**/*
-    - .gitlab-ci.yml
-   refs:
-    - merge_requests
-    - master
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "master"
   when: manual
   needs: ["build-faidare"]
 
