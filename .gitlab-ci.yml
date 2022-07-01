@@ -182,7 +182,7 @@ test-lint-build:
     - frontend/node_modules/
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    refs:
     - merge_requests
     - master
@@ -425,7 +425,7 @@ deploy-rare-to-beta-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -444,7 +444,7 @@ deploy-rare-to-staging-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -481,7 +481,7 @@ deploy-brc4env-to-beta-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -500,7 +500,7 @@ deploy-brc4env-to-staging-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -536,7 +536,7 @@ deploy-wheatis-to-beta-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -555,7 +555,7 @@ deploy-wheatis-to-staging-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -583,7 +583,7 @@ deploy-wheatis-to-staging-openstack:
 # when: manual
 # allow_failure: false
 # needs: ["build-wheatis"]
-#
+
 deploy-faidare-to-beta-openstack:
   stage: deploy-beta
   tags:
@@ -592,7 +592,7 @@ deploy-faidare-to-beta-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
@@ -611,7 +611,7 @@ deploy-faidare-to-staging-openstack:
   <<: *deploy_to_vm_openstack
   only:
    variables:
-    - $CI_COMMIT_MESSAGE =~ "SKIP_DEPLOY" # Ninja Squad should appreciate
+    - $CI_COMMIT_MESSAGE =~ /^.*SKIP_DEPLOY.*$/i # Ninja Squad should appreciate
    changes:
     - backend/src/**/*
     - frontend/**/*
