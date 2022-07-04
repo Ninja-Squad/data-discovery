@@ -430,7 +430,7 @@ deploy-rare-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
@@ -450,12 +450,13 @@ deploy-rare-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
+  when: manual
   needs: ["build-rare"]
 
 ## ALPHA
@@ -487,7 +488,7 @@ deploy-brc4env-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
@@ -507,7 +508,7 @@ deploy-brc4env-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
@@ -544,7 +545,7 @@ deploy-wheatis-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
@@ -564,12 +565,13 @@ deploy-wheatis-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
+  when: manual
   needs: ["build-wheatis"]
 
 ## ALPHA
@@ -601,7 +603,7 @@ deploy-faidare-to-beta-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
@@ -621,12 +623,13 @@ deploy-faidare-to-staging-openstack:
       - backend/src/**/*
       - frontend/**/*
       - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~  /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
+  when: manual
   needs: ["build-faidare"]
 
 ## ALPHA
