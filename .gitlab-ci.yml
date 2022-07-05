@@ -1,11 +1,11 @@
 ---
 stages:
- - pre-build
- - test
- - build
- - deploy-beta
- - deploy-staging
-# - deploy-production
+  - pre-build
+  - test
+  - build
+  - deploy-beta
+  - deploy-staging
+  - deploy-production
 
 # The image contains a JDK 8 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
@@ -25,140 +25,144 @@ variables:
  DOCKER_OPTS: "--mtu=1450"
 
 build-es-synonyms-docker-image:
- # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
- # (more details here: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html)
- # docker-in-docker (dind) approach is used here.
- # https://stackoverflow.com/questions/47280922/role-of-docker-in-docker-dind-service-in-gitlab-ci
- # The runner should be executed in privileged mode.
- # It is recommended to use dind with TLS enabled.
- image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
- stage: pre-build
- services:
-  - docker:20.10.6-dind
- script:
-  - git lfs pull -I "data/synonyms"
-  - cd data/synonyms
-  - gzip -fd all_*.txt.gz
-  - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
-  # only build latest tag on master branch
-  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest . ; fi;
-  - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
-  # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
-  - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
-  # only push latest tag on master branch
-  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
- only:
-  refs:
-   - merge_requests
-   - master
-  changes:
-   - data/synonyms/*
+  # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
+  # (more details here: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html)
+  # docker-in-docker (dind) approach is used here.
+  # https://stackoverflow.com/questions/47280922/role-of-docker-in-docker-dind-service-in-gitlab-ci
+  # The runner should be executed in privileged mode.
+  # It is recommended to use dind with TLS enabled.
+  image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
+  stage: pre-build
+  services:
+    - docker:20.10.6-dind
+  script:
+    - git lfs pull -I "data/synonyms"
+    - cd data/synonyms
+    - gzip -fd all_*.txt.gz
+    - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG} .
+    # only build latest tag on master branch
+    - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest . ; fi;
+    - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
+    # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
+    - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
+    - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+    # TODO fix above before merging into master branch
+    - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
+  rules:
+    - changes:
+      - data/synonyms/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: always
 
 build-loader-docker-image:
- image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
- stage: pre-build
- services:
-  - docker:20.10.6-dind
- script:
-  # build the image
-  - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG} .
-  # only build latest tag on master branch
-  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest . ; fi;
-  # Login before pushing the image
-  - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
-  # push the built image
-  - docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG}
-  # only push latest tag on master branch
-  - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
- only:
-  refs:
-   - merge_requests
-   - master
-  changes:
-   - scripts/*
-   - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
-   - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/*/*.mapping.json
-   - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
-   - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
+  image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
+  stage: pre-build
+  services:
+    - docker:20.10.6-dind
+  script:
+    # build the image
+    - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG} .
+    # only build latest tag on master branch
+    - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest . ; fi;
+    # Login before pushing the image
+    - docker login registry.forgemia.inra.fr -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
+    # push the built image
+    - docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG}
+    # only push latest tag on master branch
+    - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
+  rules:
+    - changes:
+      - scripts/*
+      - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
+      - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/*/*.mapping.json
+      - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
+      - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: always
 
-deploy-synonyms-to-cluster-openstack:
- stage: pre-build
- tags:
-  - openstack
- script:
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-  - git lfs pull -I "data/synonyms"
-  - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
-  - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
-  - eval $(ssh-agent -k)
- only:
-  changes:
-   - data/synonyms/all_*
-  refs:
-   - merge_requests
- except:
-  - master
+deploy-synonyms-to-cluster:
+  stage: pre-build
+  tags:
+    - openstack
+  script:
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
+    - git lfs pull -I "data/synonyms"
+    - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
+    - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
+    - eval $(ssh-agent -k)
+  rules:
+    - changes:
+      - data/synonyms/all_*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: always
 
 # launch all tests and sonarqube analysis
 test-lint-build:
- stage: test
- tags:
-  - openstack
- # the backend tests need an elasticsearch instance
- services:
-   # even if that would be ideal
-   # we can't just launch the service with just elasticsearch:6.3.1
-   # because we need to pass some variables, but they are passed to _all_ containers
-   # so they fail the start of other docker images like urgi/docker-browsers
-   # the only solution is to override the entrypoint of the service and pass the arguments manually
-   - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
-    # TODO fix above before merging into master branch
-     alias: elasticsearch
-     # discovery.type=single-node
-     # single-node is necessary to start in development mode
-     # so there will be no bootstrap checks that would fail on CI
-     # especially the error regarding
-     # `max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]`
-     command:
-      - /bin/sh
-      - -c
-      - "export PATH=/usr/share/elasticsearch/bin:$PATH ;
-         exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch"
- variables:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx1024m -Dorg.gradle.daemon=false"
-  ES_JAVA_OPTS: "-Xms2g -Xmx2g"
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
- script:
-  - ./gradlew --parallel check jacocoTestReport :frontend:lint
-  # - ./gradlew assemble -Papp=${APP_NAME}
-  - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
-  - export PATH="/tmp/node/:$PATH"
-  - ./gradlew sonarqube -x test
-# cache:
-#   #key: "$CI_COMMIT_REF_NAME"
-#   key: "${CI_JOB_NAME}"
-#   policy: pull-push
-#   paths:
-#     - .gradle
-#     - .sonar/cache
-#     - frontend/.gradle/
-#     - frontend/node_modules/
- artifacts:
-  reports:
-   junit:
-    - ./backend/build/test-results/test/TEST-*.xml
-    - ./frontend/karma-junit-tests-report/TEST*.xml
- only:
-  refs:
-   - merge_requests
-   - master
-  changes:
-   - backend/src/**/*
-   - frontend/**/*
-   - .gitlab-ci.yml
- interruptible: true
+  stage: test
+  tags:
+    - openstack
+  # the backend tests need an elasticsearch instance
+  services:
+    # even if that would be ideal
+    # we can't just launch the service with just elasticsearch:6.3.1
+    # because we need to pass some variables, but they are passed to _all_ containers
+    # so they fail the start of other docker images like urgi/docker-browsers
+    # the only solution is to override the entrypoint of the service and pass the arguments manually
+    - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+      # TODO fix above before merging into master branch
+      alias: elasticsearch
+      # discovery.type=single-node
+      # single-node is necessary to start in development mode
+      # so there will be no bootstrap checks that would fail on CI
+      # especially the error regarding
+      # `max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]`
+      command:
+        - /bin/sh
+        - -c
+        - "export PATH=/usr/share/elasticsearch/bin:$PATH ;
+          exec chroot --userspec=1000 / elasticsearch -Ediscovery.type=single-node -Ecluster.name=elasticsearch"
+  variables:
+    GRADLE_OPTS: "-Dorg.gradle.daemon=true"
+    ES_JAVA_OPTS: "-Xms2g -Xmx2g"
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  script:
+    - ./gradlew --parallel check jacocoTestReport :frontend:lint
+    # - ./gradlew assemble -Papp=${APP_NAME}
+    - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
+    - export PATH="/tmp/node/:$PATH"
+    - ./gradlew sonarqube -x test
+  # cache:
+  #   #key: "$CI_COMMIT_REF_NAME"
+  #   key: "${CI_JOB_NAME}"
+  #   policy: pull-push
+  #   paths:
+  #     - .gradle
+  #     - .sonar/cache
+  #     - frontend/.gradle/
+  #     - frontend/node_modules/
+  artifacts:
+    reports:
+      junit:
+        - ./backend/build/test-results/test/TEST-*.xml
+        - ./frontend/karma-junit-tests-report/TEST*.xml
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: always
+  interruptible: true
 
 
 .build-app: &build_app
@@ -192,7 +196,7 @@ test-lint-build:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: always
   allow_failure: false # mandatory to block the execution of the pipeline
   interruptible: true
@@ -241,7 +245,7 @@ build-faidare:
 # <<: *restart_config_server
 #
 
-.deploy-to-vm-openstack: &deploy_to_vm_openstack
+.deploy-to-vm: &deploy_to_vm
   tags:
    - openstack
   # Hidden job which serves as template for executed jobs below.
@@ -253,178 +257,186 @@ build-faidare:
    - ssh-add <(echo "${SSH_PRIVATE_KEY}")
    - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
    # Copy jar to the server
-   - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}.jar
-   - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/ ; sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
+   - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${SERVICE_NAME}-${ENV}.jar
+   - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${SERVICE_NAME}-${ENV}.jar /opt/bootapp/ ; sudo chown -R bootapp:bootapp /opt/bootapp/ ; sudo systemctl restart bootapp@${SERVICE_NAME}-${ENV}"
    - eval $(ssh-agent -k)
-   - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
+   - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_NAME}"
   interruptible: true
 
-.variables-rare-beta-openstack: &variables-rare-beta-openstack
+.variables-rare-beta: &variables-rare-beta
   variables:
    ENV: beta
    APP_NAME: rare
    APP_PORT: ${BETA_RARE_PORT}
-   DATA_DIR: ${APP_NAME}
+   SERVICE_NAME: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
+   ES_HOST: ${ES_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_PORT}
 
-.variables-rare-staging-openstack: &variables-rare-staging-openstack
+.variables-rare-staging: &variables-rare-staging
   variables:
    ENV: staging
    APP_NAME: rare
    APP_PORT: ${STAGING_RARE_PORT}
-   DATA_DIR: ${APP_NAME}
+   SERVICE_NAME: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
+   ES_HOST: ${ES_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_PORT}
 
-## ALPHA
-#.variables-rare-prod-openstack: &variables-rare-prod-openstack
-# variables:
-#  ENV: prod
-#  APP_NAME: rare
-#  APP_PORT: ${PROD_RARE_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#
-.variables-brc4env-beta-openstack: &variables-brc4env-beta-openstack
+.variables-rare-prod: &variables-rare-prod
+    variables:
+      ENV: prod
+      APP_NAME: rare
+      APP_PORT: ${PROD_RARE_PORT}
+      SERVICE_NAME: ${APP_NAME}
+      SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
+      SERVER_USER: ${SERVER_USER_OPENSTACK}
+      ES_HOST: ${ES_HOST_OPENSTACK}
+      ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+      ES_PORT: ${ES_PORT}
+
+.variables-brc4env-beta: &variables-brc4env-beta
   variables:
    ENV: beta
    APP_NAME: brc4env
    APP_PORT: ${BETA_BRC4ENV_PORT}
-   DATA_DIR: rare
+   SERVICE_NAME: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
+   ES_HOST: ${ES_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_PORT}
 
-.variables-brc4env-staging-openstack: &variables-brc4env-staging-openstack
+.variables-brc4env-staging: &variables-brc4env-staging
   variables:
    ENV: staging
    APP_NAME: brc4env
    APP_PORT: ${STAGING_BRC4ENV_PORT}
-   DATA_DIR: rare
+   SERVICE_NAME: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
-#
-#.variables-brc4env-prod-openstack: &variables-brc4env-prod-openstack
-# variables:
-#  ENV: prod
-#  APP_NAME: brc4env
-#  APP_PORT: ${PROD_BRC4ENV_PORT}
-#  DATA_DIR: rare
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-#  SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_PORT: ${ES_DEV_PORT} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
+   ES_HOST: ${ES_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_PORT}
 
-.variables-wheatis-beta-openstack: &variables-wheatis-beta-openstack
+.variables-brc4env-prod: &variables-brc4env-prod
+  variables:
+    ENV: prod
+    APP_NAME: brc4env
+    APP_PORT: ${PROD_BRC4ENV_PORT}
+    SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
+    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+    ES_HOST: ${ES_HOST_OPENSTACK}
+    ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+    ES_PORT: ${ES_PORT}
+
+.variables-wheatis-beta: &variables-wheatis-beta
   variables:
    ENV: beta
    APP_NAME: wheatis
    APP_PORT: ${BETA_WHEATIS_PORT}
-   DATA_DIR: ${APP_NAME}
+   SERVICE_NAME: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
+   ES_HOST: ${ES_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_PORT}
 
-.variables-wheatis-staging-openstack: &variables-wheatis-staging-openstack
+.variables-wheatis-staging: &variables-wheatis-staging
   variables:
    ENV: staging
    APP_NAME: wheatis
    APP_PORT: ${STAGING_WHEATIS_PORT}
-   DATA_DIR: ${APP_NAME}
+   SERVICE_NAME: ${APP_NAME}
    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
+   ES_HOST: ${ES_HOST_OPENSTACK}
+   ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+   ES_PORT: ${ES_PORT}
 
 
-## ALPHA
-#.variables-wheatis-prod-openstack: &variables-wheatis-prod-openstack
-# variables:
-#  ENV: prod
-#  APP_NAME: wheatis
-#  APP_PORT: ${PROD_WHEATIS_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-#  SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_PORT: ${ES_PROD_PORT}
-
-.variables-faidare-beta-openstack: &variables-faidare-beta-openstack
+.variables-wheatis-prod: &variables-wheatis-prod
   variables:
-   ENV: beta
-   APP_NAME: faidare
-   APP_PORT: ${BETA_FAIDARE_PORT}
-   DATA_DIR: ${APP_NAME}
-   SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-   SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
-   ES_HOST: ${ES_DEV_HOST_OPENSTACK}
-   ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK}
-   ES_PORT: ${ES_DEV_PORT}
+    ENV: prod
+    APP_NAME: wheatis
+    APP_PORT: ${PROD_WHEATIS_PORT}
+    SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
+    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+    ES_HOST: ${ES_HOST_OPENSTACK}
+    ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+    ES_PORT: ${ES_PORT}
 
-.variables-faidare-staging-public-openstack: &variables-faidare-staging-public-openstack
+.variables-faidare-beta: &variables-faidare-beta
+  variables:
+    ENV: beta
+    APP_NAME: faidare
+    APP_PORT: ${BETA_FAIDARE_PORT}
+    SERVICE_NAME: ${APP_NAME}-search
+    SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
+    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
+    ES_HOST: ${ES_HOST_OPENSTACK}
+    ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+    ES_PORT: ${ES_PORT}
+
+.variables-faidare-staging-public: &variables-faidare-staging-public
   variables:
     ENV: staging-public
     APP_NAME: faidare
     APP_PORT: ${STAGING_FAIDARE_PUBLIC_PORT}
-    DATA_DIR: ${APP_NAME}
+    SERVICE_NAME: ${APP_NAME}-search
     SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
     SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
     ES_HOST: ${ES_HOST_OPENSTACK}
     ES_HOSTS: ${ES_HOSTS_OPENSTACK}
     ES_PORT: ${ES_PORT}
 
-.variables-faidare-staging-private-openstack: &variables-faidare-staging-private-openstack
+.variables-faidare-staging-private: &variables-faidare-staging-private
   variables:
     ENV: staging-private
     APP_NAME: faidare
     APP_PORT: ${STAGING_FAIDARE_PRIVATE_PORT}
-    DATA_DIR: ${APP_NAME}
+    SERVICE_NAME: ${APP_NAME}-search
     SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
     SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
     ES_HOST: ${ES_HOST_OPENSTACK}
     ES_HOSTS: ${ES_HOSTS_OPENSTACK}
     ES_PORT: ${ES_PORT}
 
-## ALPHA
-#.variables-faidare-prod-openstack: &variables-faidare-prod-openstack
-# variables:
-#  ENV: prod
-#  APP_NAME: faidare
-#  APP_PORT: ${PROD_FAIDARE_PORT}
-#  DATA_DIR: ${APP_NAME}
-#  SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-#  SERVER_USER: ${SERVER_USER_OPENSTACK}
-#  ES_HOST: ${ES_DEV_HOST_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_HOSTS: ${ES_DEV_HOSTS_OPENSTACK} # TODO: TO BE FIXED WHEN PROD CLUSTER AVAILABLE IN OPENSTACK
-#  ES_PORT: ${ES_PROD_PORT}
+.variables-faidare-prod-public: &variables-faidare-prod-public
+  variables:
+    ENV: prod-public
+    APP_NAME: faidare
+    APP_PORT: ${PROD_FAIDARE_PORT}
+    SERVICE_NAME: ${APP_NAME}-search
+    SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
+    SERVER_USER: ${SERVER_USER_OPENSTACK}
+    ES_HOST: ${ES_HOST_OPENSTACK}
+    ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+    ES_PORT: ${ES_PORT}
 
-deploy-rare-to-beta-openstack:
+
+.variables-faidare-prod-private: &variables-faidare-prod-private
+  variables:
+    ENV: prod-private
+    APP_NAME: faidare
+    APP_PORT: ${PROD_FAIDARE_PORT}
+    SERVICE_NAME: ${APP_NAME}-search
+    SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
+    SERVER_USER: ${SERVER_USER_OPENSTACK}
+    ES_HOST: ${ES_HOST_OPENSTACK}
+    ES_HOSTS: ${ES_HOSTS_OPENSTACK}
+    ES_PORT: ${ES_PORT}
+
+deploy-rare-to-beta:
   stage: deploy-beta
   tags:
    - openstack
-  <<: *variables-rare-beta-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-rare-beta
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -434,17 +446,17 @@ deploy-rare-to-beta-openstack:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["build-rare"]
 
-deploy-rare-to-staging-openstack:
+deploy-rare-to-staging:
   stage: deploy-staging
   tags:
    - openstack
-  <<: *variables-rare-staging-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-rare-staging
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -452,37 +464,32 @@ deploy-rare-to-staging-openstack:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: manual
   when: manual
   needs: ["build-rare"]
 
-## ALPHA
-#deploy-rare-to-prod-openstack:
-# stage: deploy-production
-# tags:
-#  - openstack
-# <<: *variables-rare-prod-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#   - .gitlab-ci.yml
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-rare"]
+deploy-rare-to-prod:
+  stage: deploy-production
+  tags:
+   - openstack
+  <<: *variables-rare-prod
+  <<: *deploy_to_vm
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+      when: never
+  when: manual
+  allow_failure: false
+  needs: ["build-rare"]
 
-deploy-brc4env-to-beta-openstack:
+deploy-brc4env-to-beta:
   stage: deploy-beta
   tags:
    - openstack
-  <<: *variables-brc4env-beta-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-brc4env-beta
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -492,17 +499,17 @@ deploy-brc4env-to-beta-openstack:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["build-brc4env"]
 
-deploy-brc4env-to-staging-openstack:
+deploy-brc4env-to-staging:
   stage: deploy-staging
   tags:
    - openstack
-  <<: *variables-brc4env-staging-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-brc4env-staging
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -510,36 +517,32 @@ deploy-brc4env-to-staging-openstack:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: manual
   when: manual
   needs: ["build-brc4env"]
 
-#deploy-brc4env-to-prod-openstack:
-# stage: deploy-production
-# tags:
-#  - openstack
-# <<: *variables-brc4env-prod-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#   - .gitlab-ci.yml
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-brc4env"]
+deploy-brc4env-to-prod:
+  stage: deploy-production
+  tags:
+   - openstack
+  <<: *variables-brc4env-prod
+  <<: *deploy_to_vm
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+      when: never
+  when: manual
+  allow_failure: false
+  needs: ["build-brc4env"]
 
-deploy-wheatis-to-beta-openstack:
+deploy-wheatis-to-beta:
   stage: deploy-beta
   tags:
    - openstack
-  <<: *variables-wheatis-beta-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-wheatis-beta
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -549,17 +552,17 @@ deploy-wheatis-to-beta-openstack:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false
   needs: ["build-wheatis"]
 
-deploy-wheatis-to-staging-openstack:
+deploy-wheatis-to-staging:
   stage: deploy-staging
   tags:
    - openstack
-  <<: *variables-wheatis-staging-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-wheatis-staging
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -567,37 +570,32 @@ deploy-wheatis-to-staging-openstack:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: manual
   when: manual
   needs: ["build-wheatis"]
 
-## ALPHA
-#deploy-wheatis-to-prod-openstack:
-# stage: deploy-production
-# tags:
-#  - openstack
-# <<: *variables-wheatis-prod-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#   - .gitlab-ci.yml
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-wheatis"]
-
-deploy-faidare-to-beta-openstack:
-  stage: deploy-beta
+deploy-wheatis-to-prod:
+  stage: deploy-production
   tags:
    - openstack
-  <<: *variables-faidare-beta-openstack
-  <<: *deploy_to_vm_openstack
+  <<: *variables-wheatis-prod
+  <<: *deploy_to_vm
+  rules:
+    - changes:
+      - backend/src/**/*
+      - frontend/**/*
+      - .gitlab-ci.yml
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+      when: never
+  when: manual
+  allow_failure: false
+  needs: ["build-wheatis"]
+
+deploy-faidare-to-beta:
+  stage: deploy-beta
+  tags:
+    - openstack
+  <<: *variables-faidare-beta
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -607,17 +605,17 @@ deploy-faidare-to-beta-openstack:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false
   needs: ["build-faidare"]
 
-deploy-faidare-to-staging-public-openstack:
+deploy-faidare-to-staging-public:
   stage: deploy-staging
   tags:
-   - openstack
-  <<: *variables-faidare-staging-public-openstack
-  <<: *deploy_to_vm_openstack
+    - openstack
+  <<: *variables-faidare-staging-public
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -625,19 +623,15 @@ deploy-faidare-to-staging-public-openstack:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: manual
   when: manual
   needs: ["build-faidare"]
 
-deploy-faidare-to-staging-private-openstack:
+deploy-faidare-to-staging-private:
   stage: deploy-staging
   tags:
-   - openstack
-  <<: *variables-faidare-staging-private-openstack
-  <<: *deploy_to_vm_openstack
+    - openstack
+  <<: *variables-faidare-staging-private
+  <<: *deploy_to_vm
   rules:
     - changes:
       - backend/src/**/*
@@ -645,27 +639,31 @@ deploy-faidare-to-staging-private-openstack:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: manual
   when: manual
   needs: ["build-faidare"]
 
-## ALPHA
-#deploy-faidare-to-prod-openstack:
-# stage: deploy-production
-# tags:
-#  - openstack
-# <<: *variables-faidare-prod-openstack
-# <<: *deploy_to_vm_openstack
-# only:
-#  changes:
-#   - backend/src/**/*
-#   - frontend/**/*
-#   - .gitlab-ci.yml
-#  refs:
-#   - master
-# when: manual
-# allow_failure: false
-# needs: ["build-faidare"]
+deploy-faidare-to-prod-public:
+  stage: deploy-production
+  tags:
+    - openstack
+  <<: *variables-faidare-prod-public
+  <<: *deploy_to_vm
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+      when: never
+  when: manual
+  allow_failure: false
+  needs: ["build-faidare"]
+
+deploy-faidare-to-prod-private:
+  stage: deploy-production
+  tags:
+    - openstack
+  <<: *variables-faidare-prod-private
+  <<: *deploy_to_vm
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+      when: never
+  when: manual
+  allow_failure: false
+  needs: ["build-faidare"]
