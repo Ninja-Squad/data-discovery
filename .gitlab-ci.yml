@@ -480,7 +480,9 @@ deploy-rare-to-prod:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-  when: manual
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: manual
+  when: never
   allow_failure: false
   needs: ["build-rare"]
 
@@ -533,7 +535,9 @@ deploy-brc4env-to-prod:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-  when: manual
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: manual
+  when: never
   allow_failure: false
   needs: ["build-brc4env"]
 
@@ -586,7 +590,9 @@ deploy-wheatis-to-prod:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-  when: manual
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: manual
+  when: never
   allow_failure: false
   needs: ["build-wheatis"]
 
@@ -651,7 +657,9 @@ deploy-faidare-to-prod-public:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-  when: manual
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: manual
+  when: never
   allow_failure: false
   needs: ["build-faidare"]
 
@@ -664,6 +672,8 @@ deploy-faidare-to-prod-private:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
-  when: manual
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: manual
+  when: never
   allow_failure: false
   needs: ["build-faidare"]
