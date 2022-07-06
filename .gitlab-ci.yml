@@ -85,7 +85,6 @@ build-loader-docker-image:
       when: always
 
 deploy-synonyms-to-cluster:
-  image: registry.forgemia.inra.fr/urgi-is/docker-rare/bash-git-lfs:latest
   stage: pre-build
   tags:
     - openstack
