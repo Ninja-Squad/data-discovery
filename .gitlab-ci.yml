@@ -204,7 +204,7 @@ test-lint-build:
 
 build-rare:
   variables:
-   APP_NAME: ${RARE_APP_NAME}
+   APP_NAME: "rare"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-brc4env:
@@ -214,12 +214,12 @@ build-brc4env:
 
 build-wheatis:
   variables:
-   APP_NAME: ${WHEATIS_APP_NAME}
+   APP_NAME: "wheatis"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-faidare:
   variables:
-   APP_NAME: ${FAIDARE_APP_NAME}
+   APP_NAME: "faidare"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 .restart-config-server:
@@ -294,7 +294,7 @@ build-faidare:
     APP_PORT: ${PROD_RARE_PORT}
     SERVICE_NAME: ${APP_NAME}
     SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
-    SERVER_USER: ${SERVER_USER_OPENSTACK}
+    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
     ES_HOST: ${ES_HOST_OPENSTACK}
     ES_HOSTS: ${ES_HOSTS_OPENSTACK}
     ES_PORT: ${ES_PORT}
@@ -481,9 +481,11 @@ deploy-rare-to-prod:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  # when: never
+  when: manual
   allow_failure: false
   needs: ["build-rare"]
 
@@ -536,9 +538,11 @@ deploy-brc4env-to-prod:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  # when: never
+  when: manual
   allow_failure: false
   needs: ["build-brc4env"]
 
@@ -591,9 +595,11 @@ deploy-wheatis-to-prod:
       - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  # when: never
+  when: manual
   allow_failure: false
   needs: ["build-wheatis"]
 
@@ -658,9 +664,11 @@ deploy-faidare-to-prod-public:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  # when: never
+  when: manual
   allow_failure: false
   needs: ["build-faidare"]
 
@@ -673,8 +681,10 @@ deploy-faidare-to-prod-private:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  # when: never
+  when: manual
   allow_failure: false
   needs: ["build-faidare"]
