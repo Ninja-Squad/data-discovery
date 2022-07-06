@@ -228,7 +228,7 @@ restart-config-server:
     - openstack
   variables:
     SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
-    SERVER_USER: ${SERVER_USER_OPENSTACK}
+    SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
   script:
     - eval $(ssh-agent -s)
     - ssh-add <(echo "${SSH_PRIVATE_KEY}")
