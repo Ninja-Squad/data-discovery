@@ -72,7 +72,7 @@ build-loader-docker-image:
     - docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG}
     # only push latest tag on master branch
     - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
-  rules:
+  rules: # from my point of view, following rule should not trigger the job (when only commiting .gitlab-ci.yml), but the job is executed currently, why?
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       changes:
         - scripts/*
