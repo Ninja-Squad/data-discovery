@@ -93,7 +93,7 @@ deploy-synonyms-to-cluster:
     - eval $(ssh-agent -s)
     - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
     - git lfs pull -I "data/synonyms"
-    - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
+    - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ ; done ;
     - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
     - eval $(ssh-agent -k)
   rules:
