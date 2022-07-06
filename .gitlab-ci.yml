@@ -24,6 +24,10 @@ variables:
  GIT_DEPTH: 0
  DOCKER_OPTS: "--mtu=1450"
 
+# See https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates
+include:
+  - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
+
 build-es-synonyms-docker-image:
   # There are three methods to enable the use of docker build and docker run during jobs; each with their own tradeoffs
   # (more details here: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html)
