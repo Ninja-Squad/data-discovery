@@ -16,13 +16,12 @@ image: circleci/openjdk:8-jdk-browsers
 # runtime for each build is more reliable since the runtime is completely
 # isolated from any previous builds.
 variables:
- GRADLE_OPTS: "-Dorg.gradle.daemon=false"
- GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
- GIT_LFS_SKIP_SMUDGE: "1"
- ELASTIC_VERSION: "7.13.2"
- IMAGE_TAG: $CI_COMMIT_REF_SLUG
- GIT_DEPTH: 0
- DOCKER_OPTS: "--mtu=1450"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+  GIT_LFS_SKIP_SMUDGE: "1"
+  ELASTIC_VERSION: "7.13.2"
+  IMAGE_TAG: $CI_COMMIT_REF_SLUG
+  GIT_DEPTH: 0
 
 # See https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates
 include:
@@ -53,10 +52,9 @@ build-es-synonyms-docker-image:
     # TODO fix above before merging into master branch
     - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
   rules:
-    - changes:
-      - data/synonyms/*
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      changes:
+        - data/synonyms/*
 
 build-loader-docker-image:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
@@ -75,14 +73,13 @@ build-loader-docker-image:
     # only push latest tag on master branch
     - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
   rules:
-    - changes:
-      - scripts/*
-      - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
-      - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/*/*.mapping.json
-      - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
-      - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      changes:
+        - scripts/*
+        - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
+        - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/*/*.mapping.json
+        - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
+        - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
 
 deploy-synonyms-to-cluster:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/bash-git-lfs:latest
@@ -97,10 +94,9 @@ deploy-synonyms-to-cluster:
     - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
     - eval $(ssh-agent -k)
   rules:
-    - changes:
-      - data/synonyms/all_*
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      changes:
+        - data/synonyms/all_*
 
 # launch all tests and sonarqube analysis
 test-lint-build:
@@ -153,14 +149,11 @@ test-lint-build:
         - ./backend/build/test-results/test/TEST-*.xml
         - ./frontend/karma-junit-tests-report/TEST*.xml
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: always
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   interruptible: true
 
 
@@ -184,19 +177,16 @@ test-lint-build:
     - frontend/.gradle/
     - frontend/node_modules/
   rules:
-    - changes:
-      - backend/src/**/*
-      - backend/build.gradle.kts
-      - frontend/**/*
-      - build.gradle.kts
-      - docker.env
-      - .gitlab-ci.yml
     - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: always
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      changes:
+        - backend/src/**/*
+        - backend/build.gradle.kts
+        - frontend/**/*
+        - build.gradle.kts
+        - docker.env
+        - .gitlab-ci.yml
   allow_failure: false # mandatory to block the execution of the pipeline
   interruptible: true
 
@@ -237,10 +227,7 @@ restart-config-server:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: always
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
   interruptible: true
 
 .deploy-to-vm: &deploy_to_vm
@@ -437,16 +424,13 @@ deploy-rare-to-beta:
   <<: *variables-rare-beta
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: never
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["restart-config-server","build-rare"]
 
@@ -457,12 +441,13 @@ deploy-rare-to-staging:
   <<: *variables-rare-staging
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   needs: ["restart-config-server","build-rare"]
 
@@ -473,16 +458,13 @@ deploy-rare-to-prod:
   <<: *variables-rare-prod
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: manual
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   allow_failure: false
   needs: ["restart-config-server","build-rare"]
@@ -494,16 +476,13 @@ deploy-brc4env-to-beta:
   <<: *variables-brc4env-beta
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: never
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   allow_failure: false # mandatory to block the execution of the pipeline
   needs: ["restart-config-server","build-brc4env"]
 
@@ -514,12 +493,13 @@ deploy-brc4env-to-staging:
   <<: *variables-brc4env-staging
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   needs: ["restart-config-server","build-brc4env"]
 
@@ -530,16 +510,13 @@ deploy-brc4env-to-prod:
   <<: *variables-brc4env-prod
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: manual
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   allow_failure: false
   needs: ["restart-config-server","build-brc4env"]
@@ -551,16 +528,13 @@ deploy-wheatis-to-beta:
   <<: *variables-wheatis-beta
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: never
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   allow_failure: false
   needs: ["restart-config-server","build-wheatis"]
 
@@ -571,12 +545,13 @@ deploy-wheatis-to-staging:
   <<: *variables-wheatis-staging
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   needs: ["restart-config-server","build-wheatis"]
 
@@ -587,16 +562,13 @@ deploy-wheatis-to-prod:
   <<: *variables-wheatis-prod
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: manual
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   allow_failure: false
   needs: ["restart-config-server","build-wheatis"]
@@ -608,16 +580,13 @@ deploy-faidare-to-beta:
   <<: *variables-faidare-beta
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: never
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   allow_failure: false
   needs: ["restart-config-server","build-faidare"]
 
@@ -628,12 +597,13 @@ deploy-faidare-to-staging-public:
   <<: *variables-faidare-staging-public
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   needs: ["restart-config-server","build-faidare"]
 
@@ -644,12 +614,13 @@ deploy-faidare-to-staging-private:
   <<: *variables-faidare-staging-private
   <<: *deploy_to_vm
   rules:
-    - changes:
-      - backend/src/**/*
-      - frontend/**/*
-      - .gitlab-ci.yml
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   needs: ["restart-config-server","build-faidare"]
 
@@ -660,12 +631,13 @@ deploy-faidare-to-prod-public:
   <<: *variables-faidare-prod-public
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: manual
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   allow_failure: false
   needs: ["restart-config-server","build-faidare"]
@@ -677,12 +649,13 @@ deploy-faidare-to-prod-private:
   <<: *variables-faidare-prod-private
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: manual
+      changes:
+        - backend/src/**/*
+        - frontend/**/*
+        - .gitlab-ci.yml
   when: manual
   allow_failure: false
   needs: ["restart-config-server","build-faidare"]
