@@ -78,7 +78,7 @@ build-loader-docker-image:
         - scripts/*
         - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
         - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/*/*.mapping.json
-        - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
+        - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.json
         - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
 
 deploy-synonyms-to-cluster:
