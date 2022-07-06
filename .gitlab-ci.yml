@@ -450,7 +450,7 @@ deploy-rare-to-beta:
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false # mandatory to block the execution of the pipeline
-  needs: ["build-rare"]
+  needs: ["restart-config-server","build-rare"]
 
 deploy-rare-to-staging:
   stage: deploy-staging
@@ -466,7 +466,7 @@ deploy-rare-to-staging:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
   when: manual
-  needs: ["build-rare"]
+  needs: ["restart-config-server","build-rare"]
 
 deploy-rare-to-prod:
   stage: deploy-production
@@ -487,7 +487,7 @@ deploy-rare-to-prod:
       when: manual
   when: manual
   allow_failure: false
-  needs: ["build-rare"]
+  needs: ["restart-config-server","build-rare"]
 
 deploy-brc4env-to-beta:
   stage: deploy-beta
@@ -507,7 +507,7 @@ deploy-brc4env-to-beta:
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false # mandatory to block the execution of the pipeline
-  needs: ["build-brc4env"]
+  needs: ["restart-config-server","build-brc4env"]
 
 deploy-brc4env-to-staging:
   stage: deploy-staging
@@ -523,7 +523,7 @@ deploy-brc4env-to-staging:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
   when: manual
-  needs: ["build-brc4env"]
+  needs: ["restart-config-server","build-brc4env"]
 
 deploy-brc4env-to-prod:
   stage: deploy-production
@@ -544,7 +544,7 @@ deploy-brc4env-to-prod:
       when: manual
   when: manual
   allow_failure: false
-  needs: ["build-brc4env"]
+  needs: ["restart-config-server","build-brc4env"]
 
 deploy-wheatis-to-beta:
   stage: deploy-beta
@@ -564,7 +564,7 @@ deploy-wheatis-to-beta:
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false
-  needs: ["build-wheatis"]
+  needs: ["restart-config-server","build-wheatis"]
 
 deploy-wheatis-to-staging:
   stage: deploy-staging
@@ -580,7 +580,7 @@ deploy-wheatis-to-staging:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
   when: manual
-  needs: ["build-wheatis"]
+  needs: ["restart-config-server","build-wheatis"]
 
 deploy-wheatis-to-prod:
   stage: deploy-production
@@ -601,7 +601,7 @@ deploy-wheatis-to-prod:
       when: manual
   when: manual
   allow_failure: false
-  needs: ["build-wheatis"]
+  needs: ["restart-config-server","build-wheatis"]
 
 deploy-faidare-to-beta:
   stage: deploy-beta
@@ -621,7 +621,7 @@ deploy-faidare-to-beta:
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: never
   allow_failure: false
-  needs: ["build-faidare"]
+  needs: ["restart-config-server","build-faidare"]
 
 deploy-faidare-to-staging-public:
   stage: deploy-staging
@@ -637,7 +637,7 @@ deploy-faidare-to-staging-public:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
   when: manual
-  needs: ["build-faidare"]
+  needs: ["restart-config-server","build-faidare"]
 
 deploy-faidare-to-staging-private:
   stage: deploy-staging
@@ -653,7 +653,7 @@ deploy-faidare-to-staging-private:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i # Ninja Squad should appreciate
       when: never
   when: manual
-  needs: ["build-faidare"]
+  needs: ["restart-config-server","build-faidare"]
 
 deploy-faidare-to-prod-public:
   stage: deploy-production
@@ -670,7 +670,7 @@ deploy-faidare-to-prod-public:
       when: manual
   when: manual
   allow_failure: false
-  needs: ["build-faidare"]
+  needs: ["restart-config-server","build-faidare"]
 
 deploy-faidare-to-prod-private:
   stage: deploy-production
@@ -687,4 +687,4 @@ deploy-faidare-to-prod-private:
       when: manual
   when: manual
   allow_failure: false
-  needs: ["build-faidare"]
+  needs: ["restart-config-server","build-faidare"]
