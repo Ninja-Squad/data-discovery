@@ -222,7 +222,7 @@ build-faidare:
    APP_NAME: "faidare"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
-.restart-config-server:
+restart-config-server:
   stage: build
   tags:
     - openstack
