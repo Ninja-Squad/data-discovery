@@ -84,24 +84,25 @@ build-loader-docker-image:
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: always
 
-# deploy-synonyms-to-cluster:
-#   stage: pre-build
-#   tags:
-#     - openstack
-#   script:
-#     - eval $(ssh-agent -s)
-#     - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
-#     - git lfs pull -I "data/synonyms"
-#     - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
-#     - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
-#     - eval $(ssh-agent -k)
-#   rules:
-#     - changes:
-#       - data/synonyms/all_*
-#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-#       when: always
-#     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-#       when: always
+deploy-synonyms-to-cluster:
+  image: registry.forgemia.inra.fr/urgi-is/docker-rare/bash-git-lfs:latest
+  stage: pre-build
+  tags:
+    - openstack
+  script:
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
+    - git lfs pull -I "data/synonyms"
+    - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do scp -o StrictHostKeyChecking=no data/synonyms/all_*.gz ${SERVER_USER_OPENSTACK}@${ES_HOST}:/tmp/ 2>/dev/null ; done ;
+    - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
+    - eval $(ssh-agent -k)
+  rules:
+    - changes:
+      - data/synonyms/all_*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+      when: always
 
 # launch all tests and sonarqube analysis
 test-lint-build:
@@ -482,7 +483,7 @@ deploy-rare-to-prod:
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  when: never
+  # when: never
   allow_failure: false
   needs: ["build-rare"]
 
@@ -537,7 +538,7 @@ deploy-brc4env-to-prod:
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  when: never
+  # when: never
   allow_failure: false
   needs: ["build-brc4env"]
 
@@ -592,7 +593,7 @@ deploy-wheatis-to-prod:
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  when: never
+  # when: never
   allow_failure: false
   needs: ["build-wheatis"]
 
@@ -659,7 +660,7 @@ deploy-faidare-to-prod-public:
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  when: never
+  # when: never
   allow_failure: false
   needs: ["build-faidare"]
 
@@ -674,6 +675,6 @@ deploy-faidare-to-prod-private:
       when: never
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
       when: manual
-  when: never
+  # when: never
   allow_failure: false
   needs: ["build-faidare"]
