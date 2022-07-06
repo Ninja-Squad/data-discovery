@@ -52,9 +52,7 @@ build-es-synonyms-docker-image:
     - changes:
       - data/synonyms/*
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: always
 
 build-loader-docker-image:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
@@ -80,9 +78,7 @@ build-loader-docker-image:
       - backend/src/main/resources/fr/inra/urgi/datadiscovery/domain/suggestions.mapping.jso
       - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: always
 
 deploy-synonyms-to-cluster:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/bash-git-lfs:latest
@@ -100,9 +96,7 @@ deploy-synonyms-to-cluster:
     - changes:
       - data/synonyms/all_*
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: always
     - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      when: always
 
 # launch all tests and sonarqube analysis
 test-lint-build:
