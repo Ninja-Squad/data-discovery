@@ -7,7 +7,7 @@ import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
-  name: 'rare',
+  name: 'wheatis',
   title: 'WheatIS - Wheat Information System',
   navbar: {
     logoUrl: 'http://www.wheatinitiative.org/',
