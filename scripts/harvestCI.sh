@@ -277,7 +277,7 @@ export SUGGESTION_DIR="suggestions"
 export PREFIX_INDEX="${PREFIX_ES}"
 process_suggestions
 
-if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-suggestions/ -type f -name "*.json" -ls | wc -l) -eq 0 ] ; then
+if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-suggestions/ -type f -name "*.json" -ls | wc -l) -eq 0 ] && ["${APP_NAME}" == "faidare"] ; then
 	export SUGGESTION_DIR="private-suggestions"
 	export PREFIX_INDEX="${PREFIX_ES}-private"
 	process_suggestions
