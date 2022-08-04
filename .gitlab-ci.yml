@@ -109,7 +109,7 @@ test-lint-build:
     # because we need to pass some variables, but they are passed to _all_ containers
     # so they fail the start of other docker images like urgi/docker-browsers
     # the only solution is to override the entrypoint of the service and pass the arguments manually
-    - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${ELASTIC_VERSION}
+    - name: registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
       # TODO fix above before merging into master branch
       alias: elasticsearch
       # discovery.type=single-node
