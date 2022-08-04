@@ -91,6 +91,7 @@ describe('GermplasmResultsComponent', () => {
         {
           identifier: 'g1',
           name: 'Germplasm 1',
+          url: 'http://localhost:8380/faidare-dev/germplasms/g1',
           species: ['SP1', 'SP2'],
           holdingInstitute: 'Institute 1',
           biologicalStatus: 'Natural',
