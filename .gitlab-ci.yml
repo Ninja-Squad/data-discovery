@@ -52,8 +52,9 @@ build-es-synonyms-docker-image:
     - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
-      changes:
-        - data/synonyms/*
+      ## below is commented since we cannot trigger this job when creating a new merge request (no possibility to distinguish between MR create and MR update at the moment). The IMAGE_TAG tag  needs to be pushed for next test-lint-build job succeeds
+      # changes:
+      #   - data/synonyms/*
 
 build-loader-docker-image:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
