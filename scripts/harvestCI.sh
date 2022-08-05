@@ -45,8 +45,8 @@ USAGE:
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
-	-app           the name of the targeted application: rare, wheatis or faidare
-	-env           the environment name of the targeted application (dev, beta, prod ...)
+	-app           the name of the targeted application: ${APPS}
+	-env           the environment name of the targeted application: ${ENVS}
 	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[app])
 	               NB: use rare directory for brc4env
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
@@ -138,7 +138,9 @@ if [ "$APP_NAME" == "rare" ]; then
 elif [ "$APP_NAME" == "brc4env"  ] ; then
     ID_FIELD=identifier
     APP_SETTINGS_NAME="rare"
-    DATADIR=$("${READLINK_CMD}" -f "$BASEDIR/../data/rare/")
+    FILTER_DATA_SCRIPT="${BRC4ENV_FILTER_DATA_SCRIPT}"
+elif [ "$APP_NAME" == "wheatis"  ] ; then
+    FILTER_DATA_SCRIPT="${WHEATIS_FILTER_DATA_SCRIPT}"
 fi
 
 if [ "$APP_ENV" == "prod" ]; then
@@ -192,6 +194,7 @@ export NC GREEN ORANGE RED BOLD RED_BOLD BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
+            | jq -rc -f ${FILTER_DATA_SCRIPT} \
             | jq --arg card '${URL_CARD}' -f ${BASEDIR}/link_card.jq \
             | jq --argjson fields '${FIELDS}' -f ${BASEDIR}/clean_fields.jq \
             | jq -c '.[] | .name = (.name|tostring) | [.]' 2>> ${OUTDIR}/$2.jq.err \
