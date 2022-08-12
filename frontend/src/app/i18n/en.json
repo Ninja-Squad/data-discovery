@@ -242,7 +242,7 @@
       "name": "Germplasm name",
       "accession": "Accession #",
       "species": "Species",
-      "institute": "Institute",
+      "institute": "Holding institute",
       "biological-status": "Biological status",
       "country-of-origin": "Country of origin"
     }

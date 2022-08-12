@@ -160,7 +160,7 @@
       "node": "Fournisseurs de données",
       "species": "Espèces",
       "annot": "Annotation ontologique",
-      "hi": "Institut",
+      "hi": "Institut détenteur",
       "bs": "Statut biologique",
       "gn": "Nature génétique",
       "coo": "Pays d'origine",
@@ -241,7 +241,7 @@
       "name": "Nom du germplasm",
       "accession": "N° d'accession",
       "species": "Espèces",
-      "institute": "Institut",
+      "institute": "Institut détenteur",
       "biological-status": "Statut biologique",
       "country-of-origin": "Pays d'origine"
     }
