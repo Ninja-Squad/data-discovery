@@ -30,6 +30,7 @@ export interface DataDiscoveryEnvironment {
    */
   navbar: {
     logoUrl: string;
+    secondLogoUrl: string;
     links: Array<Link>;
   };
   /**

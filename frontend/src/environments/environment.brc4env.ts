@@ -7,6 +7,7 @@ export const environment: DataDiscoveryEnvironment = {
   title: 'BRC4Env - Biological Resource Centre for the Environment',
   navbar: {
     logoUrl: '',
+    secondLogoUrl: '',
     links: [{ label: 'brc4env', url: 'https://www.brc4env.fr/' }]
   },
   resourceModule: RareModule,

@@ -10,10 +10,10 @@ export const environment: DataDiscoveryEnvironment = {
   name: 'wheatis',
   title: 'WheatIS - Wheat Information System',
   navbar: {
-    logoUrl: 'http://www.wheatinitiative.org/',
+    logoUrl: 'http://www.wheatis.org/',
+    secondLogoUrl: 'https://www.wheatinitiative.org/',
     links: [
       { label: 'home', url: './' },
-      { label: 'wheatis', url: 'http://wheatis.org/' },
       { label: 'wheat-urgi', url: 'https://wheat-urgi.versailles.inrae.fr/' }
     ]
   },

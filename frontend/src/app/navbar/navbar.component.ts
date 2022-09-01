@@ -14,4 +14,8 @@ export class NavbarComponent {
   toggleNavbar() {
     this.navbarCollapsed = !this.navbarCollapsed;
   }
+
+  hasSecondLogo() {
+    return environment.navbar.secondLogoUrl;
+  }
 }

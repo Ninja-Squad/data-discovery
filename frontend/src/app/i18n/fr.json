@@ -123,10 +123,10 @@
   },
   "wheatis": {
     "navbar": {
-      "title": "Initiative Wheat",
+      "title": "WheatIS",
+      "secondTitle": "Wheat Initiative",
       "links": {
         "home": "Accueil",
-        "wheatis": "WheatIS",
         "wheat-urgi": "Wheat@URGI"
       }
     },

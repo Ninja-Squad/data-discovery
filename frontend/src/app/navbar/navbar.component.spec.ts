@@ -71,6 +71,7 @@ describe('NavbarComponent', () => {
 
     component.navbar = {
       logoUrl: 'https://www.agrobrc-rare.org/',
+      secondLogoUrl: 'https://wheatinitiative.org',
       links: component.navbar.links
     };
 

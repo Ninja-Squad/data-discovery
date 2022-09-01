@@ -11,6 +11,7 @@ export const environment: DataDiscoveryEnvironment = {
   title: 'FAIR Data-finder for Agronomic REsearch',
   navbar: {
     logoUrl: '',
+    secondLogoUrl: '',
     links: [
       {
         label: 'urgi',

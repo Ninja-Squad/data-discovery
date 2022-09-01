@@ -11,6 +11,7 @@ export const environment: DataDiscoveryEnvironment = {
   title: 'RARe - Ressources Agronomiques pour la Recherche',
   navbar: {
     logoUrl: '',
+    secondLogoUrl: '',
     links: [{ label: 'agrobrc', url: 'https://www.agrobrc-rare.org/' }]
   },
   resourceModule: RareModule,
