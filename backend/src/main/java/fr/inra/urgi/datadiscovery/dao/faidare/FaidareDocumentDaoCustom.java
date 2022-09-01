@@ -12,4 +12,5 @@ import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
  */
 public interface FaidareDocumentDaoCustom extends DocumentDaoCustom<FaidareDocument> {
     Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements);
+    Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements, String idFieldName);
 }

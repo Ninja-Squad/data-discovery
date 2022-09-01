@@ -78,7 +78,8 @@ class ExportControllerTest {
                                                SearchRefinements.builder()
                                                                 .withTerm(FaidareAggregation.COUNTRY_OF_ORIGIN, Collections.singletonList("France"))
                                                                 .withTerm(FaidareAggregation.ENTRY_TYPE, Collections.singletonList("Germplasm"))
-                                                                .build())
+                                                                .build(),
+                                            "germplasmDbId")
         ).thenReturn(expectedIds);
 
         DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
@@ -111,7 +112,8 @@ class ExportControllerTest {
                                                SearchRefinements.builder()
                                                                 .withTerm(FaidareAggregation.COUNTRY_OF_ORIGIN, Collections.singletonList("France"))
                                                                 .withTerm(FaidareAggregation.ENTRY_TYPE, Collections.singletonList("Germplasm"))
-                                                                .build())
+                                                                .build(),
+                                    "germplasmDbId")
         ).thenReturn(expectedIds);
 
         DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();

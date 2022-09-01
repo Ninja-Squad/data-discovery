@@ -58,6 +58,7 @@ logging:
     org.springframework:
       boot.web.embedded.tomcat.TomcatWebServer: INFO
       web.client.RestTemplate: DEBUG
+      boot.context.config.ConfigDataLoader: INFO
 
 data-discovery:
   ontology:

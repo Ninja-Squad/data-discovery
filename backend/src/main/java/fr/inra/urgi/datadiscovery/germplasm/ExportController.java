@@ -72,7 +72,7 @@ public class ExportController {
 
         GermplasmMcpdExportCommand command = new GermplasmMcpdExportCommand(germplasmIds, Collections.emptyList());
         Flux<DataBuffer> result = faidareApiService.exportMcpd(command);
-        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).subscribe();
+        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).blockLast();
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
     }
 
@@ -96,7 +96,7 @@ public class ExportController {
 
         GermplasmExportCommand command = new GermplasmExportCommand(germplasmIds, Collections.emptyList());
         Flux<DataBuffer> result = faidareApiService.exportPlantMaterial(command);
-        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).subscribe();
+        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).blockLast();
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
     }
 
@@ -109,7 +109,8 @@ public class ExportController {
         return documentDao.findAllIds(
             query,
             descendants.orElse(false),
-            refinements
+            refinements,
+            "germplasmDbId"
         );
     }
 

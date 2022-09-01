@@ -44,6 +44,7 @@ public final class FaidareDocument implements SearchDocument {
     private final List<String> observationVariableIds;
     private final List<String> germplasmList;
     private final String accessionNumber;
+    private final String germplasmDbId;
     private final int groupId;
 
     @JsonCreator
@@ -67,6 +68,7 @@ public final class FaidareDocument implements SearchDocument {
                            List<String> observationVariableIds,
                            List<String> germplasmList,
                            String accessionNumber,
+                           String germplasmDbId,
                            Integer groupId) {
         this.id = id;
         this.name = name;
@@ -87,6 +89,7 @@ public final class FaidareDocument implements SearchDocument {
         this.observationVariableIds = observationVariableIds;
         this.germplasmList = germplasmList;
         this.accessionNumber = accessionNumber;
+        this.germplasmDbId = germplasmDbId;
         this.groupId = groupId == null ? 0 : groupId;
     }
 
@@ -110,6 +113,7 @@ public final class FaidareDocument implements SearchDocument {
              builder.observationVariableIds,
              builder.germplasmList,
              builder.accessionNumber,
+             builder.germplasmDbId,
              builder.groupId);
     }
 
@@ -191,6 +195,8 @@ public final class FaidareDocument implements SearchDocument {
         return accessionNumber;
     }
 
+    public String getGermplasmDbId() { return germplasmDbId; }
+
     public int getGroupId() {
         return groupId;
     }
@@ -223,6 +229,7 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(observationVariableIds, that.observationVariableIds) &&
             Objects.equals(germplasmList, that.germplasmList) &&
             Objects.equals(accessionNumber, that.accessionNumber) &&
+            Objects.equals(germplasmDbId, that.germplasmDbId) &&
             groupId == that.groupId;
     }
 
@@ -247,6 +254,7 @@ public final class FaidareDocument implements SearchDocument {
                             observationVariableIds,
                             germplasmList,
                             accessionNumber,
+                            germplasmDbId,
                             groupId);
     }
 
@@ -272,6 +280,7 @@ public final class FaidareDocument implements SearchDocument {
             ", observationVariableIds='" + observationVariableIds + '\'' +
             ", germplasmList='" + germplasmList + '\'' +
             ", accessionNumber='" + accessionNumber + '\'' +
+            ", germplasmDbId='" + germplasmDbId +'\'' +
             ", groupId='" + groupId + '\'' +
             '}';
     }
@@ -305,6 +314,7 @@ public final class FaidareDocument implements SearchDocument {
         private List<String> observationVariableIds = Collections.emptyList();
         private List<String> germplasmList = Collections.emptyList();
         private String accessionNumber;
+        private String germplasmDbId;
         private Integer groupId;
 
         private Builder() {
@@ -330,6 +340,7 @@ public final class FaidareDocument implements SearchDocument {
             this.observationVariableIds = document.getObservationVariableIds();
             this.germplasmList = document.getGermplasmList();
             this.accessionNumber = document.getAccessionNumber();
+            this.germplasmDbId = document.getGermplasmDbId();
             this.groupId = document.getGroupId();
         }
 
@@ -425,6 +436,11 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withAccessionNumber(String accessionNumber) {
             this.accessionNumber = accessionNumber;
+            return this;
+        }
+
+        public Builder withGermplasmDbId(String germplasmDbId) {
+            this.germplasmDbId = germplasmDbId;
             return this;
         }
 

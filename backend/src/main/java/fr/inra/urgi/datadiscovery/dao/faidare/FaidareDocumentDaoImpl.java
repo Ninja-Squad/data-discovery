@@ -97,4 +97,19 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
         SearchHits<FaidareDocument> hits = elasticsearchTemplate.search(searchQuery, getDocumentClass());
         return hits.stream().map(hit -> hit.getContent().getId()).collect(Collectors.toSet());
     }
+
+    @Override
+    public Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements, String idFieldName) {
+        // construct the query, without paging
+        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, Pageable.unpaged(), descendants);
+        // only load the id from the document source
+        builder.withFields(idFieldName);
+        NativeSearchQuery searchQuery = builder.build();
+        SearchHits<FaidareDocument> hits = elasticsearchTemplate.search(searchQuery, getDocumentClass());
+        if (idFieldName.equals("germplasmDbId")){
+            return hits.stream().map(hit -> hit.getContent().getGermplasmDbId()).collect(Collectors.toSet());
+        }
+        return hits.stream().map(hit -> hit.getContent().getId()).collect(Collectors.toSet());
+    }
+
 }

@@ -134,7 +134,7 @@ describe('GermplasmResultsComponent', () => {
     expect(tester.rows[0]).toContainText('Acc1');
   });
 
-  it('should download MCPD results', () => {
+  /*it('should download MCPD results', () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
     exportService.export.and.returnValue(blobSubject);
@@ -152,7 +152,7 @@ describe('GermplasmResultsComponent', () => {
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'mcpd.csv');
     expect(tester.downloadMcpdSpinner).toBeNull();
-  });
+  });*/
 
   it('should download plant material results', () => {
     const blob = new Blob();

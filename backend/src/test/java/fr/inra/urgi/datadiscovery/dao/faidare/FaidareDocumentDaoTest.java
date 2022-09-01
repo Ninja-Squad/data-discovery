@@ -272,11 +272,11 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
     @Test
     void shouldFindAllIds() {
         documentDao.saveAll(Arrays.asList(
-            FaidareDocument.builder().withId("id1").withDescription("foobar 1").withEntryType("germplasm").build(),
-            FaidareDocument.builder().withId("id2").withDescription("foobar 2").withEntryType("germplasm").build(),
-            FaidareDocument.builder().withId("id3").withDescription("foobar 3").withEntryType("germplasm").build(),
-            FaidareDocument.builder().withId("id4").withDescription("foobar 4").withEntryType("other").build(),
-            FaidareDocument.builder().withId("id5").withDescription("other 5").withEntryType("germplasm").build()
+            FaidareDocument.builder().withId("id1").withDescription("foobar 1").withEntryType("germplasm").withGermplasmDbId("gdid1").build(),
+            FaidareDocument.builder().withId("id2").withDescription("foobar 2").withEntryType("germplasm").withGermplasmDbId("gdid2").build(),
+            FaidareDocument.builder().withId("id3").withDescription("foobar 3").withEntryType("germplasm").withGermplasmDbId("gdid3").build(),
+            FaidareDocument.builder().withId("id4").withDescription("foobar 4").withEntryType("other").withGermplasmDbId("gdid4").build(),
+            FaidareDocument.builder().withId("id5").withDescription("other 5").withEntryType("germplasm").withGermplasmDbId("gdid5").build()
         ));
         documentDao.refresh();
 
@@ -287,6 +287,27 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                                                                             Collections.singletonList("germplasm"))
                                                                   .build());
         assertThat(ids).containsOnly("id1", "id2", "id3");
+    }
+
+
+    @Test
+    void shouldFindAllGermplasmDbIds() {
+        documentDao.saveAll(Arrays.asList(
+                FaidareDocument.builder().withId("id1").withDescription("foobar 1").withEntryType("germplasm").withGermplasmDbId("gdid1").build(),
+                FaidareDocument.builder().withId("id2").withDescription("foobar 2").withEntryType("germplasm").withGermplasmDbId("gdid2").build(),
+                FaidareDocument.builder().withId("id3").withDescription("foobar 3").withEntryType("germplasm").withGermplasmDbId("gdid3").build(),
+                FaidareDocument.builder().withId("id4").withDescription("foobar 4").withEntryType("other").withGermplasmDbId("gdid4").build(),
+                FaidareDocument.builder().withId("id5").withDescription("other 5").withEntryType("germplasm").withGermplasmDbId("gdid5").build()
+        ));
+        documentDao.refresh();
+
+        Set<String> ids = documentDao.findAllIds("foobar",
+                false,
+                SearchRefinements.builder()
+                        .withTerm(FaidareAggregation.ENTRY_TYPE,
+                                Collections.singletonList("germplasm"))
+                        .build(), "germplasmDbId");
+        assertThat(ids).containsOnly("gdid1", "gdid2", "gdid3");
     }
 
     @Nested

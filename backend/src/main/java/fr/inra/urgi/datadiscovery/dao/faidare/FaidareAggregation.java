@@ -38,7 +38,7 @@ public enum FaidareAggregation implements AppAggregation {
      * @see AbstractDocumentDaoImpl#getMainAppAggregations()
      */
     public static final List<FaidareAggregation> MAIN_AGGREGATIONS =
-            Collections.unmodifiableList(Arrays.asList(TAXON_GROUP, ENTRY_TYPE, DATABASE_NAME, NODE));
+            Collections.unmodifiableList(Arrays.asList(TAXON_GROUP, ENTRY_TYPE, GERMPLASM_LIST, DATABASE_NAME, NODE));
 
     private final String name;
     private final String field;
