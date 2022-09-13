@@ -1,29 +1,40 @@
 # News & perspectives
 
-## News 2020
-
-### Dissemination 2020
+## Dissemination
 
 Two webinars presented the WheatIS DataDiscovery tool:
 
-1. On [February the 25th](https://urgi.versailles.inra.fr/About-us/News/WheatIS-webinar) (with a [replay available](https://urgi.versailles.inra.fr/About-us/News/WheatIS-webinar-replay)) under the umbrella of the WheatInitiative.
-2. On [October the 7th](https://urgi.versailles.inra.fr/About-us/News/WheatIS-DataDiscovery-webinar-on-AgBioData-conference) (with a [replay available](https://youtu.be/pSST0jepoRg)) for the AgBioData community.
+1. On [2020 February the 25th](https://urgi.versailles.inra.fr/About-us/News/WheatIS-webinar) (with a [replay available](https://urgi.versailles.inra.fr/About-us/News/WheatIS-webinar-replay)) under the umbrella of the WheatInitiative.
+2. On [2020 October the 7th](https://urgi.versailles.inra.fr/About-us/News/WheatIS-DataDiscovery-webinar-on-AgBioData-conference) (with a [replay available](https://youtu.be/pSST0jepoRg)) for the AgBioData community.
 
-### Data updates 2020
+## Data updates
+
+### 2022 
+#### Ensembl Plants
+
+Ensembl Genomes Plants has been updated up to release 54 (number to confirm).
+
+### 2020-2021
 
 #### GrainGenes
 
-GrainGenes data has been updated with 3407 new QTL, and 58 genetic maps
+GrainGenes data has been updated with 3407 new QTL, and 58 genetic maps.
 
 #### TheTriticeaeToolbox & Gramene (USDA)
 
-T3 data as well as Gramene got updated with respective latest releases
+T3 data as well as Gramene got updated with respective latest releases.
 
-#### Ensembl Plants
 
-Ensembl Genomes Plants has been updated up to releases 45 and 46, last new release is in the current roadmap.
 
-### New features 2020
+## New features
+
+### 2022
+
+### Add BrAPI data sources
+
+Resources and databases that offers a [Breeding API](https://brapi.org/) end point are currently indexable in [FAIDARE](https://urgi.versailles.inrae.fr/faidare/), the Elixir plant data lookup service. The WheatIS data discovery and FAIDARE codebase have been unified to ease the management of data sources, to bring Breeding API indexation to WheatIS and to ease development and maintenance.
+
+### 2020-2021
 
 #### Ontologies
 
@@ -33,25 +44,19 @@ Searching resources annotated with [Gene Ontology](http://geneontology.org/) ter
 
 Search by taxon now uses synonyms from 2 data sources: [NCBI](https://www.ncbi.nlm.nih.gov/taxonomy) and [GnpIS](https://urgi.versailles.inrae.fr/GnpMap/common/taxon/results.do?thematic=all). Any search term matching a known taxon name also searches its synonyms. Matching synonyms are highlighted in the results to inform the user of the process.
 
-## Perspectives 2021
+## Perspectives
 
-### Add `Bioschemas.org` sources
+### 2023
 
-Web pages resources marked with [Bioschemas.org](https://bioschemas.org/) annotations will be indexed in the frame an [ELIXIR](https://elixir-europe.org/communities/plant-sciences) infrastructure [commissioned service](https://elixir-europe.org/activities/exploiting-bioschemas-markup-support-elixir-communities).
-
-### Add BrAPI data sources
-
-Resources and databases that offers a [Breeding API](https://brapi.org/) end point are currently indexable in [FAIDARE](https://urgi.versailles.inrae.fr/faidare/), the Elixir plant data lookup service. The WheatIS search and FAIDARE will be unified to ease the management of data sources, to bring Breeding API indexation to WheatIS and to ease development and maintenance.
-
-### Monitor outgoing traffic towards partner databases
+#### Monitor outgoing traffic towards partner databases
 
 This metric will trace the impact of the WheatIS data portal, hence promoting its use.
 
-### Display date of last data update
+#### Display date of last data update
 
 Make the data loading process smoothier and display the date of the last data update in the web interface.
 
-## Long term perspectives
+### Long term perspectives
 
 ### Extend ontology annotation
 
@@ -68,3 +73,7 @@ Currently the data is stored next to the code into Git LFS. We plan to review th
 ### Download results
 
 Add a download feature allowing to get batch results in a tabulated and/or JSON format. Number of results to be clarified.
+
+### Add `Bioschemas.org` sources
+
+Web pages resources marked with [Bioschemas.org](https://bioschemas.org/) annotations will be indexed in the frame an [ELIXIR](https://elixir-europe.org/communities/plant-sciences) infrastructure [commissioned service](https://elixir-europe.org/activities/exploiting-bioschemas-markup-support-elixir-communities).
