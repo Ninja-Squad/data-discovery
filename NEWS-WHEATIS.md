@@ -9,12 +9,11 @@ Two webinars presented the WheatIS DataDiscovery tool:
 
 ## Data updates
 
-### 2022 
+### 2020-2021
+
 #### Ensembl Plants
 
-Ensembl Genomes Plants has been updated up to release 54 (number to confirm).
-
-### 2020-2021
+Ensembl Genomes Plants has been updated up to release 51.
 
 #### GrainGenes
 
@@ -24,8 +23,6 @@ GrainGenes data has been updated with 3407 new QTL, and 58 genetic maps.
 
 T3 data as well as Gramene got updated with respective latest releases.
 
-
-
 ## New features
 
 ### 2022
@@ -33,6 +30,10 @@ T3 data as well as Gramene got updated with respective latest releases.
 ### Add BrAPI data sources
 
 Resources and databases that offers a [Breeding API](https://brapi.org/) end point are currently indexable in [FAIDARE](https://urgi.versailles.inrae.fr/faidare/), the Elixir plant data lookup service. The WheatIS data discovery and FAIDARE codebase have been unified to ease the management of data sources, to bring Breeding API indexation to WheatIS and to ease development and maintenance.
+
+### Look and feel
+
+Addition of the WheatIS logo and usage of the WheatIS theme colors.
 
 ### 2020-2021
 
@@ -58,22 +59,22 @@ Make the data loading process smoothier and display the date of the last data up
 
 ### Long term perspectives
 
-### Extend ontology annotation
+#### Extend ontology annotation
 
 The [2020 ontology annotation feature](#ontologies) is expected to be extended to other kind of documents (any document containing a supported ontology term) as weel as using other ontologies (such as [Wheat Crop ontology](http://agroportal.lirmm.fr/ontologies/CO_321/), [Plant Ontology](http://agroportal.lirmm.fr/ontologies/PO) or [Wheat Trait and Phenotype Ontology](agroportal.lirmm.fr/ontologies/WHEATPHENOTYPE)).
 
-### Allow search for exact phrases
+#### Allow search for exact phrases
 
 Allow searching group of terms linked together, ie. "_fusarium head blight_". Currently, any of the 3 terms are searched independently, resulting in a lot of false positives.
 
-### Review the storage of data
+#### Review the storage of data
 
 Currently the data is stored next to the code into Git LFS. We plan to review this approach to reduce the storage cost.
 
-### Download results
+#### Download results
 
 Add a download feature allowing to get batch results in a tabulated and/or JSON format. Number of results to be clarified.
 
-### Add `Bioschemas.org` sources
+#### Add `Bioschemas.org` sources
 
 Web pages resources marked with [Bioschemas.org](https://bioschemas.org/) annotations will be indexed in the frame an [ELIXIR](https://elixir-europe.org/communities/plant-sciences) infrastructure [commissioned service](https://elixir-europe.org/activities/exploiting-bioschemas-markup-support-elixir-communities).
