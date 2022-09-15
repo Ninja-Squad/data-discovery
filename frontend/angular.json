@@ -110,6 +110,11 @@
                 }
               ],
               "baseHref": "/brc4env-dev/",
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/assets/brc4env/"
+                ]
+              },
               "assets": [
                 {
                   "glob": "*",
@@ -131,6 +136,11 @@
                   "with": "src/environments/rare-with-basket.prod.ts"
                 }
               ],
+              "stylePreprocessorOptions": {
+                "includePaths": [
+                  "src/assets/brc4env/"
+                ]
+              },
               "assets": [
                 {
                   "glob": "*",

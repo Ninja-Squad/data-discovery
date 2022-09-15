@@ -98,8 +98,8 @@ elif [ ! -d "${DATADIR}/data" ] || [ $(find ${DATADIR}/data -type f -name "*.jso
 	echo -e "${RED_BOLD}ERROR: data directory is absent from ${DATADIR} or it contains no files to index!${NC}"
 	echo && help
 	exit 4
-elif [ ! -d "${DATADIR}/suggestions" ] || [ $(find ${DATADIR}/suggestions -type f -name "*.gz" -ls | wc -l) -eq 0 ] ; then
-	echo -e "${RED_BOLD}ERROR: suggestions directory is absent from ${DATADIR} or it contains no files to index!${NC}"
+elif [ ! -d "${DATADIR}/suggestions" ] ; then
+	echo -e "${RED_BOLD}ERROR: suggestions directory is absent from ${DATADIR}!${NC}"
 	echo && help
 	exit 4
 fi
