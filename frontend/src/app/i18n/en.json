@@ -162,8 +162,9 @@
       "coo": "Country of origin",
       "tg": "Taxon group",
       "o": "Ontology",
-      "gl": "Germplasm list"
+      "gl": "Collection"
     },
+    "agregation-gl-tooltip" : "Genebank collection, Panel, Population",
     "search": {
       "placeholder": "Examples: yield, fhb"
     },

@@ -36,6 +36,13 @@
       <small class="text-muted ms-1" [ngbTooltip]="tooltipContent" placement="top" container="body"
         >({{ aggregation.buckets.length | number }})</small
       >
+      <span
+        *ngIf="aggregation.name === 'gl'"
+        class="ms-1 fa fa-question-circle-o icon-size"
+        aria-hidden="true"
+        [ngbTooltip]="'faidare.agregation-gl-tooltip' | translate"
+        placement="top"
+      ></span>
     </h3>
 
     <!-- values as pills and a typeahead to add them -->
