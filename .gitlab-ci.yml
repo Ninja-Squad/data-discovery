@@ -441,9 +441,9 @@ deploy-rare-to-staging:
   <<: *variables-rare-staging
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -493,9 +493,9 @@ deploy-brc4env-to-staging:
   <<: *variables-brc4env-staging
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -545,9 +545,9 @@ deploy-wheatis-to-staging:
   <<: *variables-wheatis-staging
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -597,9 +597,9 @@ deploy-faidare-to-staging-public:
   <<: *variables-faidare-staging-public
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -614,9 +614,9 @@ deploy-faidare-to-staging-private:
   <<: *variables-faidare-staging-private
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
