@@ -396,7 +396,7 @@ restart-config-server:
   variables:
     ENV: prod-public
     APP_NAME: faidare
-    APP_PORT: ${PROD_FAIDARE_PORT}
+    APP_PORT: ${PROD_FAIDARE_PUBLIC_PORT}
     SERVICE_NAME: ${APP_NAME}-search
     SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
     SERVER_USER: ${SERVER_USER_OPENSTACK}
@@ -409,7 +409,7 @@ restart-config-server:
   variables:
     ENV: prod-private
     APP_NAME: faidare
-    APP_PORT: ${PROD_FAIDARE_PORT}
+    APP_PORT: ${PROD_FAIDARE_PRIVATE_PORT}
     SERVICE_NAME: ${APP_NAME}-search
     SERVER_IP: ${SERVER_IP_OPENSTACK_PROD}
     SERVER_USER: ${SERVER_USER_OPENSTACK}
