@@ -49,9 +49,9 @@ build-es-synonyms-docker-image:
     # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
     - docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:${IMAGE_TAG}
     # TODO fix above before merging into master branch
-    - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
+    - if [ $CI_DEFAULT_BRANCH == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/data-discovery/elasticsearch-synonyms:latest ; fi;
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       ## below is commented since we cannot trigger this job when creating a new merge request (no possibility to distinguish between MR create and MR update at the moment). The IMAGE_TAG tag  needs to be pushed for next test-lint-build job succeeds
       # changes:
       #   - data/synonyms/*
@@ -71,9 +71,9 @@ build-loader-docker-image:
     # push the built image
     - docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG}
     # only push latest tag on master branch
-    - if [ "$CI_DEFAULT_BRANCH" == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
+    - if [ $CI_DEFAULT_BRANCH == "${CI_COMMIT_REF_SLUG}" ] ; then docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest ; fi;
   rules: # from my point of view, following rule should not trigger the job (when only commiting .gitlab-ci.yml), but the job is executed currently, why?
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - scripts/*
         - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/*/settings.json
@@ -94,7 +94,7 @@ deploy-synonyms-to-cluster:
     - for ES_HOST in $ES_HOSTS_OPENSTACK $ES_MASTER_OPENSTACK ; do ssh -o StrictHostKeyChecking=no ${SERVER_USER_OPENSTACK}@${ES_HOST} "sudo mkdir -p /etc/elasticsearch/analysis/synonyms/ ; gzip -d /tmp/all_*gz ; sudo mv /tmp/all_autophrases.txt /tmp/all_synonyms.txt /etc/elasticsearch/analysis/synonyms/" ; done ;
     - eval $(ssh-agent -k)
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - data/synonyms/all_*
 
@@ -149,7 +149,7 @@ test-lint-build:
         - ./backend/build/test-results/test/TEST-*.xml
         - ./frontend/karma-junit-tests-report/TEST*.xml
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -179,7 +179,7 @@ test-lint-build:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - backend/build.gradle.kts
@@ -227,7 +227,7 @@ restart-config-server:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   interruptible: true
 
 .deploy-to-vm: &deploy_to_vm
@@ -424,7 +424,7 @@ deploy-rare-to-beta:
   <<: *variables-rare-beta
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -441,7 +441,7 @@ deploy-rare-to-staging:
   <<: *variables-rare-staging
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -460,7 +460,7 @@ deploy-rare-to-prod:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -476,7 +476,7 @@ deploy-brc4env-to-beta:
   <<: *variables-brc4env-beta
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -493,7 +493,7 @@ deploy-brc4env-to-staging:
   <<: *variables-brc4env-staging
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -512,7 +512,7 @@ deploy-brc4env-to-prod:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -528,7 +528,7 @@ deploy-wheatis-to-beta:
   <<: *variables-wheatis-beta
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -545,7 +545,7 @@ deploy-wheatis-to-staging:
   <<: *variables-wheatis-staging
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -564,7 +564,7 @@ deploy-wheatis-to-prod:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -580,7 +580,7 @@ deploy-faidare-to-beta:
   <<: *variables-faidare-beta
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -597,7 +597,7 @@ deploy-faidare-to-staging-public:
   <<: *variables-faidare-staging-public
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -614,7 +614,7 @@ deploy-faidare-to-staging-private:
   <<: *variables-faidare-staging-private
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
@@ -633,7 +633,7 @@ deploy-faidare-to-prod-public:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
@@ -651,7 +651,7 @@ deploy-faidare-to-prod-private:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - backend/src/**/*
         - frontend/**/*
