@@ -4,7 +4,6 @@ import { ComponentTester } from 'ngx-speculoos';
 import { NavbarComponent } from './navbar.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/generic-rare-basket.component';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
@@ -14,10 +13,6 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 
   get navBar() {
     return this.element('#navbar');
-  }
-
-  get ngbCollapse() {
-    return this.token(NgbCollapse, NgbCollapse);
   }
 
   get toggler() {
@@ -54,15 +49,15 @@ describe('NavbarComponent', () => {
 
     tester.detectChanges();
 
-    expect(tester.ngbCollapse.collapsed).toBe(true);
+    expect(tester.navBar).not.toHaveClass('show');
 
     tester.toggler.click();
 
-    expect(tester.ngbCollapse.collapsed).toBe(false);
+    expect(tester.navBar).toHaveClass('show');
 
     tester.toggler.click();
 
-    expect(tester.ngbCollapse.collapsed).toBe(true);
+    expect(tester.navBar).not.toHaveClass('show');
   });
 
   it('should display title and links that open in new tabs', () => {
