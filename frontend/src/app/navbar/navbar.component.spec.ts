@@ -4,7 +4,7 @@ import { ComponentTester } from 'ngx-speculoos';
 import { NavbarComponent } from './navbar.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/generic-rare-basket.component';
+import { GenericBasketComponent } from '../urgi-common/generic-basket/generic-basket.component';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -39,7 +39,7 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 describe('NavbarComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      declarations: [NavbarComponent, GenericRareBasketComponent],
+      declarations: [NavbarComponent, GenericBasketComponent],
       imports: [I18nTestingModule, DataDiscoveryNgbTestingModule]
     })
   );

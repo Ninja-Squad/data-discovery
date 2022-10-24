@@ -2,6 +2,7 @@ import { Aggregation, Bucket, Page } from './page';
 import { AggregationCriterion } from './aggregation-criterion';
 import { RareDocumentModel } from '../rare/rare-document.model';
 import { GenericDocumentModel } from '../urgi-common/generic-document.model';
+import { FaidareDocumentModel } from '../faidare/faidare-document.model';
 
 export function toSinglePage<T>(content: Array<T>): Page<T> {
   return {
@@ -86,4 +87,18 @@ export function toWheatisDocument(name: string): GenericDocumentModel {
     species: [`${name} species`, `${name} species2`],
     entryType: 'Specimen'
   };
+}
+
+export function toFaidareDocument(name: string): FaidareDocumentModel {
+  return {
+    identifier: name,
+    name,
+    url: 'http://brc4env.fr',
+    description: 'A description of the genetic document',
+    databaseName: 'BRC4Env',
+    node: 'Data provider',
+    species: [`${name} species`, `${name} species2`],
+    entryType: 'Specimen',
+    accessionHolder: 'AH1'
+  } as FaidareDocumentModel;
 }

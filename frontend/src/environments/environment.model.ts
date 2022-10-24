@@ -46,10 +46,6 @@ export interface DataDiscoveryEnvironment {
   legalMentionsMdFile: string;
   eulaMdFile: string;
   newsMdFile: string;
-  /**
-   * Only necessary for applications with rare basket
-   */
-  rareBasket?: string;
   home: {
     /**
      * if true, instead of showing pillars on the home page, we show the main aggregations
@@ -68,5 +64,9 @@ export interface DataDiscoveryEnvironment {
      * The base url used to generate links to germplasm documents. The final url has the form `<germplasmBaseUrl>/<documentId>`
      */
     germplasmBaseUrl: string;
+  };
+  basket: {
+    enabled: boolean;
+    url: string;
   };
 }

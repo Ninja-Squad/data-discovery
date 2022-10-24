@@ -1,0 +1,34 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div *ngIf="vm.accessions.length > 0">
+    <a
+      *ngIf="!vm.allSelectedForOrdering"
+      class="btn btn-sm btn-link"
+      (click)="addAllToBasket(vm.accessions)"
+    >
+      <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+      <ng-container [ngSwitch]="vm.accessions.length">
+        <span *ngSwitchCase="1" translate="select-all-results.add-one-to-basket"></span>
+        <span
+          *ngSwitchDefault
+          translate="select-all-results.add-all-to-basket"
+          [translateParams]="{ itemCounter: vm.accessions.length }"
+        ></span>
+      </ng-container>
+    </a>
+    <a
+      *ngIf="vm.allSelectedForOrdering"
+      class="btn btn-sm btn-link"
+      (click)="removeAllFromBasket(vm.accessions)"
+    >
+      <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+      <ng-container [ngSwitch]="vm.accessions.length">
+        <span *ngSwitchCase="1" translate="select-all-results.remove-one-from-basket"></span>
+        <span
+          *ngSwitchDefault
+          translate="select-all-results.remove-all-from-basket"
+          [translateParams]="{ itemCounter: vm.accessions.length }"
+        ></span>
+      </ng-container>
+    </a>
+  </div>
+</ng-container>

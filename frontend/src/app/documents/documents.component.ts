@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BasketService } from '../rare/basket.service';
+import { BasketService } from '../urgi-common/basket/basket.service';
 import { map, Observable } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';

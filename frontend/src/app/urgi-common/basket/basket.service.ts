@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { RareDocumentModel } from './rare-document.model';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { rareBasket } from '../../environments/rare-no-basket';
+import { OrderableDocumentModel } from '../../models/document.model';
+import { environment } from '../../../environments/environment';
 
 /**
  * A RARe accession, with its name and identifier
@@ -48,7 +48,7 @@ export class BasketService {
   }
 
   isEnabled() {
-    return rareBasket.isBasketEnabled;
+    return environment.basket.enabled;
   }
 
   restoreBasketFromLocalStorage() {
@@ -71,27 +71,27 @@ export class BasketService {
     this.basket$.next({ ...this.basket! });
   }
 
-  addToBasket(rareAccession: RareDocumentModel) {
-    if (this.basket!.items.some(item => item.accession.identifier === rareAccession.identifier)) {
+  addToBasket(accession: OrderableDocumentModel) {
+    if (this.basket!.items.some(item => item.accession.identifier === accession.identifier)) {
       // already in basket
       return;
     }
     const basketItem: BasketItem = {
       accession: {
-        identifier: rareAccession.identifier,
-        name: rareAccession.name
+        identifier: accession.identifier,
+        name: accession.name
       },
-      accessionHolder: rareAccession.accessionHolder
+      accessionHolder: accession.accessionHolder!
     };
     this.basket!.items.push(basketItem);
     this.saveBasketToLocalStorage();
     this.emitNewBasket();
   }
 
-  isAccessionInBasket(rareAccession: RareDocumentModel): Observable<boolean> {
+  isAccessionInBasket(document: OrderableDocumentModel): Observable<boolean> {
     return this.basket$.pipe(
       map(basket =>
-        basket!.items.map(item => item.accession.identifier).includes(rareAccession.identifier)
+        basket!.items.map(item => item.accession.identifier).includes(document.identifier)
       ),
       // do not re-emit when value is the same
       distinctUntilChanged()
@@ -116,7 +116,7 @@ export class BasketService {
 
   sendBasket(): Observable<BasketCreated> {
     return this.http
-      .post<BasketCreated>(`${rareBasket.url}/api/baskets`, this.basket)
+      .post<BasketCreated>(`${environment.basket.url}/api/baskets`, this.basket)
       .pipe(tap(() => this.clearBasket()));
   }
 

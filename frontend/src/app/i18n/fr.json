@@ -62,15 +62,19 @@
   },
   "rare-document": {
     "add-to-basket": "Ajouter au panier",
-    "remove-from-basket": "Enlever du panier"
+    "remove-from-basket": "Ajouter au panier"
   },
-  "rare-add-all-button": {
+  "faidare-document": {
+    "add-to-basket": "Ajouter au panier",
+    "remove-from-basket": "Ajouter au panier"
+  },
+  "select-all-results": {
     "add-one-to-basket": "Ajouter l'accession au panier",
     "add-all-to-basket": "Ajouter les {{ itemCounter }} accessions au panier",
     "remove-one-from-basket": "Enlever l'accession du panier",
     "remove-all-from-basket": "Enlever les {{ itemCounter }} accessions du panier"
   },
-  "rare-basket": {
+  "basket": {
     "no-accession": "Aucune accession",
     "complete-order": "Poursuivre la commande",
     "clear-basket": "Vider le panier",
@@ -168,7 +172,7 @@
       "o": "Ontologie",
       "gl": "Collection"
     },
-    "agregation-gl-tooltip" : "Collection CRB , Panel, Population",
+    "agregation-gl-tooltip": "Collection CRB , Panel, Population",
     "search": {
       "placeholder": "Exemples\u00a0: yield, fhb"
     },

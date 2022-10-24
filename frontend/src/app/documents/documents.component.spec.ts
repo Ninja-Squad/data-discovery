@@ -11,11 +11,11 @@ import { TruncatableDescriptionComponent } from '../truncatable-description/trun
 import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { BasketService } from '../rare/basket.service';
+import { BasketService } from '../urgi-common/basket/basket.service';
 import { of, ReplaySubject } from 'rxjs';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
+import { GenericDocumentListComponent } from '../urgi-common/generic-document-list/generic-document-list.component';
 import { SearchStateService } from '../search-state.service';
 import { Page } from '../models/page';
 
@@ -25,7 +25,7 @@ class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
   }
 
   get results() {
-    return this.components(RareDocumentComponent);
+    return this.elements(RareDocumentComponent);
   }
 
   get noResults() {
@@ -94,9 +94,9 @@ describe('DocumentsComponent', () => {
     expect(tester.results.length).toBe(2);
 
     const result1 = tester.results[0];
-    expect(result1.document).toBe(bacteria1);
+    expect(result1).toContainText(bacteria1.name);
     const result2 = tester.results[1];
-    expect(result2.document).toBe(bacteria2);
+    expect(result2).toContainText(bacteria2.name);
 
     expect(tester.resume).toContainText('Results 1 to 2 of 2');
     expect(tester.resume).not.toContainText('limited');

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DocumentModel } from '../models/document.model';
-import { Page } from '../models/page';
-import { SearchStateService } from '../search-state.service';
+import { DocumentModel } from '../../models/document.model';
+import { Page } from '../../models/page';
+import { SearchStateService } from '../../search-state.service';
 import { Observable } from 'rxjs';
 
 /**

@@ -10,5 +10,9 @@ export const environment: DataDiscoveryEnvironment = {
   faidare: {
     germplasmBaseUrl: 'https://urgi.versailles.inrae.fr/faidare/germplasms'
   },
-  production: true
+  production: true,
+  basket: {
+    enabled: true,
+    url: '/rare-basket'
+  }
 };
