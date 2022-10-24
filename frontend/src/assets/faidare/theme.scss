@@ -14,11 +14,11 @@ $link-decoration: none;
 // override default shadows behavior
 $enable-shadows: true;
 
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '~bootstrap/scss/mixins';
-@import '~bootstrap/scss/maps';
-@import '~bootstrap/scss/utilities';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/utilities';
 
 // custom button
 $theme-btn-color: $white;
