@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { Basket, BasketCreated, BasketItem, BasketService } from './basket.service';
-import { RareDocumentModel } from './rare-document.model';
+import { RareDocumentModel } from '../../rare/rare-document.model';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 describe('BasketService', () => {

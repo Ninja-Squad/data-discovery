@@ -4,10 +4,10 @@ import { WheatisHeaderComponent } from './wheatis-header/wheatis-header.componen
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { CommonModule } from '@angular/common';
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
-import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
+import { GenericDocumentListComponent } from '../urgi-common/generic-document-list/generic-document-list.component';
 import { GenericFooterComponent } from '../urgi-common/generic-footer/generic-footer.component';
 import { GenericOntologyAggregationComponent } from '../urgi-common/generic-ontology-aggregation/generic-ontology-aggregation.component';
-import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/generic-rare-basket.component';
+import { GenericBasketComponent } from '../urgi-common/generic-basket/generic-basket.component';
 
 @NgModule({
   imports: [CommonModule],
@@ -19,7 +19,7 @@ import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/g
     GenericDocumentListComponent,
     GenericFooterComponent,
     GenericOntologyAggregationComponent,
-    GenericRareBasketComponent
+    GenericBasketComponent
   ],
   exports: [
     GenericSelectAllResultsComponent,
@@ -27,7 +27,7 @@ import { GenericRareBasketComponent } from '../urgi-common/generic-rare-basket/g
     GenericDocumentListComponent,
     GenericFooterComponent,
     GenericOntologyAggregationComponent,
-    GenericRareBasketComponent
+    GenericBasketComponent
   ]
 })
 export class WheatisModule {}

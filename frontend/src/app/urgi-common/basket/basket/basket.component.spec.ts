@@ -1,17 +1,17 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
-import { RareBasketComponent } from './rare-basket.component';
+import { BasketComponent } from './basket.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
 import { of, Subject } from 'rxjs';
-import { LOCATION } from '../rare.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { I18nTestingModule } from '../../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
+import { DataDiscoveryNgbTestingModule } from '../../../data-discovery-ngb-testing.module';
+import { LOCATION } from '../../../location.service';
 
-class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
+class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
-    super(RareBasketComponent);
+    super(BasketComponent);
   }
 
   get basketCounterAsText() {
@@ -67,8 +67,8 @@ class RareBasketComponentTester extends ComponentTester<RareBasketComponent> {
   }
 }
 
-describe('RareBasketComponent', () => {
-  let tester: RareBasketComponentTester;
+describe('BasketComponent', () => {
+  let tester: BasketComponentTester;
   let service: jasmine.SpyObj<BasketService>;
   let location: jasmine.SpyObj<Location>;
   const basketEvents = new Subject<Basket>();
@@ -80,13 +80,13 @@ describe('RareBasketComponent', () => {
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
       imports: [DataDiscoveryNgbTestingModule, I18nTestingModule, ReactiveFormsModule],
-      declarations: [RareBasketComponent],
+      declarations: [BasketComponent],
       providers: [
         { provide: BasketService, useValue: service },
         { provide: LOCATION, useValue: location }
       ]
     });
-    tester = new RareBasketComponentTester();
+    tester = new BasketComponentTester();
   });
 
   afterEach(() => {

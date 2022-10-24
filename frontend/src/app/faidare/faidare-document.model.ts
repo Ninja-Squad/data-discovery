@@ -1,6 +1,6 @@
-import { DocumentModel } from '../models/document.model';
+import { OrderableDocumentModel } from '../models/document.model';
 
-export interface FaidareDocumentModel extends DocumentModel {
+export interface FaidareDocumentModel extends OrderableDocumentModel {
   entryType: string;
   databaseName: string;
   url: string;

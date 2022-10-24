@@ -1,21 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RareSelectAllResultsComponent } from './rare-select-all-results.component';
+import { SelectAllResultsComponent } from './select-all-results.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { I18nTestingModule } from '../../../i18n/i18n-testing.module.spec';
 import { Component } from '@angular/core';
-import { RareDocumentModel } from '../rare-document.model';
-import { Page } from '../../models/page';
-import { toSecondPage, toSinglePage } from '../../models/test-model-generators';
+import { Page } from '../../../models/page';
+import { toSecondPage, toSinglePage } from '../../../models/test-model-generators';
+import { RareDocumentModel } from '../../../rare/rare-document.model';
+import { OrderableDocumentModel } from '../../../models/document.model';
 
 @Component({
   selector: 'dd-test',
   template: '<dd-select-all-results [documents]="documents"></dd-select-all-results>'
 })
 class TestComponent {
-  documents: Page<RareDocumentModel>;
+  documents: Page<OrderableDocumentModel>;
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -28,18 +29,29 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 }
 
-describe('RareSelectAllResultsComponent', () => {
+describe('SelectAllResultsComponent', () => {
   let tester: TestComponentTester;
   let service: jasmine.SpyObj<BasketService>;
-  const rosa = { name: 'Rosa', identifier: 'rosa', accessionHolder: 'AH1' } as RareDocumentModel;
-  const rosa2 = { name: 'Rosa2', identifier: 'rosa2', accessionHolder: 'AH1' } as RareDocumentModel;
-  const rosaWithoutAccessionHolder = { name: 'Rosa3', identifier: 'rosa3' } as RareDocumentModel;
+  const rosa = {
+    name: 'Rosa',
+    identifier: 'rosa',
+    accessionHolder: 'AH1'
+  } as OrderableDocumentModel;
+  const rosa2 = {
+    name: 'Rosa2',
+    identifier: 'rosa2',
+    accessionHolder: 'AH1'
+  } as OrderableDocumentModel;
+  const rosaWithoutAccessionHolder = {
+    name: 'Rosa3',
+    identifier: 'rosa3'
+  } as OrderableDocumentModel;
 
   beforeEach(() => {
     service = createMock(BasketService);
     TestBed.configureTestingModule({
       imports: [I18nTestingModule],
-      declarations: [TestComponent, RareSelectAllResultsComponent],
+      declarations: [TestComponent, SelectAllResultsComponent],
       providers: [{ provide: BasketService, useValue: service }]
     });
     tester = new TestComponentTester();

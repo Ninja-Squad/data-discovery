@@ -1,23 +1,25 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { LOCATION } from '../rare.module';
-import { rareBasket } from '../../../environments/rare-no-basket';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
-import { timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
+import { LOCATION } from '../../../location.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'dd-rare-basket',
-  templateUrl: './rare-basket.component.html',
-  styleUrls: ['./rare-basket.component.scss']
+  selector: 'dd-basket',
+  templateUrl: './basket.component.html',
+  styleUrls: ['./basket.component.scss']
 })
-export class RareBasketComponent implements OnInit {
+export class BasketComponent implements OnInit, OnDestroy {
   itemCounter = 0;
   basket: Basket | null = null;
   eulaAgreementControl = this.fb.control(false, Validators.requiredTrue);
   submitted = false;
   confirmForbidden = false;
   isEnabled = false;
+
+  private basketSubscription?: Subscription;
 
   constructor(
     private basketService: BasketService,
@@ -29,13 +31,19 @@ export class RareBasketComponent implements OnInit {
   ngOnInit(): void {
     this.isEnabled = this.basketService.isEnabled();
     if (this.isEnabled) {
-      this.basketService.getBasket().subscribe((basket: Basket | null) => {
-        this.basket = basket;
-        if (basket) {
-          this.itemCounter = basket.items.length;
-        }
-      });
+      this.basketSubscription = this.basketService
+        .getBasket()
+        .subscribe((basket: Basket | null) => {
+          this.basket = basket;
+          if (basket) {
+            this.itemCounter = basket.items.length;
+          }
+        });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.basketSubscription?.unsubscribe();
   }
 
   viewItems(basket: any) {
@@ -46,7 +54,7 @@ export class RareBasketComponent implements OnInit {
           () => {
             // trigger an sendBasket on rare-basket
             this.basketService.sendBasket().subscribe(basketCreated => {
-              this.location.assign(`${rareBasket.url}/baskets/${basketCreated.reference}`);
+              this.location.assign(`${environment.basket.url}/baskets/${basketCreated.reference}`);
             });
           },
           // eslint-disable-next-line @typescript-eslint/no-empty-function

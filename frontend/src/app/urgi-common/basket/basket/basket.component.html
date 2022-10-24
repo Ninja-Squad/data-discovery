@@ -15,11 +15,11 @@
 <ng-template #buttonTooltip>
   <ng-container [ngPlural]="itemCounter">
     <ng-template ngPluralCase="=1">
-      <span translate="rare-basket.one-item"></span>
+      <span translate="basket.one-item"></span>
     </ng-template>
     <ng-template ngPluralCase="other">
       <span
-        translate="rare-basket.several-items"
+        translate="basket.several-items"
         [translateParams]="{ itemCounter: itemCounter | number }"
       ></span>
     </ng-template>
@@ -28,7 +28,7 @@
 
 <ng-template #basketModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title" translate="rare-basket.modal-title"></h4>
+    <h4 class="modal-title" id="modal-title" translate="basket.modal-title"></h4>
     <button
       type="button"
       class="btn btn-close"
@@ -40,9 +40,11 @@
     <ng-container *ngIf="basket && basket.items.length > 0; else emptyBasket">
       <div *ngFor="let item of basket.items" class="d-flex align-items-center">
         <span class="flex-grow-1"
-          >{{ item.accession.name }}&ngsp;<small class="text-muted">{{
-            item.accession.identifier
-          }}</small></span
+          >{{ item.accession.name }}&ngsp;<small
+            class="text-muted"
+            style="word-break: break-word"
+            >{{ item.accession.identifier }}</small
+          ></span
         >&ngsp;
         <button
           type="button"
@@ -55,9 +57,9 @@
       <div class="mt-2">
         <div class="border rounded p-2 bg-light small">
           <div>
-            <span translate="rare-basket.eula-beginning"></span>&ngsp;
-            <a href="./eula" target="_blank" translate="rare-basket.eula-link"></a>&ngsp;
-            <span translate="rare-basket.eula-end"></span>
+            <span translate="basket.eula-beginning"></span>&ngsp;
+            <a href="./eula" target="_blank" translate="basket.eula-link"></a>&ngsp;
+            <span translate="basket.eula-end"></span>
           </div>
           <div class="form-check">
             <input
@@ -69,21 +71,21 @@
             <label
               class="form-check-label"
               for="eula-agreement"
-              translate="rare-basket.eula-agreement"
+              translate="basket.eula-agreement"
             ></label>
             <div
               *ngIf="eulaAgreementControl.invalid && submitted"
               class="invalid-feedback d-block"
               id="eula-agreement-error"
             >
-              <span translate="rare-basket.eula-agreement-required"></span>
+              <span translate="basket.eula-agreement-required"></span>
             </div>
           </div>
         </div>
       </div>
     </ng-container>
     <ng-template #emptyBasket>
-      <p translate="rare-basket.no-accession"></p>
+      <p translate="basket.no-accession"></p>
     </ng-template>
   </div>
   <div class="modal-footer" *ngIf="basket && basket.items.length > 0">
@@ -93,14 +95,14 @@
       class="btn btn-outline-dark"
       [class.confirm-forbidden]="confirmForbidden"
       (click)="sendBasket(modal)"
-      translate="rare-basket.complete-order"
+      translate="basket.complete-order"
     ></button>
     <button
       type="button"
       id="clear-basket"
       class="btn btn-outline-danger"
       (click)="clearBasket()"
-      translate="rare-basket.clear-basket"
+      translate="basket.clear-basket"
     ></button>
   </div>
 </ng-template>

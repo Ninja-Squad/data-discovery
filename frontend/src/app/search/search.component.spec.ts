@@ -24,11 +24,11 @@ import { DocumentCountComponent } from '../document-count/document-count.compone
 import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { BasketService } from '../rare/basket.service';
+import { BasketService } from '../urgi-common/basket/basket.service';
 import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { GenericDocumentListComponent } from '../generic-document-list/generic-document-list.component';
+import { GenericDocumentListComponent } from '../urgi-common/generic-document-list/generic-document-list.component';
 import { Model, SearchStateService } from '../search-state.service';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';

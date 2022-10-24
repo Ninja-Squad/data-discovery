@@ -27,6 +27,10 @@ export const environment: DataDiscoveryEnvironment = {
   home: {
     showAggregations: false,
     exampleQueries: [] as Array<string>
+  },
+  basket: {
+    enabled: false,
+    url: ''
   }
 };
 

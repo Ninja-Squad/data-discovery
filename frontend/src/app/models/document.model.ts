@@ -6,3 +6,7 @@ export interface DocumentModel {
   name: string;
   description: string;
 }
+
+export interface OrderableDocumentModel extends DocumentModel {
+  accessionHolder: string | null;
+}

@@ -1,27 +1,28 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RareDocumentModel } from '../rare-document.model';
+import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 
 interface ViewModel {
-  document: RareDocumentModel;
+  document: FaidareDocumentModel;
   isBasketEnabled: boolean;
   selectedForOrdering: boolean;
 }
 
 @Component({
   selector: 'dd-document',
-  templateUrl: './rare-document.component.html',
-  styleUrls: ['./rare-document.component.scss'],
+  templateUrl: './faidare-document.component.html',
+  styleUrls: ['./faidare-document.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RareDocumentComponent {
-  private documentSubject = new ReplaySubject<RareDocumentModel>();
+export class FaidareDocumentComponent {
+  private documentSubject = new ReplaySubject<FaidareDocumentModel>();
   vm$: Observable<ViewModel>;
 
   constructor(private basketService: BasketService) {
     this.vm$ = this.documentSubject.pipe(
       switchMap(document => {
+        console.log(document.accessionHolder);
         const isBasketEnabled = basketService.isEnabled();
         const selectedForOrdering$ = isBasketEnabled
           ? basketService.isAccessionInBasket(document)
@@ -38,15 +39,15 @@ export class RareDocumentComponent {
   }
 
   @Input()
-  set document(document: RareDocumentModel) {
+  set document(document: FaidareDocumentModel) {
     this.documentSubject.next(document);
   }
 
-  addToBasket(document: RareDocumentModel) {
+  addToBasket(document: FaidareDocumentModel) {
     this.basketService.addToBasket(document);
   }
 
-  removeFromBasket(document: RareDocumentModel) {
+  removeFromBasket(document: FaidareDocumentModel) {
     this.basketService.removeFromBasket(document.identifier);
   }
 }

@@ -24,6 +24,10 @@ export const environment: DataDiscoveryEnvironment = {
   home: {
     showAggregations: false,
     exampleQueries: [] as Array<string>
+  },
+  basket: {
+    enabled: true,
+    url: 'http://localhost:4201/rare-basket'
   }
 };
 

@@ -1,15 +1,10 @@
 <div *ngIf="vm$ | async as vm">
   <h3 class="d-flex">
     <div class="flex-grow-1">
-      <a
-        class="main-link name"
-        [href]="vm.document.dataURL ? vm.document.dataURL : vm.document.portalURL"
-        target="_blank"
-      >
+      <a class="main-link name" [href]="vm.document.url" target="_blank">
         {{ vm.document.name }}
       </a>
-      <small> - {{ vm.document.pillarName }}</small
-      >&ngsp;
+      <small> - {{ vm.document.databaseName }}</small>
     </div>
     <div *ngIf="vm.isBasketEnabled && vm.document.accessionHolder">
       <button
@@ -17,7 +12,7 @@
         type="button"
         class="btn btn-sm btn-outline-dark"
         (click)="addToBasket(vm.document)"
-        [ngbTooltip]="'rare-document.add-to-basket' | translate"
+        [ngbTooltip]="'faidare-document.add-to-basket' | translate"
         container="body"
       >
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
@@ -28,7 +23,7 @@
         type="button"
         class="btn btn-sm btn-success"
         (click)="removeFromBasket(vm.document)"
-        [ngbTooltip]="'rare-document.remove-from-basket' | translate"
+        [ngbTooltip]="'faidare-document.remove-from-basket' | translate"
         container="body"
       >
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
@@ -37,18 +32,9 @@
     </div>
   </h3>
   <div>
-    <span class="me-4">
-      <a class="datasource-link" [href]="vm.document.portalURL" target="_blank">{{
-        vm.document.databaseSource
-      }}</a>
-    </span>
-    <span class="taxon me-4">
-      <span *ngFor="let taxon of vm.document.taxon" class="badge bg-secondary me-2">{{
-        taxon
-      }}</span>
-    </span>
-    <span class="type">
-      {{ vm.document.materialType.join(', ') }}
+    <span class="type me-4">{{ vm.document.entryType }}</span>
+    <span class="species me-4">
+      <span *ngFor="let s of vm.document.species" class="badge bg-secondary me-2">{{ s }}</span>
     </span>
   </div>
   <div>

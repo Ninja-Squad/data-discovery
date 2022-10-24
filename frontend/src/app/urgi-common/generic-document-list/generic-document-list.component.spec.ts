@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { GenericDocumentListComponent } from './generic-document-list.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
-import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
-import { SearchStateService } from '../search-state.service';
-import { toSinglePage } from '../models/test-model-generators';
+import { GenericDocumentComponent } from '../generic-document/generic-document.component';
+import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
+import { SearchStateService } from '../../search-state.service';
+import { toSinglePage } from '../../models/test-model-generators';
 import { of } from 'rxjs';
 
 class GenericDocumentListComponentTester extends ComponentTester<GenericDocumentListComponent> {

@@ -27,6 +27,10 @@ export const environment: DataDiscoveryEnvironment = {
   },
   faidare: {
     germplasmBaseUrl: 'http://localhost:8380/faidare-dev/germplasms'
+  },
+  basket: {
+    enabled: true,
+    url: 'http://localhost:4201/rare-basket'
   }
 };
 
