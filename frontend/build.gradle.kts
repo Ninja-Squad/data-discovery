@@ -10,9 +10,9 @@ plugins {
 val isCi = System.getenv("CI") != null
 
 node {
-  version.set("16.14.0")
-  npmVersion.set("6.14.16")
-  yarnVersion.set("1.22.17")
+  version.set("16.18.0")
+  npmVersion.set("6.14.17")
+  yarnVersion.set("1.22.19")
 
   if (isCi) {
     // we specify a custom installation directory because of permission issues on Docker
