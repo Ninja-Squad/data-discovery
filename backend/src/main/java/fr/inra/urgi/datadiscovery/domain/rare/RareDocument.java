@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
@@ -59,7 +59,7 @@ public class RareDocument implements SearchDocument {
     private final Location locationOfCollect;
 
     @JsonCreator
-    @PersistenceConstructor
+    @PersistenceCreator
     public RareDocument(@JsonProperty("identifier") String id,
                         String name,
                         String description,

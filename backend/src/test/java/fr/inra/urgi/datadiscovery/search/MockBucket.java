@@ -3,9 +3,9 @@ package fr.inra.urgi.datadiscovery.search;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
+import org.elasticsearch.xcontent.XContentBuilder;
 
 /**
  * A mock implementation of {@link Bucket}

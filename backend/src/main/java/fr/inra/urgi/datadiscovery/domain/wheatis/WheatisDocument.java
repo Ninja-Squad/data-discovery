@@ -1,5 +1,7 @@
 package fr.inra.urgi.datadiscovery.domain.wheatis;
 
+import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -8,10 +10,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-
-import static fr.inra.urgi.datadiscovery.util.Utils.nullSafeUnmodifiableCopy;
 
 /**
  * The document for the WheatIS application
@@ -38,7 +38,7 @@ public final class WheatisDocument implements SearchDocument {
     private final List<String> ancestors;
 
     @JsonCreator
-    @PersistenceConstructor
+    @PersistenceCreator
     public WheatisDocument(@JsonProperty("identifier") String id,
                            String name,
                            String entryType,

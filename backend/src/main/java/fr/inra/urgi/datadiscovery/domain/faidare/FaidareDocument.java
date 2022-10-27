@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
@@ -48,7 +48,7 @@ public final class FaidareDocument implements SearchDocument {
     private final int groupId;
 
     @JsonCreator
-    @PersistenceConstructor
+    @PersistenceCreator
     public FaidareDocument(@JsonProperty("identifier") String id,
                            String name,
                            String entryType,
