@@ -19,6 +19,10 @@ jobs: # a collection of steps
           xpack.security.enabled: false
           ES_JAVA_OPTS: -Xms750m -Xmx750m
 
+    # avoid to checkout LFS files
+    environment:
+      - GIT_LFS_SKIP_SMUDGE: 1
+
     steps: # a collection of executable commands
       - browser-tools/install-chrome
       - browser-tools/install-firefox
