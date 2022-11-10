@@ -30,7 +30,7 @@ USAGE:
 	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> -data <data directory> [--local] [--no-data] [-h|--help]
 
 PARAMS:
-	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the indexing load on several hosts
+	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the indexing load on several hosts. To increase parallel indexation, you can double te same IP (eg -host "192.168.10.xxx 192.168.10.xxx")
 	-port          the port value of the targeted Elasticsearch endpoint (default: $ES_PORT)
 	-app           the name of the targeted application: $APPS
 	-env           the environment name of the targeted application: $ENVS

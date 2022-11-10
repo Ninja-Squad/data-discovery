@@ -43,7 +43,7 @@ USAGE:
 	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -data <data directory> -timestamp <epoch timestamp> [-h|--help]
 
 PARAMS:
-	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts
+	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts. To increase parallel indexation, you can double the same IP (eg -host "192.168.10.xxx 192.168.10.xxx")
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
 	-app           the name of the targeted application: ${APPS}
 	-env           the environment name of the targeted application: ${ENVS}
@@ -194,11 +194,11 @@ export NC GREEN ORANGE RED BOLD RED_BOLD BASEDIR OUTDIR ES_PORT APP_NAME APP_ENV
 
 index_resources() {
     bash -c "set -o pipefail; gunzip -c $1 \
-            | jq -rc -f ${FILTER_DATA_SCRIPT} \
-            | jq --arg card '${URL_CARD}' -f ${BASEDIR}/link_card.jq \
-            | jq --argjson fields '${FIELDS}' -f ${BASEDIR}/clean_fields.jq \
-            | jq -c '.[] | .name = (.name|tostring) | [.]' 2>> ${OUTDIR}/$2.jq.err \
-            | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2.jq.err \
+            | jq -rc -f ${FILTER_DATA_SCRIPT} 2> ${OUTDIR}/$2-filter-data-script.jq.err \
+            | jq --arg card '${URL_CARD}' -f ${BASEDIR}/link_card.jq 2> ${OUTDIR}/$2-url-card.jq.err \
+            | jq --argjson fields '${FIELDS}' -f ${BASEDIR}/clean_fields.jq 2> ${OUTDIR}/$2-clean-fields.jq.err \
+            | jq -c '.[] | .name = (.name|tostring) | [.]' 2> ${OUTDIR}/$2-name-change.jq.err \
+            | jq -c -f ${BASEDIR}/to_bulk.jq 2> ${OUTDIR}/$2-to-bulk.jq.err \
             | gzip -c \
             | curl -s -H 'Content-Type: application/x-ndjson' -H 'Content-Encoding: gzip' -H 'Accept-Encoding: gzip' \
                 -XPOST \"$3:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index/_bulk\"\
@@ -215,8 +215,8 @@ process_suggestions() {
 	{
 		echo "Indexing suggestions into ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index ..."
 		find ${DATADIR}/${SUGGESTION_DIR}/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
-			parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} {1/.} {2} \
-			:::: - ::: ${ES_HOSTS}
+			parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} '{=1 s:(.*/)+(.*)/.*:$2: =}-{1/.}' {2} \
+			:::: - ::: ${ES_HOSTS} # the second parameter (regex) parses the file's path to keep only the parent directory + the file's name, used to create logs files distinguished by source
 	} || {
 		code=$?
 		echo -e "${RED}A problem occurred (code=$code) when trying to index ${SUGGESTION_DIR}\n"\
@@ -253,7 +253,7 @@ export -f index_resources index_suggestions process_suggestions
     # set -x
     echo "Indexing files from ${DATADIR}/data into index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index ..."
     find ${DATADIR}/data/ -maxdepth 2 -name "*.json.gz" | \
-        parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} {1/.} {2} \
+        parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} '{=1 s:(.*/)+(.*)/.*:$2: =}-{1/.}' {2} \
         :::: - ::: ${ES_HOSTS}
 } || {
 	code=$?
@@ -280,7 +280,7 @@ export SUGGESTION_DIR="suggestions"
 export PREFIX_INDEX="${PREFIX_ES}"
 process_suggestions
 
-if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-suggestions/ -type f -name "*.json" -ls | wc -l) -eq 0 ] && ["${APP_NAME}" == "faidare"] ; then
+if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-suggestions/ -type f -name "*.json" -ls | wc -l) -eq 0 ] && [ "${APP_NAME}" == "faidare" ] ; then
 	export SUGGESTION_DIR="private-suggestions"
 	export PREFIX_INDEX="${PREFIX_ES}-private"
 	process_suggestions
