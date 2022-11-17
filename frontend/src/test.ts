@@ -8,8 +8,6 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 import { speculoosMatchers } from 'ngx-speculoos';
 
-declare const require: any;
-
 beforeEach(() => {
   jasmine.addMatchers(speculoosMatchers);
 });
@@ -19,7 +17,3 @@ getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDyn
   errorOnUnknownElements: true,
   errorOnUnknownProperties: true
 });
-// Then we find all the tests.
-const context = require.context('./', true, /\.spec\.ts$/);
-// And load the modules.
-context.keys().map(context);
