@@ -102,10 +102,10 @@
     "@angular-devkit/architect" "0.1500.0"
     rxjs "6.6.7"
 
-"@angular-devkit/core@14.2.10":
-  version "14.2.10"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-14.2.10.tgz#9eedb7cf783030252f0c7546ce80fc321633b499"
-  integrity sha512-K4AO7mROTdbhQ7chtyQd6oPwmuL+BPUh+wn6Aq1qrmYJK4UZYFOPp8fi/Ehs8meCEeywtrssOPfrOE4Gsre9dg==
+"@angular-devkit/core@14.2.9", "@angular-devkit/core@^14.2.1":
+  version "14.2.9"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-14.2.9.tgz#275a37c7a02c5294f0d3a1a365cc2a5605c62873"
+  integrity sha512-+e2OmzH/0gjNNH96xJDgshbuIM/NPSwE0NQlgU/KRb8TZt+7ooTmZJ1vk25HKV2YS99BEYzUSqvVAaJtxX/6Qw==
   dependencies:
     ajv "8.11.0"
     ajv-formats "2.1.1"
@@ -124,23 +124,12 @@
     rxjs "6.6.7"
     source-map "0.7.4"
 
-"@angular-devkit/core@^14.2.1":
+"@angular-devkit/schematics@14.2.9", "@angular-devkit/schematics@^14.2.1":
   version "14.2.9"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-14.2.9.tgz#275a37c7a02c5294f0d3a1a365cc2a5605c62873"
-  integrity sha512-+e2OmzH/0gjNNH96xJDgshbuIM/NPSwE0NQlgU/KRb8TZt+7ooTmZJ1vk25HKV2YS99BEYzUSqvVAaJtxX/6Qw==
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-14.2.9.tgz#d91447a1568047f86cb166a1af0d76b0c58ae0cb"
+  integrity sha512-E7muTIbDqysjQld5r9AGXiW8vKHadkHaGe+0QONpmr8TMAtTMqBFxBXRG9vajiUzt/GcFL9dbGGEwM/1dc7VPQ==
   dependencies:
-    ajv "8.11.0"
-    ajv-formats "2.1.1"
-    jsonc-parser "3.1.0"
-    rxjs "6.6.7"
-    source-map "0.7.4"
-
-"@angular-devkit/schematics@14.2.10":
-  version "14.2.10"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-14.2.10.tgz#91fcc85199aa7fa9a3a0cb49d8a5266421f9d5e3"
-  integrity sha512-MMp31KpJTwKHisXOq+6VOXYApq97hZxFaFmZk396X5aIFTCELUwjcezQDk+u2nEs5iK/COUfnN3plGcfJxYhQA==
-  dependencies:
-    "@angular-devkit/core" "14.2.10"
+    "@angular-devkit/core" "14.2.9"
     jsonc-parser "3.1.0"
     magic-string "0.26.2"
     ora "5.4.1"
@@ -154,17 +143,6 @@
     "@angular-devkit/core" "15.0.0"
     jsonc-parser "3.2.0"
     magic-string "0.26.7"
-    ora "5.4.1"
-    rxjs "6.6.7"
-
-"@angular-devkit/schematics@^14.2.1":
-  version "14.2.9"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-14.2.9.tgz#d91447a1568047f86cb166a1af0d76b0c58ae0cb"
-  integrity sha512-E7muTIbDqysjQld5r9AGXiW8vKHadkHaGe+0QONpmr8TMAtTMqBFxBXRG9vajiUzt/GcFL9dbGGEwM/1dc7VPQ==
-  dependencies:
-    "@angular-devkit/core" "14.2.9"
-    jsonc-parser "3.1.0"
-    magic-string "0.26.2"
     ora "5.4.1"
     rxjs "6.6.7"
 
@@ -5878,6 +5856,11 @@ make-fetch-happen@^11.0.0:
     promise-retry "^2.0.1"
     socks-proxy-agent "^7.0.0"
     ssri "^10.0.0"
+
+marked@4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-4.2.3.tgz#bd76a5eb510ff1d8421bc6c3b2f0b93488c15bea"
+  integrity sha512-slWRdJkbTZ+PjkyJnE30Uid64eHwbwa1Q25INCAYfZlK4o6ylagBy/Le9eWntqJFoFT93ikUKMv47GZ4gTwHkw==
 
 marked@^4.0.17:
   version "4.2.2"
