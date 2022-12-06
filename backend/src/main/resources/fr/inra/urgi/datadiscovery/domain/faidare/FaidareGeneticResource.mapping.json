@@ -189,6 +189,10 @@
                     "ignore_above": 256
                 }
             }
+        },
+        "accessionHolder": {
+            "type": "text",
+            "index": false
         }
     }
 }
