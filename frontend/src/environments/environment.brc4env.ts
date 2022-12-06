@@ -4,7 +4,7 @@ import { DataDiscoveryEnvironment } from './environment.model';
 export const environment: DataDiscoveryEnvironment = {
   production: false,
   name: 'brc4env',
-  title: 'BRC4Env - Biological Resource Centre for the Environment',
+  title: 'BRC4Env - Biological Resource Centres for the Environment of AgroBRC-RARe',
   navbar: {
     logoUrl: '',
     secondLogoUrl: '',

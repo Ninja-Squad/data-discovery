@@ -8,11 +8,11 @@ import { DataDiscoveryEnvironment } from './environment.model';
 export const environment: DataDiscoveryEnvironment = {
   production: false,
   name: 'rare',
-  title: 'RARe - Ressources Agronomiques pour la Recherche',
+  title: 'AgroBRC - RARe - Ressources Agronomiques pour la Recherche',
   navbar: {
     logoUrl: '',
     secondLogoUrl: '',
-    links: [{ label: 'agrobrc', url: 'https://www.agrobrc-rare.org/' }]
+    links: [{ label: 'agrobrc-rare', url: 'https://www.agrobrc-rare.org/' }]
   },
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
