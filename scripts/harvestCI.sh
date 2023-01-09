@@ -302,3 +302,25 @@ if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-sugge
 	export PREFIX_ALIAS="${PREFIX_ES}-private"
 	manage_aliases
 fi
+
+TMP_FILE=$(mktemp)
+export TMP_FILE
+
+check_acknowledgment() {
+	jq '.acknowledged? == true' ${TMP_FILE} | grep 'true' >/dev/null || {
+		CODE=$((CODE+=1)) ;
+		echo -e "${RED_BOLD}ERROR: unexpected response from previous command:${NC}${ORANGE}"; echo ; cat "${TMP_FILE}" ; echo -e "${NC}";
+	}
+}
+
+if [ "$APP_ENV" == "prod" ]; then
+    echo ; echo "Update replica setting: ${PREFIX_ES}-*"
+    curl -s -X PUT "${ES_HOST}:${ES_PORT}/${PREFIX_ES}-*/_settings?pretty" -H 'Content-Type: application/json' -d"
+        {
+            \"index\" : {
+                \"number_of_replicas\" : 1
+            }
+        }
+    " > ${TMP_FILE}
+    check_acknowledgment
+fi
