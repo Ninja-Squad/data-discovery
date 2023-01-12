@@ -429,11 +429,8 @@ deploy-rare-to-beta:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-RARe-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -451,11 +448,8 @@ deploy-rare-to-staging:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-RARe-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -473,11 +467,8 @@ deploy-rare-to-prod:
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-RARe-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -496,11 +487,8 @@ deploy-brc4env-to-beta:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-RARe-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -518,11 +506,8 @@ deploy-brc4env-to-staging:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-RARe-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -540,11 +525,8 @@ deploy-brc4env-to-prod:
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-RARe-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -563,11 +545,8 @@ deploy-wheatis-to-beta:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -585,11 +564,8 @@ deploy-wheatis-to-staging:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -607,11 +583,8 @@ deploy-wheatis-to-prod:
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -630,11 +603,8 @@ deploy-faidare-to-beta:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -652,11 +622,8 @@ deploy-faidare-to-staging-public:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -674,11 +641,8 @@ deploy-faidare-to-staging-private:
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -696,11 +660,8 @@ deploy-faidare-to-prod-public:
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml
@@ -719,11 +680,8 @@ deploy-faidare-to-prod-private:
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - ./ABOUT*.md
-        - ./EULA*.md
-        - ./HELP*.md
-        - ./LEGAL*.md
-        - ./*-WHEATIS-*.md
+        - ./*.md
+        - backend/src/build.gradle.kts
         - backend/src/**/*
         - frontend/**/*
         - .gitlab-ci.yml

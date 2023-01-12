@@ -1,0 +1,42 @@
+[
+  {
+    "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MjE=",
+    "locationName": "Murony",
+    "locationType": "Evaluation site",
+    "abbreviation": null,
+    "countryCode": "HUN",
+    "countryName": "Hungary",
+    "instituteAddress": null,
+    "instituteName": null,
+    "altitude": 85,
+    "latitude": 46.78,
+    "longitude": 21.05,
+    "additionalInfo": {
+        "Geographical location": "Hungary > Eastern Europe > Europe"
+    },
+    "name": "Murony",
+    "abreviation": null,
+    "instituteAdress": null,
+    "documentationURL": null
+  },
+  {
+    "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MTY=",
+    "locationName": "Craiova",
+    "locationType": "Evaluation site",
+    "abbreviation": null,
+    "countryCode": "ROU",
+    "countryName": "Romania",
+    "instituteAddress": null,
+    "instituteName": null,
+    "altitude": 101,
+    "latitude": 44.115568,
+    "longitude": 24.347763,
+    "additionalInfo": {
+      "Geographical location": "Romania > Eastern Europe > Europe"
+    },
+    "name": "Craiova",
+    "abreviation": null,
+    "instituteAdress": null,
+    "documentationURL": null
+  }
+]

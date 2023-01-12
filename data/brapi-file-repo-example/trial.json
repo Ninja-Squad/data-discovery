@@ -1,0 +1,70 @@
+[
+    {
+        "trialDbId": "aHR0cHM6Ly9kb2kub3JnLzEwLjE1NDU0L0lBU1NUTg==",
+        "trialName": "Drops Phenotyping Network",
+        "trialType": "Network",
+        "endDate": null,
+        "startDate": null,
+        "active": null,
+        "programDbId": null,
+        "programName": null,
+        "datasetAuthorship": {
+            "license": "",
+            "datasetPUI": "https://doi.org/10.15454/IASSTN"
+            },
+        "contacts": [
+            {
+                "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg0",
+                "name": "Claude WELCKER",
+                "email": "claude.welcker@inrae.fr",
+                "type": "Submitter",
+                "institutionName": "GCIE - UE Grandes Cultures, Innovation, Environnement",
+                "orcid": null
+            },
+            {
+                "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg1",
+                "name": "Emilie MILLET",
+                "email": "emilie.millet@wur.nl",
+                "type": "Submitter",
+                "institutionName": "Wageningen University and Research",
+                "orcid": null
+            },
+            {
+                "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg2",
+                "name": "François TARDIEU",
+                "email": "francois.tardieu@inrae.fr",
+                "type": "Submitter",
+                "institutionName": "GCIE - UE Grandes Cultures, Innovation, Environnement",
+                "orcid": null
+            }
+        ],
+        "studies": [
+            {
+                "studyDbId": "dXJuOlVSR0kvc3R1ZHkvQm9sMTI=",
+                "studyName": "University_of_Bologna Cadriano 2012",
+                "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MTQ=",
+                "locationName": "Bologna"
+            },
+            {
+                "studyDbId": "dXJuOlVSR0kvc3R1ZHkvQ2FtMTE=",
+                "studyName": "Syngenta Campagnola 2011",
+                "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MTU=",
+                "locationName": "Campagnola"
+            },
+            {
+                "studyDbId": "dXJuOlVSR0kvc3R1ZHkvTmVyMTI=",
+                "studyName": "Biogemma Nerac 2012",
+                "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MjI=",
+                "locationName": "Nerac"
+            },
+            {
+                "studyDbId": "dXJuOlVSR0kvc3R1ZHkvTmVyMTM=",
+                "studyName": "Biogemma Nerac 2013",
+                "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MjI=",
+                "locationName": "Nerac"
+            }
+        ],
+        "additionalInfo": null,
+        "documentationURL": "https://urgi.versailles.inrae.fr/ephesis/ephesis/viewer.do#dataResults/trialSetIds=42"
+    }
+]

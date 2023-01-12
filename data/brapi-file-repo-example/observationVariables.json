@@ -1,0 +1,228 @@
+[  
+  {
+    "observationVariableDbId": "MIPO:0000012",
+    "name": "TKW",
+    "ontologyDbId": "MIPO",
+    "ontologyName": "Maize Traits",
+    "synonyms": [
+      "Thousand kernel weight (g)"
+    ],
+    "contextOfUse": null,
+    "growthStage": "After harvest",
+    "status": null,
+    "xref": "CO_322:0000133",
+    "institution": null,
+    "scientist": null,
+    "date": null,
+    "language": "EN",
+    "crop": "Maize",
+    "defaultValue": null,
+    "trait": {
+      "traitDbId": "CO_322:0000133",
+      "name": "Grain weight",
+      "description": "Grain weight of mature kernels.",
+      "synonyms": [
+        "Grain weight"
+      ],
+      "mainAbbreviation": "GW",
+      "alternativeAbbreviations": [
+        "KW",
+        "TKW"
+      ],
+      "entity": "Grain",
+      "attribute": "Weight",
+      "status": null,
+      "xref": null,
+      "class": "Agronomical"
+    },
+    "method": {
+      "methodDbId": "CO_322:0000341",
+      "name": "GW DW - Measurement",
+      "description": "Count and weigh grains randomly selected from the total grains.",
+      "formula": null,
+      "reference": "IMIS (International Maize Information System; http://imis.cimmyt.org/) Database, CIMMYT.",
+      "class": "Measurement"
+    },
+    "scale": {
+      "scaleDbId": "CO_322:0000722",
+      "name": "g/1000grain",
+      "dataType": "Numerical",
+      "decimalPlaces": null,
+      "xref": null,
+      "validValues": {
+        "min": null,
+        "max": null,
+        "categories": null
+      }
+    },
+    "documentationURL": "https://urgi.versailles.inrae.fr/ontology#termIdentifier=MIPO:0000012"
+  },
+  {
+    "observationVariableDbId": "MIPO:0000014",
+    "name": "TL",
+    "ontologyDbId": "MIPO",
+    "ontologyName": "Maize Traits",
+    "synonyms": [
+      "Tassel length (cm)"
+    ],
+    "contextOfUse": null,
+    "growthStage": null,
+    "status": null,
+    "xref": "CO_322:0000038",
+    "institution": null,
+    "scientist": null,
+    "date": null,
+    "language": "EN",
+    "crop": "Maize",
+    "defaultValue": null,
+    "trait": {
+      "traitDbId": "CO_322:0000038",
+      "name": "Tassel size",
+      "description": "Tassel size.",
+      "synonyms": [
+        "Tassel length"
+      ],
+      "mainAbbreviation": "TslSiz",
+      "alternativeAbbreviations": [
+        "TL"
+      ],
+      "entity": "Tassel",
+      "attribute": "size",
+      "status": null,
+      "xref": null,
+      "class": "Morphological"
+    },
+    "method": {
+      "methodDbId": null,
+      "name": null,
+      "description": null,
+      "formula": null,
+      "reference": null,
+      "class": null
+    },
+    "scale": {
+      "scaleDbId": null,
+      "name": null,
+      "dataType": null,
+      "decimalPlaces": null,
+      "xref": null,
+      "validValues": {
+        "min": null,
+        "max": null,
+        "categories": null
+      }
+    },
+    "documentationURL": "https://urgi.versailles.inrae.fr/ontology#termIdentifier=MIPO:0000014"
+  },
+  {
+    "observationVariableDbId": "MIPO:0000017",
+    "name": "GN",
+    "ontologyDbId": "MIPO",
+    "ontologyName": "Maize Traits",
+    "synonyms": [
+      "Grain number"
+    ],
+    "contextOfUse": null,
+    "growthStage": "After harvest",
+    "status": null,
+    "xref": "CO_322:0000010",
+    "institution": null,
+    "scientist": null,
+    "date": null,
+    "language": "EN",
+    "crop": "Maize",
+    "defaultValue": null,
+    "trait": {
+      "traitDbId": "CO_322:0000010",
+      "name": "Grain number",
+      "description": "Grain number",
+      "synonyms": null,
+      "mainAbbreviation": "GN",
+      "alternativeAbbreviations": null,
+      "entity": "Grain",
+      "attribute": "Number",
+      "status": null,
+      "xref": null,
+      "class": "Agronomical"
+    },
+    "method": {
+      "methodDbId": "CO_322:0000345",
+      "name": "GN - Computation",
+      "description": "Standard method for grain number.",
+      "formula": null,
+      "reference": null,
+      "class": "Computation"
+    },
+    "scale": {
+      "scaleDbId": "MIPO:0000026",
+      "name": "grain/m-2",
+      "dataType": "Numerical",
+      "decimalPlaces": null,
+      "xref": null,
+      "validValues": {
+        "min": null,
+        "max": null,
+        "categories": null
+      }
+    },
+    "documentationURL": "https://urgi.versailles.inrae.fr/ontology#termIdentifier=MIPO:0000017"
+  },
+  {
+    "observationVariableDbId": "MIPO:0000018",
+    "name": "GY_Adj_tha",
+    "ontologyDbId": "MIPO",
+    "ontologyName": "Maize Traits",
+    "synonyms": [
+      "Grain yield"
+    ],
+    "contextOfUse": null,
+    "growthStage": "After harvest",
+    "status": null,
+    "xref": "CO_322:0000622",
+    "institution": null,
+    "scientist": null,
+    "date": null,
+    "language": "EN",
+    "crop": "Maize",
+    "defaultValue": null,
+    "trait": {
+      "traitDbId": "CO_322:0000005",
+      "name": "Grain yield",
+      "description": "Grain yield per unit area, either field weight basis, dry weight basis or adjusted.",
+      "synonyms": [
+        "grains weight per plant",
+        "kernel weight per plant"
+      ],
+      "mainAbbreviation": "GY",
+      "alternativeAbbreviations": [
+        "KW"
+      ],
+      "entity": "Grain",
+      "attribute": "Weight",
+      "status": null,
+      "xref": null,
+      "class": "Agronomical"
+    },
+    "method": {
+      "methodDbId": "CO_322:0000197",
+      "name": "Adjusted GY - Computation",
+      "description": "Calculate shelled grain yield per unit area.",
+      "formula": null,
+      "reference": null,
+      "class": "Computation"
+    },
+    "scale": {
+      "scaleDbId": "CO_322:0000622",
+      "name": "t/ha",
+      "dataType": "Numerical",
+      "decimalPlaces": null,
+      "xref": null,
+      "validValues": {
+        "min": null,
+        "max": null,
+        "categories": null
+      }
+    },
+    "documentationURL": "https://urgi.versailles.inrae.fr/ontology#termIdentifier=MIPO:0000018"
+  }
+]

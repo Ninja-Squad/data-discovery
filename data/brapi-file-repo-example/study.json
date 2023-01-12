@@ -1,0 +1,112 @@
+[
+  {
+    "studyDbId": "dXJuOlVSR0kvc3R1ZHkvTXVyMTM=",
+    "studyName": "KWS Murony 2013",
+    "studyType": "Phenotyping Study",
+    "studyDescription": null,
+    "active": null,
+    "seasons": [
+      "2013"
+    ],
+    "endDate": "2013-10-05",
+    "startDate": "2013-05-21",
+    "programDbId": null,
+    "programName": null,
+    "trialDbId": null,
+    "trialName": null,
+    "trialDbIds": [
+      "aHR0cHM6Ly9kb2kub3JnLzEwLjE1NDU0L0lBU1NUTg=="
+    ],
+    "additionalInfo": null,
+    "lastUpdate": null,
+    "contacts": [
+      {
+        "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg0",
+        "name": "Claude WELCKER",
+        "email": "claude.welcker@inrae.fr",
+        "type": "Submitter",
+        "institutionName": null,
+        "orcid": null
+      },
+      {
+        "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg1",
+        "name": "Emilie MILLET",
+        "email": "emilie.millet@wur.nl",
+        "type": "Submitter",
+        "institutionName": null,
+        "orcid": null
+      },
+      {
+        "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg2",
+        "name": "François TARDIEU",
+        "email": "francois.tardieu@inrae.fr",
+        "type": "Submitter",
+        "institutionName": null,
+        "orcid": null
+      }
+    ],
+    "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MjE=",
+    "locationName": "Murony",
+    "dataLinks": null,
+    "name": "KWS Murony 2013",
+    "documentationURL": "https://urgi.versailles.inrae.fr/ephesis/ephesis/viewer.do#trialCard/trialId=1361" //accès aux données
+  },
+  {
+    "studyDbId": "dXJuOlVSR0kvc3R1ZHkvQ3JhMTI=",
+    "studyName": "KWS Caracal 2012",
+    "studyType": "Phenotyping Study",
+    "studyDescription": null,
+    "active": null,
+    "seasons": [
+      "2012"
+    ],
+    "endDate": "2012-09-18",
+    "startDate": "2012-05-21",
+    "programDbId": null,
+    "programName": null,
+    "trialDbId": null,
+    "trialName": null,
+    "trialDbIds": [
+      "aHR0cHM6Ly9kb2kub3JnLzEwLjE1NDU0L0lBU1NUTg=="
+    ],
+    "additionalInfo": null,
+    "lastUpdate": null,
+    "contacts": [
+      {
+        "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg0",
+        "name": "Claude WELCKER",
+        "email": "claude.welcker@inrae.fr",
+        "type": "Submitter",
+        "institutionName": null,
+        "orcid": null
+      },
+      {
+        "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg1",
+        "name": "Emilie MILLET",
+        "email": "emilie.millet@wur.nl",
+        "type": "Submitter",
+        "institutionName": null,
+        "orcid": null
+      },
+      {
+        "contactDbId": "dXJuOlVSR0kvY29udGFjdC81NTg2",
+        "name": "François TARDIEU",
+        "email": "francois.tardieu@inrae.fr",
+        "type": "Submitter",
+        "institutionName": null,
+        "orcid": null
+      }
+    ],
+    "locationDbId": "dXJuOlVSR0kvbG9jYXRpb24vNDA4MTY=",
+    "locationName": "Craiova",
+    "dataLinks": [
+      {
+        "name": "caracal_2012_WeatherSoil.xlsx",
+        "type": "xlsx",
+        "url": "https://urgi.versailles.inrae.fr/files/ephesis/Car12/caracal_2012_WeatherSoil.xlsx"
+      }
+    ],
+    "name": "KWS Caracal 2012",
+    "documentationURL": "https://urgi.versailles.inrae.fr/ephesis/ephesis/viewer.do#trialCard/trialId=1350"
+  }
+]
