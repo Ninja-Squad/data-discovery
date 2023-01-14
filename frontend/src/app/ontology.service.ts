@@ -102,7 +102,7 @@ export interface TreeI18n {
 }
 
 export const ONTOLOGY_LANGUAGES = ['EN', 'FR', 'ES'] as const;
-export type OntologyLanguage = typeof ONTOLOGY_LANGUAGES[number];
+export type OntologyLanguage = (typeof ONTOLOGY_LANGUAGES)[number];
 
 @Injectable({
   providedIn: 'root'
