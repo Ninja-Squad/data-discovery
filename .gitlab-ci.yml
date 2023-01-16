@@ -11,6 +11,10 @@ stages:
 # Node, NPM and Yarn are installed by Gradle
 image: circleci/openjdk:8-jdk-browsers
 
+default:
+  tags:
+    - openstack
+
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -36,6 +40,7 @@ build-es-synonyms-docker-image:
   # It is recommended to use dind with TLS enabled.
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
   stage: pre-build
+
   services:
     - docker:20.10.6-dind
   script:
@@ -59,6 +64,7 @@ build-es-synonyms-docker-image:
 build-loader-docker-image:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/docker-git:latest
   stage: pre-build
+
   services:
     - docker:20.10.6-dind
   script:
@@ -84,8 +90,7 @@ build-loader-docker-image:
 deploy-synonyms-to-cluster:
   image: registry.forgemia.inra.fr/urgi-is/docker-rare/bash-git-lfs:latest
   stage: pre-build
-  tags:
-    - openstack
+
   script:
     - eval $(ssh-agent -s)
     - ssh-add <(echo "${ES_SSH_PRIVATE_KEY}")
@@ -101,8 +106,7 @@ deploy-synonyms-to-cluster:
 # launch all tests and sonarqube analysis
 test-lint-build:
   stage: test
-  tags:
-    - openstack
+
   # the backend tests need an elasticsearch instance
   services:
     # even if that would be ideal
@@ -213,8 +217,7 @@ build-faidare:
 
 restart-config-server:
   stage: build
-  tags:
-    - openstack
+
   variables:
     SERVER_IP: ${SERVER_IP_OPENSTACK_DEV}
     SERVER_USER: ${SERVER_USER_CENTOS_OPENSTACK}
@@ -594,8 +597,7 @@ deploy-wheatis-to-prod:
 
 deploy-faidare-to-beta:
   stage: deploy-beta
-  tags:
-    - openstack
+
   <<: *variables-faidare-beta
   <<: *deploy_to_vm
   rules:
@@ -613,8 +615,7 @@ deploy-faidare-to-beta:
 
 deploy-faidare-to-staging-public:
   stage: deploy-staging
-  tags:
-    - openstack
+
   <<: *variables-faidare-staging-public
   <<: *deploy_to_vm
   rules:
@@ -632,8 +633,7 @@ deploy-faidare-to-staging-public:
 
 deploy-faidare-to-staging-private:
   stage: deploy-staging
-  tags:
-    - openstack
+
   <<: *variables-faidare-staging-private
   <<: *deploy_to_vm
   rules:
@@ -651,8 +651,7 @@ deploy-faidare-to-staging-private:
 
 deploy-faidare-to-prod-public:
   stage: deploy-production
-  tags:
-    - openstack
+
   <<: *variables-faidare-prod-public
   <<: *deploy_to_vm
   rules:
@@ -671,8 +670,7 @@ deploy-faidare-to-prod-public:
 
 deploy-faidare-to-prod-private:
   stage: deploy-production
-  tags:
-    - openstack
+
   <<: *variables-faidare-prod-private
   <<: *deploy_to_vm
   rules:
