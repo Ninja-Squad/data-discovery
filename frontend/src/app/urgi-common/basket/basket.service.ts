@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 /**
  * A RARe accession, with its name and identifier
  */
-export interface Accession {
+interface Accession {
   identifier: string;
   name: string;
 }

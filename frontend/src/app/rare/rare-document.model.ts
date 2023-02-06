@@ -1,6 +1,6 @@
 import { OrderableDocumentModel } from '../models/document.model';
 
-export interface Location {
+interface Location {
   lat: number;
   lon: number;
 }

@@ -30,7 +30,7 @@ export interface NodeInformation<P> {
 /**
  * The node information, as used internally
  */
-export interface InternalNodeInformation<P> extends NodeInformation<P> {
+interface InternalNodeInformation<P> extends NodeInformation<P> {
   id: string;
 }
 

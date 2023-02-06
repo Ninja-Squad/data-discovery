@@ -11,22 +11,22 @@ interface BaseTypedNodeDetails {
   details: OntologyDetails | TraitClassDetails | TraitDetails | VariableDetails;
 }
 
-export interface TypedOntologyDetails extends BaseTypedNodeDetails {
+interface TypedOntologyDetails extends BaseTypedNodeDetails {
   type: 'ONTOLOGY';
   details: OntologyDetails;
 }
 
-export interface TypedTraitClassDetails extends BaseTypedNodeDetails {
+interface TypedTraitClassDetails extends BaseTypedNodeDetails {
   type: 'TRAIT_CLASS';
   details: TraitClassDetails;
 }
 
-export interface TypedTraitDetails extends BaseTypedNodeDetails {
+interface TypedTraitDetails extends BaseTypedNodeDetails {
   type: 'TRAIT';
   details: TraitDetails;
 }
 
-export interface TypedVariableDetails extends BaseTypedNodeDetails {
+interface TypedVariableDetails extends BaseTypedNodeDetails {
   type: 'VARIABLE';
   details: VariableDetails;
 }
