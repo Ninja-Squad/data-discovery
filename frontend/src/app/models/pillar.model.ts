@@ -1,4 +1,4 @@
-export interface DatabaseSourceModel {
+interface DatabaseSourceModel {
   name: string;
   documentCount: number;
   url: string;

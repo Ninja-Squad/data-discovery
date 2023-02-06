@@ -7,7 +7,7 @@ import {
 } from '@ngx-translate/core';
 import EN_TRANSLATIONS from './en.json';
 
-export class CustomMissingTranslationHandler implements MissingTranslationHandler {
+class CustomMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
     throw new Error(`Missing translation for key ${params.key}`);
   }

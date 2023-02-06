@@ -5,8 +5,8 @@ import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
 
-export const ENTRY_AGGREGATION_KEY = 'entry';
-export const GERMPLASM_BUCKET_KEY = 'Germplasm';
+const ENTRY_AGGREGATION_KEY = 'entry';
+const GERMPLASM_BUCKET_KEY = 'Germplasm';
 
 interface ViewModel {
   documents: Page<DocumentModel> | null;

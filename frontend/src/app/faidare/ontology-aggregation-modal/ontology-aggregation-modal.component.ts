@@ -22,7 +22,7 @@ import {
 import { TypedNodeDetails } from '../ontology.model';
 import { Aggregation } from '../../models/page';
 
-export interface TreeViewModel {
+interface TreeViewModel {
   filter: string;
   tree: Array<TreeNode<OntologyPayload>>;
   textAccessor: TextAccessor<OntologyPayload>;
