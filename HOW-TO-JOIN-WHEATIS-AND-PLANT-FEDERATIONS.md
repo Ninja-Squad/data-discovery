@@ -17,11 +17,11 @@ Each of those approaches are described below and all assume a minimum informatio
 
 ## Breeding API (BrAPI)
 
-This s the richer approach and will bring you all FAIDARE functionalities. The web servces building will enable any [BrAPI](https://www.brapi.org) client on your database. The BrAPI file generation is simpler and easier to deploy.
+This is the richer approach and will bring you all FAIDARE functionalities. The web services building will enable you to plug any [BrAPI](https://www.brapi.org) client on your database. The BrAPI file generation is simpler and easier to deploy.
 Only Germplasms and study are indexed from a BreedingAPI endpoint, with their full description.
-Those metadata will be used to create summary cards [such as] (<https://doi.org/10.15454/V8WRHY>)
-The datadiscovery metadata files, following the previous [specifications](#datadiscovery-metadata-specifications) are generated from those summaries.
-
+Those metadata will be used to create summary cards [such as](https://doi.org/10.15454/V8WRHY)
+The datadiscovery metadata files, following the  [specifications](#datadiscovery-metadata-specifications) below are generated from those summaries.
+Curently (FEB 2023), FAIDARE indexes BrAPI v1.1+ sources (V1.3 recomended).
 ### Web services
 
 The breedingAPI full specifications are available on [www.brapi.org](https://brapi.org). The resources indexed are germplasms and study only. Information cards are created using the following calls :
@@ -40,7 +40,7 @@ The breedingAPI full specifications are available on [www.brapi.org](https://bra
 
 To ensure the quality of your BrAPI endpoint, you can use the validation tools provided by the BrAPI community, especially [Brava](http://webapps.ipk-gatersleben.de/brapivalidator/).
 
-If you have any question or need help implementing BrAPI calls, you can [contact the BrAPI community](https://brapi.org/) or the [FAIDARE help desk](mailto:urgi-data@inrae.fr?subject=%5BWheatIS%2FAIDARE%5D).
+If you have any question or need help implementing BrAPI calls, you can [contact the BrAPI community](https://brapi.org/contact) or the [FAIDARE help desk](mailto:urgi-data@inrae.fr?subject=%5BWheatIS%2FAIDARE%5D).
 
 ### Files
 

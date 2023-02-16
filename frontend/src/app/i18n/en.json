@@ -5,7 +5,8 @@
     "join-us": "Join us",
     "legal-mentions": "Terms of use",
     "help": "Help",
-    "news": "News/Perspectives"
+    "news": "News/Perspectives",
+    "ws": "Web services"
   },
   "pillars": {
     "no-data": "No data found.",
@@ -148,7 +149,8 @@
         "urgi": "URGI",
         "home": "Home",
         "news": "News",
-        "about": "About us"
+        "about": "About us",
+        "ws": "Web services"
       }
     },
     "footer": {

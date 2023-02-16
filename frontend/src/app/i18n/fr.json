@@ -2,10 +2,11 @@
   "navbar": {
     "more": "Plus...",
     "about": "À propos",
-    "join-us": "Rejoignez-nous (EN)",
+    "join-us": "Rejoignez-nous",
     "legal-mentions": "Conditions d'utilisation",
     "help": "Aide",
-    "news": "Nouveautés/Perspectives (EN)"
+    "news": "Nouveautés/Perspectives",
+    "ws": "Web services"
   },
   "pillars": {
     "no-data": "Pas de donnée trouvée.",
@@ -152,7 +153,9 @@
         "urgi": "URGI",
         "home": "Accueil",
         "news": "Informations",
-        "about": "À propos"
+        "about": "À propos",
+        "join-us": "Rejoignez-nous (EN)",
+        "ws": "Web services"
       }
     },
     "footer": {
