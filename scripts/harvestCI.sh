@@ -303,6 +303,16 @@ if [ -d "${DATADIR}/private-suggestions/" ] && [ $(find ${DATADIR}/private-sugge
 	manage_aliases
 fi
 
+log_actions() {
+    if [ -n "$LOGIN" ]; then
+        echo "Indexed $PREFIX_ALIAS on: $(date -d @$TIMESTAMP +%Y-%m-%d_%Hh-%Mm-%Ss) (TIMESTAMP=$TIMESTAMP) by: $LOGIN ; used data from $DATADIR which last commit was: $(cd "$DATADIR" || exit 1 ; git log --oneline|head -1)" >> ~/last_index.log
+    else
+        echo "WARN: no LOGIN variable found. Logging actions is not possible. If you are not launching the scripts from the ETL VM, you can safely ignore this message."
+    fi
+}
+
+log_actions
+
 TMP_FILE=$(mktemp)
 export TMP_FILE
 
