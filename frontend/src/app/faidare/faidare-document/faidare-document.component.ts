@@ -22,7 +22,6 @@ export class FaidareDocumentComponent {
   constructor(private basketService: BasketService) {
     this.vm$ = this.documentSubject.pipe(
       switchMap(document => {
-        console.log(document.accessionHolder);
         const isBasketEnabled = basketService.isEnabled();
         const selectedForOrdering$ = isBasketEnabled
           ? basketService.isAccessionInBasket(document)
