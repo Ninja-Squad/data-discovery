@@ -49,6 +49,7 @@
           { "ignoreParameters": true }
         ],
         "no-fallthrough": "error",
+        "no-console": "error",
         "deprecation/deprecation": "error"
       }
     },
