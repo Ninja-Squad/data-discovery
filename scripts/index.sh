@@ -34,7 +34,7 @@ PARAMS:
 	-port          the port value of the targeted Elasticsearch endpoint (default: $ES_PORT)
 	-app           the name of the targeted application: $APPS
 	-env           the environment name of the targeted application: $ENVS
-	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[app])
+	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[env]/[app])
 	               NB: use rare directory for brc4env
 	--local        use local environment for RARe application (by default) and ignore all Elasticsearch related options (env, host, port)
 	--no-data      does not index data, only create indices and aliases

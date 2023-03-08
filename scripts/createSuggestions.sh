@@ -37,7 +37,7 @@ USAGE:
 
 PARAMS:
 	-app           the application for which to create the suggestions: $APPS
-	-data          the data directory in which the JSON files can be found and the suggestion files will be generated (e.g. /mnt/index-data-is/[app])
+	-data          the data directory in which the JSON files can be found and the suggestion files will be generated (e.g. /mnt/index-data-is/[env]/[app])
 	               NB: use rare directory for brc4env, and faidare directory for wheatis, a filter will be applied to index only relevant data.
 	-h or --help   print this help
 
