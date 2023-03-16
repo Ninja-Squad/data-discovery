@@ -12,7 +12,7 @@ export const environment: DataDiscoveryEnvironment = {
   navbar: {
     logoUrl: '',
     secondLogoUrl: '',
-    links: [{ label: 'agrobrc-rare', url: 'https://www.agrobrc-rare.org/' }]
+    links: [{ label: 'agrobrc', url: 'https://www.agrobrc-rare.org/' }]
   },
   resourceModule: RareModule,
   helpMdFile: 'assets/help.md',
