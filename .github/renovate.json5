@@ -40,6 +40,16 @@
       ],
       "enabled": false
     },
+    // allow only patch and minor updates for elasticsearch docker image
+    {
+      "packageNames": [
+        "docker.elastic.co/elasticsearch/elasticsearch"
+      ],
+      "updateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
     // group all minor dependencies, once a week
     {
       "excludePackagePatterns": [
