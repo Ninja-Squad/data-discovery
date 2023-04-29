@@ -193,6 +193,24 @@
         "accessionHolder": {
             "type": "text",
             "index": false
+        },
+        "germplasmNames": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
+        },
+        "traitNames": {
+            "type": "text",
+            "fields": {
+                "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                }
+            }
         }
     }
 }

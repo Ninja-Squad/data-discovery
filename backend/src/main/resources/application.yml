@@ -54,11 +54,12 @@ logging:
       # tracer: TRACE
       # Above allows for logging curl queries and responses to/from ES.
       # Need to add this header to curl: `-H "Content-Type: application/json"`
-    # org.elasticsearch.client: TRACE # to log Elasticsearch queries
+    #org.elasticsearch.client: TRACE # to log Elasticsearch queries
     org.springframework:
       boot.web.embedded.tomcat.TomcatWebServer: INFO
       web.client.RestTemplate: DEBUG
       boot.context.config.ConfigDataLoader: INFO
+      #data.elasticsearch.core: DEBUG # to log Elasticsearch queries
 
 data-discovery:
   ontology:
