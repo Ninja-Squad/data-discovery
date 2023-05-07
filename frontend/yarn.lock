@@ -6373,12 +6373,12 @@ ngx-markdown@15.1.2:
     mermaid "^9.1.2"
     prismjs "^1.28.0"
 
-ngx-speculoos@9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-speculoos/-/ngx-speculoos-9.0.0.tgz#91b42cb3d4baaf9197ca8816e48a1a5350a0340c"
-  integrity sha512-E5gfGizXAAazqkzfhCx2l9jAGAyWE37Ti6XfYPP1Hqd7lOeg+XvhnD0mIqtX32r4Wsjk5QpqaYcJK9lMquid0A==
+ngx-speculoos@10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-speculoos/-/ngx-speculoos-10.0.0.tgz#45cb03f33b55464c0021c0039a1de8d583ca787b"
+  integrity sha512-ptDPAxcLKpH13laO3YW2Iv6AwDr/LtkKo60VNrKkItnQj+QScSt7pAV3UttgcHKLg67T4lIRQae4znOWwJZGIA==
   dependencies:
-    tslib "2.4.1"
+    tslib "2.5.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"
@@ -8088,11 +8088,6 @@ tsconfig-paths@^4.1.2:
     json5 "^2.2.2"
     minimist "^1.2.6"
     strip-bom "^3.0.0"
-
-tslib@2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
-  integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
 
 tslib@2.5.0, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0:
   version "2.5.0"
