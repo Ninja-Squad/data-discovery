@@ -37,7 +37,7 @@
     "@angular/router": "16.0.2",
     "@cypress/schematic": "2.5.0",
     "@ng-bootstrap/ng-bootstrap": "14.1.1",
-    "@ngx-translate/core": "14.0.0",
+    "@ngx-translate/core": "15.0.0",
     "@popperjs/core": "2.11.7",
     "bootstrap": "5.2.3",
     "font-awesome": "4.7.0",
