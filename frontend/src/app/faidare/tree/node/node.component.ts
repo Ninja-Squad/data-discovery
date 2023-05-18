@@ -11,7 +11,7 @@ export class NodeComponent<P> {
   @Input() node!: InternalTreeNode<P>;
   @Input() filtered = false;
   @Input() highlightedNodeId: string | undefined;
-  @Input() payloadTemplate?: TemplateRef<HTMLElement>;
+  @Input() payloadTemplate?: TemplateRef<{ node: InternalTreeNode<P> }>;
 
   constructor(private treeService: TreeService<P>) {}
 

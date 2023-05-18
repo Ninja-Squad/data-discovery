@@ -71,7 +71,7 @@ export class TreeComponent<P> implements OnInit {
   private textAccessorSubject = new BehaviorSubject<TextAccessor<P>>(DEFAULT_TEXT_ACCESSOR);
 
   @Input()
-  payloadTemplate?: TemplateRef<HTMLElement>;
+  payloadTemplate?: TemplateRef<{ node: InternalTreeNode<P> }>;
 
   @Input()
   set rootNodes(rootNodes: Array<TreeNode<P>>) {
