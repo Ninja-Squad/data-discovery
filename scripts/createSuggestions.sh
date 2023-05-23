@@ -113,8 +113,8 @@ WHEATIS_FILTER_DATA_SCRIPT="${SCRIPT_DIR}/filters/wheatis_filter.jq"
 FILTER_DATA_SCRIPT=${DEFAULT_FILTER_DATA_SCRIPT}
 
 WHEATIS_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
-FAIDARE_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species]"
-RARE_FIELDS_TO_EXTRACT=".pillar , .databaseSource , .name , .domain, .taxon, .family, .genus, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect, [.species]"
+FAIDARE_FIELDS_TO_EXTRACT=".node , .databaseName , .name , .entryType , [.species], .taxonGroup, .observationVariableIds, .annotationName, .germplasmList, .accessionNumber"
+RARE_FIELDS_TO_EXTRACT=".pillarName , .databaseSource , .name , .domain, .taxon, .biotopeType, .materialType, .countryOfOrigin, .countryOfCollect"
 
 if [ "${APP_NAME}" == "rare" ] ; then
     FIELDS_TO_EXTRACT="${RARE_FIELDS_TO_EXTRACT}"

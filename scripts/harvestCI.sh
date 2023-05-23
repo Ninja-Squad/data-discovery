@@ -47,8 +47,8 @@ PARAMS:
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
 	-app           the name of the targeted application: ${APPS}
 	-env           the environment name of the targeted application: ${ENVS}
-	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[app])
-	               NB: use rare directory for brc4env
+	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[env]/[app])
+	               NB: use rare directory for brc4env and faidare directory for wheatis
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
 	-h or --help   print this help
 

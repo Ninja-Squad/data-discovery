@@ -35,7 +35,7 @@ PARAMS:
 	-app           the name of the targeted application: $APPS
 	-env           the environment name of the targeted application: $ENVS
 	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[env]/[app])
-	               NB: use rare directory for brc4env
+	               NB: use rare directory for brc4env and faidare directory for wheatis
 	--local        use local environment for RARe application (by default) and ignore all Elasticsearch related options (env, host, port)
 	--no-data      does not index data, only create indices and aliases
 	--clean	       clean the previous existing indices and rollover alias
@@ -105,11 +105,20 @@ if [ $INDEX -eq 1 ] ; then
 		echo -e "${RED_BOLD}ERROR: data directory is absent from ${DATADIR} or it contains no files to index!${NC}"
 		echo && help
 		exit 4
-	elif [ ! -d "${DATADIR}/suggestions" ] || [ $(find ${DATADIR}/suggestions -type f -name "*.gz" -ls | wc -l) -eq 0 ] ; then
-		echo -e "${RED_BOLD}ERROR: suggestions directory is absent from ${DATADIR} or it contains no files to index!${NC}"
-		echo && help
-		exit 4
 	fi
+fi
+
+# Create suggestions
+echo -e "\n${BOLD}Create suggestions...${NC}"
+
+$SHELL "${BASEDIR}"/createSuggestions.sh -app "$APP_NAME" -data "$DATADIR"
+CODE=$?
+[ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when creating suggestions, see errors above. Exiting.${NC}" ; exit $CODE ; }
+echo
+
+if [ ! -d "${DATADIR}/suggestions" ] || [ $(find ${DATADIR}/suggestions -type f -name "*.gz" -ls | wc -l) -eq 0 ] ; then
+	echo -e "${RED_BOLD}ERROR: suggestions directory is absent from ${DATADIR} or it contains no files to index!${NC}"
+	exit 4
 fi
 
 # Check ES node connectivity
@@ -125,6 +134,7 @@ PREFIX_ES="${APP_NAME}_search_${APP_ENV}"
 PREVIOUS_TIMESTAMPS=$(curl -s "${ES_HOST}:${ES_PORT}/_cat/indices/${PREFIX_ES}-tmstp*" | "${SED_CMD}" -r "s/.*-tmstp([0-9]+).*/\1/g" | sort -ru | grep -v "$TIMESTAMP")
 
 # Create index, aliases with their mapping
+echo -e "\n${BOLD}Create indices and aliases with their mapping...${NC}"
 $SHELL "${BASEDIR}"/createIndexAndAliases4CI.sh -host "$ES_HOST" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -timestamp "$TIMESTAMP"
 CODE=$?
 [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when creating index, see errors above. Exiting.${NC}" ; exit $CODE ; }
@@ -132,6 +142,7 @@ echo
 
 # Index data in created indices
 if [ $INDEX -eq 1 ] ; then
+	echo -e "\n${BOLD}Index data and suggestions...${NC}"
 	$SHELL "${BASEDIR}"/harvestCI.sh -host "$ES_HOSTS" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -data "$DATADIR" -timestamp "$TIMESTAMP"
 fi
 CODE=$?
@@ -139,6 +150,7 @@ CODE=$?
 
 # Clean if asked
 [ $CLEAN != 0 ] && {
+	echo -e "\n${BOLD}Clean indices...${NC}"
 	echo -e "Found following previous timestamps:\n${GREEN}${PREVIOUS_TIMESTAMPS}${NC}"
 	for TMSTP in ${PREVIOUS_TIMESTAMPS}; do
 		"${DATE_CMD}" -d "@${TMSTP}" &>/dev/null
