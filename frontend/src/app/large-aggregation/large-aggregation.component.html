@@ -1,10 +1,10 @@
 <ng-template #resultTemplate let-bucket="result" let-t="term">
   <ng-container *ngIf="bucket !== 'REFINE'; else refine">
     <ngb-highlight [result]="displayableKey(bucket.key)" [term]="t"></ngb-highlight>
-    <small class="ms-1 text-muted">[{{ bucket.documentCount | number }}]</small>
+    <small class="ms-1 text-body-secondary">[{{ bucket.documentCount | number }}]</small>
   </ng-container>
   <ng-template #refine>
-    <div class="text-muted small">
+    <div class="text-body-secondary small">
       <div translate="large-aggregation.other-results-available"></div>
       <div translate="large-aggregation.refine-search"></div>
     </div>
@@ -33,7 +33,11 @@
     </ng-template>
     <h3 class="card-title">
       {{ aggregation.name | aggregationName }}
-      <small class="text-muted ms-1" [ngbTooltip]="tooltipContent" placement="top" container="body"
+      <small
+        class="text-body-secondary ms-1"
+        [ngbTooltip]="tooltipContent"
+        placement="top"
+        container="body"
         >({{ aggregation.buckets.length | number }})</small
       >
       <span

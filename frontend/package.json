@@ -39,7 +39,7 @@
     "@ng-bootstrap/ng-bootstrap": "15.0.1",
     "@ngx-translate/core": "15.0.0",
     "@popperjs/core": "2.11.7",
-    "bootstrap": "5.2.3",
+    "bootstrap": "5.3.0",
     "font-awesome": "4.7.0",
     "marked": "5.0.2",
     "ngx-markdown": "16.0.0",

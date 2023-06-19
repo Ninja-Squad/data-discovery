@@ -16,7 +16,7 @@ import { Component } from '@angular/core';
 import { Aggregation } from '../models/page';
 
 @Component({
-  template: `<dd-small-aggregation
+  template: ` <dd-small-aggregation
     [aggregation]="aggregation"
     (aggregationChange)="aggregationChanged = $event"
     [searchDescendants]="searchDescendants"
@@ -275,7 +275,7 @@ describe('SmallAggregationComponent', () => {
     expect(tester.smallAggregationComponent.aggregationForm.disabled).toBe(true);
     expect(tester.firstCheckbox.nativeElement.disabled).toBe(true);
 
-    expect(tester.title.nativeElement.classList).toContain('text-muted');
+    expect(tester.title.nativeElement.classList).toContain('text-body-secondary');
   });
 
   it('should be disabled if when setting the disabled input', () => {
@@ -292,7 +292,7 @@ describe('SmallAggregationComponent', () => {
     tester.detectChanges();
     expect(tester.smallAggregationComponent.aggregationForm.disabled).toBeTrue();
     expect(tester.firstCheckbox.nativeElement.disabled).toBeTrue();
-    expect(tester.title.nativeElement.classList).toContain('text-muted');
+    expect(tester.title.nativeElement.classList).toContain('text-body-secondary');
   });
 
   it('should be not be displayed if only NULL bucket', () => {
