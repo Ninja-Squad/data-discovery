@@ -121,6 +121,6 @@ describe('FaidareOntologyAggregationComponent', () => {
     tester.detectChanges();
 
     expect(tester.modifySelectionButton.disabled).toBeTrue();
-    expect(tester.title.nativeElement.classList).toContain('text-muted');
+    expect(tester.title.nativeElement.classList).toContain('text-body-secondary');
   });
 });

@@ -10,7 +10,7 @@ $fa-font-path: '../fonts';
 }
 
 .dropdown-item.active {
-  .text-muted {
+  .text-body-secondary {
     color: $white !important;
   }
 }
@@ -22,6 +22,7 @@ $fa-font-path: '../fonts';
 .dropdown-item {
   color: $theme-navbar-color !important;
   background-color: $theme-navbar-bg-color;
+
   &:hover {
     color: $theme-navbar-hover-color !important;
     background-color: $theme-navbar-hover-bg-color;
@@ -32,6 +33,7 @@ $fa-font-path: '../fonts';
   color: $theme-btn-color;
   background-color: $theme-btn-bg-color;
   border-color: $theme-btn-border-color;
+
   &:hover {
     color: $theme-btn-hover-color;
     background-color: $theme-btn-hover-bg-color;

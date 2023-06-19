@@ -1,7 +1,7 @@
 <div class="card mb-1" *ngIf="!hideAggregation">
   <div class="card-body">
     <!-- title -->
-    <h3 class="card-title" [class.text-muted]="aggregationForm.disabled">
+    <h3 class="card-title" [class.text-body-secondary]="aggregationForm.disabled">
       {{ aggregation.name | aggregationName }}
       <span
         *ngIf="aggregation.name === 'gl'"
