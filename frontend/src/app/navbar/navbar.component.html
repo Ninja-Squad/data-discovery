@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md py-0" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg py-0" data-bs-theme="dark">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center p-2 px" [href]="navbar.logoUrl">
       <img
@@ -56,29 +56,40 @@
             </div>
           </li>
         </ng-container>
-        <li class="nav-item" ngbDropdown>
+        <li class="nav-item">
           <a
-            ngbDropdownToggle
             class="nav-link d-flex align-items-center"
-            tabindex="0"
-            role="button"
-            id="navbar-menu-more"
-            translate="navbar.more"
+            routerLink="/about"
+            translate="navbar.about"
           ></a>
-          <div ngbDropdownMenu aria-labelledby="navbar-menu-more">
-            <a class="dropdown-item" routerLink="/about" translate="navbar.about"></a>
-            <a class="dropdown-item" routerLink="/join" translate="navbar.join-us"></a>
-            <a class="dropdown-item" routerLink="/legal" translate="navbar.legal-mentions"></a>
-            <a class="dropdown-item" routerLink="/help" translate="navbar.help"></a>
-            <a class="dropdown-item" routerLink="/news" translate="navbar.news"></a>
-            <a
-              class="dropdown-item"
-              target="_blank"
-              href="swagger-ui/index.html"
-              translate="navbar.ws"
-              *ngIf="appName === 'faidare'"
-            ></a>
-          </div>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link d-flex align-items-center"
+            routerLink="/join"
+            translate="navbar.join-us"
+          ></a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link d-flex align-items-center"
+            routerLink="/legal"
+            translate="navbar.legal-mentions"
+          ></a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link d-flex align-items-center"
+            routerLink="/help"
+            translate="navbar.help"
+          ></a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link d-flex align-items-center"
+            routerLink="/news"
+            translate="navbar.news"
+          ></a>
         </li>
       </ul>
       <dd-basket>
