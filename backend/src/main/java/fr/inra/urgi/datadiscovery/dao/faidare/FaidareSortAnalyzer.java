@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.dao.SortAnalyzer;
 import fr.inra.urgi.datadiscovery.exception.BadRequestException;
-import org.elasticsearch.common.Strings;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * Sort analyzer for the Faidare application
@@ -29,7 +29,7 @@ public class FaidareSortAnalyzer implements SortAnalyzer {
 
     @Override
     public Sort createSort(String sort, String direction) {
-        if (Strings.isEmpty(sort)) {
+        if (!StringUtils.hasText(sort)) {
             return Sort.unsorted();
         }
         FaidareSort faidareSort = faidareSortsByName.get(sort);
@@ -37,7 +37,7 @@ public class FaidareSortAnalyzer implements SortAnalyzer {
             throw new BadRequestException("Invalid sort: " + sort);
         }
         Sort.Direction sortDirection = Sort.Direction.ASC;
-        if (!Strings.isEmpty(direction)) {
+        if (StringUtils.hasText(direction)) {
             try {
                 sortDirection = Sort.Direction.fromString(direction);
             }

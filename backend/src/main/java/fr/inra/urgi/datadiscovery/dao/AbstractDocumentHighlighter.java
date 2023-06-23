@@ -1,11 +1,9 @@
 package fr.inra.urgi.datadiscovery.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.data.elasticsearch.core.SearchHit;
 
 /**

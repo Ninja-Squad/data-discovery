@@ -7,9 +7,8 @@ import java.util.List;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
-import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +23,12 @@ public class FaidareAggregationAnalyzer implements AggregationAnalyzer {
         Collections.unmodifiableList(Arrays.asList(FaidareAggregation.values()));
 
     @Override
-    public AppAggregation.Type getAggregationType(Terms terms) {
-        return FaidareAggregation.fromName(terms.getName()).getType();
+    public AppAggregation.Type getAggregationType(String aggregationName) {
+        return FaidareAggregation.fromName(aggregationName).getType();
     }
 
     @Override
-    public Comparator<Terms> comparator() {
+    public Comparator<AggregationDTO> comparator() {
         return Comparator.comparing(terms -> FaidareAggregation.fromName(terms.getName()));
     }
 

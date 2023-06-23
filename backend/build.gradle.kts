@@ -3,7 +3,6 @@ import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
 
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
     }
 }
@@ -11,23 +10,23 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "2.7.6"
+    id("org.springframework.boot") version "3.1.1"
     id("com.gorylenko.gradle-git-properties") version "2.4.0"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
-    id("io.spring.dependency-management") version "1.0.14.RELEASE"
+    id("io.spring.dependency-management") version "1.1.0"
     id("org.sonarqube")
 }
 
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2021.0.4"
+extra["springCloudVersion"] = "2022.0.3"
 
 val snippetsDir = file("build/generated-snippets")
 
@@ -46,7 +45,7 @@ tasks {
     // makes the test task out of date, which makes the build much longer.
     // See https://github.com/spring-projects/spring-boot/issues/13152
     val buildInfo by registering(BuildInfo::class) {
-        destinationDir = file("$buildDir/buildInfo")
+        destinationDir.set(file("$buildDir/buildInfo"))
     }
 
     processResources {
@@ -121,6 +120,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+    implementation("com.github.ben-manes.caffeine:caffeine")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
