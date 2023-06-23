@@ -6,7 +6,7 @@ import java.util.List;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import fr.inra.urgi.datadiscovery.pillar.PillarDTO;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -19,10 +19,10 @@ public interface DocumentDaoCustom<D extends SearchDocument> {
      * documents, and returns the requested page (results are sorted by score, in descending order).
      */
     AggregatedPage<D> search(String query,
-                   boolean highlight,
-                   boolean descendants,
-                   SearchRefinements refinements,
-                   Pageable page);
+                             boolean highlight,
+                             boolean descendants,
+                             SearchRefinements refinements,
+                             Pageable page);
 
     /**
      * Aggregates and return an empty result based on the given text anywhere (except typically in the identifier, the URL and numeric fields) in the
@@ -60,7 +60,7 @@ public interface DocumentDaoCustom<D extends SearchDocument> {
      * {@link DocumentDao#PORTAL_URL_AGGREGATION_NAME}. If this last aggregation is present, then it can have 0
      * or 1 (or more, but this shows a problem in the data) bucket containing the URL of the database source.
      */
-    Terms findPillars();
+    List<PillarDTO> findPillars();
 
     void refresh();
 }

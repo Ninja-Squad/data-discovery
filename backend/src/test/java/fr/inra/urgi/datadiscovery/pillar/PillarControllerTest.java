@@ -1,28 +1,21 @@
 package fr.inra.urgi.datadiscovery.pillar;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import fr.inra.urgi.datadiscovery.config.SecurityConfig;
-import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
-import fr.inra.urgi.datadiscovery.search.MockBucket;
-import fr.inra.urgi.datadiscovery.search.MockTermsAggregation;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import fr.inra.urgi.datadiscovery.config.SecurityConfig;
+import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * Unit tests for {@link PillarController}
@@ -40,31 +33,22 @@ class PillarControllerTest {
 
     @Test
     void shouldListPillars() throws Exception {
-        Terms pillarTerms = new MockTermsAggregation("pillar", Arrays.asList(
-            new MockBucket("Plant", 999, new Aggregations(Arrays.asList( // wrong approximate count
-                new MockTermsAggregation(RareDocumentDao.DATABASE_SOURCE_AGGREGATION_NAME, Arrays.asList(
-                    new MockBucket("Florilège", 800, new Aggregations(Arrays.asList(
-                        new MockTermsAggregation(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME, Collections.singletonList(
-                            new MockBucket("http://florilege.arcad-project.org/fr/collections", 800)
-                        ))
-                    ))),
-                    new MockBucket("CNRGV", 200, new Aggregations(Arrays.asList(
-                        new MockTermsAggregation(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME, Arrays.asList(
-                            new MockBucket("https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H25", 799),
-                            new MockBucket("https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H26", 1) // 2 URLS instead of 1
-                        ))
-                    )))
-                ))
-            ))),
-            new MockBucket("Forest", 500, new Aggregations(Arrays.asList(
-                new MockTermsAggregation(RareDocumentDao.DATABASE_SOURCE_AGGREGATION_NAME, Arrays.asList(
-                    new MockBucket("GnpIS", 500, new Aggregations(Arrays.asList(
-                        new MockTermsAggregation(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME, Collections.emptyList())// no URL
-                    )))
-                ))
-            )))
-        ));
-        when(mockDocumentDao.findPillars()).thenReturn(pillarTerms);
+        List<PillarDTO> pillars = List.of(
+            new PillarDTO(
+                "Plant",
+                List.of(
+                    new DatabaseSourceDTO("Florilège", "http://florilege.arcad-project.org/fr/collections", 800),
+                    new DatabaseSourceDTO("CNRGV", "https://cnrgv.toulouse.inrae.fr/library/genomic_resource/ Aha-B-H25", 200)
+                )
+            ),
+            new PillarDTO(
+                "Forest",
+                List.of(
+                    new DatabaseSourceDTO("GnpIS", null, 500)
+                )
+            )
+        );
+        when(mockDocumentDao.findPillars()).thenReturn(pillars);
 
         mockMvc.perform(get("/api/pillars"))
                .andExpect(status().isOk())

@@ -2,7 +2,11 @@ package fr.inra.urgi.datadiscovery.pillar;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsAggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
+import fr.inra.urgi.datadiscovery.dao.DocumentDao;
 import fr.inra.urgi.datadiscovery.util.Utils;
 
 /**
@@ -23,6 +27,29 @@ public final class PillarDTO {
     public PillarDTO(String name, List<DatabaseSourceDTO> databaseSources) {
         this.name = name;
         this.databaseSources = Utils.nullSafeUnmodifiableCopy(databaseSources);
+    }
+
+    public static List<PillarDTO> fromAggregate(StringTermsAggregate pillars) {
+        return pillars.buckets()
+                      .array()
+                      .stream()
+                      .map(PillarDTO::fromPillarBucket)
+                      .collect(Collectors.toList());
+    }
+
+    private static PillarDTO fromPillarBucket(StringTermsBucket bucket) {
+        String name = bucket.key().stringValue();
+        StringTermsAggregate databaseSourceAggregate =
+            bucket.aggregations().get(DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME).sterms();
+
+        List<DatabaseSourceDTO> databaseSources =
+            databaseSourceAggregate.buckets()
+                                   .array()
+                                   .stream()
+                                   .map(DatabaseSourceDTO::fromDatabaseSourceBucket)
+                                   .collect(Collectors.toList());
+
+        return new PillarDTO(name, databaseSources);
     }
 
     public String getName() {

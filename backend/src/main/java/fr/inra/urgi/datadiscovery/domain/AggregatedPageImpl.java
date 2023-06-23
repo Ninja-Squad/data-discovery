@@ -1,12 +1,14 @@
 package fr.inra.urgi.datadiscovery.domain;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.Aggregations;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,30 +20,34 @@ import org.springframework.data.domain.Sort;
  */
 public class AggregatedPageImpl<T> implements AggregatedPage<T> {
     private final Page<T> delegate;
-    private final Aggregations aggregations;
+    private final Map<String, AggregationDTO> aggregations;
 
     public AggregatedPageImpl(List<T> content, Pageable pageable, long total) {
-        this(content, pageable, total, new Aggregations(Collections.emptyList()));
+        this(content, pageable, total, Collections.emptyList());
 
     }
 
-    public AggregatedPageImpl(List<T> content, Pageable pageable, long total, Aggregations aggregations) {
+    public AggregatedPageImpl(List<T> content, Pageable pageable, long total, Collection<AggregationDTO> aggregations) {
         this(new PageImpl<>(content, pageable, total), aggregations);
     }
 
-    public AggregatedPageImpl(Page<T> delegate, Aggregations aggregations) {
+    public AggregatedPageImpl(Page<T> delegate, Collection<AggregationDTO> aggregations) {
         this.delegate = delegate;
-        this.aggregations = aggregations;
+        this.aggregations = aggregations.stream()
+                                        .collect(Collectors.toUnmodifiableMap(
+                                            AggregationDTO::getName,
+                                            Function.identity()
+                                        ));
     }
 
     @Override
-    public Aggregation getAggregation(String name) {
+    public AggregationDTO getAggregation(String name) {
         return this.aggregations.get(name);
     }
 
     @Override
-    public Aggregations getAggregations() {
-        return this.aggregations;
+    public Collection<AggregationDTO> getAggregations() {
+        return this.aggregations.values();
     }
 
     @Override

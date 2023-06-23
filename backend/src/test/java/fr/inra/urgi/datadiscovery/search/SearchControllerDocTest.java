@@ -5,11 +5,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,7 +24,8 @@ import fr.inra.urgi.datadiscovery.doc.DocumentationConfig;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
-import org.elasticsearch.search.aggregations.Aggregations;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
+import fr.inra.urgi.datadiscovery.dto.BucketDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +143,7 @@ class SearchControllerDocTest {
         mockMvc.perform(docGet("/api/search").param("query", query).param("descendants", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/fulltext",
-                               requestParameters(
+                               queryParameters(
                                        QUERY_PARAM,
                                        DESCENDANTS_PARAM
                                ),
@@ -169,7 +171,7 @@ class SearchControllerDocTest {
                             .param("page", Integer.toString(page)))
                .andExpect(status().isOk())
                .andDo(document("search/page",
-                               requestParameters(QUERY_PARAM, PAGE_PARAM)));
+                               queryParameters(QUERY_PARAM, PAGE_PARAM)));
     }
 
     @Test
@@ -185,7 +187,7 @@ class SearchControllerDocTest {
                             .param("highlight", "true"))
                .andExpect(status().isOk())
                .andDo(document("search/highlight",
-                               requestParameters(QUERY_PARAM, HIGHLIGHT_PARAM)));
+                               queryParameters(QUERY_PARAM, HIGHLIGHT_PARAM)));
     }
 
     @Test
@@ -194,23 +196,45 @@ class SearchControllerDocTest {
 
         when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, AggregationSelection.ALL, false))
             .thenReturn(new AggregatedPageImpl<>(
-                Collections.emptyList(),
+                List.of(),
                 PageRequest.of(0, 1),
                 34567,
-                new Aggregations(
-                    Arrays.asList(new MockTermsAggregation(RareAggregation.DOMAIN.getName(),
-                                                           Arrays.asList(new MockBucket("Plantae", 123),
-                                                                         new MockBucket("Fungi", 2))),
-                                  new MockTermsAggregation(RareAggregation.BIOTOPE.getName(),
-                                                           Collections.emptyList()),
-                                  new MockTermsAggregation(RareAggregation.MATERIAL.getName(),
-                                                           Collections.singletonList(new MockBucket("Genome library", 4))),
-                                  new MockTermsAggregation(RareAggregation.COUNTRY_OF_ORIGIN.getName(),
-                                                           Arrays.asList(new MockBucket("France", 2431),
-                                                                         new MockBucket("Italy", 376))),
-                                  new MockTermsAggregation(RareAggregation.TAXON.getName(),
-                                                           Arrays.asList(new MockBucket("Vitis vinifera", 4563),
-                                                                         new MockBucket("Vitis x interspécifique", 285)))
+                List.of(
+                    new AggregationDTO(
+                        RareAggregation.DOMAIN.getName(),
+                        RareAggregation.DOMAIN.getType(),
+                        List.of(
+                            new BucketDTO("Plantae", 25),
+                            new BucketDTO("FUNGI", 2)
+                        )
+                    ),
+                    new AggregationDTO(
+                        RareAggregation.BIOTOPE.getName(),
+                        RareAggregation.BIOTOPE.getType(),
+                        List.of()
+                    ),
+                    new AggregationDTO(
+                        RareAggregation.MATERIAL.getName(),
+                        RareAggregation.MATERIAL.getType(),
+                        List.of(
+                            new  BucketDTO("Genome library", 4)
+                        )
+                    ),
+                    new AggregationDTO(
+                        RareAggregation.COUNTRY_OF_ORIGIN.getName(),
+                        RareAggregation.COUNTRY_OF_ORIGIN.getType(),
+                        List.of(
+                            new BucketDTO("France", 2431),
+                            new BucketDTO("Italy", 376)
+                        )
+                    ),
+                    new AggregationDTO(
+                        RareAggregation.TAXON.getName(),
+                        RareAggregation.TAXON.getType(),
+                        List.of(
+                            new BucketDTO("Vitis vinifera", 4563),
+                            new BucketDTO("Vitis x interspécifique", 285)
+                        )
                     )
                 )
             ));
@@ -218,7 +242,7 @@ class SearchControllerDocTest {
         mockMvc.perform(docGet("/api/aggregate").param("query", query).param("main", "false"))
                .andExpect(status().isOk())
                .andDo(document("search/aggregate",
-                               requestParameters(QUERY_PARAM, MAIN_PARAM),
+                               queryParameters(QUERY_PARAM, MAIN_PARAM),
                                responseFields(
                                    fieldWithPath("[].name").description("The name of the aggregation, used as a request parameter to apply a filter for this aggregation (see later)"),
                                    fieldWithPath("[].type")
@@ -250,7 +274,7 @@ class SearchControllerDocTest {
                             .param(RareAggregation.COUNTRY_OF_ORIGIN.getName(), "France", "Italy"))
                .andExpect(status().isOk())
                .andDo(document("search/filter",
-                               requestParameters(
+                               queryParameters(
                                    QUERY_PARAM,
                                    parameterWithName(RareAggregation.DOMAIN.getName()).description("The accepted values for the " + RareAggregation.DOMAIN.getName() + " aggregation's corresponding property (`domain`)"),
                                    parameterWithName(RareAggregation.COUNTRY_OF_ORIGIN.getName()).description("The accepted values for the " + RareAggregation.COUNTRY_OF_ORIGIN.getName() + " aggregation's corresponding property (`countryOfOrigin`)"))));

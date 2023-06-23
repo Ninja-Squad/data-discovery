@@ -11,22 +11,23 @@ import java.util.function.BiConsumer;
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
+import fr.inra.urgi.datadiscovery.dao.AggregationTester;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.Location;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
+import fr.inra.urgi.datadiscovery.pillar.DatabaseSourceDTO;
+import fr.inra.urgi.datadiscovery.pillar.PillarDTO;
 import org.assertj.core.util.Lists;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.autoconfigure.data.elasticsearch.DataElasticsearchTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource("/test-rare.properties")
 @Import(ElasticSearchConfig.class)
-@JsonTest
+@DataElasticsearchTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles({AppProfile.RARE, AppProfile.BRC4ENV})
 class RareDocumentDaoTest extends DocumentDaoTest {
@@ -246,7 +247,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         AggregatedPage<RareDocument> result =
             documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getAggregations()).isNull();
+        assertThat(result.getAggregations()).isEmpty();
 
         result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
@@ -255,26 +256,26 @@ class RareDocumentDaoTest extends DocumentDaoTest {
     @Test
     void shouldAggregate() {
         RareDocument document1 = RareDocument.builder()
-                                                                  .withId("r1")
-                                                                  .withName("foo")
-                                                                  .withDomain("Plantae")
-                                                                  .withBiotopeType(Arrays.asList("Biotope", "Human host"))
-                                                                  .withMaterialType(Arrays.asList("Specimen", "DNA"))
-                                                                  .withCountryOfOrigin("France")
-                                                                  .withCountryOfCollect("Belgium")
-                                                                  .withTaxon(Arrays.asList("Vitis vinifera"))
-                                                                  .build();
+                                             .withId("r1")
+                                             .withName("foo")
+                                             .withDomain("Plantae")
+                                             .withBiotopeType(Arrays.asList("Biotope", "Human host"))
+                                             .withMaterialType(Arrays.asList("Specimen", "DNA"))
+                                             .withCountryOfOrigin("France")
+                                             .withCountryOfCollect("Belgium")
+                                             .withTaxon(Arrays.asList("Vitis vinifera"))
+                                             .build();
 
         RareDocument document2 = RareDocument.builder()
-                                                                  .withId("r2")
-                                                                  .withName("bar foo")
-                                                                  .withDomain("Fungi")
-                                                                  .withBiotopeType(Arrays.asList("Biotope"))
-                                                                  .withMaterialType(Arrays.asList("DNA"))
-                                                                  .withCountryOfOrigin("France")
-                                                                  .withCountryOfCollect("Belgium")
-                                                                  .withTaxon(Arrays.asList("Girolla mucha gusta"))
-                                                                  .build();
+                                             .withId("r2")
+                                             .withName("bar foo")
+                                             .withDomain("Fungi")
+                                             .withBiotopeType(Arrays.asList("Biotope"))
+                                             .withMaterialType(Arrays.asList("DNA"))
+                                             .withCountryOfOrigin("France")
+                                             .withCountryOfCollect("Belgium")
+                                             .withTaxon(Arrays.asList("Girolla mucha gusta"))
+                                             .build();
 
         documentDao.saveAll(Arrays.asList(document1, document2));
         documentDao.refresh();
@@ -283,35 +284,29 @@ class RareDocumentDaoTest extends DocumentDaoTest {
             documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
-        assertThat(domain.getName()).isEqualTo(RareAggregation.DOMAIN.getName());
-        assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
-        assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester domain = new AggregationTester(result.getAggregation(RareAggregation.DOMAIN.getName()));
+        assertThat(domain.getKeys()).containsOnly("Plantae", "Fungi");
+        assertThat(domain.getDocumentCounts()).containsOnly(1L);
 
-        Terms biotopeType = result.getAggregations().get(RareAggregation.BIOTOPE.getName());
-        assertThat(biotopeType.getName()).isEqualTo(RareAggregation.BIOTOPE.getName());
-        assertThat(biotopeType.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("Biotope", "Human host");
-        assertThat(biotopeType.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L, 1L);
+        AggregationTester biotopeType = new AggregationTester(result.getAggregation(RareAggregation.BIOTOPE.getName()));
+        assertThat(biotopeType.getKeys()).containsExactly("Biotope", "Human host");
+        assertThat(biotopeType.getDocumentCounts()).containsExactly(2L, 1L);
 
-        Terms materialType = result.getAggregations().get(RareAggregation.MATERIAL.getName());
-        assertThat(materialType.getName()).isEqualTo(RareAggregation.MATERIAL.getName());
-        assertThat(materialType.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("DNA", "Specimen");
-        assertThat(materialType.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L, 1L);
+        AggregationTester materialType = new AggregationTester(result.getAggregation(RareAggregation.MATERIAL.getName()));
+        assertThat(materialType.getKeys()).containsExactly("DNA", "Specimen");
+        assertThat(materialType.getDocumentCounts()).containsExactly(2L, 1L);
 
-        Terms countryOfOrigin = result.getAggregations().get(RareAggregation.COUNTRY_OF_ORIGIN.getName());
-        assertThat(countryOfOrigin.getName()).isEqualTo(RareAggregation.COUNTRY_OF_ORIGIN.getName());
-        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("France");
-        assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+        AggregationTester countryOfOrigin = new AggregationTester(result.getAggregation(RareAggregation.COUNTRY_OF_ORIGIN.getName()));
+        assertThat(countryOfOrigin.getKeys()).containsExactly("France");
+        assertThat(countryOfOrigin.getDocumentCounts()).containsExactly(2L);
 
-        Terms countryOfCollect = result.getAggregations().get(RareAggregation.COUNTRY_OF_COLLECT.getName());
-        assertThat(countryOfCollect.getName()).isEqualTo(RareAggregation.COUNTRY_OF_COLLECT.getName());
-        assertThat(countryOfCollect.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("Belgium");
-        assertThat(countryOfCollect.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+        AggregationTester countryOfCollect = new AggregationTester(result.getAggregation(RareAggregation.COUNTRY_OF_COLLECT.getName()));
+        assertThat(countryOfCollect.getKeys()).containsExactly("Belgium");
+        assertThat(countryOfCollect.getDocumentCounts()).containsExactly(2L);
 
-        Terms taxon = result.getAggregations().get(RareAggregation.TAXON.getName());
-        assertThat(taxon.getName()).isEqualTo(RareAggregation.TAXON.getName());
-        assertThat(taxon.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Vitis vinifera", "Girolla mucha gusta");
-        assertThat(taxon.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester taxon = new AggregationTester(result.getAggregation(RareAggregation.TAXON.getName()));
+        assertThat(taxon.getKeys()).containsOnly("Vitis vinifera", "Girolla mucha gusta");
+        assertThat(taxon.getDocumentCounts()).containsOnly(1L);
     }
 
     @Test
@@ -356,10 +351,9 @@ class RareDocumentDaoTest extends DocumentDaoTest {
             documentDao.aggregate("vitis", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms material = result.getAggregations().get(rareAggregation.getName());
-        assertThat(material.getName()).isEqualTo(rareAggregation.getName());
-        assertThat(material.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("foo", RareDocument.NULL_VALUE);
-        assertThat(material.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester material = new AggregationTester(result.getAggregation(rareAggregation.getName()));
+        assertThat(material.getKeys()).containsOnly("foo", RareDocument.NULL_VALUE);
+        assertThat(material.getDocumentCounts()).containsOnly(1L);
     }
 
     private void shouldAggregateEmptyArrayAsNullValue(RareAggregation rareAggregation,
@@ -382,10 +376,9 @@ class RareDocumentDaoTest extends DocumentDaoTest {
             documentDao.aggregate("vitis",SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms material = result.getAggregations().get(rareAggregation.getName());
-        assertThat(material.getName()).isEqualTo(rareAggregation.getName());
-        assertThat(material.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("foo", RareDocument.NULL_VALUE);
-        assertThat(material.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester material = new AggregationTester(result.getAggregation(rareAggregation.getName()));
+        assertThat(material.getKeys()).containsOnly("foo", RareDocument.NULL_VALUE);
+        assertThat(material.getDocumentCounts()).containsOnly(1L);
     }
 
     @Test
@@ -427,42 +420,21 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         documentDao.saveAll(Arrays.asList(resource1, resource2, resource3, resource4, resource5));
         documentDao.refresh();
 
-        Terms pillars = documentDao.findPillars();
+        List<PillarDTO> pillars = documentDao.findPillars();
 
-        assertThat(pillars.getBuckets()).hasSize(2);
+        assertThat(pillars).hasSize(2);
 
-        Bucket p1 = pillars.getBucketByKey("P1");
+        PillarDTO p1 = pillars.stream().filter(p -> p.getName().equals("P1")).findAny().orElseThrow();
+        assertThat(p1.getDatabaseSources()).containsOnly(
+            new DatabaseSourceDTO("D11", "D11Url", 2),
+            new DatabaseSourceDTO("D12", "D12Url", 1)
+        );
 
-        Terms databaseSource = p1.getAggregations().get(RareDocumentDao.DATABASE_SOURCE_AGGREGATION_NAME);
-        assertThat(databaseSource.getBuckets()).hasSize(2);
-
-        Bucket d11 = databaseSource.getBucketByKey("D11");
-        assertThat(d11.getDocCount()).isEqualTo(2);
-        Terms d11Url = d11.getAggregations().get(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d11Url.getBuckets()).hasSize(1);
-        assertThat(d11Url.getBuckets().get(0).getKeyAsString()).isEqualTo("D11Url");
-
-        Bucket d12 = databaseSource.getBucketByKey("D12");
-        assertThat(d12.getDocCount()).isEqualTo(1);
-        Terms d12Url = d12.getAggregations().get(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d12Url.getBuckets()).hasSize(1);
-        assertThat(d12Url.getBuckets().get(0).getKeyAsString()).isEqualTo("D12Url");
-
-        Bucket p2 = pillars.getBucketByKey("P2");
-
-        databaseSource = p2.getAggregations().get(RareDocumentDao.DATABASE_SOURCE_AGGREGATION_NAME);
-        assertThat(databaseSource.getBuckets()).hasSize(2);
-
-        Bucket d21 = databaseSource.getBucketByKey("D21");
-        assertThat(d21.getDocCount()).isEqualTo(1);
-        Terms d21Url = d21.getAggregations().get(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d21Url.getBuckets()).hasSize(1);
-        assertThat(d21Url.getBuckets().get(0).getKeyAsString()).isEqualTo("D21Url");
-
-        Bucket d22 = databaseSource.getBucketByKey("D22");
-        assertThat(d22.getDocCount()).isEqualTo(1);
-        Terms d22Url = d22.getAggregations().get(RareDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d22Url.getBuckets()).isEmpty();
+        PillarDTO p2 = pillars.stream().filter(p -> p.getName().equals("P2")).findAny().orElseThrow();
+        assertThat(p2.getDatabaseSources()).containsOnly(
+            new DatabaseSourceDTO("D21", "D21Url", 1),
+            new DatabaseSourceDTO("D22", null, 1)
+        );
     }
 
     @Test
@@ -554,7 +526,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
             assertThat(result.getContent()).extracting(RareDocument::getId).containsOnly("r2");
 
             refinements = SearchRefinements.builder()
-                                           .withTerm(RareAggregation.DOMAIN, Arrays.asList("unexisting"))
+                                           .withTerm(RareAggregation.DOMAIN, List.of("unexisting"))
                                            .build();
             result =
                 documentDao.search("hello", false, false, refinements, firstPage);
@@ -565,7 +537,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         void shouldApplyRefinementOnNullValue() {
             SearchRefinements refinements =
                 SearchRefinements.builder()
-                                 .withTerm(RareAggregation.COUNTRY_OF_ORIGIN, Arrays.asList(RareDocument.NULL_VALUE))
+                                 .withTerm(RareAggregation.COUNTRY_OF_ORIGIN, List.of(RareDocument.NULL_VALUE))
                                  .build();
 
             AggregatedPage<RareDocument> result =
@@ -578,7 +550,7 @@ class RareDocumentDaoTest extends DocumentDaoTest {
         void shouldApplyRefinementOnEmptyBiotopeType() {
             SearchRefinements refinements =
                 SearchRefinements.builder()
-                                 .withTerm(RareAggregation.BIOTOPE, Arrays.asList(RareDocument.NULL_VALUE))
+                                 .withTerm(RareAggregation.BIOTOPE, List.of(RareDocument.NULL_VALUE))
                                  .build();
 
             AggregatedPage<RareDocument> result =
@@ -634,16 +606,14 @@ class RareDocumentDaoTest extends DocumentDaoTest {
             AggregatedPage<RareDocument> result =
                 documentDao.aggregate("hello", refinements, AggregationSelection.ALL, false);
 
-            Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
-            assertThat(domain.getBuckets()).hasSize(2);
-            assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
-            assertThat(domain.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L, 1L);
+            AggregationTester domain = new AggregationTester(result.getAggregation(RareAggregation.DOMAIN.getName()));
+            assertThat(domain.getKeys()).containsOnly("Plantae", "Fungi");
+            assertThat(domain.getDocumentCounts()).containsOnly(2L, 1L);
 
             // NULL is not in the aggregation because r2 is not in the result due to the refinement on Plantae
-            Terms countryOfOrigin = result.getAggregations().get(RareAggregation.COUNTRY_OF_ORIGIN.getName());
-            assertThat(countryOfOrigin.getBuckets()).hasSize(1);
-            assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("France");
-            assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L);
+            AggregationTester countryOfOrigin = new AggregationTester(result.getAggregation(RareAggregation.COUNTRY_OF_ORIGIN.getName()));
+            assertThat(countryOfOrigin.getKeys()).containsOnly("France");
+            assertThat(countryOfOrigin.getDocumentCounts()).containsOnly(2L);
         }
     }
 }

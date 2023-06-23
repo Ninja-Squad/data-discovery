@@ -15,8 +15,8 @@ import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import fr.inra.urgi.datadiscovery.dao.rare.RareSortAnalyzer;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import fr.inra.urgi.datadiscovery.search.SearchController;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,7 +53,7 @@ class IndexFilterTest {
                 PageRequest.of(0, 20),
                 0
         ));
-        when(mockAggregationAnalyzer.comparator()).thenReturn(Comparator.comparing(Terms::getName));
+        when(mockAggregationAnalyzer.comparator()).thenReturn(Comparator.comparing(AggregationDTO::getName));
     }
 
     @Test
