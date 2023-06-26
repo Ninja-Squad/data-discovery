@@ -12,14 +12,12 @@ public class DocumentIndexSettings {
         return IndexSettings.of(
             builder ->
                 builder.withJson(DocumentIndexSettings.class.getResourceAsStream(appName + "/settings.json"))
-                       //.providedName(appName + "/settings.json")
         );
     }
     public static IndexSettings createSuggestionsSettings() {
         return IndexSettings.of(
             builder ->
                 builder.withJson(DocumentIndexSettings.class.getResourceAsStream("settings-suggestions.json"))
-                           //.providedName("settings-suggestions.json")
         );
     }
 }

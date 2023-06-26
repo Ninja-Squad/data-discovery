@@ -18,7 +18,7 @@ If you do want to contribute to code, that's great also, have a look at [CONTRIB
 
 ### Requirements
 
-The application itself is running under a Java OpenJDK 8+: <https://openjdk.java.net/install/>
+The application itself is running under a Java OpenJDK 17+: <https://openjdk.java.net/install/>
 
 For getting the data, you need to install Git LFS: <https://git-lfs.github.com/>
 
@@ -58,7 +58,7 @@ The project uses Spring Boot for the backend.
 
 You need to install:
 
-- a recent enough JDK11
+- a recent enough JDK17
 
 The docker images need quite a bit of resources,
 so make sure you have at least 4g of RAM configured (Docker Desktop / Resources / Memory).
@@ -93,7 +93,7 @@ The project uses Angular for the frontend, with the Angular CLI.
 
 You need to install:
 
-- a recent enough NodeJS (ie. v12 LTS) is required for Angular 8.
+- a recent enough NodeJS (ie. v18 LTS) is required for Angular.
 - Yarn as a package manager (see [here to install](https://yarnpkg.com/en/docs/install))
 
 Then in the `frontend` directory, run `yarn` to download the dependencies.
