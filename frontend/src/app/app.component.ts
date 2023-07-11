@@ -13,7 +13,10 @@ import { catchError, map, Observable, of } from 'rxjs';
 export class AppComponent {
   i18nReady$: Observable<boolean>;
 
-  constructor(title: Title, private translateService: TranslateService) {
+  constructor(
+    title: Title,
+    private translateService: TranslateService
+  ) {
     title.setTitle(environment.title);
 
     // we just want to make sure the translations are loaded. Whether the key exists of not doesn't actually matter

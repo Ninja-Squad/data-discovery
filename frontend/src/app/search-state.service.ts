@@ -72,7 +72,10 @@ export class SearchStateService {
 
   private model$!: Observable<Model>;
 
-  constructor(private searchService: SearchService, private router: Router) {}
+  constructor(
+    private searchService: SearchService,
+    private router: Router
+  ) {}
 
   initialize(route: ActivatedRoute): Observable<Model> {
     const queryParams$ = route.queryParamMap;

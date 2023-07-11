@@ -112,7 +112,10 @@ export class OntologyService {
   private treeI18ns: Map<OntologyLanguage, Observable<TreeI18n>>;
   private preferredLanguage: OntologyLanguage;
 
-  constructor(private http: HttpClient, translateService: TranslateService) {
+  constructor(
+    private http: HttpClient,
+    translateService: TranslateService
+  ) {
     this.tree$ = http.get<Array<OntologyTreeNode>>('api/ontologies').pipe(shareReplay());
     this.treeI18ns = new Map<OntologyLanguage, Observable<TreeI18n>>(
       ONTOLOGY_LANGUAGES.map(language => [
