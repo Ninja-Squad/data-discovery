@@ -14,7 +14,10 @@ import { filter, map, merge, Observable } from 'rxjs';
 export class ErrorComponent {
   error$: Observable<HttpError | null>;
 
-  constructor(private router: Router, private errorInterceptor: ErrorInterceptorService) {
+  constructor(
+    private router: Router,
+    private errorInterceptor: ErrorInterceptorService
+  ) {
     this.error$ = merge(
       this.errorInterceptor.getErrors(),
       this.router.events.pipe(

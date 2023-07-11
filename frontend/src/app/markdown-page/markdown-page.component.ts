@@ -9,7 +9,10 @@ import { ActivatedRoute } from '@angular/router';
 export class MarkdownPageComponent implements OnInit {
   mdFile = '';
 
-  constructor(private route: ActivatedRoute, @Inject(LOCALE_ID) private locale: 'en' | 'fr') {}
+  constructor(
+    private route: ActivatedRoute,
+    @Inject(LOCALE_ID) private locale: 'en' | 'fr'
+  ) {}
 
   ngOnInit() {
     // we extract the markdown file to display from the route data

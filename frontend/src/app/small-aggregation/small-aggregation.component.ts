@@ -46,7 +46,10 @@ export class SmallAggregationComponent implements OnChanges {
     );
   }
 
-  constructor(private fb: NonNullableFormBuilder, private translateService: TranslateService) {}
+  constructor(
+    private fb: NonNullableFormBuilder,
+    private translateService: TranslateService
+  ) {}
 
   ngOnChanges(): void {
     // create as many form control as there are buckets
