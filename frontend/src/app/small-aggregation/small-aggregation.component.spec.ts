@@ -1,19 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ComponentTester, TestInput } from 'ngx-speculoos';
 
 import { SmallAggregationComponent } from './small-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { AggregationNamePipe } from '../aggregation-name.pipe';
-import { DocumentCountComponent } from '../document-count/document-count.component';
 import { NULL_VALUE } from '../models/document.model';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { environment } from '../../environments/environment';
 import { Component } from '@angular/core';
 import { Aggregation } from '../models/page';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
   template: ` <dd-small-aggregation
@@ -23,7 +19,9 @@ import { Aggregation } from '../models/page';
     (searchDescendantsChange)="searchDescendantsChanged = $event"
     [selectedKeys]="selectedKeys"
     [disabled]="disabled"
-  ></dd-small-aggregation>`
+  ></dd-small-aggregation>`,
+  standalone: true,
+  imports: [SmallAggregationComponent]
 })
 class TestComponent {
   aggregation: Aggregation;
@@ -67,18 +65,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('SmallAggregationComponent', () => {
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
 
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [
-        TestComponent,
-        SmallAggregationComponent,
-        AggregationNamePipe,
-        DocumentCountComponent,
-        DescendantsCheckboxComponent
-      ]
-    })
-  );
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideI18nTesting()] }));
 
   afterEach(() => (environment.name = 'rare'));
 

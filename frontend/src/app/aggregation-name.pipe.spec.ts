@@ -1,15 +1,13 @@
 import { AggregationNamePipe } from './aggregation-name.pipe';
 import { TestBed } from '@angular/core/testing';
-import { I18nTestingModule } from './i18n/i18n-testing.module.spec';
 import { TranslateService } from '@ngx-translate/core';
+import { provideI18nTesting } from './i18n/mock-18n.spec';
 
 describe('AggregationNamePipe', () => {
   let pipe: AggregationNamePipe;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [I18nTestingModule]
-    });
+    TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
     const translate = TestBed.inject(TranslateService);
     // override the missing translation handler for this test, as we want to check
     // what happens when the translation is not found (as it is when running the app)

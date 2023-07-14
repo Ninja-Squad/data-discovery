@@ -4,6 +4,9 @@ import { map, Observable } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { SearchStateService } from '../search-state.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe, DecimalPipe, NgIf } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 interface ViewModel {
   documents: Page<DocumentModel>;
@@ -16,7 +19,16 @@ interface ViewModel {
   selector: 'dd-documents',
   templateUrl: './documents.component.html',
   styleUrls: ['./documents.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    AsyncPipe,
+    DecimalPipe,
+    TranslateModule,
+    environment.selectAllResultsComponent,
+    environment.documentListComponent
+  ]
 })
 export class DocumentsComponent {
   vm$: Observable<ViewModel>;

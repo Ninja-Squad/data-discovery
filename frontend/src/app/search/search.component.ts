@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NonNullableFormBuilder } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 
 import { SearchService } from '../search.service';
@@ -9,6 +9,12 @@ import { Model, SearchStateService } from '../search-state.service';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { DocumentsComponent } from '../documents/documents.component';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { AggregationsComponent } from '../aggregations/aggregations.component';
+import { NgbTypeahead, NgbCollapse, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 interface ViewModel extends Model {
   collectionSize: number;
@@ -19,7 +25,20 @@ interface ViewModel extends Model {
   selector: 'dd-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
-  providers: [SearchStateService]
+  providers: [SearchStateService],
+  standalone: true,
+  imports: [
+    NgIf,
+    TranslateModule,
+    ReactiveFormsModule,
+    NgbTypeahead,
+    NgbCollapse,
+    AggregationsComponent,
+    LoadingSkeletonComponent,
+    DocumentsComponent,
+    NgbPagination,
+    AsyncPipe
+  ]
 })
 export class SearchComponent {
   appName = environment.name;

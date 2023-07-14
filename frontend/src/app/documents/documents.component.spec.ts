@@ -1,23 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { LOCALE_ID } from '@angular/core';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { DocumentsComponent } from './documents.component';
-import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
-import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
 import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../urgi-common/basket/basket.service';
 import { of, ReplaySubject } from 'rxjs';
-import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { GenericDocumentListComponent } from '../urgi-common/generic-document-list/generic-document-list.component';
 import { SearchStateService } from '../search-state.service';
 import { Page } from '../models/page';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideDisabledNgbAnimation } from '../disable-animations';
+import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
 
 class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
   constructor() {
@@ -25,7 +20,7 @@ class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
   }
 
   get results() {
-    return this.elements(RareDocumentComponent);
+    return this.elements(GenericDocumentComponent);
   }
 
   get noResults() {
@@ -54,16 +49,9 @@ describe('DocumentsComponent', () => {
 
     registerLocaleData(localeFr);
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [
-        DocumentsComponent,
-        GenericDocumentListComponent,
-        RareDocumentComponent,
-        GenericSelectAllResultsComponent,
-        TruncatableDescriptionComponent
-      ],
       providers: [
-        { provide: LOCALE_ID, useValue: 'fr-FR' },
+        provideI18nTesting(),
+        provideDisabledNgbAnimation(),
         { provide: BasketService, useValue: basketService },
         { provide: SearchStateService, useValue: searchStateService }
       ]
@@ -102,7 +90,7 @@ describe('DocumentsComponent', () => {
     expect(tester.resume).not.toContainText('limited');
   });
 
-  it('should display limited results in resume, and format numbers in French', () => {
+  it('should display limited results in resume, and format numbers', () => {
     // given results
     const content: Array<DocumentModel> = [];
     for (let i = 0; i < 20; i++) {
@@ -122,8 +110,6 @@ describe('DocumentsComponent', () => {
     // then it should display each result
     expect(tester.noResults).toBeNull();
     expect(tester.results.length).toBe(20);
-    expect(tester.resume).toContainText(
-      'Results 4\u202f001 to 4\u202f020 of 12\u202f000 (limited to 10\u202f000)'
-    );
+    expect(tester.resume).toContainText('Results 4,001 to 4,020 of 12,000 (limited to 10,000)');
   });
 });

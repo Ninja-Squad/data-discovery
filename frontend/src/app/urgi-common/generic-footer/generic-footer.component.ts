@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'dd-footer',
   templateUrl: './generic-footer.component.html',
-  styleUrls: ['./generic-footer.component.scss']
+  styleUrls: ['./generic-footer.component.scss'],
+  standalone: true
 })
 export class GenericFooterComponent {}

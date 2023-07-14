@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ErrorInterceptorService, HttpError } from './error-interceptor.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { errorInterceptor, ErrorInterceptorService, HttpError } from './error-interceptor.service';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 
 describe('ErrorInterceptorService', () => {
   let service: ErrorInterceptorService;
@@ -13,13 +13,9 @@ describe('ErrorInterceptorService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
-        {
-          provide: HTTP_INTERCEPTORS,
-          useExisting: ErrorInterceptorService,
-          multi: true
-        }
+        provideHttpClient(withInterceptors([errorInterceptor])),
+        provideHttpClientTesting()
       ]
     });
 

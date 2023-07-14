@@ -1,10 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'dd-descendants-checkbox',
   templateUrl: './descendants-checkbox.component.html',
   styleUrls: ['./descendants-checkbox.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [TranslateModule, NgbTooltip]
 })
 export class DescendantsCheckboxComponent {
   @Input() searchDescendants = false;

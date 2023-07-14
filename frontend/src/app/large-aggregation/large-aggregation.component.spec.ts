@@ -1,31 +1,29 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { AggregationNamePipe } from '../aggregation-name.pipe';
-import { DocumentCountComponent } from '../document-count/document-count.component';
 import { Aggregation, Bucket } from '../models/page';
 import { NULL_VALUE } from '../models/document.model';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { environment } from '../../environments/environment';
 import { Component } from '@angular/core';
 import { of } from 'rxjs';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-  template: `<dd-large-aggregation
+  template: ` <dd-large-aggregation
     [aggregation]="aggregation"
     (aggregationChange)="aggregationChanged = $event"
     [searchDescendants]="searchDescendants"
     (searchDescendantsChange)="searchDescendantsChanged = $event"
     [selectedKeys]="selectedKeys"
     [disabled]="disabled"
-  ></dd-large-aggregation>`
+  ></dd-large-aggregation>`,
+  standalone: true,
+  imports: [LargeAggregationComponent]
 })
 class TestComponent {
   aggregation: Aggregation;
@@ -77,18 +75,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('LargeAggregationComponent', () => {
   const aggregation = toAggregation('coo', ['France', 'Italy', 'New Zealand', NULL_VALUE]);
 
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [
-        TestComponent,
-        LargeAggregationComponent,
-        AggregationNamePipe,
-        DocumentCountComponent,
-        DescendantsCheckboxComponent
-      ]
-    })
-  );
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideI18nTesting()] }));
 
   afterEach(() => (environment.name = 'rare'));
 

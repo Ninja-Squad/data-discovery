@@ -22,7 +22,7 @@
       </div>
       <div class="select-all-rare-basket" *ngIf="isBasketEnabled">
         <!-- the following component will not be the same depending on the environment.resourceModule value -->
-        <!-- for example, if the module is `RareModule` it will be a `RareSelectAllResultsComponent` -->
+        <!-- for example, if the application is Rare it will be a `SelectAllResultsComponent` -->
         <!-- For others it will be an empty component -->
         <!-- As Ivy has a stricter type checking, we need to cast the documents as any -->
         <dd-select-all-results [documents]="$any(vm.documents)"></dd-select-all-results>

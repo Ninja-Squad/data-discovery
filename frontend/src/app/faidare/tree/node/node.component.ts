@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
 import { InternalTreeNode, TreeService } from '../tree.service';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'dd-node',
   templateUrl: './node.component.html',
   styleUrls: ['./node.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgFor, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeComponent<P> {

@@ -24,6 +24,8 @@ import {
   switchMap,
   tap
 } from 'rxjs';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NodeComponent } from './node/node.component';
 
 interface BaseAction {
   type: 'FILTER' | 'CHANGE_TEXT';
@@ -60,6 +62,8 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss'],
   providers: [TreeService],
+  standalone: true,
+  imports: [NgIf, NgFor, AsyncPipe, NodeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'tree'
 })

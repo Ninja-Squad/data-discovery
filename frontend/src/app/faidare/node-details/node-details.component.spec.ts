@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { TypedNodeDetails } from '../ontology.model';
 import { ComponentTester } from 'ngx-speculoos';
 import { TestBed } from '@angular/core/testing';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<dd-node-details [node]="node"></dd-node-details>'
+  template: '<dd-node-details [node]="node"></dd-node-details>',
+  standalone: true,
+  imports: [NodeDetailsComponent]
 })
 class TestComponent {
   node: TypedNodeDetails = {
@@ -32,10 +33,7 @@ describe('NodeDetailsComponent', () => {
   let tester: TestComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [I18nTestingModule],
-      declarations: [TestComponent, NodeDetailsComponent, OntologyNodeTypeComponent]
-    });
+    TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
 
     tester = new TestComponentTester();
     tester.detectChanges();

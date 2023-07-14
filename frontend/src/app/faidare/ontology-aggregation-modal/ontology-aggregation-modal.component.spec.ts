@@ -1,9 +1,6 @@
 import { OntologyAggregationModalComponent } from './ontology-aggregation-modal.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { ReactiveFormsModule } from '@angular/forms';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   OntologyDetails,
@@ -17,10 +14,7 @@ import {
 import { toAggregation } from '../../models/test-model-generators';
 import { of, Subject } from 'rxjs';
 import { TreeNode } from '../tree/tree.service';
-import { TreeComponent } from '../tree/tree.component';
-import { NodeComponent } from '../tree/node/node.component';
-import { NodeDetailsComponent } from '../node-details/node-details.component';
-import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class OntologyAggregationModalComponentTester extends ComponentTester<OntologyAggregationModalComponent> {
   constructor() {
@@ -88,15 +82,8 @@ describe('OntologyAggregationModalComponent', () => {
     ontologyService = createMock(OntologyService);
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [
-        TreeComponent,
-        NodeComponent,
-        OntologyAggregationModalComponent,
-        NodeDetailsComponent,
-        OntologyNodeTypeComponent
-      ],
       providers: [
+        provideI18nTesting(),
         { provide: NgbActiveModal, useValue: activeModal },
         { provide: OntologyService, useValue: ontologyService }
       ]

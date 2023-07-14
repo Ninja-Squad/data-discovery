@@ -2,12 +2,26 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
+import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
+import { NgFor, NgIf } from '@angular/common';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-aggregations',
   templateUrl: './aggregations.component.html',
   styleUrls: ['./aggregations.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    LoadingSkeletonComponent,
+    NgIf,
+    NgFor,
+    SmallAggregationComponent,
+    LargeAggregationComponent,
+    environment.ontologyAggregationComponent
+  ]
 })
 export class AggregationsComponent {
   @Input() aggregations: Array<Aggregation> = [];

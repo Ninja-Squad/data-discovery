@@ -1,17 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { LOCALE_ID } from '@angular/core';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
-import { DocumentCountComponent } from '../document-count/document-count.component';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 class PillarsComponentTester extends ComponentTester<PillarsComponent> {
   constructor() {
@@ -53,12 +49,7 @@ describe('PillarsComponent', () => {
     pillarService = createMock(PillarService);
     pillarService.list.and.returnValue(pillars$);
     TestBed.configureTestingModule({
-      declarations: [PillarsComponent, DocumentCountComponent],
-      imports: [HttpClientTestingModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      providers: [
-        { provide: LOCALE_ID, useValue: 'fr-FR' },
-        { provide: PillarService, useValue: pillarService }
-      ]
+      providers: [provideI18nTesting(), { provide: PillarService, useValue: pillarService }]
     });
 
     tester = new PillarsComponentTester();
@@ -102,7 +93,7 @@ describe('PillarsComponent', () => {
     expect(tester.pillarListItem(1)).toContainText('Forest');
 
     expect(tester.databaseSourceItem(0, 0)).toContainText('Florilège');
-    expect(tester.databaseSourceItem(0, 0)).toContainText('[1\u202f000]');
+    expect(tester.databaseSourceItem(0, 0)).toContainText('[1,000]');
 
     expect(tester.databaseSourceItem(0, 1)).toContainText('CNRGV');
     expect(tester.databaseSourceItem(0, 1)).toContainText('[200]');

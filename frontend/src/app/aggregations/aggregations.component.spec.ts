@@ -1,30 +1,27 @@
 import { TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { AggregationsComponent } from './aggregations.component';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
-import { AggregationNamePipe } from '../aggregation-name.pipe';
-import { DocumentCountComponent } from '../document-count/document-count.component';
-import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { environment } from '../../environments/environment';
 import { Component } from '@angular/core';
 import { Aggregation } from '../models/page';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-  template: `<dd-aggregations
+  template: ` <dd-aggregations
     [aggregations]="aggregations"
     (aggregationsChange)="aggregationsChanged = $event"
     [selectedCriteria]="selectedCriteria"
     [searchDescendants]="searchDescendants"
     (searchDescendantsChange)="searchDescendantsChanged = $event"
-  ></dd-aggregations>`
+  ></dd-aggregations>`,
+  standalone: true,
+  imports: [AggregationsComponent]
 })
 class TestComponent {
   aggregations: Array<Aggregation>;
@@ -55,17 +52,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('AggregationsComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [
-        TestComponent,
-        AggregationsComponent,
-        SmallAggregationComponent,
-        LargeAggregationComponent,
-        AggregationNamePipe,
-        DocumentCountComponent,
-        LoadingSkeletonComponent,
-        DescendantsCheckboxComponent
-      ]
+      providers: [provideI18nTesting()]
     })
   );
 

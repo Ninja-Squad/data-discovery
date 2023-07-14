@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ErrorInterceptorService } from '../error-interceptor.service';
+import { NgIf, NgFor } from '@angular/common';
 
 // Based ideas taken from https://codepen.io/Dreamdealer/pen/JyBdMX
 /*
@@ -42,7 +43,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
       </div>
     </ng-template>
   `,
-  styleUrls: ['./loading-skeleton.component.scss']
+  styleUrls: ['./loading-skeleton.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgFor]
 })
 export class LoadingSkeletonComponent implements OnInit {
   @Input() loading = false;

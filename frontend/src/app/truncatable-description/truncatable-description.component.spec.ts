@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { TruncatableDescriptionComponent } from './truncatable-description.component';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 describe('TruncatableDescriptionComponent', () => {
   class TruncatableDescriptionComponentTester extends ComponentTester<TruncatableDescriptionComponent> {
@@ -27,12 +27,7 @@ describe('TruncatableDescriptionComponent', () => {
     }
   }
 
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      imports: [I18nTestingModule],
-      declarations: [TruncatableDescriptionComponent]
-    })
-  );
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideI18nTesting()] }));
 
   it('should truncate the long description and allow to display it fully', () => {
     const tester = new TruncatableDescriptionComponentTester();

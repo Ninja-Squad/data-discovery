@@ -2,9 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { NavbarComponent } from './navbar.component';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { GenericBasketComponent } from '../urgi-common/generic-basket/generic-basket.component';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideDisabledNgbAnimation } from '../disable-animations';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -39,8 +41,13 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 describe('NavbarComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      declarations: [NavbarComponent, GenericBasketComponent],
-      imports: [I18nTestingModule, DataDiscoveryNgbTestingModule]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideI18nTesting(),
+        provideRouter([]),
+        provideDisabledNgbAnimation()
+      ]
     })
   );
 

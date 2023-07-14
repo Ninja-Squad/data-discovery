@@ -2,8 +2,14 @@
 // `ng build --configuration=production` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { FaidareModule } from '../app/faidare/faidare.module';
 import { DataDiscoveryEnvironment } from './environment.model';
+import { FaidareOntologyAggregationComponent } from '../app/faidare/faidare-ontology-aggregation/faidare-ontology-aggregation.component';
+import { FaidareFooterComponent } from '../app/faidare/faidare-footer/faidare-footer.component';
+import { FaidareDocumentComponent } from '../app/faidare/faidare-document/faidare-document.component';
+import { FaidareDocumentListComponent } from '../app/faidare/faidare-document-list/faidare-document-list.component';
+import { FaidareHeaderComponent } from '../app/faidare/faidare-header/faidare-header.component';
+import { BasketComponent } from '../app/urgi-common/basket/basket/basket.component';
+import { SelectAllResultsComponent } from '../app/urgi-common/basket/select-all-results/select-all-results.component';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -29,7 +35,13 @@ export const environment: DataDiscoveryEnvironment = {
     //  logo: 'assets/elixir_logo.png'
     // }
   },
-  resourceModule: FaidareModule,
+  documentComponent: FaidareDocumentComponent,
+  documentListComponent: FaidareDocumentListComponent,
+  ontologyAggregationComponent: FaidareOntologyAggregationComponent,
+  headerComponent: FaidareHeaderComponent,
+  footerComponent: FaidareFooterComponent,
+  basketComponent: BasketComponent,
+  selectAllResultsComponent: SelectAllResultsComponent,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',

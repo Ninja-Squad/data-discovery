@@ -2,6 +2,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ViewModel {
   document: FaidareDocumentModel;
@@ -13,6 +17,8 @@ interface ViewModel {
   selector: 'dd-document',
   templateUrl: './faidare-document.component.html',
   styleUrls: ['./faidare-document.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgFor, AsyncPipe, TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentComponent {

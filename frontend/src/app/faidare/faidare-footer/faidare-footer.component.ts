@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface DataProvider {
   name: string;
@@ -8,7 +10,9 @@ interface DataProvider {
 @Component({
   selector: 'dd-footer',
   templateUrl: './faidare-footer.component.html',
-  styleUrls: ['./faidare-footer.component.scss']
+  styleUrls: ['./faidare-footer.component.scss'],
+  standalone: true,
+  imports: [NgFor, TranslateModule]
 })
 export class FaidareFooterComponent {
   dataProviders: Array<DataProvider> = [

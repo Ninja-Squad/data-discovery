@@ -34,9 +34,33 @@ export interface DataDiscoveryEnvironment {
     links: Array<Link>;
   };
   /**
-   * The applications can override default components with custom one by loading a module
+   * The document component to use in the application
    */
-  resourceModule: Type<any>;
+  documentComponent: Type<any>;
+  /**
+   * The document list component to use in the application
+   */
+  documentListComponent: Type<any>;
+  /**
+   * The ontology aggregation component to use in the application
+   */
+  ontologyAggregationComponent: Type<any>;
+  /**
+   * The header component to use in the application
+   */
+  headerComponent: Type<any>;
+  /**
+   * The footer component to use in the application
+   */
+  footerComponent: Type<any>;
+  /**
+   * The basket component to use in the application
+   */
+  basketComponent: Type<any>;
+  /**
+   * The select all results component to use in the application
+   */
+  selectAllResultsComponent: Type<any>;
   /**
    * Markdown files served
    */
