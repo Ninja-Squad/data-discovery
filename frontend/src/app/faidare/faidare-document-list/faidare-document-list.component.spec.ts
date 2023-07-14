@@ -9,14 +9,16 @@ import { ComponentTester, createMock } from 'ngx-speculoos';
 import { GenericDocumentComponent } from '../../urgi-common/generic-document/generic-document.component';
 import { Aggregation } from '../../models/page';
 import { NgbNavLink } from '@ng-bootstrap/ng-bootstrap';
-import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReplaySubject } from 'rxjs';
 import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
 import { toSinglePage } from '../../models/test-model-generators';
 import { DocumentModel } from '../../models/document.model';
 import { Component } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideDisabledNgbAnimation } from '../../disable-animations';
+import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 
 class FaidareDocumentListComponentTester extends ComponentTester<FaidareDocumentListComponent> {
   constructor() {
@@ -46,7 +48,8 @@ class FaidareDocumentListComponentTester extends ComponentTester<FaidareDocument
 
 @Component({
   selector: 'dd-germplasm-results',
-  template: 'Germplasm Results here'
+  template: 'Germplasm Results here',
+  standalone: true
 })
 class GermplasmResultsStubComponent {}
 
@@ -60,15 +63,26 @@ describe('FaidareDocumentListComponent', () => {
     searchStateService = createMock(SearchStateService);
     searchStateService.getModel.and.returnValue(modelSubject);
 
+    // use a stub for germplasm results
+    TestBed.overrideComponent(FaidareDocumentListComponent, {
+      remove: {
+        imports: [GermplasmResultsComponent]
+      },
+      add: {
+        imports: [GermplasmResultsStubComponent]
+      }
+    });
     TestBed.configureTestingModule({
-      declarations: [
-        FaidareDocumentListComponent,
-        GenericDocumentComponent,
-        TruncatableDescriptionComponent,
-        GermplasmResultsStubComponent
-      ],
-      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule],
-      providers: [{ provide: SearchStateService, useValue: searchStateService }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideI18nTesting(),
+        provideDisabledNgbAnimation(),
+        {
+          provide: SearchStateService,
+          useValue: searchStateService
+        }
+      ]
     });
     tester = new FaidareDocumentListComponentTester();
   });

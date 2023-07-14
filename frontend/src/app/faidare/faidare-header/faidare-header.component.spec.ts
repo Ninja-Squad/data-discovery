@@ -3,11 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { FaidareHeaderComponent } from './faidare-header.component';
 
 describe('FaidareHeaderComponent', () => {
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      declarations: [FaidareHeaderComponent]
-    })
-  );
+  beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should display title and image', () => {
     const fixture = TestBed.createComponent(FaidareHeaderComponent);

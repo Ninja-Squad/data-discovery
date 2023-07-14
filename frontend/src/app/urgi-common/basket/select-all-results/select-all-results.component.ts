@@ -3,6 +3,8 @@ import { Page } from '../../../models/page';
 import { BasketService } from '../basket.service';
 import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
 import { OrderableDocumentModel } from '../../../models/document.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault, AsyncPipe } from '@angular/common';
 
 interface ViewModel {
   allSelectedForOrdering: boolean;
@@ -13,7 +15,9 @@ interface ViewModel {
   selector: 'dd-select-all-results',
   templateUrl: './select-all-results.component.html',
   styleUrls: ['./select-all-results.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, NgSwitch, NgSwitchCase, TranslateModule, NgSwitchDefault, AsyncPipe]
 })
 export class SelectAllResultsComponent {
   vm$: Observable<ViewModel>;

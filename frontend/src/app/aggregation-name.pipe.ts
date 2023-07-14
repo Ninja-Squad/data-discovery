@@ -7,7 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
  */
 @Pipe({
   name: 'aggregationName',
-  pure: false
+  pure: false,
+  standalone: true
 })
 export class AggregationNamePipe implements PipeTransform {
   constructor(private translate: TranslateService) {}

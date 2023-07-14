@@ -4,10 +4,12 @@ import { OntologyNodeTypeComponent } from './ontology-node-type.component';
 import { Component } from '@angular/core';
 import { ComponentTester } from 'ngx-speculoos';
 import { OntologyNodeType } from '../../ontology.service';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<dd-ontology-node-type [type]="type"></dd-ontology-node-type>'
+  template: '<dd-ontology-node-type [type]="type"></dd-ontology-node-type>',
+  standalone: true,
+  imports: [OntologyNodeTypeComponent]
 })
 class TestComponent {
   type: OntologyNodeType = 'ONTOLOGY';
@@ -23,10 +25,7 @@ describe('OntologyNodeTypeComponent', () => {
   let tester: TestComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [TestComponent, OntologyNodeTypeComponent],
-      imports: [I18nTestingModule]
-    });
+    TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
     tester = new TestComponentTester();
     tester.detectChanges();
   });

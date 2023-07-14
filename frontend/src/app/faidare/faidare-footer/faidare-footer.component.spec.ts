@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { FaidareFooterComponent } from './faidare-footer.component';
 import { ComponentTester } from 'ngx-speculoos';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class FaidareFooterComponentTester extends ComponentTester<FaidareFooterComponent> {
   constructor() {
@@ -21,9 +22,7 @@ describe('FaidareFooterComponent', () => {
   let tester: FaidareFooterComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [FaidareFooterComponent]
-    });
+    TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
     tester = new FaidareFooterComponentTester();
     tester.detectChanges();
   });

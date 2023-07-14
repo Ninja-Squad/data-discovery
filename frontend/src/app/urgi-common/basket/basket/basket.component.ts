@@ -1,15 +1,28 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription, timer } from 'rxjs';
 import { LOCATION } from '../../../location.service';
 import { environment } from '../../../../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
+import { DecimalPipe, NgFor, NgIf, NgPlural, NgPluralCase } from '@angular/common';
 
 @Component({
   selector: 'dd-basket',
   templateUrl: './basket.component.html',
-  styleUrls: ['./basket.component.scss']
+  styleUrls: ['./basket.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgFor,
+    NgPlural,
+    NgPluralCase,
+    DecimalPipe,
+    TranslateModule,
+    ReactiveFormsModule,
+    NgbTooltip
+  ]
 })
 export class BasketComponent implements OnInit, OnDestroy {
   itemCounter = 0;

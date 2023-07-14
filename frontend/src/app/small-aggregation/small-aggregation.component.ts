@@ -6,18 +6,39 @@ import {
   OnChanges,
   Output
 } from '@angular/core';
-import { FormControl, FormRecord, NonNullableFormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormRecord,
+  NonNullableFormBuilder,
+  ReactiveFormsModule
+} from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AggregationNamePipe } from '../aggregation-name.pipe';
+import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
+import { DocumentCountComponent } from '../document-count/document-count.component';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'dd-small-aggregation',
   templateUrl: './small-aggregation.component.html',
   styleUrls: ['./small-aggregation.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    NgIf,
+    NgFor,
+    NgbTooltip,
+    ReactiveFormsModule,
+    DocumentCountComponent,
+    DescendantsCheckboxComponent,
+    TranslateModule,
+    AggregationNamePipe
+  ]
 })
 export class SmallAggregationComponent implements OnChanges {
   @Input() aggregation!: Aggregation;
@@ -41,7 +62,7 @@ export class SmallAggregationComponent implements OnChanges {
     return (
       Object.entries(formValues)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([key, value]) => value)
+        .filter(([_key, value]) => value)
         .map(([key]) => key)
     );
   }

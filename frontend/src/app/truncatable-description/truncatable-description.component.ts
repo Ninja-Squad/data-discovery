@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { HighlightService } from '../highlight.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'dd-truncatable-description',
   templateUrl: './truncatable-description.component.html',
   styleUrls: ['./truncatable-description.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, TranslateModule]
 })
 export class TruncatableDescriptionComponent implements OnInit {
   @Input() description = '';

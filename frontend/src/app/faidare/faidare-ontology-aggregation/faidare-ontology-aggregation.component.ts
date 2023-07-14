@@ -9,14 +9,18 @@ import {
 } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
 import { NULL_VALUE } from '../../models/document.model';
+import { DecimalPipe, NgIf, NgPlural, NgPluralCase } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'dd-ontology-aggregation',
   templateUrl: './faidare-ontology-aggregation.component.html',
   styleUrls: ['./faidare-ontology-aggregation.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareOntologyAggregationComponent implements OnChanges {

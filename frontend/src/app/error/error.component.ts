@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
 import { filter, map, merge, Observable } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 /**
  * Component which displays the errors emitted by the error-interceptor service, until the user navigates elsewhere
@@ -9,7 +11,9 @@ import { filter, map, merge, Observable } from 'rxjs';
 @Component({
   selector: 'dd-error',
   templateUrl: './error.component.html',
-  styleUrls: ['./error.component.scss']
+  styleUrls: ['./error.component.scss'],
+  standalone: true,
+  imports: [NgIf, TranslateModule, AsyncPipe]
 })
 export class ErrorComponent {
   error$: Observable<HttpError | null>;

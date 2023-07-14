@@ -4,11 +4,11 @@ import { MarkdownPageComponent } from './markdown-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
-import { HttpClient } from '@angular/common/http';
-import { markedOptionsFactory } from '../app.module';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { stubRoute } from 'ngx-speculoos';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { markedOptionsFactory } from '../../marked-options.factory';
 
 describe('MarkdownPageComponent', () => {
   let component: MarkdownPageComponent;
@@ -19,10 +19,7 @@ describe('MarkdownPageComponent', () => {
 
   beforeEach(() =>
     TestBed.configureTestingModule({
-      declarations: [MarkdownPageComponent],
       imports: [
-        I18nTestingModule,
-        HttpClientTestingModule,
         MarkdownModule.forRoot({
           loader: HttpClient, // optional, only if you use [src] attribute
           markedOptions: {
@@ -40,7 +37,12 @@ describe('MarkdownPageComponent', () => {
           }
         })
       ],
-      providers: [{ provide: ActivatedRoute, useValue: route }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideI18nTesting(),
+        { provide: ActivatedRoute, useValue: route }
+      ]
     })
   );
 

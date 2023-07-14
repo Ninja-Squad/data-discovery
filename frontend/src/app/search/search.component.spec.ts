@@ -1,15 +1,10 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { filter, map, Observable, of, ReplaySubject } from 'rxjs';
 import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
-import { DocumentsComponent } from '../documents/documents.component';
-import { RareDocumentComponent } from '../rare/rare-document/rare-document.component';
 import {
   toAggregation,
   toRareDocument,
@@ -18,21 +13,15 @@ import {
 } from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
-import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
-import { AggregationNamePipe } from '../aggregation-name.pipe';
-import { DocumentCountComponent } from '../document-count/document-count.component';
-import { TruncatableDescriptionComponent } from '../truncatable-description/truncatable-description.component';
-import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { BasketService } from '../urgi-common/basket/basket.service';
-import { GenericSelectAllResultsComponent } from '../urgi-common/generic-select-all-results/generic-select-all-results.component';
-import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
-import { GenericDocumentListComponent } from '../urgi-common/generic-document-list/generic-document-list.component';
 import { Model, SearchStateService } from '../search-state.service';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
 
 class SearchComponentTester extends ComponentTester<SearchComponent> {
   constructor() {
@@ -52,7 +41,7 @@ class SearchComponentTester extends ComponentTester<SearchComponent> {
   }
 
   get results() {
-    return this.elements(RareDocumentComponent);
+    return this.elements(GenericDocumentComponent);
   }
 
   get pagination() {
@@ -99,29 +88,10 @@ describe('SearchComponent', () => {
       set: { providers: [{ provide: SearchStateService, useValue: searchStateService }] }
     });
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        DataDiscoveryNgbTestingModule,
-        I18nTestingModule
-      ],
-      declarations: [
-        SearchComponent,
-        DocumentsComponent,
-        RareDocumentComponent,
-        AggregationsComponent,
-        SmallAggregationComponent,
-        LargeAggregationComponent,
-        AggregationNamePipe,
-        DocumentCountComponent,
-        LoadingSkeletonComponent,
-        TruncatableDescriptionComponent,
-        DescendantsCheckboxComponent,
-        GenericSelectAllResultsComponent,
-        GenericDocumentListComponent
-      ],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideI18nTesting(),
         { provide: BasketService, useValue: basketService },
         { provide: ActivatedRoute, useValue: route }
       ]

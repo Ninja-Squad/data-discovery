@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DescendantsCheckboxComponent } from './descendants-checkbox.component';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { ComponentTester } from 'ngx-speculoos';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { Component } from '@angular/core';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
   template:
-    '<dd-descendants-checkbox [searchDescendants]="value" (searchDescendantsChange)="onChange($event)"></dd-descendants-checkbox>'
+    '<dd-descendants-checkbox [searchDescendants]="value" (searchDescendantsChange)="onChange($event)"></dd-descendants-checkbox>',
+  standalone: true,
+  imports: [DescendantsCheckboxComponent]
 })
 class TestComponent {
   value = true;
@@ -37,10 +38,7 @@ describe('DescendantsCheckboxComponent', () => {
   let tester: TestComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [TestComponent, DescendantsCheckboxComponent],
-      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule]
-    });
+    TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
     tester = new TestComponentTester();
     tester.detectChanges();
   });

@@ -3,7 +3,6 @@ import { ComponentTester } from 'ngx-speculoos';
 
 import { GenericDocumentComponent } from './generic-document.component';
 import { toWheatisDocument } from '../../models/test-model-generators';
-import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 
 describe('DataDiscoveryDocumentComponent', () => {
   class DataDiscoveryDocumentComponentTester extends ComponentTester<GenericDocumentComponent> {
@@ -44,11 +43,7 @@ describe('DataDiscoveryDocumentComponent', () => {
     }
   }
 
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      declarations: [GenericDocumentComponent, TruncatableDescriptionComponent]
-    })
-  );
+  beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should display a resource', () => {
     const tester = new DataDiscoveryDocumentComponentTester();

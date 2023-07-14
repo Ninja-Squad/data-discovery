@@ -4,16 +4,18 @@ import { SelectAllResultsComponent } from './select-all-results.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
-import { I18nTestingModule } from '../../../i18n/i18n-testing.module.spec';
 import { Component } from '@angular/core';
 import { Page } from '../../../models/page';
 import { toSecondPage, toSinglePage } from '../../../models/test-model-generators';
 import { RareDocumentModel } from '../../../rare/rare-document.model';
 import { OrderableDocumentModel } from '../../../models/document.model';
+import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
 
 @Component({
   selector: 'dd-test',
-  template: '<dd-select-all-results [documents]="documents"></dd-select-all-results>'
+  template: '<dd-select-all-results [documents]="documents"></dd-select-all-results>',
+  standalone: true,
+  imports: [SelectAllResultsComponent]
 })
 class TestComponent {
   documents: Page<OrderableDocumentModel>;
@@ -50,9 +52,7 @@ describe('SelectAllResultsComponent', () => {
   beforeEach(() => {
     service = createMock(BasketService);
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule],
-      declarations: [TestComponent, SelectAllResultsComponent],
-      providers: [{ provide: BasketService, useValue: service }]
+      providers: [provideI18nTesting(), { provide: BasketService, useValue: service }]
     });
     tester = new TestComponentTester();
   });

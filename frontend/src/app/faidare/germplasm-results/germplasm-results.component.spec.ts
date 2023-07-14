@@ -4,13 +4,12 @@ import { GermplasmResultsComponent } from './germplasm-results.component';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { Page } from '../../models/page';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
 import { ReplaySubject, Subject } from 'rxjs';
-import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
 import { Model, SearchStateService } from '../../search-state.service';
 import { DocumentModel } from '../../models/document.model';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class GermplasmResultsComponentTester extends ComponentTester<GermplasmResultsComponent> {
   constructor() {
@@ -76,9 +75,8 @@ describe('GermplasmResultsComponent', () => {
     downloadService = createMock(DownloadService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule],
-      declarations: [GermplasmResultsComponent, SortableHeaderComponent],
       providers: [
+        provideI18nTesting(),
         { provide: ExportService, useValue: exportService },
         { provide: DownloadService, useValue: downloadService },
         { provide: SearchStateService, useValue: searchStateService }

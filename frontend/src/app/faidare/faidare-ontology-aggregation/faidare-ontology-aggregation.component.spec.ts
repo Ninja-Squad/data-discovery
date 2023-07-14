@@ -1,20 +1,20 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { toAggregation } from '../../models/test-model-generators';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FaidareOntologyAggregationComponent } from './faidare-ontology-aggregation.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
 import { NULL_VALUE } from '../../models/document.model';
 import { Component } from '@angular/core';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template:
-    '<dd-ontology-aggregation [aggregation]="aggregation" [selectedKeys]="selectedKeys" (aggregationChange)="criterion = $event"></dd-ontology-aggregation>'
+    '<dd-ontology-aggregation [aggregation]="aggregation" [selectedKeys]="selectedKeys" (aggregationChange)="criterion = $event"></dd-ontology-aggregation>',
+  standalone: true,
+  imports: [FaidareOntologyAggregationComponent]
 })
 class TestComponent {
   aggregation = toAggregation('o', ['v1', 'v2', 'v3', NULL_VALUE]);
@@ -44,10 +44,7 @@ describe('FaidareOntologyAggregationComponent', () => {
   let tester: TestComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [FaidareOntologyAggregationComponent, TestComponent]
-    });
+    TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
 
     tester = new TestComponentTester();
     tester.detectChanges();

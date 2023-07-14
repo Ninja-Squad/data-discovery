@@ -4,10 +4,9 @@ import { BasketComponent } from './basket.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
 import { of, Subject } from 'rxjs';
-import { I18nTestingModule } from '../../../i18n/i18n-testing.module.spec';
-import { ReactiveFormsModule } from '@angular/forms';
-import { DataDiscoveryNgbTestingModule } from '../../../data-discovery-ngb-testing.module';
 import { LOCATION } from '../../../location.service';
+import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
+import { provideDisabledNgbAnimation } from '../../../disable-animations';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -79,9 +78,9 @@ describe('BasketComponent', () => {
     service.getBasket.and.returnValue(basketEvents);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
-      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule, ReactiveFormsModule],
-      declarations: [BasketComponent],
       providers: [
+        provideI18nTesting(),
+        provideDisabledNgbAnimation(),
         { provide: BasketService, useValue: service },
         { provide: LOCATION, useValue: location }
       ]

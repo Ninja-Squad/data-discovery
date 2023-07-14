@@ -5,6 +5,9 @@ import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
 import { BehaviorSubject, combineLatest, finalize, map, Observable } from 'rxjs';
 import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ViewModel {
   documents: Page<FaidareDocumentModel> | null;
@@ -19,6 +22,8 @@ export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-
   selector: 'dd-germplasm-results',
   templateUrl: './germplasm-results.component.html',
   styleUrls: ['./germplasm-results.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgFor, AsyncPipe, TranslateModule, SortableHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {

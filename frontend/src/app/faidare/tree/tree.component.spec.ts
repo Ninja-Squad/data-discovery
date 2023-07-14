@@ -4,8 +4,7 @@ import { TreeComponent } from './tree.component';
 import { Component } from '@angular/core';
 import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
 import { ComponentTester, TestHtmlElement } from 'ngx-speculoos';
-import { NodeComponent } from './node/node.component';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
+import { NgIf } from '@angular/common';
 
 interface TestPayload {
   id: string;
@@ -26,7 +25,9 @@ interface TestPayload {
       (selectedNodes)="selectedNodes = $event"
       (highlightedNode)="highlightedNode = $event"
     ></dd-tree>
-  `
+  `,
+  standalone: true,
+  imports: [NgIf, TreeComponent]
 })
 class TestComponent {
   rootNodes: Array<TreeNode<TestPayload>> = [
@@ -171,10 +172,7 @@ describe('TreeComponent', () => {
   let tester: TestComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [TreeComponent, NodeComponent, TestComponent],
-      imports: [DataDiscoveryNgbTestingModule]
-    });
+    TestBed.configureTestingModule({});
 
     tester = new TestComponentTester();
     tester.detectChanges();

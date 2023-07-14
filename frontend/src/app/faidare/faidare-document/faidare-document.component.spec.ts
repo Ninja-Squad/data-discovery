@@ -3,11 +3,9 @@ import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { FaidareDocumentComponent } from './faidare-document.component';
 import { toFaidareDocument } from '../../models/test-model-generators';
-import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { BehaviorSubject } from 'rxjs';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class FaidareDocumentComponentTester extends ComponentTester<FaidareDocumentComponent> {
   constructor() {
@@ -69,9 +67,7 @@ describe('FaidareDocumentComponent', () => {
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({
-      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [FaidareDocumentComponent, TruncatableDescriptionComponent],
-      providers: [{ provide: BasketService, useValue: basketService }]
+      providers: [provideI18nTesting(), { provide: BasketService, useValue: basketService }]
     });
   });
 

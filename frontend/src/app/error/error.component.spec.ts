@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, NavigationStart, Router, RouterEvent } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
 import { ComponentTester } from 'ngx-speculoos';
 
 import { ErrorComponent } from './error.component';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 class ErrorComponentTester extends ComponentTester<ErrorComponent> {
   constructor() {
@@ -37,9 +36,7 @@ describe('ErrorComponent', () => {
     httpErrors = new Subject<HttpError>();
 
     TestBed.configureTestingModule({
-      declarations: [ErrorComponent],
-      providers: [{ provide: Router, useValue: { events: routerEvents } }],
-      imports: [HttpClientTestingModule, I18nTestingModule]
+      providers: [provideI18nTesting(), { provide: Router, useValue: { events: routerEvents } }]
     });
 
     const errorInterceptorService = TestBed.inject(ErrorInterceptorService);

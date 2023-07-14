@@ -3,11 +3,9 @@ import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
-import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { BehaviorSubject } from 'rxjs';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { DataDiscoveryNgbTestingModule } from '../../data-discovery-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class RareDocumentComponentTester extends ComponentTester<RareDocumentComponent> {
   constructor() {
@@ -73,9 +71,7 @@ describe('RareDocumentComponent', () => {
     basketService.isEnabled.and.returnValue(true);
     basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({
-      imports: [DataDiscoveryNgbTestingModule, I18nTestingModule],
-      declarations: [RareDocumentComponent, TruncatableDescriptionComponent],
-      providers: [{ provide: BasketService, useValue: basketService }]
+      providers: [provideI18nTesting(), { provide: BasketService, useValue: basketService }]
     });
   });
 

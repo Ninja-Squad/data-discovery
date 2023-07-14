@@ -2,8 +2,14 @@
 // `ng build --configuration=production` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { WheatisModule } from '../app/wheatis/wheatis.module';
 import { DataDiscoveryEnvironment } from './environment.model';
+import { GenericOntologyAggregationComponent } from '../app/urgi-common/generic-ontology-aggregation/generic-ontology-aggregation.component';
+import { GenericDocumentListComponent } from '../app/urgi-common/generic-document-list/generic-document-list.component';
+import { GenericFooterComponent } from '../app/urgi-common/generic-footer/generic-footer.component';
+import { WheatisHeaderComponent } from '../app/wheatis/wheatis-header/wheatis-header.component';
+import { GenericDocumentComponent } from '../app/urgi-common/generic-document/generic-document.component';
+import { GenericBasketComponent } from '../app/urgi-common/generic-basket/generic-basket.component';
+import { GenericSelectAllResultsComponent } from '../app/urgi-common/generic-select-all-results/generic-select-all-results.component';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -17,7 +23,13 @@ export const environment: DataDiscoveryEnvironment = {
       { label: 'wheat-urgi', url: 'https://wheat-urgi.versailles.inrae.fr/' }
     ]
   },
-  resourceModule: WheatisModule,
+  ontologyAggregationComponent: GenericOntologyAggregationComponent,
+  documentComponent: GenericDocumentComponent,
+  documentListComponent: GenericDocumentListComponent,
+  headerComponent: WheatisHeaderComponent,
+  footerComponent: GenericFooterComponent,
+  basketComponent: GenericBasketComponent,
+  selectAllResultsComponent: GenericSelectAllResultsComponent,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',

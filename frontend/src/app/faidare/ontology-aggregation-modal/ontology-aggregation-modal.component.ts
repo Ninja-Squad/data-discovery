@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { NonNullableFormBuilder } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
   combineLatest,
   debounceTime,
@@ -21,6 +21,11 @@ import {
 } from '../../ontology.service';
 import { TypedNodeDetails } from '../ontology.model';
 import { Aggregation } from '../../models/page';
+import { TranslateModule } from '@ngx-translate/core';
+import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { TreeComponent } from '../tree/tree.component';
+import { NodeDetailsComponent } from '../node-details/node-details.component';
 
 interface TreeViewModel {
   filter: string;
@@ -31,7 +36,19 @@ interface TreeViewModel {
 @Component({
   selector: 'dd-ontology-aggregation-modal',
   templateUrl: './ontology-aggregation-modal.component.html',
-  styleUrls: ['./ontology-aggregation-modal.component.scss']
+  styleUrls: ['./ontology-aggregation-modal.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    DecimalPipe,
+    ReactiveFormsModule,
+    TranslateModule,
+    OntologyNodeTypeComponent,
+    TreeComponent,
+    NodeDetailsComponent
+  ]
 })
 export class OntologyAggregationModalComponent {
   treeFilterCtrl = this.fb.control('');

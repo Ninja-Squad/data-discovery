@@ -3,11 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { RareHeaderComponent } from './rare-header.component';
 
 describe('RareHeaderComponent', () => {
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      declarations: [RareHeaderComponent]
-    })
-  );
+  beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should display title and image', () => {
     const fixture = TestBed.createComponent(RareHeaderComponent);

@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { GenericDocumentListComponent } from './generic-document-list.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { GenericDocumentComponent } from '../generic-document/generic-document.component';
-import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { SearchStateService } from '../../search-state.service';
 import { toSinglePage } from '../../models/test-model-generators';
 import { of } from 'rxjs';
@@ -29,11 +28,6 @@ describe('GenericDocumentListComponent', () => {
     );
 
     TestBed.configureTestingModule({
-      declarations: [
-        GenericDocumentListComponent,
-        GenericDocumentComponent,
-        TruncatableDescriptionComponent
-      ],
       providers: [{ provide: SearchStateService, useValue: searchStateService }]
     });
     tester = new GenericDocumentListComponentTester();

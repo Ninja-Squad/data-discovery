@@ -4,6 +4,17 @@ import { Model, SearchCriteria, SearchStateService } from '../../search-state.se
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import {
+  NgbNav,
+  NgbNavContent,
+  NgbNavItem,
+  NgbNavLink,
+  NgbNavOutlet
+} from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
+import { environment } from '../../../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 const ENTRY_AGGREGATION_KEY = 'entry';
 const GERMPLASM_BUCKET_KEY = 'Germplasm';
@@ -54,6 +65,21 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
   selector: 'dd-document-list',
   templateUrl: './faidare-document-list.component.html',
   styleUrls: ['./faidare-document-list.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    NgTemplateOutlet,
+    NgbNav,
+    NgbNavItem,
+    NgbNavLink,
+    NgbNavContent,
+    NgbNavOutlet,
+    TranslateModule,
+    GermplasmResultsComponent,
+    environment.documentComponent
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentListComponent {

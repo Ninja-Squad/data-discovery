@@ -1,17 +1,35 @@
 import { Component } from '@angular/core';
-import { NonNullableFormBuilder } from '@angular/forms';
-import { Params, Router } from '@angular/router';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Params, Router, RouterLink } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
 
 import { SearchService } from '../search.service';
 import { environment } from '../../environments/environment';
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
+import { AggregationsComponent } from '../aggregations/aggregations.component';
+import { PillarsComponent } from '../pillars/pillars.component';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'dd-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgFor,
+    RouterLink,
+    AsyncPipe,
+    ReactiveFormsModule,
+    TranslateModule,
+    NgbTypeahead,
+    PillarsComponent,
+    AggregationsComponent,
+    environment.headerComponent
+  ]
 })
 export class HomeComponent {
   searchForm = this.fb.group({

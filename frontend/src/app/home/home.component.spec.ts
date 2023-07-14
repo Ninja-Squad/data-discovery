@@ -1,25 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
+import { NonNullableFormBuilder } from '@angular/forms';
+import { provideRouter, Router } from '@angular/router';
 import { ComponentTester } from 'ngx-speculoos';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { HomeComponent } from './home.component';
 import { SearchService } from '../search.service';
 import { PillarsComponent } from '../pillars/pillars.component';
-import { DocumentCountComponent } from '../document-count/document-count.component';
-import { RareHeaderComponent } from '../rare/rare-header/rare-header.component';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { DataDiscoveryNgbTestingModule } from '../data-discovery-ngb-testing.module';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { of } from 'rxjs';
 import { Aggregation } from '../models/page';
 import { environment } from '../../environments/environment';
-import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
-import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
-import { AggregationNamePipe } from '../aggregation-name.pipe';
-import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
@@ -54,25 +47,12 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
 describe('HomeComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        DataDiscoveryNgbTestingModule,
-        I18nTestingModule
-      ],
-      declarations: [
-        HomeComponent,
-        PillarsComponent,
-        DocumentCountComponent,
-        RareHeaderComponent,
-        AggregationsComponent,
-        SmallAggregationComponent,
-        LargeAggregationComponent,
-        AggregationNamePipe,
-        LoadingSkeletonComponent
-      ],
-      providers: [HttpClientTestingModule]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideI18nTesting(),
+        provideRouter([])
+      ]
     })
   );
 
