@@ -62,7 +62,7 @@
     "@typescript-eslint/parser": "6.2.1",
     "cypress": "12.17.3",
     "eslint": "8.46.0",
-    "eslint-config-prettier": "8.9.0",
+    "eslint-config-prettier": "8.10.0",
     "eslint-plugin-deprecation": "1.5.0",
     "eslint-plugin-prettier": "5.0.0",
     "jasmine-core": "5.1.0",
@@ -76,7 +76,7 @@
     "karma-mocha-reporter": "2.2.5",
     "mocha-spec-json-output-reporter": "1.1.7",
     "ngx-speculoos": "10.0.0",
-    "prettier": "3.0.0",
+    "prettier": "3.0.1",
     "typescript": "4.9.5",
     "webpack-bundle-analyzer": "4.9.0"
   }
