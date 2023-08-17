@@ -13,7 +13,7 @@ import fr.inra.urgi.datadiscovery.dao.AppAggregation;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 
 /**
  * Implementation of {@link RareDocumentDaoCustom}
@@ -49,9 +49,9 @@ public class RareDocumentDaoImpl extends AbstractDocumentDaoImpl<RareDocument> i
                                             "portalURL.keyword");
     private final SearchRefinements implicitSearchRefinements;
 
-    public RareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
+    public RareDocumentDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
                                RareImplicitRefinementsProperties refinementsProperties) {
-        super(elasticsearchTemplate, new RareDocumentHighlighter());
+        super(elasticsearchTemplate, new RareDocumentHighlighter(), new RareAggregationAnalyzer());
         SearchRefinements.Builder builder = SearchRefinements.builder();
         refinementsProperties.getImplicitTerms().forEach(builder::withTerm);
         this.implicitSearchRefinements = builder.build();

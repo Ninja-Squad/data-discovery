@@ -1,17 +1,14 @@
 package fr.inra.urgi.datadiscovery.dto;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
-import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
 /**
  * DTO for a page containing additional aggregations
@@ -36,17 +33,13 @@ public final class AggregatedPageDTO<T> {
             toAggregationDTOs(page.getAggregations(), aggregationAnalyzer));
     }
 
-    private static List<AggregationDTO> toAggregationDTOs(Aggregations aggregations,
+    private static List<AggregationDTO> toAggregationDTOs(Collection<AggregationDTO> aggregations,
                                                           AggregationAnalyzer aggregationAnalyzer) {
         if (aggregations == null) {
             return Collections.emptyList();
         }
-        return aggregations.asList()
-                           .stream()
-                           .filter(aggregation -> aggregation instanceof Terms)
-                           .map(Terms.class::cast)
+        return aggregations.stream()
                            .sorted(aggregationAnalyzer.comparator())
-                           .map(terms -> new AggregationDTO(terms, aggregationAnalyzer))
                            .collect(Collectors.toList());
     }
 

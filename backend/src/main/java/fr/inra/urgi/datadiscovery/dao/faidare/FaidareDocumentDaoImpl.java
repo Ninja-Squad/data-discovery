@@ -7,18 +7,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareCurrentUser;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 /**
  * Implementation of {@link FaidareDocumentDaoCustom}
@@ -57,14 +57,22 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
                                         null);
     private final FaidareCurrentUser currentUser;
 
-    public FaidareDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate, FaidareCurrentUser currentUser) {
-        super(elasticsearchTemplate, new FaidareDocumentHighlighter());
+    public FaidareDocumentDaoImpl(ElasticsearchTemplate elasticsearchTemplate, FaidareCurrentUser currentUser) {
+        super(elasticsearchTemplate, new FaidareDocumentHighlighter(), new FaidareAggregationAnalyzer());
         this.currentUser = currentUser;
     }
 
     @Override
-    protected QueryBuilder getContextualQuery() {
-        return QueryBuilders.termsQuery("groupId", currentUser.get().getAccessibleGroupIds());
+    protected Query getContextualQuery() {
+        return Query.of(
+            b -> b.terms(
+                builder -> builder.field("groupId").terms(
+                    termsBuilder -> termsBuilder.value(
+                        currentUser.get().getAccessibleGroupIds().stream().map(FieldValue::of).toList()
+                    )
+                )
+            )
+        );
     }
 
     @Override
@@ -95,10 +103,10 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
     @Override
     public Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements) {
         // construct the query, without paging
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, Pageable.unpaged(), descendants);
+        NativeQueryBuilder builder = getQueryBuilder(query, refinements, Pageable.unpaged(), descendants);
         // only load the id from the document source
         builder.withFields("id");
-        NativeSearchQuery searchQuery = builder.build();
+        NativeQuery searchQuery = builder.build();
         SearchHits<FaidareDocument> hits = elasticsearchTemplate.search(searchQuery, getDocumentClass());
         return hits.stream().map(hit -> hit.getContent().getId()).collect(Collectors.toSet());
     }
@@ -106,10 +114,10 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
     @Override
     public Set<String> findAllIds(String query, boolean descendants, SearchRefinements refinements, String idFieldName) {
         // construct the query, without paging
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, Pageable.unpaged(), descendants);
+        NativeQueryBuilder builder = getQueryBuilder(query, refinements, Pageable.unpaged(), descendants);
         // only load the id from the document source
         builder.withFields(idFieldName);
-        NativeSearchQuery searchQuery = builder.build();
+        NativeQuery searchQuery = builder.build();
         SearchHits<FaidareDocument> hits = elasticsearchTemplate.search(searchQuery, getDocumentClass());
         if (idFieldName.equals("germplasmDbId")){
             return hits.stream().map(hit -> hit.getContent().getGermplasmDbId()).collect(Collectors.toSet());

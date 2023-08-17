@@ -9,17 +9,17 @@ import java.util.function.BiConsumer;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
-import fr.inra.urgi.datadiscovery.dao.*;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
+import fr.inra.urgi.datadiscovery.dao.AggregationTester;
+import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.wheatis.WheatisDocument;
+import fr.inra.urgi.datadiscovery.pillar.DatabaseSourceDTO;
+import fr.inra.urgi.datadiscovery.pillar.PillarDTO;
 import org.assertj.core.util.Lists;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,21 +28,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.context.annotation.Conditional;
+import org.springframework.boot.test.autoconfigure.data.elasticsearch.DataElasticsearchTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.index.AliasAction;
-import org.springframework.data.elasticsearch.core.index.AliasActionParameters;
-import org.springframework.data.elasticsearch.core.index.AliasActions;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource("/test-wheatis.properties")
 @Import(ElasticSearchConfig.class)
-@JsonTest
+@DataElasticsearchTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles(AppProfile.WHEATIS)
 @DisabledIfEnvironmentVariable(named ="CIRCLECI", matches = "true", disabledReason = "Avoid to run ES tests depending on synonyms on CircleCI")
@@ -161,7 +156,7 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         AggregatedPage<WheatisDocument> result =
             documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getAggregations()).isNull();
+        assertThat(result.getAggregations()).isEmpty();
 
         result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
@@ -194,25 +189,21 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
             documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms databaseName = result.getAggregations().get(WheatisAggregation.DATABASE_NAME.getName());
-        assertThat(databaseName.getName()).isEqualTo(WheatisAggregation.DATABASE_NAME.getName());
-        assertThat(databaseName.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
-        assertThat(databaseName.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester databaseName = new AggregationTester(result.getAggregation(WheatisAggregation.DATABASE_NAME.getName()));
+        assertThat(databaseName.getKeys()).containsOnly("Plantae", "Fungi");
+        assertThat(databaseName.getDocumentCounts()).containsOnly(1L);
 
-        Terms entryType = result.getAggregations().get(WheatisAggregation.ENTRY_TYPE.getName());
-        assertThat(entryType.getName()).isEqualTo(WheatisAggregation.ENTRY_TYPE.getName());
-        assertThat(entryType.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("bar foo", "foo");
-        assertThat(entryType.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester entryType = new AggregationTester(result.getAggregation(WheatisAggregation.ENTRY_TYPE.getName()));
+        assertThat(entryType.getKeys()).containsOnly("bar foo", "foo");
+        assertThat(entryType.getDocumentCounts()).containsOnly(1L);
 
-        Terms node = result.getAggregations().get(WheatisAggregation.NODE.getName());
-        assertThat(node.getName()).isEqualTo(WheatisAggregation.NODE.getName());
-        assertThat(node.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("URGI");
-        assertThat(node.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+        AggregationTester node = new AggregationTester(result.getAggregation(WheatisAggregation.NODE.getName()));
+        assertThat(node.getKeys()).containsExactly("URGI");
+        assertThat(node.getDocumentCounts()).containsExactly(2L);
 
-        Terms species = result.getAggregations().get(WheatisAggregation.SPECIES.getName());
-        assertThat(species.getName()).isEqualTo(WheatisAggregation.SPECIES.getName());
-        assertThat(species.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Vitis vinifera", "Girolla mucha gusta");
-        assertThat(species.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester species = new AggregationTester(result.getAggregation(WheatisAggregation.SPECIES.getName()));
+        assertThat(species.getKeys()).containsOnly("Vitis vinifera", "Girolla mucha gusta");
+        assertThat(species.getDocumentCounts()).containsOnly(1L);
     }
 
     @Test
@@ -240,10 +231,9 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
             documentDao.aggregate("bar",  SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms aggregation = result.getAggregations().get(wheatisAggregation.getName());
-        assertThat(aggregation.getName()).isEqualTo(wheatisAggregation.getName());
-        assertThat(aggregation.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("foo", WheatisDocument.NULL_VALUE);
-        assertThat(aggregation.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester aggregation = new AggregationTester(result.getAggregation(wheatisAggregation.getName()));
+        assertThat(aggregation.getKeys()).containsOnly("foo", WheatisDocument.NULL_VALUE);
+        assertThat(aggregation.getDocumentCounts()).containsOnly(1L);
     }
 
     @Test
@@ -275,34 +265,20 @@ class WheatisDocumentDaoTest extends DocumentDaoTest {
         documentDao.saveAll(Arrays.asList(resource1, resource2, resource3, resource4));
         documentDao.refresh();
 
-        Terms pillars = documentDao.findPillars();
+        List<PillarDTO> pillars = documentDao.findPillars();
+        assertThat(pillars).hasSize(2);
 
-        assertThat(pillars.getBuckets()).hasSize(2);
+        PillarDTO p1 = pillars.stream().filter(p -> p.getName().equals("P1")).findAny().orElseThrow();
 
-        Bucket p1 = pillars.getBucketByKey("P1");
+        assertThat(p1.getDatabaseSources()).containsOnly(
+            new DatabaseSourceDTO("D11", null, 2),
+            new DatabaseSourceDTO("D12", null, 1)
+        );
 
-        Terms databaseSource = p1.getAggregations().get(DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME);
-        assertThat(databaseSource.getBuckets()).hasSize(2);
-
-        Bucket d11 = databaseSource.getBucketByKey("D11");
-        assertThat(d11.getDocCount()).isEqualTo(2);
-        Terms d11Url = d11.getAggregations().get(DocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d11Url).isNull();
-
-        Bucket d12 = databaseSource.getBucketByKey("D12");
-        assertThat(d12.getDocCount()).isEqualTo(1);
-        Terms d12Url = d12.getAggregations().get(WheatisDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d12Url).isNull();
-
-        Bucket p2 = pillars.getBucketByKey("P2");
-
-        databaseSource = p2.getAggregations().get(WheatisDocumentDao.DATABASE_SOURCE_AGGREGATION_NAME);
-        assertThat(databaseSource.getBuckets()).hasSize(1);
-
-        Bucket d21 = databaseSource.getBucketByKey("D21");
-        assertThat(d21.getDocCount()).isEqualTo(1);
-        Terms d21Url = d21.getAggregations().get(WheatisDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d21Url).isNull();
+        PillarDTO p2 = pillars.stream().filter(p -> p.getName().equals("P2")).findAny().orElseThrow();
+        assertThat(p2.getDatabaseSources()).containsOnly(
+            new DatabaseSourceDTO("D21", null, 1)
+        );
     }
 
     @Test

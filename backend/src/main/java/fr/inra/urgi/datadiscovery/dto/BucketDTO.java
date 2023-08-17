@@ -2,8 +2,6 @@ package fr.inra.urgi.datadiscovery.dto;
 
 import java.util.Objects;
 
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-
 /**
  * A bucket, containing a field value and the number of documents falling into the bucket
  * @author JB Nizet
@@ -16,10 +14,6 @@ public final class BucketDTO {
     public BucketDTO(String key, long documentCount) {
         this.key = key;
         this.documentCount = documentCount;
-    }
-
-    public BucketDTO(Terms.Bucket bucket) {
-        this(bucket.getKeyAsString(), bucket.getDocCount());
     }
 
     public String getKey() {

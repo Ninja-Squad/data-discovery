@@ -1,13 +1,11 @@
 package fr.inra.urgi.datadiscovery.dto;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsAggregate;
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
 /**
  * A DTO for a terms aggregation, containing the name of the aggregation (which is used to determine the aggregated
@@ -33,12 +31,20 @@ public final class AggregationDTO {
      */
     private final List<BucketDTO> buckets;
 
-    public AggregationDTO(Terms aggregation, AggregationAnalyzer aggregationAnalyzer) {
-        this.name = aggregation.getName();
-        this.type = aggregationAnalyzer.getAggregationType(aggregation);
-        this.buckets = Collections.unmodifiableList(
-            aggregation.getBuckets().stream().map(BucketDTO::new).collect(Collectors.toList())
-        );
+    public AggregationDTO(String name, AppAggregation.Type type, List<BucketDTO> buckets) {
+        this.name = name;
+        this.type = type;
+        this.buckets = List.copyOf(buckets);
+    }
+
+    public AggregationDTO(String name, StringTermsAggregate aggregation, AggregationAnalyzer aggregationAnalyzer) {
+        this.name = name;
+        this.type = aggregationAnalyzer.getAggregationType(name);
+        this.buckets = aggregation.buckets()
+                                  .array()
+                                  .stream()
+                                  .map(bucket -> new BucketDTO(bucket.key().stringValue(), bucket.docCount()))
+                                  .toList();
     }
 
     public String getName() {

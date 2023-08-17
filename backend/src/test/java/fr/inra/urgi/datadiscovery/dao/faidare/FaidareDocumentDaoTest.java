@@ -15,19 +15,19 @@ import java.util.stream.Collectors;
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
-import fr.inra.urgi.datadiscovery.dao.DocumentDao;
+import fr.inra.urgi.datadiscovery.dao.AggregationTester;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareCurrentUser;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareUser;
+import fr.inra.urgi.datadiscovery.pillar.DatabaseSourceDTO;
+import fr.inra.urgi.datadiscovery.pillar.PillarDTO;
 import org.assertj.core.util.Lists;
-import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.autoconfigure.data.elasticsearch.DataElasticsearchTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
@@ -47,7 +47,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource("/test-faidare.properties")
 @Import(ElasticSearchConfig.class)
-@JsonTest
+@DataElasticsearchTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles(AppProfile.FAIDARE)
 @DisabledIfEnvironmentVariable(named ="CIRCLECI", matches = "true", disabledReason = "Avoid to run ES tests depending on synonyms on CircleCI")
@@ -220,7 +220,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
         AggregatedPage<FaidareDocument> result =
             documentDao.search("bar", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getAggregations()).isNull();
+        assertThat(result.getAggregations()).isEmpty();
 
         result = documentDao.search("bing", false, false, SearchRefinements.EMPTY, firstPage);
         assertThat(result.getContent()).isEmpty();
@@ -361,67 +361,56 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                     documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
             assertThat(result.getContent()).hasSize(1);
 
-            Terms databaseName = result.getAggregations().get(FaidareAggregation.DATABASE_NAME.getName());
-            assertThat(databaseName.getName()).isEqualTo(FaidareAggregation.DATABASE_NAME.getName());
-            assertThat(databaseName.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Fungi");
-            assertThat(databaseName.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester databaseName = new AggregationTester(result.getAggregation(FaidareAggregation.DATABASE_NAME.getName()));
+            assertThat(databaseName.getKeys()).containsOnly("Plantae", "Fungi");
+            assertThat(databaseName.getDocumentCounts()).containsOnly(1L);
 
-            Terms entryType = result.getAggregations().get(FaidareAggregation.ENTRY_TYPE.getName());
-            assertThat(entryType.getName()).isEqualTo(FaidareAggregation.ENTRY_TYPE.getName());
-            assertThat(entryType.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("bar foo", "foo");
-            assertThat(entryType.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester entryType = new AggregationTester(result.getAggregation(FaidareAggregation.ENTRY_TYPE.getName()));
+            assertThat(entryType.getKeys()).containsOnly("bar foo", "foo");
+            assertThat(entryType.getDocumentCounts()).containsOnly(1L);
 
-            Terms node = result.getAggregations().get(FaidareAggregation.NODE.getName());
-            assertThat(node.getName()).isEqualTo(FaidareAggregation.NODE.getName());
-            assertThat(node.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("URGI");
-            assertThat(node.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L);
+            AggregationTester node = new AggregationTester(result.getAggregation(FaidareAggregation.NODE.getName()));
+            assertThat(node.getKeys()).containsExactly("URGI");
+            assertThat(node.getDocumentCounts()).containsExactly(2L);
 
-            Terms species = result.getAggregations().get(FaidareAggregation.SPECIES.getName());
-            assertThat(species.getName()).isEqualTo(FaidareAggregation.SPECIES.getName());
-            assertThat(species.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Vitis vinifera", "Girolla mucha gusta");
-            assertThat(species.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester species = new AggregationTester(result.getAggregation(FaidareAggregation.SPECIES.getName()));
+            assertThat(species.getKeys()).containsOnly("Vitis vinifera", "Girolla mucha gusta");
+            assertThat(species.getDocumentCounts()).containsOnly(1L);
 
-            Terms holdingInstitute = result.getAggregations().get(FaidareAggregation.HOLDING_INSTITUTE.getName());
-            assertThat(holdingInstitute.getName()).isEqualTo(FaidareAggregation.HOLDING_INSTITUTE.getName());
-            assertThat(holdingInstitute.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("INRA", "University of Oulu");
-            assertThat(holdingInstitute.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester holdingInstitute = new AggregationTester(result.getAggregation(FaidareAggregation.HOLDING_INSTITUTE.getName()));
+            assertThat(holdingInstitute.getKeys()).containsOnly("INRA", "University of Oulu");
+            assertThat(holdingInstitute.getDocumentCounts()).containsOnly(1L);
 
-            Terms biologicalStatus = result.getAggregations().get(FaidareAggregation.BIOLOGICAL_STATUS.getName());
-            assertThat(biologicalStatus.getName()).isEqualTo(FaidareAggregation.BIOLOGICAL_STATUS.getName());
-            assertThat(biologicalStatus.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Natural", "Traditional");
-            assertThat(biologicalStatus.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester biologicalStatus = new AggregationTester(result.getAggregation(FaidareAggregation.BIOLOGICAL_STATUS.getName()));
+            assertThat(biologicalStatus.getKeys()).containsOnly("Natural", "Traditional");
+            assertThat(biologicalStatus.getDocumentCounts()).containsOnly(1L);
 
-            Terms geneticNature = result.getAggregations().get(FaidareAggregation.GENETIC_NATURE.getName());
-            assertThat(geneticNature.getName()).isEqualTo(FaidareAggregation.GENETIC_NATURE.getName());
-            assertThat(geneticNature.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Nature1");
-            assertThat(geneticNature.getBuckets()).extracting(Bucket::getDocCount).containsOnly(2L);
+            AggregationTester geneticNature = new AggregationTester(result.getAggregation(FaidareAggregation.GENETIC_NATURE.getName()));
+            assertThat(geneticNature.getKeys()).containsOnly("Nature1");
+            assertThat(geneticNature.getDocumentCounts()).containsOnly(2L);
 
-            Terms countryOfOrigin = result.getAggregations().get(FaidareAggregation.COUNTRY_OF_ORIGIN.getName());
-            assertThat(countryOfOrigin.getName()).isEqualTo(FaidareAggregation.COUNTRY_OF_ORIGIN.getName());
-            assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("France", "Finland");
-            assertThat(countryOfOrigin.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester countryOfOrigin = new AggregationTester(result.getAggregation(FaidareAggregation.COUNTRY_OF_ORIGIN.getName()));
+            assertThat(countryOfOrigin.getKeys()).containsOnly("France", "Finland");
+            assertThat(countryOfOrigin.getDocumentCounts()).containsOnly(1L);
 
-            Terms taxonGroup = result.getAggregations().get(FaidareAggregation.TAXON_GROUP.getName());
-            assertThat(taxonGroup.getName()).isEqualTo(FaidareAggregation.TAXON_GROUP.getName());
-            assertThat(taxonGroup.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Pixies", "Rolling stones");
-            assertThat(taxonGroup.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester taxonGroup = new AggregationTester(result.getAggregation(FaidareAggregation.TAXON_GROUP.getName()));
+            assertThat(taxonGroup.getKeys()).containsOnly("Pixies", "Rolling stones");
+            assertThat(taxonGroup.getDocumentCounts()).containsOnly(1L);
 
-            Terms observationVariableIds = result.getAggregations().get(FaidareAggregation.ONTOLOGY.getName());
-            assertThat(observationVariableIds.getName()).isEqualTo(FaidareAggregation.ONTOLOGY.getName());
-            assertThat(observationVariableIds.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("OV1", "OV2");
-            assertThat(observationVariableIds.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester observationVariableIds = new AggregationTester(result.getAggregation(FaidareAggregation.ONTOLOGY.getName()));
+            assertThat(observationVariableIds.getKeys()).containsOnly("OV1", "OV2");
+            assertThat(observationVariableIds.getDocumentCounts()).containsOnly(1L);
 
-            Terms germplasmList = result.getAggregations().get(FaidareAggregation.GERMPLASM_LIST.getName());
-            assertThat(germplasmList.getName()).isEqualTo(FaidareAggregation.GERMPLASM_LIST.getName());
-            assertThat(germplasmList.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("GL1", "GL2");
-            assertThat(germplasmList.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester germplasmList = new AggregationTester(result.getAggregation(FaidareAggregation.GERMPLASM_LIST.getName()));
+            assertThat(germplasmList.getKeys()).containsOnly("GL1", "GL2");
+            assertThat(germplasmList.getDocumentCounts()).containsOnly(1L);
         }
 
         @Test
         void shouldAggregateWithMainAggregationsOnly() {
             AggregatedPage<FaidareDocument> result =
                     documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.MAIN, false);
-            assertThat(result.getAggregations().asList().stream().map(Aggregation::getName).collect(Collectors.toSet()))
+            assertThat(result.getAggregations().stream().map(AggregationDTO::getName).collect(Collectors.toSet()))
                     .isEqualTo(FaidareAggregation.MAIN_AGGREGATIONS.stream().map(FaidareAggregation::getName).collect(Collectors.toSet()));
         }
 
@@ -437,10 +426,9 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
             when(mockCurrentUser.get()).thenReturn(new FaidareUser("john", new HashSet<>(Arrays.asList(0))));
             AggregatedPage<FaidareDocument> result =
                 documentDao.aggregate("  ", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
-            Terms databaseName = result.getAggregations().get(FaidareAggregation.DATABASE_NAME.getName());
-            assertThat(databaseName.getName()).isEqualTo(FaidareAggregation.DATABASE_NAME.getName());
-            assertThat(databaseName.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae");
-            assertThat(databaseName.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+            AggregationTester databaseName = new AggregationTester(result.getAggregation(FaidareAggregation.DATABASE_NAME.getName()));
+            assertThat(databaseName.getKeys()).containsOnly("Plantae");
+            assertThat(databaseName.getDocumentCounts()).containsOnly(1L);
         }
     }
 
@@ -469,10 +457,9 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
             documentDao.aggregate("bar",  SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms aggregation = result.getAggregations().get(faidareAggregation.getName());
-        assertThat(aggregation.getName()).isEqualTo(faidareAggregation.getName());
-        assertThat(aggregation.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("foo", FaidareDocument.NULL_VALUE);
-        assertThat(aggregation.getBuckets()).extracting(Bucket::getDocCount).containsOnly(1L);
+        AggregationTester aggregation = new AggregationTester(result.getAggregation(faidareAggregation.getName()));
+        assertThat(aggregation.getKeys()).containsOnly("foo", FaidareDocument.NULL_VALUE);
+        assertThat(aggregation.getDocumentCounts()).containsOnly(1L);
     }
 
     @Test
@@ -504,34 +491,20 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
         documentDao.saveAll(Arrays.asList(resource1, resource2, resource3, resource4));
         documentDao.refresh();
 
-        Terms pillars = documentDao.findPillars();
+        List<PillarDTO> pillars = documentDao.findPillars();
+        assertThat(pillars).hasSize(2);
 
-        assertThat(pillars.getBuckets()).hasSize(2);
+        PillarDTO p1 = pillars.stream().filter(p -> p.getName().equals("P1")).findAny().orElseThrow();
 
-        Bucket p1 = pillars.getBucketByKey("P1");
+        assertThat(p1.getDatabaseSources()).containsOnly(
+            new DatabaseSourceDTO("D11", null, 2),
+            new DatabaseSourceDTO("D12", null, 1)
+        );
 
-        Terms databaseSource = p1.getAggregations().get(DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME);
-        assertThat(databaseSource.getBuckets()).hasSize(2);
-
-        Bucket d11 = databaseSource.getBucketByKey("D11");
-        assertThat(d11.getDocCount()).isEqualTo(2);
-        Terms d11Url = d11.getAggregations().get(DocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d11Url).isNull();
-
-        Bucket d12 = databaseSource.getBucketByKey("D12");
-        assertThat(d12.getDocCount()).isEqualTo(1);
-        Terms d12Url = d12.getAggregations().get(FaidareDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d12Url).isNull();
-
-        Bucket p2 = pillars.getBucketByKey("P2");
-
-        databaseSource = p2.getAggregations().get(FaidareDocumentDao.DATABASE_SOURCE_AGGREGATION_NAME);
-        assertThat(databaseSource.getBuckets()).hasSize(1);
-
-        Bucket d21 = databaseSource.getBucketByKey("D21");
-        assertThat(d21.getDocCount()).isEqualTo(1);
-        Terms d21Url = d21.getAggregations().get(FaidareDocumentDao.PORTAL_URL_AGGREGATION_NAME);
-        assertThat(d21Url).isNull();
+        PillarDTO p2 = pillars.stream().filter(p -> p.getName().equals("P2")).findAny().orElseThrow();
+        assertThat(p2.getDatabaseSources()).containsOnly(
+            new DatabaseSourceDTO("D21", null, 1)
+        );
     }
 
     @Test

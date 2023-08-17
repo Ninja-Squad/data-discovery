@@ -2,7 +2,6 @@ package fr.inra.urgi.datadiscovery.dao;
 
 import static fr.inra.urgi.datadiscovery.dao.DocumentDao.DATABASE_SOURCE_AGGREGATION_NAME;
 import static fr.inra.urgi.datadiscovery.dao.DocumentDao.PORTAL_URL_AGGREGATION_NAME;
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,43 +9,46 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.TermsQuery;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.CompletionSuggestOption;
+import co.elastic.clients.elasticsearch.core.search.FieldSuggester;
+import co.elastic.clients.elasticsearch.core.search.Suggester;
+import co.elastic.clients.elasticsearch.core.search.Suggestion;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
-import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.TermsQueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.filter.Filter;
-import org.elasticsearch.search.aggregations.bucket.filter.FilterAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.suggest.Suggest;
-import org.elasticsearch.search.suggest.SuggestBuilder;
-import org.elasticsearch.search.suggest.SuggestBuilders;
+import fr.inra.urgi.datadiscovery.pillar.PillarDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
+import org.springframework.data.elasticsearch.client.elc.Queries;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightFieldParameters;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightParameters;
 
 /**
  * Base class for implementations of {@link DocumentDao}
@@ -69,15 +71,18 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
      */
     private static final int MAX_RETURNED_SUGGESTION_COUNT = 10;
 
-    protected final ElasticsearchRestTemplate elasticsearchTemplate;
+    protected final ElasticsearchTemplate elasticsearchTemplate;
     private final AbstractDocumentHighlighter<D> documentHighlighter;
+    private final AggregationAnalyzer aggregationAnalyzer;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public AbstractDocumentDaoImpl(ElasticsearchRestTemplate elasticsearchTemplate,
-                                   AbstractDocumentHighlighter<D> documentHighlighter) {
+    public AbstractDocumentDaoImpl(ElasticsearchTemplate elasticsearchTemplate,
+                                   AbstractDocumentHighlighter<D> documentHighlighter,
+                                   AggregationAnalyzer aggregationAnalyzer) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.documentHighlighter = documentHighlighter;
+        this.aggregationAnalyzer = aggregationAnalyzer;
     }
 
     @Override
@@ -86,20 +91,26 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
                                     boolean descendants,
                                     SearchRefinements refinements,
                                     Pageable page) {
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
-
+        NativeQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
         if (highlight) {
-            builder.withHighlightFields(
-                        new HighlightBuilder.Field("description").numOfFragments(0),
-                        new HighlightBuilder.Field("description.synonyms").numOfFragments(0)
-                    ).withHighlightBuilder(new HighlightBuilder().encoder("html"));
+            Highlight theHighlight = new Highlight(
+                HighlightParameters.builder().withEncoder("html").build(),
+                List.of(
+                    new HighlightField("description", HighlightFieldParameters.builder().withNumberOfFragments(0).build()),
+                    new HighlightField("description.synonyms", HighlightFieldParameters.builder().withNumberOfFragments(0).build())
+                )
+            );
+            builder.withHighlightQuery(
+                new HighlightQuery(theHighlight, getDocumentClass())
+            );
         }
 
-        NativeSearchQuery searchQuery = builder.build();
+        NativeQuery searchQuery = builder.build();
         logger.debug("Search query: {}", searchQuery);
         return AggregatedPage.fromSearchHits(
             elasticsearchTemplate.search(searchQuery, getDocumentClass()),
             page,
+            aggregationAnalyzer,
             documentHighlighter
         );
     }
@@ -112,25 +123,25 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
                                        boolean descendants) {
 
         PageRequest page = PageRequest.of(0, 1);
-        NativeSearchQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
+        NativeQueryBuilder builder = getQueryBuilder(query, refinements, page, descendants);
 
         List<? extends AppAggregation> aggregations =
-                aggregationSelection == AggregationSelection.MAIN ? getMainAppAggregations() : getAppAggregations();
+            aggregationSelection == AggregationSelection.MAIN
+                ? getMainAppAggregations()
+                : getAppAggregations();
 
         aggregations.forEach(appAggregation -> {
-            FilterAggregationBuilder filterAggregation = createFilterAggregation(appAggregation, refinements, descendants);
-            builder.withAggregations(filterAggregation);
+            Aggregation filterAggregation = createFilterAggregation(appAggregation, refinements, descendants);
+            builder.withAggregation(appAggregation.getName(), filterAggregation);
         });
 
         AggregatedPage<D> result = AggregatedPage.fromSearchHits(
             elasticsearchTemplate.search(builder.build(), getDocumentClass()),
             page,
+            aggregationAnalyzer,
             documentHighlighter
         );
 
-        // the page contains filter aggregations, each containing a sub terms aggregation.
-        // we actually want the terms aggregation directly in the page
-        result = extractTermsAggregations(result);
         return result;
     }
 
@@ -151,76 +162,78 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
         return annotIds;
     }
 
-    protected NativeSearchQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
+    protected NativeQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
+        NativeQueryBuilder nativeQueryBuilder = NativeQuery.builder();
         // if the query is empty, rather than showing no result, we show everything.
         // this is necessary in Faidare because we need to show aggregations on the home page, and be able to search
         // only with refinements
 
         // this full text query is executed, and its results are used to compute aggregations
-        QueryBuilder fullTextQuery = query.trim().isEmpty()
-                ? matchAllQuery()
-                : multiMatchQuery(query, getSearchableFields().toArray(new String[0]));
-        QueryBuilder contextualQuery = this.getContextualQuery();
-        if (contextualQuery != null) {
-            fullTextQuery = boolQuery().must(fullTextQuery).must(contextualQuery);
-        }
+        Query partialFullTextQuery = query.trim().isEmpty()
+            ? Query.of(b -> b.matchAll(Queries.matchAllQuery()))
+            : Query.of(b -> b.multiMatch(MultiMatchQuery.of(builder -> builder.query(query).fields(List.copyOf(getSearchableFields())))));
+
+        Query contextualQuery = this.getContextualQuery();
+        Query fullTextQuery = contextualQuery != null
+            ? Query.of(b -> b.bool(builder -> builder.must(partialFullTextQuery).must(contextualQuery)))
+            : partialFullTextQuery;
 
         // this post filter query is applied, after the aggregation have been computed, to apply the
         // refinements (i.e. the aggregation/facet criteria).
         // See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-post-filter.html
-        BoolQueryBuilder refinementQuery = boolQuery();
-        for (AppAggregation term : refinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(refinements, term, descendants));
-        }
+        Query refinementQuery = Query.of(b -> b.bool(BoolQuery.of(builder -> {
+            for (AppAggregation term : refinements.getTerms()) {
+                builder.must(createRefinementQuery(refinements, term, descendants));
+            }
+            SearchRefinements implicitRefinements = getImplicitSearchRefinements();
+            for (AppAggregation term : implicitRefinements.getTerms()) {
+                builder.must(createRefinementQuery(implicitRefinements, term, descendants));
+            }
+            return builder;
+        })));
 
-        SearchRefinements implicitRefinements = getImplicitSearchRefinements();
-        for (AppAggregation term : implicitRefinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(implicitRefinements, term, descendants));
-        }
-
-        return new NativeSearchQueryBuilder()
+        return NativeQuery.builder()
             .withQuery(fullTextQuery)
             .withFilter(refinementQuery)
             .withPageable(page);
+
     }
 
 
-    private FilterAggregationBuilder createFilterAggregation(AppAggregation appAggregation,
-                                                             SearchRefinements searchRefinements, boolean descendants) {
-        return AggregationBuilders.filter(
-            appAggregation.getName(),
-            createQueryForAllRefinementsExcept(searchRefinements, appAggregation, descendants)
-        ).subAggregation(
-            AggregationBuilders.terms(appAggregation.getName())
-                               .field(appAggregation.getField())
-                               .missing(SearchDocument.NULL_VALUE)
-                               .size(appAggregation.getType().getMaxBuckets()));
+    private Aggregation createFilterAggregation(AppAggregation appAggregation,
+                                                SearchRefinements searchRefinements,
+                                                boolean descendants) {
+        return Aggregation.of(
+            b ->
+                b.filter(createQueryForAllRefinementsExcept(searchRefinements, appAggregation, descendants))
+                 .aggregations(
+                     appAggregation.getName(),
+                     ab -> ab.terms(
+                         tb -> tb.field(appAggregation.getField())
+                                 .missing(SearchDocument.NULL_VALUE)
+                                 .size(appAggregation.getType().getMaxBuckets())
+                     )
+                 )
+        );
     }
 
-    private QueryBuilder createQueryForAllRefinementsExcept(SearchRefinements refinements,
-                                                            AppAggregation appAggregation, boolean descendants) {
-        BoolQueryBuilder refinementQuery = boolQuery();
-        for (AppAggregation term : refinements.getTerms()) {
-            if (!term.equals(appAggregation)) {
-                refinementQuery.must(createRefinementQuery(refinements, term, descendants));
-            }
-        }
-        SearchRefinements implicitRefinements = getImplicitSearchRefinements();
-        for (AppAggregation term : implicitRefinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(implicitRefinements, term, descendants));
-        }
-        return refinementQuery;
-    }
-
-    private AggregatedPage<D> extractTermsAggregations(AggregatedPage<D> page) {
-        List<Terms> termsAggregations =
-            page.getAggregations()
-                .asList()
-                .stream()
-                .map(aggregation -> (Terms) ((Filter) aggregation).getAggregations().get(aggregation.getName()))
-                .collect(Collectors.toList());
-
-        return new AggregatedPageImpl<>(page, new Aggregations(termsAggregations));
+    private Query createQueryForAllRefinementsExcept(SearchRefinements refinements,
+                                                     AppAggregation appAggregation,
+                                                     boolean descendants) {
+        return Query.of(b -> b.bool(
+           builder -> {
+               for (AppAggregation term : refinements.getTerms()) {
+                   if (!term.equals(appAggregation)) {
+                       builder.must(createRefinementQuery(refinements, term, descendants));
+                   }
+               }
+               SearchRefinements implicitRefinements = getImplicitSearchRefinements();
+               for (AppAggregation term : implicitRefinements.getTerms()) {
+                   builder.must(createRefinementQuery(implicitRefinements, term, descendants));
+               }
+               return builder;
+           }
+        ));
     }
 
     /**
@@ -250,26 +263,47 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
      *     </li>
      * </ul>
      */
-    private QueryBuilder createRefinementQuery(SearchRefinements refinements, AppAggregation term, boolean descendants) {
+    private Query createRefinementQuery(SearchRefinements refinements, AppAggregation term, boolean descendants) {
         Set<String> acceptedValues = refinements.getRefinementsForTerm(term);
-        TermsQueryBuilder termsQuery = termsQuery(term.getField(), acceptedValues);
-        BoolQueryBuilder boolQuery = boolQuery();
-        if (term.getName().equals("annot")) {
-            List<String> goIds = getAnnotationsIds(refinements);
-            boolQuery.should(termsQuery("annotationId.keyword", goIds));
-            if (descendants) {
-                for (int i = 0 ; i < goIds.size(); i++) {
-                    boolQuery.should(prefixQuery("ancestors.keyword", goIds.get(i))) ;
+        TermsQuery termsQuery =
+            TermsQuery.of(builder ->
+                              builder.field(term.getField())
+                                     .terms(fb -> fb.value(acceptedValues.stream().map(FieldValue::of).toList()))
+            );
+        Query boolQuery = Query.of(qb -> qb.bool(BoolQuery.of(builder -> {
+            if (term.getName().equals("annot")) {
+                List<String> goIds = getAnnotationsIds(refinements);
+                builder.should(b -> b.terms(tb ->
+                                                tb.field("annotationId.keyword")
+                                                  .terms(fb -> fb.value(goIds.stream().map(FieldValue::of).toList())))
+                );
+                if (descendants) {
+                    for (String goId : goIds) {
+                        builder.should(goBuilder -> goBuilder.prefix(prefixBuilder -> prefixBuilder.field("ancestors.keyword").value(goId)));
+                    }
                 }
             }
-        } else {
-            boolQuery.should(termsQuery);
-        }
+            else {
+                builder.should(b -> b.terms(termsQuery));
+            }
+            return builder;
+        })));
 
         if (acceptedValues.contains(SearchDocument.NULL_VALUE)) {
-            return boolQuery()
-                .should(boolQuery)
-                .should(boolQuery().mustNot(existsQuery(term.getField())));
+            return Query.of(
+                b -> b.bool(
+                    builder -> builder.should(boolQuery)
+                                      .should(
+                                          nullBuilder -> nullBuilder.bool(
+                                              bb -> bb.mustNot(
+                                                  mnb -> mnb.exists(
+                                                      eb -> eb.field(term.getField())
+                                                  )
+                                              )
+                                          )
+                                      )
+                )
+            );
         }
         else {
             return boolQuery;
@@ -279,41 +313,49 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     @Override
     public List<String> suggest(String term) {
         return elasticsearchTemplate.execute(client -> {
-            SuggestBuilder suggestion =
-                new SuggestBuilder().addSuggestion(
+            Suggester suggester = Suggester.of(builder -> {
+                builder.suggesters(
                     COMPLETION,
-                    SuggestBuilders.completionSuggestion(SUGGESTIONS_FIELD)
-                                   .text(term)
-                                   .size(MAX_RETURNED_SUGGESTION_COUNT * 2) // because we deduplicate case-differing
-                                   // suggestions after
-                                   .skipDuplicates(true));
+                    FieldSuggester.of(
+                        fsBuilder -> fsBuilder.completion(
+                            completionBuilder ->
+                                completionBuilder.field(SUGGESTIONS_FIELD)
+                                                 .size(MAX_RETURNED_SUGGESTION_COUNT * 2) // because we deduplicate case-differing
+                                                 .skipDuplicates(true) // suggestions after
+                        ).text(term)
+                    )
+                );
+                return builder;
+            });
 
             String index = elasticsearchTemplate.getIndexCoordinatesFor(getSuggestionDocumentClass()).getIndexName();
-            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().suggest(suggestion);
-            sourceBuilder.fetchSource(false);
-            SearchRequest req = new SearchRequest(new String[]{index}, sourceBuilder);
-            SearchResponse response = null;
+
             try {
-                response = client.search(req, RequestOptions.DEFAULT);
-            } catch (IOException e) {
+                SearchResponse<Void> response = client.search(
+                    SearchRequest.of(
+                        b -> b.suggest(suggester).source(sourceBuilder -> sourceBuilder.fetch(false)).index(index)
+                    ),
+                    Void.class
+                );
+
+                Map<String, List<Suggestion<Void>>> suggest = response.suggest();
+                if (suggest.isEmpty()) {
+                    // no data in the database
+                    return Collections.emptyList();
+                }
+
+                List<String> suggestions = suggest.get(COMPLETION)
+                                                  .stream()
+                                                  .flatMap(suggestion -> suggestion.completion().options().stream())
+                                                  .map(CompletionSuggestOption::text)
+                                                  .toList();
+
+                return removeSuggestionsDifferingByCase(suggestions);
+            }
+            catch (IOException e) {
                 logger.warn("Could not fetch suggestions for term: '{}'", term, e);
                 return Collections.emptyList();
             }
-
-            Suggest suggest = response.getSuggest();
-            if (suggest == null) {
-                // no data in the database
-                return Collections.emptyList();
-            }
-
-            List<String> suggestions = suggest.getSuggestion(COMPLETION)
-                                              .getEntries()
-                                              .stream()
-                                              .flatMap(entry -> entry.getOptions().stream())
-                                              .map(option -> option.getText().string())
-                                              .collect(Collectors.toList());
-
-            return removeSuggestionsDifferingByCase(suggestions);
         });
     }
 
@@ -342,38 +384,67 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
     @Override
     public void deleteAllSuggestions() {
-        elasticsearchTemplate.delete(new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build(), getSuggestionDocumentClass());
+        elasticsearchTemplate.delete(NativeQuery.builder().withQuery(Queries.matchAllQueryAsQuery()).build(), getSuggestionDocumentClass());
         elasticsearchTemplate.indexOps(getSuggestionDocumentClass()).refresh();
     }
 
     @Override
-    public Terms findPillars() {
+    public List<PillarDTO> findPillars() {
         PillarAggregationDescriptor descriptor = getPillarAggregationDescriptor();
+
+        Aggregation databaseSource = Aggregation.of(
+            b -> {
+                var terms = b.terms(
+                    builder ->
+                        builder.field(descriptor.getDatabaseSourceProperty()).size(100)
+                );
+                if (descriptor.getPortalUrlProperty() != null) {
+                    terms.aggregations(
+                        PORTAL_URL_AGGREGATION_NAME,
+                        Aggregation.of(
+                            b2 ->
+                                b2.terms(
+                                    builder ->
+                                        builder.field(descriptor.getPortalUrlProperty()).size(2)
+                                )
+                        )
+                    );
+                }
+                return terms;
+            }
+        );
+
+        Aggregation pillar = Aggregation.of(
+            b -> b.terms(
+                builder -> builder.field(descriptor.getPillarNameProperty()).size(100)
+            ).aggregations(
+                DATABASE_SOURCE_AGGREGATION_NAME,
+                databaseSource
+            )
+        );
+
+        Query refinementQuery = Query.of(
+            b -> b.bool(
+                builder -> {
+                    SearchRefinements implicitRefinements = getImplicitSearchRefinements();
+                    for (AppAggregation term : implicitRefinements.getTerms()) {
+                        builder.must(createRefinementQuery(implicitRefinements, term, false));
+                    }
+                    return builder;
+                })
+        );
         String pillarAggregationName = "pillar";
-        TermsAggregationBuilder pillar =
-            AggregationBuilders.terms(pillarAggregationName).field(descriptor.getPillarNameProperty()).size(100);
-        TermsAggregationBuilder databaseSource =
-            AggregationBuilders.terms(DATABASE_SOURCE_AGGREGATION_NAME).field(descriptor.getDatabaseSourceProperty()).size(100);
-
-        if (descriptor.getPortalUrlProperty() != null) {
-            TermsAggregationBuilder portalURL =
-                AggregationBuilders.terms(PORTAL_URL_AGGREGATION_NAME).field(descriptor.getPortalUrlProperty()).size(2);
-            databaseSource.subAggregation(portalURL);
-        }
-        pillar.subAggregation(databaseSource);
-
-        BoolQueryBuilder refinementQuery = boolQuery();
-        SearchRefinements implicitRefinements = getImplicitSearchRefinements();
-        for (AppAggregation term : implicitRefinements.getTerms()) {
-            refinementQuery.must(createRefinementQuery(implicitRefinements, term, false));
-        }
-        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
+        NativeQueryBuilder builder = NativeQuery.builder()
             .withQuery(refinementQuery)
-            .withAggregations(pillar)
+            .withAggregation(pillarAggregationName, pillar)
             .withPageable(NoPage.INSTANCE);
 
         SearchHits<D> searchHits = elasticsearchTemplate.search(builder.build(), getDocumentClass());
-        return ((Aggregations) searchHits.getAggregations().aggregations()).get(pillarAggregationName);
+        ElasticsearchAggregations elasticsearchAggregations =
+            (ElasticsearchAggregations) searchHits.getAggregations();
+        return PillarDTO.fromAggregate(
+            elasticsearchAggregations.aggregationsAsMap().get(pillarAggregationName).aggregation().getAggregate().sterms()
+        );
     }
 
     @Override
@@ -429,7 +500,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
      * A contextual query is, for example, a query that depends on the current user.
      * This implementation returns null by default, but can be overridden by subclasses
      */
-    protected QueryBuilder getContextualQuery() {
+    protected Query getContextualQuery() {
         return null;
     }
 

@@ -19,7 +19,8 @@ import fr.inra.urgi.datadiscovery.dao.rare.RareAggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
-import org.elasticsearch.search.aggregations.Aggregations;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
+import fr.inra.urgi.datadiscovery.dto.BucketDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -88,39 +89,33 @@ class SearchControllerTest {
         PageRequest pageRequest = PageRequest.of(0, SearchController.PAGE_SIZE);
         String query = "pauca";
 
-        List<MockTermsAggregation> aggregations = new ArrayList<>();
-        aggregations.add(new MockTermsAggregation(RareAggregation.DOMAIN.getName(),
-                                                  Arrays.asList(new MockBucket("Plantae", 123),
-                                                                new MockBucket("Fungi", 2))));
+        List<AggregationDTO> aggregations = new ArrayList<>();
+        AggregationDTO domain = new AggregationDTO(
+            RareAggregation.DOMAIN.getName(),
+            RareAggregation.DOMAIN.getType(),
+            List.of(
+                new BucketDTO("Plantae", 123),
+                new BucketDTO("Fungi", 2)
+            )
+        );
+        aggregations.add(domain);
         for (RareAggregation rareAggregation : RareAggregation.values()) {
             if (rareAggregation != RareAggregation.DOMAIN) {
-                aggregations.add(new MockTermsAggregation(RareAggregation.COUNTRY_OF_COLLECT.getName(),
-                                                          Collections.emptyList()));
+                aggregations.add(new AggregationDTO(rareAggregation.getName(),
+                                                    rareAggregation.getType(),
+                                                    Collections.emptyList()));
             }
         }
-        // return aggregations in a random order
-        Collections.shuffle(aggregations);
 
         when(mockDocumentDao.aggregate(query, SearchRefinements.EMPTY, AggregationSelection.ALL, false))
-            .thenReturn(new AggregatedPageImpl<>(
-                Arrays.asList(resource),
-                pageRequest,
-                1,
-                new Aggregations(
-                    Arrays.asList(new MockTermsAggregation(RareAggregation.DOMAIN.getName(),
-                                                           Arrays.asList(new MockBucket("Plantae", 123),
-                                                                         new MockBucket("Fungi", 2))),
-                                  new MockTermsAggregation(RareAggregation.COUNTRY_OF_COLLECT.getName(),
-                                                           Collections.emptyList()),
-                                  new MockTermsAggregation(RareAggregation.COUNTRY_OF_ORIGIN.getName(),
-                                                           Collections.emptyList()),
-                                  new MockTermsAggregation(RareAggregation.MATERIAL.getName(),
-                                                           Collections.emptyList()),
-                                  new MockTermsAggregation(RareAggregation.BIOTOPE.getName(),
-                                                           Collections.emptyList()),
-                                  new MockTermsAggregation(RareAggregation.TAXON.getName(),
-                                                           Collections.emptyList())))
-                ));
+            .thenReturn(
+                new AggregatedPageImpl<>(
+                    List.of(resource),
+                    pageRequest,
+                    1,
+                    aggregations
+                )
+            );
 
         ResultActions resultActions =
             mockMvc.perform(get("/api/aggregate")

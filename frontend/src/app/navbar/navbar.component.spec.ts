@@ -75,8 +75,7 @@ describe('NavbarComponent', () => {
     expect(tester.title.attr('href')).toBe('https://www.agrobrc-rare.org/');
     expect(tester.logo.attr('title')).toBe('RARe Search');
 
-    expect(tester.links.length - 1).toBe(1);
-    // minus 1 because of More section (containing Help, About, Join and Legal links) added automatically
+    expect(tester.links.length).toBe(6);
 
     expect(tester.firstLink.textContent).toBe('AgroBRC-RARe Home');
     expect(tester.firstLink.attr('href')).toBe('https://www.agrobrc-rare.org/');

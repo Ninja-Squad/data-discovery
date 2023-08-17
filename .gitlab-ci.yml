@@ -7,9 +7,9 @@ stages:
   - deploy-staging
   - deploy-production
 
-# The image contains a JDK 11 and a Chrome browser
+# The image contains a JDK 17 and a Chrome browser
 # Node, NPM and Yarn are installed by Gradle
-image: circleci/openjdk:11-jdk-browsers
+image: circleci/openjdk:17-buster-browsers
 
 default:
   tags:
@@ -137,7 +137,7 @@ test-lint-build:
     # - ./gradlew assemble -Papp=${APP_NAME}
     - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
     - export PATH="/tmp/node/:$PATH"
-    - ./gradlew sonarqube -x test # TODO: fix in GNP-6342
+    - ./gradlew sonar -x test # TODO: fix in GNP-6342
   # cache:
   #   #key: "$CI_COMMIT_REF_NAME"
   #   key: "${CI_JOB_NAME}"
@@ -162,24 +162,24 @@ test-lint-build:
 
 
 .build-app: &build_app
-# Hidden job which serves as a template for following
-# jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
+  # Hidden job which serves as a template for following
+  # jobs below. See https://docs.gitlab.com/ee/ci/yaml/#anchors
   stage: build
   tags:
-   - openstack
+    - openstack
   script:
-   - ./gradlew assemble -Papp=${APP_NAME}
+    - ./gradlew assemble -Papp=${APP_NAME}
   artifacts:
-   paths:
-    - backend/build/libs/${APP_NAME}.jar
-   expire_in: 6 months
+    paths:
+      - backend/build/libs/${APP_NAME}.jar
+    expire_in: 6 months
   cache:
-   key: "${CI_COMMIT_REF_NAME}"
-   policy: pull-push
-   paths:
-    - .gradle
-    - frontend/.gradle/
-    - frontend/node_modules/
+    key: "${CI_COMMIT_REF_NAME}"
+    policy: pull-push
+    paths:
+      - .gradle
+      - frontend/.gradle/
+      - frontend/node_modules/
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
       when: never
@@ -197,22 +197,22 @@ test-lint-build:
 
 build-rare:
   variables:
-   APP_NAME: "rare"
+    APP_NAME: "rare"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-brc4env:
   variables:
-   APP_NAME: "brc4env"
+    APP_NAME: "brc4env"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-wheatis:
   variables:
-   APP_NAME: "wheatis"
+    APP_NAME: "wheatis"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-faidare:
   variables:
-   APP_NAME: "faidare"
+    APP_NAME: "faidare"
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 restart-config-server:
@@ -236,20 +236,20 @@ restart-config-server:
 
 .deploy-to-vm: &deploy_to_vm
   tags:
-   - openstack
+    - openstack
   # Hidden job which serves as template for executed jobs below.
   # See https://docs.gitlab.com/ee/ci/yaml/#anchors
   retry: 2
   script:
-   # SSH initialization
-   - eval $(ssh-agent -s)
-   - ssh-add <(echo "${SSH_PRIVATE_KEY}")
-   - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
-   # Copy jar to the server
-   - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${SERVICE_NAME}-${ENV}.jar
-   - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${SERVICE_NAME}-${ENV}.jar /opt/bootapp/ ; sudo chown -R bootapp:bootapp /opt/bootapp/ ; sudo systemctl restart bootapp@${SERVICE_NAME}-${ENV}"
-   - eval $(ssh-agent -k)
-   - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_NAME}"
+    # SSH initialization
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "${SSH_PRIVATE_KEY}")
+    - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
+    # Copy jar to the server
+    - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${SERVICE_NAME}-${ENV}.jar
+    - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${SERVICE_NAME}-${ENV}.jar /opt/bootapp/ ; sudo chown -R bootapp:bootapp /opt/bootapp/ ; sudo systemctl restart bootapp@${SERVICE_NAME}-${ENV}"
+    - eval $(ssh-agent -k)
+    - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_NAME}"
   interruptible: true
 
 .variables-rare-beta: &variables-rare-beta
@@ -424,7 +424,7 @@ restart-config-server:
 deploy-rare-to-beta:
   stage: deploy-beta
   tags:
-   - openstack
+    - openstack
   <<: *variables-rare-beta
   <<: *deploy_to_vm
   rules:
@@ -438,12 +438,12 @@ deploy-rare-to-beta:
         - frontend/**/*
         - .gitlab-ci.yml
   allow_failure: false # mandatory to block the execution of the pipeline
-  needs: ["restart-config-server","build-rare"]
+  needs: [ "restart-config-server","build-rare" ]
 
 deploy-rare-to-staging:
   stage: deploy-staging
   tags:
-   - openstack
+    - openstack
   <<: *variables-rare-staging
   <<: *deploy_to_vm
   rules:
@@ -457,12 +457,12 @@ deploy-rare-to-staging:
         - frontend/**/*
         - .gitlab-ci.yml
   when: manual
-  needs: ["restart-config-server","build-rare"]
+  needs: [ "restart-config-server","build-rare" ]
 
 deploy-rare-to-prod:
   stage: deploy-production
   tags:
-   - openstack
+    - openstack
   <<: *variables-rare-prod
   <<: *deploy_to_vm
   rules:
@@ -477,12 +477,12 @@ deploy-rare-to-prod:
         - .gitlab-ci.yml
   when: manual
   allow_failure: false
-  needs: ["restart-config-server","build-rare"]
+  needs: [ "restart-config-server","build-rare" ]
 
 deploy-brc4env-to-beta:
   stage: deploy-beta
   tags:
-   - openstack
+    - openstack
   <<: *variables-brc4env-beta
   <<: *deploy_to_vm
   rules:
@@ -496,12 +496,12 @@ deploy-brc4env-to-beta:
         - frontend/**/*
         - .gitlab-ci.yml
   allow_failure: false # mandatory to block the execution of the pipeline
-  needs: ["restart-config-server","build-brc4env"]
+  needs: [ "restart-config-server","build-brc4env" ]
 
 deploy-brc4env-to-staging:
   stage: deploy-staging
   tags:
-   - openstack
+    - openstack
   <<: *variables-brc4env-staging
   <<: *deploy_to_vm
   rules:
@@ -515,12 +515,12 @@ deploy-brc4env-to-staging:
         - frontend/**/*
         - .gitlab-ci.yml
   when: manual
-  needs: ["restart-config-server","build-brc4env"]
+  needs: [ "restart-config-server","build-brc4env" ]
 
 deploy-brc4env-to-prod:
   stage: deploy-production
   tags:
-   - openstack
+    - openstack
   <<: *variables-brc4env-prod
   <<: *deploy_to_vm
   rules:
@@ -535,12 +535,12 @@ deploy-brc4env-to-prod:
         - .gitlab-ci.yml
   when: manual
   allow_failure: false
-  needs: ["restart-config-server","build-brc4env"]
+  needs: [ "restart-config-server","build-brc4env" ]
 
 deploy-wheatis-to-beta:
   stage: deploy-beta
   tags:
-   - openstack
+    - openstack
   <<: *variables-wheatis-beta
   <<: *deploy_to_vm
   rules:
@@ -554,12 +554,12 @@ deploy-wheatis-to-beta:
         - frontend/**/*
         - .gitlab-ci.yml
   allow_failure: false
-  needs: ["restart-config-server","build-wheatis"]
+  needs: [ "restart-config-server","build-wheatis" ]
 
 deploy-wheatis-to-staging:
   stage: deploy-staging
   tags:
-   - openstack
+    - openstack
   <<: *variables-wheatis-staging
   <<: *deploy_to_vm
   rules:
@@ -573,12 +573,12 @@ deploy-wheatis-to-staging:
         - frontend/**/*
         - .gitlab-ci.yml
   when: manual
-  needs: ["restart-config-server","build-wheatis"]
+  needs: [ "restart-config-server","build-wheatis" ]
 
 deploy-wheatis-to-prod:
   stage: deploy-production
   tags:
-   - openstack
+    - openstack
   <<: *variables-wheatis-prod
   <<: *deploy_to_vm
   rules:
@@ -593,7 +593,7 @@ deploy-wheatis-to-prod:
         - .gitlab-ci.yml
   when: manual
   allow_failure: false
-  needs: ["restart-config-server","build-wheatis"]
+  needs: [ "restart-config-server","build-wheatis" ]
 
 deploy-faidare-to-beta:
   stage: deploy-beta
@@ -611,7 +611,7 @@ deploy-faidare-to-beta:
         - frontend/**/*
         - .gitlab-ci.yml
   allow_failure: false
-  needs: ["restart-config-server","build-faidare"]
+  needs: [ "restart-config-server","build-faidare" ]
 
 deploy-faidare-to-staging-public:
   stage: deploy-staging
@@ -629,7 +629,7 @@ deploy-faidare-to-staging-public:
         - frontend/**/*
         - .gitlab-ci.yml
   when: manual
-  needs: ["restart-config-server","build-faidare"]
+  needs: [ "restart-config-server","build-faidare" ]
 
 deploy-faidare-to-staging-private:
   stage: deploy-staging
@@ -647,7 +647,7 @@ deploy-faidare-to-staging-private:
         - frontend/**/*
         - .gitlab-ci.yml
   when: manual
-  needs: ["restart-config-server","build-faidare"]
+  needs: [ "restart-config-server","build-faidare" ]
 
 deploy-faidare-to-prod-public:
   stage: deploy-production
@@ -666,7 +666,7 @@ deploy-faidare-to-prod-public:
         - .gitlab-ci.yml
   when: manual
   allow_failure: false
-  needs: ["restart-config-server","build-faidare"]
+  needs: [ "restart-config-server","build-faidare" ]
 
 deploy-faidare-to-prod-private:
   stage: deploy-production
@@ -685,4 +685,4 @@ deploy-faidare-to-prod-private:
         - .gitlab-ci.yml
   when: manual
   allow_failure: false
-  needs: ["restart-config-server","build-faidare"]
+  needs: [ "restart-config-server","build-faidare" ]

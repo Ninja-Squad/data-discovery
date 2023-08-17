@@ -1,9 +1,7 @@
 package fr.inra.urgi.datadiscovery.filter.faidare;
 
-import javax.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -20,7 +18,6 @@ public class FaidareUserGroupsProperties {
     @NotBlank
     private final String token;
 
-    @ConstructorBinding
     public FaidareUserGroupsProperties(String url, String token) {
         this.url = url;
         this.token = token;

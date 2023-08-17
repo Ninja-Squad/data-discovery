@@ -3,22 +3,23 @@ package fr.inra.urgi.datadiscovery.dao.rare;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
 import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
+import fr.inra.urgi.datadiscovery.dao.AggregationTester;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
+import fr.inra.urgi.datadiscovery.pillar.PillarDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.autoconfigure.data.elasticsearch.DataElasticsearchTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ import org.springframework.test.context.TestPropertySource;
     }
 )
 @Import(ElasticSearchConfig.class)
-@JsonTest
+@DataElasticsearchTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles({AppProfile.RARE, AppProfile.BRC4ENV})
 class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
@@ -132,15 +133,13 @@ class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
             documentDao.aggregate("foo", SearchRefinements.EMPTY, AggregationSelection.ALL, false);
         assertThat(result.getContent()).hasSize(1);
 
-        Terms domain = result.getAggregations().get(RareAggregation.DOMAIN.getName());
-        assertThat(domain.getName()).isEqualTo(RareAggregation.DOMAIN.getName());
-        assertThat(domain.getBuckets()).extracting(Bucket::getKeyAsString).containsOnly("Plantae", "Organismae");
-        assertThat(domain.getBuckets()).extracting(Terms.Bucket::getDocCount).containsOnly(1L);
+        AggregationTester domain = new AggregationTester(result.getAggregation(RareAggregation.DOMAIN.getName()));
+        assertThat(domain.getKeys()).containsOnly("Plantae", "Organismae");
+        assertThat(domain.getDocumentCounts()).containsOnly(1L);
 
-        Terms biotopeType = result.getAggregations().get(RareAggregation.BIOTOPE.getName());
-        assertThat(biotopeType.getName()).isEqualTo(RareAggregation.BIOTOPE.getName());
-        assertThat(biotopeType.getBuckets()).extracting(Bucket::getKeyAsString).containsExactly("Biotope", "Human host");
-        assertThat(biotopeType.getBuckets()).extracting(Bucket::getDocCount).containsExactly(2L, 1L);
+        AggregationTester biotopeType = new AggregationTester(result.getAggregation(RareAggregation.BIOTOPE.getName()));
+        assertThat(biotopeType.getKeys()).containsExactly("Biotope", "Human host");
+        assertThat(biotopeType.getDocumentCounts()).containsExactly(2L, 1L);
     }
 
     @Test
@@ -162,9 +161,9 @@ class RareDocumentDaoWithImplicitTermsTest extends DocumentDaoTest {
         documentDao.saveAll(Arrays.asList(resource1, resource2));
         documentDao.refresh();
 
-        Terms pillars = documentDao.findPillars();
+        List<PillarDTO> pillars = documentDao.findPillars();
 
-        assertThat(pillars.getBuckets()).hasSize(1);
-        assertThat(pillars.getBuckets().get(0).getKeyAsString()).isEqualTo("plantes");
+        assertThat(pillars).hasSize(1);
+        assertThat(pillars.get(0).getName()).isEqualTo("plantes");
     }
 }

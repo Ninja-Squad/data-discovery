@@ -7,9 +7,8 @@ import java.util.List;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
-import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
 import fr.inra.urgi.datadiscovery.dao.AppAggregation;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -24,13 +23,13 @@ public class RareAggregationAnalyzer implements AggregationAnalyzer {
         Collections.unmodifiableList(Arrays.asList(RareAggregation.values()));
 
     @Override
-    public AppAggregation.Type getAggregationType(Terms terms) {
-        return RareAggregation.fromName(terms.getName()).getType();
+    public AppAggregation.Type getAggregationType(String aggregationName) {
+        return RareAggregation.fromName(aggregationName).getType();
     }
 
     @Override
-    public Comparator<Terms> comparator() {
-        return Comparator.comparing(terms -> RareAggregation.fromName(terms.getName()));
+    public Comparator<AggregationDTO> comparator() {
+        return Comparator.comparing(aggregation -> RareAggregation.fromName(aggregation.getName()));
     }
 
     @Override

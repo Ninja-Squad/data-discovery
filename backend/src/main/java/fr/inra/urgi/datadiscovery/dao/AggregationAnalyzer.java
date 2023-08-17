@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import fr.inra.urgi.datadiscovery.dao.AppAggregation.Type;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 
 /**
  * Interface allowing to sort Terms aggregations and to get their type before sending them to the UI, and to get the
@@ -12,7 +12,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
  * @author JB Nizet
  */
 public interface AggregationAnalyzer {
-    Type getAggregationType(Terms terms);
-    Comparator<Terms> comparator();
+    Type getAggregationType(String aggregationName);
+    Comparator<AggregationDTO> comparator();
     List<AppAggregation> getAggregations();
 }
