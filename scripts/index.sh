@@ -17,6 +17,7 @@ TIMESTAMP=$(date +%s)
 CLEAN=0
 INDEX=1
 LOCAL=0
+DEFAULT_THREAD_NUMBER=4
 
 APPS="rare, brc4env, wheatis, faidare"
 ENVS="dev, beta, staging, prod"
@@ -27,7 +28,7 @@ DESCRIPTION:
 	Wrapper script used to create index and aliases then index data for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> -data <data directory> [--local] [--no-data] [-h|--help]
+	$0 -host <ES host> -port <ES port> -app <application name> -env <environment name> -data <data directory> [-threads <1-64>] [--local] [--no-data] [-h|--help]
 
 PARAMS:
 	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the indexing load on several hosts. To increase parallel indexation, you can double te same IP (eg -host "192.168.10.xxx 192.168.10.xxx")
@@ -36,6 +37,7 @@ PARAMS:
 	-env           the environment name of the targeted application: $ENVS
 	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[env]/[app])
 	               NB: use rare directory for brc4env and faidare directory for wheatis
+	-threads       the max number of parallel jobs to run, sticking to the available CPU according to GNU Parallel documentation, default: ${DEFAULT_THREAD_NUMBER}
 	--local        use local environment for RARe application (by default) and ignore all Elasticsearch related options (env, host, port)
 	--no-data      does not index data, only create indices and aliases
 	--clean	       clean the previous existing indices and rollover alias
@@ -67,6 +69,7 @@ while [ -n "$1" ]; do
 		-app) APP_NAME=$2;shift 2;;
 		-env) [ "$LOCAL" -eq "1" ] || APP_ENV=$2;shift 2;;
 		-data) DATADIR=$2;shift 2;;
+		-threads) THREADS=$2;shift 2;;
 		--local) LOCAL=1 ; echo "Working in local mode, ignoring all Elasticsearch related options (env, host, port)" ;shift;;
 		--no-data) INDEX=0;shift 1;;
 		--clean) CLEAN=1;shift 1;;
@@ -108,10 +111,29 @@ if [ $INDEX -eq 1 ] ; then
 	fi
 fi
 
-# Create suggestions
-echo -e "\n${BOLD}Create suggestions...${NC}"
+if [ -z "$THREADS" ] ; then
+    THREADS=${DEFAULT_THREAD_NUMBER}
+fi
+if [[ ! $THREADS =~ ^[0-9]+$ ]]; then
+    echo "ERROR: threads parameter must be a positive integer!"
+	echo && help
+	exit 4
+fi
 
-$SHELL "${BASEDIR}"/createSuggestions.sh -app "$APP_NAME" -data "$DATADIR"
+PROC_AVAILABLE=$(grep -c proc /proc/cpuinfo)
+if [ $THREADS -gt $PROC_AVAILABLE ]; then
+    echo "WARN: reducing THREADS to max available proc: ${PROC_AVAILABLE}"
+    THREADS=${PROC_AVAILABLE}
+fi
+if [ $THREADS -lt 1 ]; then
+    echo "WARN: setting THREADS to 1 instead of an invalid lower value"
+    THREADS=1
+fi
+
+# Create suggestions
+echo -e "\n${BOLD}Create suggestions with "$THREADS" parallel threads...${NC}"
+
+$SHELL "${BASEDIR}"/createSuggestions.sh -app "$APP_NAME" -data "$DATADIR" -threads "$THREADS"
 CODE=$?
 [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when creating suggestions, see errors above. Exiting.${NC}" ; exit $CODE ; }
 echo
@@ -143,7 +165,7 @@ echo
 # Index data in created indices
 if [ $INDEX -eq 1 ] ; then
 	echo -e "\n${BOLD}Index data and suggestions...${NC}"
-	$SHELL "${BASEDIR}"/harvestCI.sh -host "$ES_HOSTS" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -data "$DATADIR" -timestamp "$TIMESTAMP"
+	$SHELL "${BASEDIR}"/harvestCI.sh -host "$ES_HOSTS" -port "$ES_PORT" -app "$APP_NAME" -env "$APP_ENV" -data "$DATADIR" -timestamp "$TIMESTAMP" -threads "$THREADS"
 fi
 CODE=$?
 [ $CODE -gt 0 ] && { echo -e "${RED_BOLD}Error when indexing data, see errors above. Exiting.${NC}" ; exit $CODE ; }

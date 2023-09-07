@@ -6,6 +6,7 @@ ORANGE='\033[0;33m'
 BOLD='\033[1m'
 RED_BOLD="${RED}${BOLD}"
 NC='\033[0m' # No format
+THREADS=4
 
 APPS="rare, brc4env, wheatis, faidare"
 help() {
@@ -33,12 +34,13 @@ DESCRIPTION:
         Script used to create index and aliases for Data Discovery portals (RARe, WheatIS and DataDiscovery)
 
 USAGE:
-	$0 -app <application name> -data <data directory> [-h|--help]
+	$0 -app <application name> -data <data directory> [-threads <1-64>] [-h|--help]
 
 PARAMS:
 	-app           the application for which to create the suggestions: $APPS
 	-data          the data directory in which the JSON files can be found and the suggestion files will be generated (e.g. /mnt/index-data-is/[env]/[app])
 	               NB: use rare directory for brc4env, and faidare directory for wheatis, a filter will be applied to index only relevant data.
+	-threads       the max number of parallel jobs to run, sticking to the available CPU according to GNU Parallel documentation, default: ${THREADS}
 	-h or --help   print this help
 
 EOF
@@ -78,6 +80,7 @@ while [ -n "$1" ]; do
 		--help) help;shift 1;;
 		-app) APP_NAME=$2;shift 2;;
 		-data) DATADIR=$2;shift 2;;
+		-threads) THREADS=$2;shift 2;;
 		--) shift;break;;
 		-*) echo -e "${RED_BOLD}Unknown option: $1 ${NC}\n"&& help && echo;exit 1;;
 		*) break;;
@@ -190,13 +193,13 @@ export -f extract_suggestions
 
 process_suggestions() {
 	[ ! -d "${DATADIR}/${SUGGESTION_DIR}" ] && echo "Creating missing directory:" && mkdir -v "${DATADIR}/${SUGGESTION_DIR}"
-  time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel --bar extract_suggestions | \
+  time find ${DATADIR}/data -maxdepth 2 -name "*.gz" | parallel -j${THREADS} --bar extract_suggestions | \
     LC_ALL=C sort -u | \
-    parallel --pipe -k \
+    parallel -j${THREADS} --pipe -k \
         "sed -r 's/(.*)$/{ \"index\": { }}\n{ \"suggestions\": \"\1\" }/g ; # insert ES bulk metadata above each JSON array
 		         s/[\\]+\"/\"/g'                                            # remove any backslash before double quote to prevent any malformed JSON
 		"| \
-	parallel --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_{#}.gz"
+	parallel -j${THREADS} --blocksize 10M --pipe -l 1000 "gzip -c > ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_{#}.gz"
 }
 
 if [ "${APP_NAME}" == "faidare" ]; then

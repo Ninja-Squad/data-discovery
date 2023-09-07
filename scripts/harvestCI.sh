@@ -13,6 +13,7 @@ ES_HOST="localhost"
 ES_HOSTS="${ES_HOST}"
 ES_PORT="9200"
 TIMESTAMP=$(date +%s)
+THREADS=4
 
 READLINK_CMD="readlink"
 DATE_CMD="date"
@@ -40,16 +41,17 @@ DESCRIPTION:
 	Script used to index data in Data Discovery portals (RARe, WheatIS and Faidare)
 
 USAGE:
-	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -data <data directory> -timestamp <epoch timestamp> [-h|--help]
+	$0 -host <"elasticsearch_host_1 elasticsearch_host_2"> -port <elasticsearch_port> -app <application name> -env <environment name> -data <data directory> -timestamp <epoch timestamp> [-threads <1-64>] [-h|--help]
 
 PARAMS:
-	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the load on several hosts. To increase parallel indexation, you can double the same IP (eg -host "192.168.10.xxx 192.168.10.xxx")
+	-host          the hostname or IP of Elasticsearch node (default: $ES_HOST), can contain several hosts (space separated, between quotes) if you want to spread the coordination load on several hosts.
 	-port          the port of Elasticsearch node (default: $ES_PORT), must be the same port for each host declared using -host parameter
 	-app           the name of the targeted application: ${APPS}
 	-env           the environment name of the targeted application: ${ENVS}
 	-data          the data directory in which the JSON files to index can be found (e.g. /mnt/index-data-is/[env]/[app])
 	               NB: use rare directory for brc4env and faidare directory for wheatis
 	-timestamp     a timestamp used to switch aliases from old indices to newer ones, in order to avoid any downtime
+	-threads       the max number of parallel jobs to run, sticking to the available CPU according to GNU Parallel documentation, default: ${THREADS}
 	-h or --help   print this help
 
 DEPENDENCIES:
@@ -92,6 +94,7 @@ while [ -n "$1" ]; do
 		-app) APP_NAME=$2;shift 2;;
 		-env) APP_ENV=$2;shift 2;;
 		-data) DATADIR=$2;shift 2;;
+		-threads) THREADS=$2;shift 2;;
 		-timestamp) TIMESTAMP=$2;shift 2;;
 		--) shift;break;;
 		-*) echo -e "${RED}ERROR: Unknown option: $1${NC}" && echo && help && echo;exit 1;;
@@ -183,8 +186,6 @@ for es_host in ${ES_HOSTS} ; do
     previous_cluster_info="${cluster_info}"
 done
 
-HOST_NB=$(($(echo "${ES_HOSTS}" | grep -o ' ' | grep -c .) +1 ))
-
 OUTDIR="/tmp/bulk/${APP_NAME}-${APP_ENV}"
 [ -d "$OUTDIR" ] && rm -rf "$OUTDIR"
 mkdir -p "$OUTDIR"
@@ -213,9 +214,9 @@ index_suggestions() {
 
 process_suggestions() {
 	{
-		echo "Indexing suggestions into ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index ..."
-		find ${DATADIR}/${SUGGESTION_DIR}/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
-			parallel -j${HOST_NB} --bar --link --halt now,fail=1 index_suggestions {1} '{=1 s:(.*/)+(.*)/.*:$2: =}-{1/.}' {2} \
+		echo "Indexing suggestions into ${DATADIR}/${SUGGESTION_DIR}/${APP_NAME}_bulk_*.gz towards index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-suggestions-index with ${THREADS} parallel threads..."
+		time find ${DATADIR}/${SUGGESTION_DIR}/ -maxdepth 1 -name "${APP_NAME}_bulk_*.gz" | \
+			parallel -j${THREADS} --bar --link --halt now,fail=1 index_suggestions {1} '{=1 s:(.*/)+(.*)/.*:$2: =}-{1/.}' {2} \
 			:::: - ::: ${ES_HOSTS} # the second parameter (regex) parses the file's path to keep only the parent directory + the file's name, used to create logs files distinguished by source
 	} || {
 		code=$?
@@ -251,9 +252,9 @@ export -f index_resources index_suggestions process_suggestions
 
 {
     # set -x
-    echo "Indexing files from ${DATADIR}/data into index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index ..."
-    find ${DATADIR}/data/ -maxdepth 2 -name "*.json.gz" | \
-        parallel --link -j${HOST_NB} --bar --halt now,fail=1 index_resources {1} '{=1 s:(.*/)+(.*)/.*:$2: =}-{1/.}' {2} \
+    echo "Indexing files from ${DATADIR}/data into index located on ${ES_HOST}:${ES_PORT}/${PREFIX_ES}-tmstp${TIMESTAMP}-resource-index with ${THREADS} parallel threads..."
+    time find ${DATADIR}/data/ -maxdepth 2 -name "*.json.gz" | \
+        parallel --link -j${THREADS} --bar --halt now,fail=1 index_resources {1} '{=1 s:(.*/)+(.*)/.*:$2: =}-{1/.}' {2} \
         :::: - ::: ${ES_HOSTS}
 } || {
 	code=$?
