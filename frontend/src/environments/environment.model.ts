@@ -20,7 +20,7 @@ export interface DataDiscoveryEnvironment {
   /**
    * Name of the app, used in the i18n process, to translate specific values
    */
-  name: string;
+  name: 'rare' | 'brc4env' | 'wheatis' | 'faidare';
   /**
    * The title of the application, displayed on screen
    */

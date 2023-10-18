@@ -13,6 +13,6 @@ export class RareHeaderComponent {
   isRareApp: boolean;
 
   constructor() {
-    this.isRareApp = environment.title.startsWith('RARe');
+    this.isRareApp = environment.name === 'rare';
   }
 }
