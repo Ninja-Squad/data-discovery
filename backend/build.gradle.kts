@@ -10,7 +10,7 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.1.1"
+    id("org.springframework.boot") version "3.1.5"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.3"
