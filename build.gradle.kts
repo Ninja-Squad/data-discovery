@@ -1,10 +1,10 @@
 plugins {
-    id("org.sonarqube") version "4.2.1.3168"
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "urgi-is_data-discovery_AXlG7GtvPgTGgvpuDgeV")
-        property("sonar.qualitygate.wait", false)
+        property ("sonar.projectKey", "urgi-is_data-discovery_AXlG7GtvPgTGgvpuDgeV")
+        property ("sonar.qualitygate.wait", false)
     }
 }
