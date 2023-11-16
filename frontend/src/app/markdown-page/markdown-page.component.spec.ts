@@ -1,62 +1,46 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { MarkdownPageComponent } from './markdown-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { stubRoute } from 'ngx-speculoos';
+import { ComponentTester, stubRoute } from 'ngx-speculoos';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
-import { markedOptionsFactory } from '../../marked-options.factory';
+import { provideConfiguredMarkdown } from '../markdown';
+
+class MarkdownPageComponentTester extends ComponentTester<MarkdownPageComponent> {
+  constructor() {
+    super(MarkdownPageComponent);
+  }
+}
 
 describe('MarkdownPageComponent', () => {
-  let component: MarkdownPageComponent;
-  let fixture: ComponentFixture<MarkdownPageComponent>;
+  let tester: MarkdownPageComponentTester;
   const route = stubRoute({
     data: { mdFile: environment.helpMdFile }
   });
 
-  beforeEach(() =>
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MarkdownModule.forRoot({
-          loader: HttpClient, // optional, only if you use [src] attribute
-          markedOptions: {
-            provide: MarkedOptions,
-            useFactory: markedOptionsFactory,
-            useValue: {
-              gfm: true, // default
-              tables: true,
-              breaks: false,
-              pedantic: false,
-              sanitize: false,
-              smartLists: true,
-              smartypants: false
-            }
-          }
-        })
-      ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         provideI18nTesting(),
+        provideConfiguredMarkdown(),
         { provide: ActivatedRoute, useValue: route }
       ]
-    })
-  );
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MarkdownPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    tester = new MarkdownPageComponentTester();
+    tester.detectChanges();
   });
 
-  it('should load and display the help file', () => {
+  it('should load and display the help file', fakeAsync(() => {
     const http = TestBed.inject(HttpTestingController);
 
     // the markdown file is extracted from the route data by our component
-    expect(component.mdFile).toEqual('assets/help-en.md');
+    expect(tester.componentInstance.mdFile).toEqual('assets/help-en.md');
 
     // the markdown component requests the server for the file
     // we return a fake markdown with just a title
@@ -67,8 +51,11 @@ describe('MarkdownPageComponent', () => {
       })
       .flush('# Help section');
 
+    tick();
+    tester.detectChanges();
+
     // the markdown component should render the title
-    const title = fixture.nativeElement.querySelector('h1').textContent;
-    expect(title).toBe('Help section');
-  });
+    // no idea why using tester.element('h1') doesn't work
+    expect(tester.nativeElement.querySelector('h1')?.textContent).toBe('Help section');
+  }));
 });
