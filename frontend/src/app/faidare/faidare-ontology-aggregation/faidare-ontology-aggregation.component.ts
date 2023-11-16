@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'dd-ontology-aggregation',
   templateUrl: './faidare-ontology-aggregation.component.html',
-  styleUrls: ['./faidare-ontology-aggregation.component.scss'],
+  styleUrl: './faidare-ontology-aggregation.component.scss',
   standalone: true,
   imports: [NgIf, NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush

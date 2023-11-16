@@ -5,7 +5,7 @@ import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 @Component({
   selector: 'dd-node',
   templateUrl: './node.component.html',
-  styleUrls: ['./node.component.scss'],
+  styleUrl: './node.component.scss',
   standalone: true,
   imports: [NgIf, NgFor, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush

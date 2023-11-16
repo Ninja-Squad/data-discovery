@@ -64,7 +64,7 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
 @Component({
   selector: 'dd-document-list',
   templateUrl: './faidare-document-list.component.html',
-  styleUrls: ['./faidare-document-list.component.scss'],
+  styleUrl: './faidare-document-list.component.scss',
   standalone: true,
   imports: [
     NgIf,

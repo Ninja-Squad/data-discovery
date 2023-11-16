@@ -6,7 +6,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'dd-truncatable-description',
   templateUrl: './truncatable-description.component.html',
-  styleUrls: ['./truncatable-description.component.scss'],
+  styleUrl: './truncatable-description.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgIf, TranslateModule]

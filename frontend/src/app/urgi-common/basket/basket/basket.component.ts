@@ -11,7 +11,7 @@ import { DecimalPipe, NgFor, NgIf, NgPlural, NgPluralCase } from '@angular/commo
 @Component({
   selector: 'dd-basket',
   templateUrl: './basket.component.html',
-  styleUrls: ['./basket.component.scss'],
+  styleUrl: './basket.component.scss',
   standalone: true,
   imports: [
     NgIf,

@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'dd-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrl: './home.component.scss',
   standalone: true,
   imports: [
     NgIf,

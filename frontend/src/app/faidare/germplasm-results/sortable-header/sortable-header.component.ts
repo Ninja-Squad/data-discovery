@@ -5,7 +5,7 @@ import { SortCriterion } from '../../../search-state.service';
 @Component({
   selector: 'th[sortable]',
   templateUrl: './sortable-header.component.html',
-  styleUrls: ['./sortable-header.component.scss'],
+  styleUrl: './sortable-header.component.scss',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

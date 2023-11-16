@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
 @Component({
   selector: 'dd-aggregations',
   templateUrl: './aggregations.component.html',
-  styleUrls: ['./aggregations.component.scss'],
+  styleUrl: './aggregations.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

@@ -24,7 +24,7 @@ interface ViewModel extends Model {
 @Component({
   selector: 'dd-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+  styleUrl: './search.component.scss',
   providers: [SearchStateService],
   standalone: true,
   imports: [

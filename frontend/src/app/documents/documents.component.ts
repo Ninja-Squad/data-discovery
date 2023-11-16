@@ -18,7 +18,7 @@ interface ViewModel {
 @Component({
   selector: 'dd-documents',
   templateUrl: './documents.component.html',
-  styleUrls: ['./documents.component.scss'],
+  styleUrl: './documents.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

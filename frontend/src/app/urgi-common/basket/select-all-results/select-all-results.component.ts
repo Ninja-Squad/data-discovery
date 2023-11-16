@@ -14,7 +14,7 @@ interface ViewModel {
 @Component({
   selector: 'dd-select-all-results',
   templateUrl: './select-all-results.component.html',
-  styleUrls: ['./select-all-results.component.scss'],
+  styleUrl: './select-all-results.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgIf, NgSwitch, NgSwitchCase, TranslateModule, NgSwitchDefault, AsyncPipe]

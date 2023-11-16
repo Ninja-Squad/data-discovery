@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'dd-descendants-checkbox',
   templateUrl: './descendants-checkbox.component.html',
-  styleUrls: ['./descendants-checkbox.component.scss'],
+  styleUrl: './descendants-checkbox.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [TranslateModule, NgbTooltip]

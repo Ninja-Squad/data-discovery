@@ -5,7 +5,7 @@ import { MarkdownComponent } from 'ngx-markdown';
 @Component({
   selector: 'dd-markdown',
   templateUrl: './markdown-page.component.html',
-  styleUrls: ['./markdown-page.component.scss'],
+  styleUrl: './markdown-page.component.scss',
   standalone: true,
   imports: [MarkdownComponent]
 })

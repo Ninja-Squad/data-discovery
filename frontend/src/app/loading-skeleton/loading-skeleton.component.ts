@@ -43,7 +43,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
       </div>
     </ng-template>
   `,
-  styleUrls: ['./loading-skeleton.component.scss'],
+  styleUrl: './loading-skeleton.component.scss',
   standalone: true,
   imports: [NgIf, NgFor]
 })
