@@ -237,34 +237,34 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "data-discovery-frontend:build:production"
+              "buildTarget": "data-discovery-frontend:build:production"
             },
             "development": {
-              "browserTarget": "data-discovery-frontend:build:development"
+              "buildTarget": "data-discovery-frontend:build:development"
             },
             "rare": {
-              "browserTarget": "data-discovery-frontend:build:development,rare"
+              "buildTarget": "data-discovery-frontend:build:development,rare"
             },
             "rare-production": {
-              "browserTarget": "data-discovery-frontend:build:production,rare-production"
+              "buildTarget": "data-discovery-frontend:build:production,rare-production"
             },
             "brc4env": {
-              "browserTarget": "data-discovery-frontend:build:development,brc4env"
+              "buildTarget": "data-discovery-frontend:build:development,brc4env"
             },
             "brc4env-production": {
-              "browserTarget": "data-discovery-frontend:build:production,brc4env-production"
+              "buildTarget": "data-discovery-frontend:build:production,brc4env-production"
             },
             "wheatis": {
-              "browserTarget": "data-discovery-frontend:build:development,wheatis"
+              "buildTarget": "data-discovery-frontend:build:development,wheatis"
             },
             "wheatis-production": {
-              "browserTarget": "data-discovery-frontend:build:production,wheatis-production"
+              "buildTarget": "data-discovery-frontend:build:production,wheatis-production"
             },
             "faidare": {
-              "browserTarget": "data-discovery-frontend:build:development,faidare"
+              "buildTarget": "data-discovery-frontend:build:development,faidare"
             },
             "faidare-production": {
-              "browserTarget": "data-discovery-frontend:build:production,faidare-production"
+              "buildTarget": "data-discovery-frontend:build:production,faidare-production"
             }
           },
           "defaultConfiguration": "development"
@@ -272,7 +272,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "data-discovery-frontend:build"
+            "buildTarget": "data-discovery-frontend:build"
           }
         },
         "test": {
