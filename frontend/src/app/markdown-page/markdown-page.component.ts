@@ -1,13 +1,13 @@
 import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'dd-markdown',
   templateUrl: './markdown-page.component.html',
   styleUrls: ['./markdown-page.component.scss'],
   standalone: true,
-  imports: [MarkdownModule]
+  imports: [MarkdownComponent]
 })
 export class MarkdownPageComponent implements OnInit {
   mdFile = '';
