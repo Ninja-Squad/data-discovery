@@ -6,7 +6,7 @@ import { NgPlural, NgPluralCase, NgIf, DecimalPipe } from '@angular/common';
 @Component({
   selector: 'dd-document-count',
   templateUrl: './document-count.component.html',
-  styleUrls: ['./document-count.component.scss'],
+  styleUrl: './document-count.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgPlural, NgPluralCase, TranslateModule, NgIf, NgbTooltip, DecimalPipe]

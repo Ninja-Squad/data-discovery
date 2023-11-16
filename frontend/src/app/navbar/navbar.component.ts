@@ -13,7 +13,7 @@ import { NgFor, NgIf } from '@angular/common';
 @Component({
   selector: 'dd-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss'],
+  styleUrl: './navbar.component.scss',
   standalone: true,
   imports: [
     NgIf,

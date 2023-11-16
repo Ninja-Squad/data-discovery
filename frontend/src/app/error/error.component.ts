@@ -11,7 +11,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 @Component({
   selector: 'dd-error',
   templateUrl: './error.component.html',
-  styleUrls: ['./error.component.scss'],
+  styleUrl: './error.component.scss',
   standalone: true,
   imports: [NgIf, TranslateModule, AsyncPipe]
 })

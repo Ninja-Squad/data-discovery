@@ -7,7 +7,7 @@ import { TruncatableDescriptionComponent } from '../../truncatable-description/t
 @Component({
   selector: 'dd-document',
   templateUrl: './generic-document.component.html',
-  styleUrls: ['./generic-document.component.scss'],
+  styleUrl: './generic-document.component.scss',
   standalone: true,
   imports: [NgFor, TruncatableDescriptionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush

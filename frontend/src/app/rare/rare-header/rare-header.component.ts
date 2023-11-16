@@ -5,7 +5,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'dd-header',
   templateUrl: './rare-header.component.html',
-  styleUrls: ['./rare-header.component.scss'],
+  styleUrl: './rare-header.component.scss',
   standalone: true,
   imports: [NgIf]
 })

@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'dd-document-list',
   templateUrl: './generic-document-list.component.html',
-  styleUrls: ['./generic-document-list.component.scss'],
+  styleUrl: './generic-document-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

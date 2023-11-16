@@ -60,7 +60,7 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
 @Component({
   selector: 'dd-tree',
   templateUrl: './tree.component.html',
-  styleUrls: ['./tree.component.scss'],
+  styleUrl: './tree.component.scss',
   providers: [TreeService],
   standalone: true,
   imports: [NgIf, NgFor, AsyncPipe, NodeComponent],

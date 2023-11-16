@@ -12,7 +12,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 @Component({
   selector: 'dd-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrl: './app.component.css',
   standalone: true,
   imports: [
     NgIf,

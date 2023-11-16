@@ -26,7 +26,7 @@ import { NgFor, NgIf } from '@angular/common';
 @Component({
   selector: 'dd-small-aggregation',
   templateUrl: './small-aggregation.component.html',
-  styleUrls: ['./small-aggregation.component.scss'],
+  styleUrl: './small-aggregation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

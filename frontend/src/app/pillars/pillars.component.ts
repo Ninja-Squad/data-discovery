@@ -11,7 +11,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 @Component({
   selector: 'dd-pillars',
   templateUrl: './pillars.component.html',
-  styleUrls: ['./pillars.component.scss'],
+  styleUrl: './pillars.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgIf, TranslateModule, NgFor, DocumentCountComponent, AsyncPipe]

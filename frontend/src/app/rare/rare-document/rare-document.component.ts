@@ -16,7 +16,7 @@ interface ViewModel {
 @Component({
   selector: 'dd-document',
   templateUrl: './rare-document.component.html',
-  styleUrls: ['./rare-document.component.scss'],
+  styleUrl: './rare-document.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgIf, NgbTooltip, NgFor, TruncatableDescriptionComponent, AsyncPipe, TranslateModule]

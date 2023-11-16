@@ -11,7 +11,7 @@ import { Page } from '../../models/page';
 @Component({
   selector: 'dd-select-all-results',
   templateUrl: './generic-select-all-results.component.html',
-  styleUrls: ['./generic-select-all-results.component.scss'],
+  styleUrl: './generic-select-all-results.component.scss',
   standalone: true
 })
 export class GenericSelectAllResultsComponent {

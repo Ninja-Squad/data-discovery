@@ -16,7 +16,7 @@ interface ViewModel {
 @Component({
   selector: 'dd-document',
   templateUrl: './faidare-document.component.html',
-  styleUrls: ['./faidare-document.component.scss'],
+  styleUrl: './faidare-document.component.scss',
   standalone: true,
   imports: [NgIf, NgFor, AsyncPipe, TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush

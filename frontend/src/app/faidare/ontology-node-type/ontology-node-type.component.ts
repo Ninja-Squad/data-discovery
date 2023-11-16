@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'dd-ontology-node-type',
   templateUrl: './ontology-node-type.component.html',
-  styleUrls: ['./ontology-node-type.component.scss'],
+  styleUrl: './ontology-node-type.component.scss',
   standalone: true,
   imports: [NgClass, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush

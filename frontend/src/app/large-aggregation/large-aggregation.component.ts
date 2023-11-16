@@ -33,7 +33,7 @@ const maxResultsDisplayed = 8;
 @Component({
   selector: 'dd-large-aggregation',
   templateUrl: './large-aggregation.component.html',
-  styleUrls: ['./large-aggregation.component.scss'],
+  styleUrl: './large-aggregation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

@@ -36,7 +36,7 @@ interface TreeViewModel {
 @Component({
   selector: 'dd-ontology-aggregation-modal',
   templateUrl: './ontology-aggregation-modal.component.html',
-  styleUrls: ['./ontology-aggregation-modal.component.scss'],
+  styleUrl: './ontology-aggregation-modal.component.scss',
   standalone: true,
   imports: [
     NgIf,

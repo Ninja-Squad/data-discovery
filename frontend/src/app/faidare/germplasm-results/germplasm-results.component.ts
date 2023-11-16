@@ -21,7 +21,7 @@ export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-
 @Component({
   selector: 'dd-germplasm-results',
   templateUrl: './germplasm-results.component.html',
-  styleUrls: ['./germplasm-results.component.scss'],
+  styleUrl: './germplasm-results.component.scss',
   standalone: true,
   imports: [NgIf, NgFor, AsyncPipe, TranslateModule, SortableHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
