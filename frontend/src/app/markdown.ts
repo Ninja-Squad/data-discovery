@@ -1,6 +1,5 @@
 import { MARKED_OPTIONS, MarkedOptions, provideMarkdown } from 'ngx-markdown';
 import { HttpClient } from '@angular/common/http';
-import { EnvironmentProviders } from '@angular/core';
 
 const markedOptions: MarkedOptions = {
   gfm: true,
@@ -8,7 +7,7 @@ const markedOptions: MarkedOptions = {
   pedantic: false
 };
 
-export function provideConfiguredMarkdown(): EnvironmentProviders {
+export function provideConfiguredMarkdown() {
   return provideMarkdown({
     loader: HttpClient,
     markedOptions: {
