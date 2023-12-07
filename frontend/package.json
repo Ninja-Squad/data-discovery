@@ -16,7 +16,7 @@
     "build:faidare": "ng build --configuration=production,faidare-production --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
     "test-multi-browsers": "ng test --code-coverage --no-progress --no-watch -c test-multi-browsers",
-    "lint": "ng lint > eslint-result.txt",
+    "lint": "mkdir -p build && ng lint > build/eslint-result.txt",
     "e2e": "ng e2e",
     "e2e:standalone": "ng e2e --headless --no-watch --browser=chrome",
     "build:stats": "ng build --configuration=production,rare-production --stats-json",
