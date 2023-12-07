@@ -45,7 +45,7 @@ tasks {
     // makes the test task out of date, which makes the build much longer.
     // See https://github.com/spring-projects/spring-boot/issues/13152
     val buildInfo by registering(BuildInfo::class) {
-        destinationDir.set(file("$buildDir/buildInfo"))
+        destinationDir.set(file(layout.buildDirectory.dir("buildInfo")))
     }
 
     processResources {

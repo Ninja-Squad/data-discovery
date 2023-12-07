@@ -64,7 +64,7 @@ tasks {
     inputs.dir("src")
     inputs.file(".eslintrc.json")
     inputs.file(".prettierrc")
-    outputs.file("$buildDir/eslint-result.txt")
+    outputs.file(layout.buildDirectory.file("eslint-result.txt"))
   }
 
   val lint by registering {
@@ -78,7 +78,7 @@ tasks {
     inputs.dir("cypress")
     inputs.file("cypress.config.ts")
     inputs.file("package.json")
-    outputs.file("$buildDir/cypress-result.json")
+    outputs.file(layout.buildDirectory.file("cypress-result.json"))
   }
 
   val e2e by registering {
