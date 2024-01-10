@@ -12,7 +12,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "3.2.1"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
-    id("org.asciidoctor.jvm.convert") version "4.0.0"
+    id("org.asciidoctor.jvm.convert") version "4.0.1"
     id("io.spring.dependency-management") version "1.1.4"
     id("org.sonarqube")
 }
