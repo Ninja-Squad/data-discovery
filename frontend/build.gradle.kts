@@ -10,8 +10,8 @@ plugins {
 val isCi = System.getenv("CI") != null
 
 node {
-  version.set("18.16.0")
-  npmVersion.set("6.14.17")
+  version.set("18.19.0")
+  npmVersion.set("9.9.2")
   yarnVersion.set("1.22.19")
 
   if (isCi) {
@@ -58,7 +58,7 @@ tasks {
     outputs.dir("coverage")
   }
 
-  val yarnLint by registering(YarnTask::class){
+  val yarnLint by registering(YarnTask::class) {
     args.set(listOf("lint"))
     dependsOn(prepare)
     inputs.dir("src")
@@ -71,7 +71,7 @@ tasks {
     dependsOn(yarnLint)
   }
 
-  val yarnE2e by registering(YarnTask::class){
+  val yarnE2e by registering(YarnTask::class) {
     args.set(listOf("e2e:standalone"))
     dependsOn(prepare)
     inputs.dir("src")
