@@ -42,7 +42,7 @@ build-es-synonyms-docker-image:
   stage: pre-build
 
   services:
-    - docker:25.0.4-dind
+    - docker:25.0.5-dind
   script:
     - git lfs pull -I "data/synonyms"
     - cd data/synonyms
@@ -66,7 +66,7 @@ build-loader-docker-image:
   stage: pre-build
 
   services:
-    - docker:25.0.4-dind
+    - docker:25.0.5-dind
   script:
     # build the image
     - docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:${IMAGE_TAG} .
