@@ -26,7 +26,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2023.0.0"
+extra["springCloudVersion"] = "2023.0.1"
 
 val snippetsDir = file("build/generated-snippets")
 
