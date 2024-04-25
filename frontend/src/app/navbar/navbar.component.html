@@ -8,54 +8,56 @@
         height="56px"
       />
     </a>
-    <a
-      class="navbar-brand d-flex align-items-center p-2 px"
-      [href]="navbar.secondLogoUrl"
-      *ngIf="hasSecondLogo()"
-    >
-      <img
-        src="assets/logo-2.png"
-        [alt]="appName + '.navbar.secondTitle' | translate"
-        [title]="appName + '.navbar.secondTitle' | translate"
-        height="56px"
-      />
-    </a>
+    @if (hasSecondLogo()) {
+      <a class="navbar-brand d-flex align-items-center p-2 px" [href]="navbar.secondLogoUrl">
+        <img
+          src="assets/logo-2.png"
+          [alt]="appName + '.navbar.secondTitle' | translate"
+          [title]="appName + '.navbar.secondTitle' | translate"
+          height="56px"
+        />
+      </a>
+    }
 
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
     </button>
     <div id="navbar" class="collapse navbar-collapse" [ngbCollapse]="navbarCollapsed">
       <ul class="navbar-nav me-auto">
-        <ng-container *ngFor="let link of navbar.links">
-          <li class="nav-item" *ngIf="!link.subMenu">
-            <a
-              class="nav-link d-flex align-items-center"
-              [href]="link.url"
-              [title]="appName + '.navbar.links.' + link.label | translate"
-              [translate]="appName + '.navbar.links.' + link.label"
-            ></a>
-          </li>
-          <li class="nav-item" *ngIf="link.subMenu" ngbDropdown>
-            <a
-              ngbDropdownToggle
-              class="nav-link d-flex align-items-center"
-              tabindex="0"
-              role="button"
-              [id]="'navbar-menu-' + link.label"
-              [translate]="appName + '.navbar.links.' + link.label"
-            >
-            </a>
-            <div ngbDropdownMenu [attr.aria-labelledby]="'navbar-menu-' + link.label">
+        @for (link of navbar.links; track link) {
+          @if (link.subMenu) {
+            <li class="nav-item" ngbDropdown>
               <a
-                *ngFor="let subItem of link.subMenu"
-                class="dropdown-item"
-                [href]="subItem.url"
-                [translate]="appName + '.navbar.links.' + subItem.label"
+                ngbDropdownToggle
+                class="nav-link d-flex align-items-center"
+                tabindex="0"
+                role="button"
+                [id]="'navbar-menu-' + link.label"
+                [translate]="appName + '.navbar.links.' + link.label"
               >
               </a>
-            </div>
-          </li>
-        </ng-container>
+              <div ngbDropdownMenu [attr.aria-labelledby]="'navbar-menu-' + link.label">
+                @for (subItem of link.subMenu; track subItem) {
+                  <a
+                    class="dropdown-item"
+                    [href]="subItem.url"
+                    [translate]="appName + '.navbar.links.' + subItem.label"
+                  >
+                  </a>
+                }
+              </div>
+            </li>
+          } @else {
+            <li class="nav-item">
+              <a
+                class="nav-link d-flex align-items-center"
+                [href]="link.url"
+                [title]="appName + '.navbar.links.' + link.label | translate"
+                [translate]="appName + '.navbar.links.' + link.label"
+              ></a>
+            </li>
+          }
+        }
         <li class="nav-item">
           <a
             class="nav-link d-flex align-items-center"

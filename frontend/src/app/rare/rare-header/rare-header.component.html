@@ -1,11 +1,12 @@
 <div class="d-flex align-items-start flex-column-reverse flex-xl-row pb-4 pb-md-5">
-  <h1 *ngIf="isRareApp; else displayBrc4env" class="me-xl-4">
-    RARe<br />
-    <div class="small">
-      <strong>R</strong>essources <strong>A</strong>gronomiques pour la <strong>Re</strong>cherche
-    </div>
-  </h1>
-  <ng-template #displayBrc4env>
+  @if (isRareApp) {
+    <h1 class="me-xl-4">
+      RARe<br />
+      <div class="small">
+        <strong>R</strong>essources <strong>A</strong>gronomiques pour la <strong>Re</strong>cherche
+      </div>
+    </h1>
+  } @else {
     <h1 class="me-xl-4">
       BRC4Env<br />
       <div class="small">
@@ -13,7 +14,8 @@
         <strong>for</strong> the <strong>Env</strong>ironment
       </div>
     </h1>
-  </ng-template>
+  }
+
   <div class="flex-fill">
     <img class="img-fluid" src="assets/band.jpg" alt="Logo" />
   </div>

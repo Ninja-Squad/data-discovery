@@ -2,38 +2,42 @@
 <div class="text-center">
   <dd-loading-skeleton [loading]="loading" [aggregationStyle]="true"></dd-loading-skeleton>
 </div>
-<div *ngIf="aggregations?.length && !loading">
-  <div *ngFor="let aggregation of aggregations; trackBy: byAggregationName">
-    <dd-ontology-aggregation
-      *ngIf="aggregation.type === 'ONTOLOGY'"
-      [aggregation]="aggregation"
-      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-      (aggregationChange)="onAggregationChange($event)"
-      [disabled]="aggregation.name === disabledAggregationName"
-    ></dd-ontology-aggregation>
-    <!-- we display checkboxes if there are only a few options -->
-    <dd-small-aggregation
-      *ngIf="
-        aggregation.type === 'SMALL' ||
-        (aggregation.type === 'LARGE' && aggregation.buckets.length < 10)
-      "
-      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-      [aggregation]="aggregation"
-      (aggregationChange)="onAggregationChange($event)"
-      [searchDescendants]="searchDescendants"
-      (searchDescendantsChange)="onSearchDescendantChange($event)"
-      [disabled]="aggregation.name === disabledAggregationName"
-    ></dd-small-aggregation>
-    <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
+@if (aggregations?.length && !loading) {
+  <div>
+    @for (aggregation of aggregations; track aggregation.name) {
+      <div>
+        @if (aggregation.type === 'ONTOLOGY') {
+          <dd-ontology-aggregation
+            [aggregation]="aggregation"
+            [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+            (aggregationChange)="onAggregationChange($event)"
+            [disabled]="aggregation.name === disabledAggregationName"
+          ></dd-ontology-aggregation>
+        } @else if (
+          aggregation.type === 'SMALL' ||
+          (aggregation.type === 'LARGE' && aggregation.buckets.length < 10)
+        ) {
+          <dd-small-aggregation
+            [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+            [aggregation]="aggregation"
+            (aggregationChange)="onAggregationChange($event)"
+            [searchDescendants]="searchDescendants"
+            (searchDescendantsChange)="onSearchDescendantChange($event)"
+            [disabled]="aggregation.name === disabledAggregationName"
+          ></dd-small-aggregation>
+        } @else {
+          <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
-    <dd-large-aggregation
-      *ngIf="aggregation.type === 'LARGE' && aggregation.buckets.length >= 10"
-      [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
-      [aggregation]="aggregation"
-      (aggregationChange)="onAggregationChange($event)"
-      [searchDescendants]="searchDescendants"
-      (searchDescendantsChange)="onSearchDescendantChange($event)"
-      [disabled]="aggregation.name === disabledAggregationName"
-    ></dd-large-aggregation>
+          <dd-large-aggregation
+            [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
+            [aggregation]="aggregation"
+            (aggregationChange)="onAggregationChange($event)"
+            [searchDescendants]="searchDescendants"
+            (searchDescendantsChange)="onSearchDescendantChange($event)"
+            [disabled]="aggregation.name === disabledAggregationName"
+          ></dd-large-aggregation>
+        }
+      </div>
+    }
   </div>
-</div>
+}

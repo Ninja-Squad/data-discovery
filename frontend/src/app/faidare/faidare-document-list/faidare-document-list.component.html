@@ -1,44 +1,51 @@
-<div *ngIf="vm$ | async as vm">
-  <div *ngIf="vm.germplasmCount; else allResults" class="mb-2">
-    <ul
-      ngbNav
-      #nav="ngbNav"
-      [activeId]="vm.activeTab"
-      (activeIdChange)="switchTab($event)"
-      class="nav-tabs"
-    >
-      <li ngbNavItem="all">
-        <a ngbNavLink translate="faidare.document-list.result-tab"></a>
-        <ng-template ngbNavContent>
-          <!-- the test on the active tab is necessary because it takes some time between the click on the tab,
+@if (vm$ | async; as vm) {
+  <div>
+    @if (vm.germplasmCount) {
+      <div class="mb-2">
+        <ul
+          ngbNav
+          #nav="ngbNav"
+          [activeId]="vm.activeTab"
+          (activeIdChange)="switchTab($event)"
+          class="nav-tabs"
+        >
+          <li ngbNavItem="all">
+            <a ngbNavLink translate="faidare.document-list.result-tab"></a>
+            <ng-template ngbNavContent>
+              <!-- the test on the active tab is necessary because it takes some time between the click on the tab,
           causing an immediate change of tab, and the moment when the documents actually match the requested tag -->
-          <ng-container
-            [ngTemplateOutlet]="allResults"
-            *ngIf="vm.activeTab === 'all' && vm.documents"
-          ></ng-container>
-        </ng-template>
-      </li>
-      <li ngbNavItem="germplasm">
-        <a ngbNavLink>
-          <span translate="faidare.document-list.germplasm-tab"></span>
-        </a>
-        <ng-template ngbNavContent>
-          <!-- the test on the active tab is necessary because it takes some time between the click on the tab,
+              @if (vm.activeTab === 'all' && vm.documents) {
+                <ng-container [ngTemplateOutlet]="allResults"></ng-container>
+              }
+            </ng-template>
+          </li>
+          <li ngbNavItem="germplasm">
+            <a ngbNavLink>
+              <span translate="faidare.document-list.germplasm-tab"></span>
+            </a>
+            <ng-template ngbNavContent>
+              <!-- the test on the active tab is necessary because it takes some time between the click on the tab,
           causing an immediate change of tab, and the moment when the documents actually match the requested tag -->
-          <dd-germplasm-results
-            *ngIf="vm.activeTab === 'germplasm' && vm.documents"
-          ></dd-germplasm-results>
-        </ng-template>
-      </li>
-    </ul>
-    <div [ngbNavOutlet]="nav" class="mt-2"></div>
-  </div>
-  <ng-template #allResults>
-    <ng-container *ngIf="vm.documents">
-      <div class="mb-4" *ngFor="let document of vm.documents.content">
-        <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
-        <dd-document [document]="$any(document)"></dd-document>
+              @if (vm.activeTab === 'germplasm' && vm.documents) {
+                <dd-germplasm-results></dd-germplasm-results>
+              }
+            </ng-template>
+          </li>
+        </ul>
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
       </div>
-    </ng-container>
-  </ng-template>
-</div>
+    } @else {
+      <ng-container [ngTemplateOutlet]="allResults"></ng-container>
+    }
+    <ng-template #allResults>
+      @if (vm.documents) {
+        @for (document of vm.documents.content; track document.identifier) {
+          <div class="mb-4">
+            <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
+            <dd-document [document]="$any(document)"></dd-document>
+          </div>
+        }
+      }
+    </ng-template>
+  </div>
+}

@@ -1,27 +1,30 @@
-<ng-container *ngIf="pillars$ | async as pillars">
-  <ng-container *ngIf="pillars.length > 0; else noPillar">
+@if (pillars$ | async; as pillars) {
+  @if (pillars.length > 0) {
     <h4 class="data-provider" translate="pillars.data-providers"></h4>
     <ul class="list-unstyled pillar">
-      <li *ngFor="let pillar of pillars">
-        <span class="pillar-name">{{ pillar.name }}</span>
-        <ul class="list-unstyled source">
-          <li *ngFor="let databaseSource of pillar.databaseSources">
-            <dd-document-count
-              [name]="databaseSource.name"
-              [url]="databaseSource.url"
-              [count]="databaseSource.documentCount"
-            >
-            </dd-document-count>
-          </li>
-        </ul>
-      </li>
+      @for (pillar of pillars; track pillar) {
+        <li>
+          <span class="pillar-name">{{ pillar.name }}</span>
+          <ul class="list-unstyled source">
+            @for (databaseSource of pillar.databaseSources; track databaseSource) {
+              <li>
+                <dd-document-count
+                  [name]="databaseSource.name"
+                  [url]="databaseSource.url"
+                  [count]="databaseSource.documentCount"
+                >
+                </dd-document-count>
+              </li>
+            }
+          </ul>
+        </li>
+      }
     </ul>
-  </ng-container>
-  <ng-template #noPillar>
+  } @else {
     <div class="alert alert-warning" role="alert">
       <div class="text-center" style="font-size: 6em"><span class="fa fa-frown-o"></span></div>
       <div translate="pillars.no-data"></div>
       <div translate="pillars.no-data-contact"></div>
     </div>
-  </ng-template>
-</ng-container>
+  }
+}

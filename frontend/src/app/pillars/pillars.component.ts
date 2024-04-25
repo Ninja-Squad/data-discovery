@@ -6,7 +6,7 @@ import { PillarModel } from '../models/pillar.model';
 import { environment } from '../../environments/environment';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'dd-pillars',
@@ -14,7 +14,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
   styleUrl: './pillars.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, TranslateModule, NgFor, DocumentCountComponent, AsyncPipe]
+  imports: [TranslateModule, DocumentCountComponent, AsyncPipe]
 })
 export class PillarsComponent {
   pillars$: Observable<Array<PillarModel>>;

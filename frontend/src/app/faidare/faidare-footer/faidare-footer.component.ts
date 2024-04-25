@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgFor } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 
 interface DataProvider {
@@ -12,7 +12,7 @@ interface DataProvider {
   templateUrl: './faidare-footer.component.html',
   styleUrl: './faidare-footer.component.scss',
   standalone: true,
-  imports: [NgFor, TranslateModule]
+  imports: [TranslateModule]
 })
 export class FaidareFooterComponent {
   dataProviders: Array<DataProvider> = [

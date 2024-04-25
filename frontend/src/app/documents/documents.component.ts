@@ -5,7 +5,7 @@ import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { SearchStateService } from '../search-state.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe, DecimalPipe, NgIf } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { environment } from '../../environments/environment';
 
 interface ViewModel {
@@ -22,7 +22,6 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
     AsyncPipe,
     DecimalPipe,
     TranslateModule,

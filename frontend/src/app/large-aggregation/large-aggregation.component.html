@@ -1,8 +1,13 @@
 <ng-template #resultTemplate let-bucket="result" let-t="term">
-  <ng-container *ngIf="bucket !== 'REFINE'; else refine">
+  @if (bucket !== 'REFINE') {
     <ngb-highlight [result]="displayableKey(bucket.key)" [term]="t"></ngb-highlight>
     <small class="ms-1 text-body-secondary">[{{ bucket.documentCount | number }}]</small>
-  </ng-container>
+  } @else {
+    <div class="text-body-secondary small">
+      <div translate="large-aggregation.other-results-available"></div>
+      <div translate="large-aggregation.refine-search"></div>
+    </div>
+  }
   <ng-template #refine>
     <div class="text-body-secondary small">
       <div translate="large-aggregation.other-results-available"></div>
@@ -11,87 +16,93 @@
   </ng-template>
 </ng-template>
 
-<div class="card mb-1" *ngIf="!hideAggregation">
-  <div class="card-body">
-    <!-- title -->
-    <!-- tooltip precising what is the number displayed -->
-    <ng-template #tooltipContent>
-      <ng-container [ngPlural]="aggregation.buckets.length">
-        <ng-template ngPluralCase="=1">
-          <span translate="large-aggregation.only-one-value"></span>&ngsp;
-          <i>{{ aggregation.name | aggregationName }}</i>
-        </ng-template>
-        <ng-template ngPluralCase="other">
-          <span
-            translate="large-aggregation.several-values"
-            [translateParams]="{ count: aggregation.buckets.length | number }"
-          ></span
-          >&ngsp;
-          <i>{{ aggregation.name | aggregationName }}</i>
-        </ng-template>
-      </ng-container>
-    </ng-template>
-    <h3 class="card-title">
-      {{ aggregation.name | aggregationName }}
-      <small
-        class="text-body-secondary ms-1"
-        [ngbTooltip]="tooltipContent"
-        placement="top"
-        container="body"
-        >({{ aggregation.buckets.length | number }})</small
-      >
-      <span
-        *ngIf="aggregation.name === 'gl'"
-        class="ms-1 fa fa-question-circle-o icon-size"
-        aria-hidden="true"
-        [ngbTooltip]="'faidare.agregation-gl-tooltip' | translate"
-        placement="top"
-      ></span>
-    </h3>
-
-    <!-- values as pills and a typeahead to add them -->
-    <div class="mb-2">
-      <span
-        class="badge rounded-pill bg-secondary me-1"
-        *ngFor="let key of selectedKeys"
-        tabindex="0"
-        (keydown.backspace)="!disabled && removeKey(key)"
-      >
-        <dd-document-count
-          [name]="displayableKey(key)"
-          [count]="documentCountForKey(key)"
-          [muted]="false"
-        ></dd-document-count>
-        <button
-          tabindex="-1"
-          type="button"
-          class="btn btn-link"
-          (click)="removeKey(key)"
-          [disabled]="disabled"
+@if (!hideAggregation) {
+  <div class="card mb-1">
+    <div class="card-body">
+      <!-- title -->
+      <!-- tooltip precising what is the number displayed -->
+      <ng-template #tooltipContent>
+        <ng-container [ngPlural]="aggregation.buckets.length">
+          <ng-template ngPluralCase="=1">
+            <span translate="large-aggregation.only-one-value"></span>&ngsp;
+            <i>{{ aggregation.name | aggregationName }}</i>
+          </ng-template>
+          <ng-template ngPluralCase="other">
+            <span
+              translate="large-aggregation.several-values"
+              [translateParams]="{ count: aggregation.buckets.length | number }"
+            ></span
+            >&ngsp;
+            <i>{{ aggregation.name | aggregationName }}</i>
+          </ng-template>
+        </ng-container>
+      </ng-template>
+      <h3 class="card-title">
+        {{ aggregation.name | aggregationName }}
+        <small
+          class="text-body-secondary ms-1"
+          [ngbTooltip]="tooltipContent"
+          placement="top"
+          container="body"
+          >({{ aggregation.buckets.length | number }})</small
         >
-          &times;
-        </button>
-      </span>
-    </div>
-    <input
-      #typeahead
-      class="form-control"
-      [formControl]="criterion"
-      [ngbTypeahead]="search"
-      (selectItem)="selectKey($event)"
-      [resultTemplate]="resultTemplate"
-      container="body"
-      placeholder="{{ 'large-aggregation.filter-on' | translate }} {{
-        aggregation.name.toLowerCase() | aggregationName
-      }}..."
-      (focus)="focus$.next($any($event.target).value)"
-    />
+        @if (aggregation.name === 'gl') {
+          <span
+            class="ms-1 fa fa-question-circle-o icon-size"
+            aria-hidden="true"
+            [ngbTooltip]="'faidare.agregation-gl-tooltip' | translate"
+            placement="top"
+          ></span>
+        }
+      </h3>
 
-    <div *ngIf="aggregation.name === 'annot'" class="mt-2">
-      <dd-descendants-checkbox
-        (searchDescendantsChange)="onSearchDescendants($event)"
-        [searchDescendants]="searchDescendants"
-      ></dd-descendants-checkbox>
+      <!-- values as pills and a typeahead to add them -->
+      <div class="mb-2">
+        @for (key of selectedKeys; track key) {
+          <span
+            class="badge rounded-pill bg-secondary me-1"
+            tabindex="0"
+            (keydown.backspace)="!disabled && removeKey(key)"
+          >
+            <dd-document-count
+              [name]="displayableKey(key)"
+              [count]="documentCountForKey(key)"
+              [muted]="false"
+            ></dd-document-count>
+            <button
+              tabindex="-1"
+              type="button"
+              class="btn btn-link"
+              (click)="removeKey(key)"
+              [disabled]="disabled"
+            >
+              &times;
+            </button>
+          </span>
+        }
+      </div>
+      <input
+        #typeahead
+        class="form-control"
+        [formControl]="criterion"
+        [ngbTypeahead]="search"
+        (selectItem)="selectKey($event)"
+        [resultTemplate]="resultTemplate"
+        container="body"
+        placeholder="{{ 'large-aggregation.filter-on' | translate }} {{
+          aggregation.name.toLowerCase() | aggregationName
+        }}..."
+        (focus)="focus$.next($any($event.target).value)"
+      />
+
+      @if (aggregation.name === 'annot') {
+        <div class="mt-2">
+          <dd-descendants-checkbox
+            (searchDescendantsChange)="onSearchDescendants($event)"
+            [searchDescendants]="searchDescendants"
+          ></dd-descendants-checkbox>
+        </div>
+      }
     </div>
   </div>
-</div>
+}

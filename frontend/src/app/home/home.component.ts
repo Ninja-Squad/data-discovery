@@ -9,7 +9,7 @@ import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { PillarsComponent } from '../pillars/pillars.component';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -19,8 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './home.component.scss',
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     RouterLink,
     AsyncPipe,
     ReactiveFormsModule,

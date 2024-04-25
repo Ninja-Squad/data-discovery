@@ -1,14 +1,16 @@
-<ng-container *ngIf="tree$ | async as tree">
+@if (tree$ | async; as tree) {
   <ul class="list-unstyled">
-    <ng-container *ngFor="let node of tree.rootNodes; trackBy: byId">
-      <li *ngIf="!tree.filtered || node.matchingFilter || node.hasVisibleChildren">
-        <dd-node
-          [node]="node"
-          [filtered]="tree.filtered"
-          [highlightedNodeId]="tree.highlightedNode?.id"
-          [payloadTemplate]="payloadTemplate"
-        ></dd-node>
-      </li>
-    </ng-container>
+    @for (node of tree.rootNodes; track node.id) {
+      @if (!tree.filtered || node.matchingFilter || node.hasVisibleChildren) {
+        <li>
+          <dd-node
+            [node]="node"
+            [filtered]="tree.filtered"
+            [highlightedNodeId]="tree.highlightedNode?.id"
+            [payloadTemplate]="payloadTemplate"
+          ></dd-node>
+        </li>
+      }
+    }
   </ul>
-</ng-container>
+}

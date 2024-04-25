@@ -1,5 +1,7 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public final class Variable {
     private final Scale scale;
     private final String documentationURL;
 
+    @JsonCreator
     public Variable(String ontologyName,
                     String name,
                     Trait trait,
@@ -53,8 +56,8 @@ public final class Variable {
         this.trait = trait;
         this.ontologyDbId = ontologyDbId;
         this.observationVariableDbId = observationVariableDbId;
-        this.synonyms = synonyms;
-        this.contextOfUse = contextOfUse;
+        this.synonyms = synonyms == null ? List.of() : List.copyOf(synonyms);
+        this.contextOfUse = contextOfUse == null ? List.of() : List.copyOf(contextOfUse);
         this.growthStage = growthStage;
         this.status = status;
         this.xref = xref;

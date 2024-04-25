@@ -1,45 +1,52 @@
-<div *ngIf="vm$ | async as vm">
-  <h3 class="d-flex">
-    <div class="flex-grow-1">
-      <a class="main-link name" [href]="vm.document.url" target="_blank">
-        {{ vm.document.name }}
-      </a>
-      <small> - {{ vm.document.databaseName }}</small>
-    </div>
-    <div *ngIf="vm.isBasketEnabled && vm.document.accessionHolder">
-      <button
-        *ngIf="!vm.selectedForOrdering"
-        type="button"
-        class="btn btn-sm btn-outline-dark"
-        (click)="addToBasket(vm.document)"
-        [ngbTooltip]="'faidare-document.add-to-basket' | translate"
-        container="body"
-      >
-        <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-        <span class="fa fa-fw fa-plus"></span>
-      </button>
-      <button
-        *ngIf="vm.selectedForOrdering"
-        type="button"
-        class="btn btn-sm btn-success"
-        (click)="removeFromBasket(vm.document)"
-        [ngbTooltip]="'faidare-document.remove-from-basket' | translate"
-        container="body"
-      >
-        <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-        <span class="fa fa-fw fa-check"></span>
-      </button>
-    </div>
-  </h3>
+@if (vm$ | async; as vm) {
   <div>
-    <span class="type me-4">{{ vm.document.entryType }}</span>
-    <span class="species me-4">
-      <span *ngFor="let s of vm.document.species" class="badge bg-secondary me-2">{{ s }}</span>
-    </span>
+    <h3 class="d-flex">
+      <div class="flex-grow-1">
+        <a class="main-link name" [href]="vm.document.url" target="_blank">
+          {{ vm.document.name }}
+        </a>
+        <small> - {{ vm.document.databaseName }}</small>
+      </div>
+      @if (vm.isBasketEnabled && vm.document.accessionHolder) {
+        <div>
+          @if (vm.selectedForOrdering) {
+            <button
+              type="button"
+              class="btn btn-sm btn-success"
+              (click)="removeFromBasket(vm.document)"
+              [ngbTooltip]="'faidare-document.remove-from-basket' | translate"
+              container="body"
+            >
+              <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+              <span class="fa fa-fw fa-check"></span>
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-dark"
+              (click)="addToBasket(vm.document)"
+              [ngbTooltip]="'faidare-document.add-to-basket' | translate"
+              container="body"
+            >
+              <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
+              <span class="fa fa-fw fa-plus"></span>
+            </button>
+          }
+        </div>
+      }
+    </h3>
+    <div>
+      <span class="type me-4">{{ vm.document.entryType }}</span>
+      <span class="species me-4">
+        @for (s of vm.document.species; track $index) {
+          <span class="badge bg-secondary me-2">{{ s }}</span>
+        }
+      </span>
+    </div>
+    <div>
+      <dd-truncatable-description
+        [description]="vm.document.description"
+      ></dd-truncatable-description>
+    </div>
   </div>
-  <div>
-    <dd-truncatable-description
-      [description]="vm.document.description"
-    ></dd-truncatable-description>
-  </div>
-</div>
+}

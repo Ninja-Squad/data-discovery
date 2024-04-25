@@ -1,9 +1,9 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * An ontology, as returned from the "list ontologies" BrAPI API endpoint
@@ -31,7 +31,7 @@ public final class Ontology {
         this.authors = authors;
         this.copyright = copyright;
         this.license = license;
-        this.links = links;
+        this.links = links == null ? List.of() : List.copyOf(links);
         this.version = version;
     }
 

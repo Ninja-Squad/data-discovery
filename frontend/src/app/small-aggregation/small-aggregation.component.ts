@@ -21,7 +21,6 @@ import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'dd-small-aggregation',
@@ -30,8 +29,6 @@ import { NgFor, NgIf } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     NgbTooltip,
     ReactiveFormsModule,
     DocumentCountComponent,

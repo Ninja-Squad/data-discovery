@@ -24,7 +24,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
-import { DecimalPipe, NgFor, NgIf, NgPlural, NgPluralCase } from '@angular/common';
+import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 
 export type BucketOrRefine = Bucket | 'REFINE';
 
@@ -37,8 +37,6 @@ const maxResultsDisplayed = 8;
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     NgPlural,
     NgPluralCase,
     DecimalPipe,

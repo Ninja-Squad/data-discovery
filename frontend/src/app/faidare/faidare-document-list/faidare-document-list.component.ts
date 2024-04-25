@@ -4,7 +4,7 @@ import { Model, SearchCriteria, SearchStateService } from '../../search-state.se
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
   NgbNav,
   NgbNavContent,
@@ -67,8 +67,6 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
   styleUrl: './faidare-document-list.component.scss',
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     AsyncPipe,
     NgTemplateOutlet,
     NgbNav,

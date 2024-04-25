@@ -8,7 +8,6 @@ import {
   NgbDropdownMenu,
   NgbDropdownToggle
 } from '@ng-bootstrap/ng-bootstrap';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'dd-navbar',
@@ -16,9 +15,7 @@ import { NgFor, NgIf } from '@angular/common';
   styleUrl: './navbar.component.scss',
   standalone: true,
   imports: [
-    NgIf,
     NgbCollapse,
-    NgFor,
     TranslateModule,
     NgbDropdown,
     NgbDropdownToggle,

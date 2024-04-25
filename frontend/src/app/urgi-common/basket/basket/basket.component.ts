@@ -6,23 +6,14 @@ import { Subscription, timer } from 'rxjs';
 import { LOCATION } from '../../../location.service';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
-import { DecimalPipe, NgFor, NgIf, NgPlural, NgPluralCase } from '@angular/common';
+import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 
 @Component({
   selector: 'dd-basket',
   templateUrl: './basket.component.html',
   styleUrl: './basket.component.scss',
   standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    NgPlural,
-    NgPluralCase,
-    DecimalPipe,
-    TranslateModule,
-    ReactiveFormsModule,
-    NgbTooltip
-  ]
+  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip]
 })
 export class BasketComponent implements OnInit, OnDestroy {
   itemCounter = 0;

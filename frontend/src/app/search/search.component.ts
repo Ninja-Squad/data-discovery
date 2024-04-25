@@ -14,7 +14,7 @@ import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.c
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { NgbTypeahead, NgbCollapse, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 interface ViewModel extends Model {
   collectionSize: number;
@@ -28,7 +28,6 @@ interface ViewModel extends Model {
   providers: [SearchStateService],
   standalone: true,
   imports: [
-    NgIf,
     TranslateModule,
     ReactiveFormsModule,
     NgbTypeahead,

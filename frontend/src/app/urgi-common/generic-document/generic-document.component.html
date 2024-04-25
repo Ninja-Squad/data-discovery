@@ -8,7 +8,9 @@
   <div>
     <span class="type me-4">{{ document.entryType }}</span>
     <span class="species me-4">
-      <span *ngFor="let s of document.species" class="badge bg-secondary me-2">{{ s }}</span>
+      @for (s of document.species; track $index) {
+        <span class="badge bg-secondary me-2">{{ s }}</span>
+      }
     </span>
   </div>
   <div>

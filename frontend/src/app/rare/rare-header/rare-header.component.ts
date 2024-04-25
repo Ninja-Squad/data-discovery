@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'dd-header',
   templateUrl: './rare-header.component.html',
   styleUrl: './rare-header.component.scss',
   standalone: true,
-  imports: [NgIf]
+  imports: []
 })
 export class RareHeaderComponent {
   isRareApp: boolean;

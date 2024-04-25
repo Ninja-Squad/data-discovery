@@ -24,7 +24,7 @@ import {
   switchMap,
   tap
 } from 'rxjs';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { NodeComponent } from './node/node.component';
 
 interface BaseAction {
@@ -63,7 +63,7 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
   styleUrl: './tree.component.scss',
   providers: [TreeService],
   standalone: true,
-  imports: [NgIf, NgFor, AsyncPipe, NodeComponent],
+  imports: [AsyncPipe, NodeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'tree'
 })
@@ -143,9 +143,5 @@ export class TreeComponent<P> implements OnInit {
         })
       )
       .subscribe();
-  }
-
-  byId(index: number, node: InternalTreeNode<P>): string {
-    return node.id;
   }
 }

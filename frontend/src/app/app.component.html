@@ -1,4 +1,4 @@
-<ng-container *ngIf="i18nReady$ | async">
+@if (i18nReady$ | async) {
   <dd-navbar></dd-navbar>
   <div class="container">
     <dd-error></dd-error>
@@ -7,4 +7,4 @@
   <!-- the footer is specific to each application -->
   <!-- for example, if the application is Faidare, the component will be a FaidareFooterComponent -->
   <dd-footer></dd-footer>
-</ng-container>
+}

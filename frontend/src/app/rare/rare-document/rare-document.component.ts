@@ -5,7 +5,7 @@ import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 interface ViewModel {
   document: RareDocumentModel;
@@ -19,7 +19,7 @@ interface ViewModel {
   styleUrl: './rare-document.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, NgbTooltip, NgFor, TruncatableDescriptionComponent, AsyncPipe, TranslateModule]
+  imports: [NgbTooltip, TruncatableDescriptionComponent, AsyncPipe, TranslateModule]
 })
 export class RareDocumentComponent {
   private documentSubject = new ReplaySubject<RareDocumentModel>();

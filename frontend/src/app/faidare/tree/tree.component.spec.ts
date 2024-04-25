@@ -4,7 +4,6 @@ import { TreeComponent } from './tree.component';
 import { Component } from '@angular/core';
 import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
 import { ComponentTester, TestHtmlElement } from 'ngx-speculoos';
-import { NgIf } from '@angular/common';
 
 interface TestPayload {
   id: string;
@@ -15,7 +14,9 @@ interface TestPayload {
   template: `
     <ng-template #payloadTemplate let-node="node">
       {{ node.text }}
-      <span *ngIf="node.payload?.type" class="badge bg-info">{{ node.payload?.type }}</span>
+      @if (node.payload?.type) {
+        <span class="badge bg-info">{{ node.payload?.type }}</span>
+      }
     </ng-template>
     <dd-tree
       [filter]="filter"
@@ -27,7 +28,7 @@ interface TestPayload {
     ></dd-tree>
   `,
   standalone: true,
-  imports: [NgIf, TreeComponent]
+  imports: [TreeComponent]
 })
 class TestComponent {
   rootNodes: Array<TreeNode<TestPayload>> = [

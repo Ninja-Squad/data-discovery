@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
 import { InternalTreeNode, TreeService } from '../tree.service';
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'dd-node',
   templateUrl: './node.component.html',
   styleUrl: './node.component.scss',
   standalone: true,
-  imports: [NgIf, NgFor, NgTemplateOutlet],
+  imports: [NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeComponent<P> {
@@ -28,9 +28,5 @@ export class NodeComponent<P> {
 
   highlight() {
     this.treeService.highlight(this.node);
-  }
-
-  byId(index: number, node: InternalTreeNode<P>): string {
-    return node.id;
   }
 }

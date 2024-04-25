@@ -23,7 +23,7 @@ import { TypedNodeDetails } from '../ontology.model';
 import { Aggregation } from '../../models/page';
 import { TranslateModule } from '@ngx-translate/core';
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
-import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { TreeComponent } from '../tree/tree.component';
 import { NodeDetailsComponent } from '../node-details/node-details.component';
 
@@ -39,8 +39,6 @@ interface TreeViewModel {
   styleUrl: './ontology-aggregation-modal.component.scss',
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     AsyncPipe,
     DecimalPipe,
     ReactiveFormsModule,

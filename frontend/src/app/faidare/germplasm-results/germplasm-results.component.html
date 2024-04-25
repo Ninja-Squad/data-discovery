@@ -1,5 +1,5 @@
-<ng-container *ngIf="vm$ | async as vm">
-  <ng-container *ngIf="vm.documents">
+@if (vm$ | async; as vm) {
+  @if (vm.documents) {
     <div class="row my-3">
       <div class="col-md-6 text-center">
         <button
@@ -9,14 +9,12 @@
           id="download-plant-material-button"
           [disabled]="!!vm.downloading"
         >
-          <span
-            class="fa fa-download fa-fw me-1"
-            *ngIf="vm.downloading !== 'plant-material'"
-          ></span>
-          <span
-            class="fa fa-spinner fa-spin fa-fw me-1"
-            *ngIf="vm.downloading === 'plant-material'"
-          ></span>
+          @if (vm.downloading === 'plant-material') {
+            <span class="fa fa-spinner fa-spin fa-fw me-1"></span>
+          } @else {
+            <span class="fa fa-download fa-fw me-1"></span>
+          }
+
           <span translate="faidare.germplasm-results.download-plant-material"></span>
         </button>
       </div>
@@ -46,17 +44,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let document of vm.documents.content">
-          <td>
-            <a [href]="faidareUrl(document)">{{ document.name }}</a>
-          </td>
-          <td>{{ document.accessionNumber }}</td>
-          <td>{{ document.species.join(', ') }}</td>
-          <td>{{ document.holdingInstitute }}</td>
-          <td>{{ document.biologicalStatus }}</td>
-          <td>{{ document.countryOfOrigin }}</td>
-        </tr>
+        @for (document of vm.documents.content; track document.identifier) {
+          <tr>
+            <td>
+              <a [href]="faidareUrl(document)">{{ document.name }}</a>
+            </td>
+            <td>{{ document.accessionNumber }}</td>
+            <td>{{ document.species.join(', ') }}</td>
+            <td>{{ document.holdingInstitute }}</td>
+            <td>{{ document.biologicalStatus }}</td>
+            <td>{{ document.countryOfOrigin }}</td>
+          </tr>
+        }
       </tbody>
     </table>
-  </ng-container>
-</ng-container>
+  }
+}

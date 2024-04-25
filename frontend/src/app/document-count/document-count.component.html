@@ -14,8 +14,11 @@
   </ng-container>
 </ng-template>
 <!-- name, with a link if necessary, followed by the count -->
-<a *ngIf="url" [href]="url" target="_blank">{{ name }}</a>
-<span *ngIf="!url">{{ name }}</span>
+@if (url) {
+  <a [href]="url" target="_blank">{{ name }}</a>
+} @else {
+  <span>{{ name }}</span>
+}
 <small
   class="ms-1"
   [class.text-body-secondary]="muted"

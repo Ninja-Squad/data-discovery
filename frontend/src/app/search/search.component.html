@@ -1,4 +1,4 @@
-<ng-container *ngIf="vm$ | async as vm">
+@if (vm$ | async; as vm) {
   <h1 class="visually-hidden" translate="search.title"></h1>
 
   <div class="row">
@@ -55,31 +55,32 @@
         <dd-loading-skeleton [loading]="vm.documentsLoading"></dd-loading-skeleton>
       </div>
 
-      <div *ngIf="!vm.documentsLoading">
-        <h2 class="visually-hidden" translate="search.results"></h2>
+      @if (!vm.documentsLoading) {
         <div>
-          <dd-documents></dd-documents>
-        </div>
+          <h2 class="visually-hidden" translate="search.results"></h2>
+          <div>
+            <dd-documents></dd-documents>
+          </div>
 
-        <div
-          class="d-flex justify-content-center mt-5"
-          *ngIf="vm.documents && vm.documents.totalPages > 1"
-        >
-          <h2 class="visually-hidden" translate="search.paging"></h2>
-          <!-- we add 1 to the page because ngb-pagination is 1 based -->
-          <ngb-pagination
-            [page]="vm.documents.number + 1"
-            (pageChange)="navigateToPage($event)"
-            [collectionSize]="vm.collectionSize"
-            [pageSize]="vm.documents.size"
-            [maxSize]="5"
-            [boundaryLinks]="true"
-            [ellipses]="false"
-            size="sm"
-          >
-          </ngb-pagination>
+          @if (vm.documents && vm.documents.totalPages > 1) {
+            <div class="d-flex justify-content-center mt-5">
+              <h2 class="visually-hidden" translate="search.paging"></h2>
+              <!-- we add 1 to the page because ngb-pagination is 1 based -->
+              <ngb-pagination
+                [page]="vm.documents.number + 1"
+                (pageChange)="navigateToPage($event)"
+                [collectionSize]="vm.collectionSize"
+                [pageSize]="vm.documents.size"
+                [maxSize]="5"
+                [boundaryLinks]="true"
+                [ellipses]="false"
+                size="sm"
+              >
+              </ngb-pagination>
+            </div>
+          }
         </div>
-      </div>
+      }
     </div>
   </div>
-</ng-container>
+}

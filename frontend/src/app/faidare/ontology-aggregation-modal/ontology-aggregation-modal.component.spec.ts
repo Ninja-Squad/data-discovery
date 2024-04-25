@@ -226,7 +226,9 @@ describe('OntologyAggregationModalComponent', () => {
     }));
 
     it('should highlight ontology node', fakeAsync(() => {
-      ontologyService.getOntology.and.returnValue(of({ ontologyName: 'O1' } as OntologyDetails));
+      ontologyService.getOntology.and.returnValue(
+        of({ ontologyName: 'O1', links: [] } as OntologyDetails)
+      );
       tester.nodeContaining('O1').click();
 
       expect(tester.nodeDetails).toContainText('O1');
@@ -240,7 +242,9 @@ describe('OntologyAggregationModalComponent', () => {
     }));
 
     it('should highlight trait node', fakeAsync(() => {
-      ontologyService.getTrait.and.returnValue(of({ name: 'T1' } as TraitDetails));
+      ontologyService.getTrait.and.returnValue(
+        of({ name: 'T1', synonyms: [], alternativeAbbreviations: [] } as TraitDetails)
+      );
       tester.nodeContaining('T1').click();
 
       expect(tester.nodeDetails).toContainText('T1');
@@ -248,7 +252,12 @@ describe('OntologyAggregationModalComponent', () => {
 
     it('should highlight variable node', fakeAsync(() => {
       ontologyService.getVariable.and.returnValue(
-        of({ name: 'V2', trait: { name: 'T1' } } as VariableDetails)
+        of({
+          name: 'V2',
+          synonyms: [],
+          contextOfUse: [],
+          trait: { name: 'T1', synonyms: [], alternativeAbbreviations: [] }
+        } as VariableDetails)
       );
       tester.nodeContaining('V2').click();
 
@@ -256,7 +265,9 @@ describe('OntologyAggregationModalComponent', () => {
     }));
 
     it('should change the language', fakeAsync(() => {
-      ontologyService.getOntology.and.returnValue(of({ ontologyName: 'O1' } as OntologyDetails));
+      ontologyService.getOntology.and.returnValue(
+        of({ ontologyName: 'O1', links: [] } as OntologyDetails)
+      );
       tester.nodeContaining('O1').click();
 
       ontologyService.getTreeI18n.and.returnValue(
@@ -281,7 +292,7 @@ describe('OntologyAggregationModalComponent', () => {
         })
       );
       ontologyService.getOntology.and.returnValue(
-        of({ ontologyName: 'Ola O1' } as OntologyDetails)
+        of({ ontologyName: 'Ola O1', links: [] } as OntologyDetails)
       );
 
       tester.language?.selectLabel('Español');

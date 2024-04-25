@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TypedNodeDetails } from '../ontology.model';
-import { NgFor, NgIf } from '@angular/common';
+
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './node-details.component.html',
   styleUrl: './node-details.component.scss',
   standalone: true,
-  imports: [NgIf, NgFor, TranslateModule, OntologyNodeTypeComponent],
+  imports: [TranslateModule, OntologyNodeTypeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeDetailsComponent {

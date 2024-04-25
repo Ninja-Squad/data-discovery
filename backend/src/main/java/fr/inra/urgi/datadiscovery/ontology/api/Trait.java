@@ -1,9 +1,9 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The Trait of a {@link Variable}
@@ -40,9 +40,9 @@ public final class Trait {
         this.traitClass = traitClass;
         this.traitDbId = traitDbId;
         this.description = description;
-        this.synonyms = synonyms;
+        this.synonyms = synonyms == null ? List.of() : List.copyOf(synonyms);
         this.mainAbbreviation = mainAbbreviation;
-        this.alternativeAbbreviations = alternativeAbbreviations;
+        this.alternativeAbbreviations = alternativeAbbreviations == null ? List.of() : List.copyOf(alternativeAbbreviations);
         this.entity = entity;
         this.attribute = attribute;
         this.status = status;

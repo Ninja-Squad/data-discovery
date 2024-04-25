@@ -4,7 +4,7 @@ import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
-import { NgFor, NgIf } from '@angular/common';
+
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import { environment } from '../../environments/environment';
 
@@ -16,15 +16,13 @@ import { environment } from '../../environments/environment';
   standalone: true,
   imports: [
     LoadingSkeletonComponent,
-    NgIf,
-    NgFor,
     SmallAggregationComponent,
     LargeAggregationComponent,
     environment.ontologyAggregationComponent
   ]
 })
 export class AggregationsComponent {
-  @Input() aggregations: Array<Aggregation> = [];
+  @Input({ required: true }) aggregations: Array<Aggregation> | null | undefined;
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
   @Input() loading = false;
   @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
@@ -65,9 +63,5 @@ export class AggregationsComponent {
   onSearchDescendantChange(event: boolean) {
     this.searchDescendants = event;
     this.searchDescendantsChange.emit(event);
-  }
-
-  byAggregationName(index: number, aggregation: Aggregation) {
-    return aggregation.name;
   }
 }

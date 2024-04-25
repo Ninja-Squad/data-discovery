@@ -1,12 +1,13 @@
 <div class="text-nowrap d-inline">
-  <span
-    *ngIf="node.hasVisibleChildren"
-    class="expand fa fa-fw fa-chevron-right me-1"
-    role="button"
-    tabindex="0"
-    (click)="toggleExpanded()"
-    [class.expanded]="node.expanded || node.expandedForced"
-  ></span>
+  @if (node.hasVisibleChildren) {
+    <span
+      class="expand fa fa-fw fa-chevron-right me-1"
+      role="button"
+      tabindex="0"
+      (click)="toggleExpanded()"
+      [class.expanded]="node.expanded || node.expandedForced"
+    ></span>
+  }
 
   <div class="form-check form-check-inline me-1">
     <input
@@ -29,24 +30,29 @@
       tabindex="0"
       (click)="highlight()"
     >
-      <ng-container *ngIf="payloadTemplate; else noPayloadTemplate">
+      @if (payloadTemplate) {
         <ng-container *ngTemplateOutlet="payloadTemplate; context: { node: node }"></ng-container>
-      </ng-container>
-      <ng-template #noPayloadTemplate>{{ node.text }}</ng-template>
+      } @else {
+        {{ node.text }}
+      }
     </span>
   </div>
 </div>
 
-<ul class="list-unstyled" *ngIf="node.hasVisibleChildren && (node.expanded || node.expandedForced)">
-  <ng-container *ngFor="let childNode of node.children; trackBy: byId">
-    <li class="ms-4" *ngIf="!filtered || childNode.matchingFilter || childNode.hasVisibleChildren">
-      <dd-node
-        [node]="childNode"
-        [filtered]="filtered"
-        [highlightedNodeId]="highlightedNodeId"
-        [payloadTemplate]="payloadTemplate"
-        [class.ms-4]="!childNode.hasVisibleChildren"
-      ></dd-node>
-    </li>
-  </ng-container>
-</ul>
+@if (node.hasVisibleChildren && (node.expanded || node.expandedForced)) {
+  <ul class="list-unstyled">
+    @for (childNode of node.children; track childNode.id) {
+      @if (!filtered || childNode.matchingFilter || childNode.hasVisibleChildren) {
+        <li class="ms-4">
+          <dd-node
+            [node]="childNode"
+            [filtered]="filtered"
+            [highlightedNodeId]="highlightedNodeId"
+            [payloadTemplate]="payloadTemplate"
+            [class.ms-4]="!childNode.hasVisibleChildren"
+          ></dd-node>
+        </li>
+      }
+    }
+  </ul>
+}

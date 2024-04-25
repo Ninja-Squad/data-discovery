@@ -81,7 +81,7 @@ export interface VariableDetails {
     formula: string;
     methodDbId: string;
     reference: string;
-  };
+  } | null;
   scale: {
     name: string;
     dataType: string;
@@ -93,7 +93,7 @@ export interface VariableDetails {
       min: number;
     };
     xref: string;
-  };
+  } | null;
 }
 
 export interface TreeI18n {

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ErrorInterceptorService } from '../error-interceptor.service';
-import { NgIf, NgFor } from '@angular/common';
 
 // Based ideas taken from https://codepen.io/Dreamdealer/pen/JyBdMX
 /*
@@ -27,25 +26,27 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 @Component({
   selector: 'dd-loading-skeleton',
   template: `
-    <div class="loading" *ngIf="loading">
-      <ng-container *ngIf="aggregationStyle; then aggSkeleton; else searchSkeleton"></ng-container>
-    </div>
-
-    <ng-template #aggSkeleton>
-      <div *ngFor="let iAgg of [].constructor(3)" class="card skeleton-loading-aggregation">
-        <div class="skeleton-aggregation skeleton-animated-background"></div>
+    @if (loading) {
+      <div class="loading">
+        @if (aggregationStyle) {
+          @for (iAgg of [].constructor(3); track iAgg) {
+            <div class="card skeleton-loading-aggregation">
+              <div class="skeleton-aggregation skeleton-animated-background"></div>
+            </div>
+          }
+        } @else {
+          @for (iSearch of [].constructor(5); track iSearch) {
+            <div class="card skeleton-loading">
+              <div class="skeleton-default skeleton-animated-background"></div>
+            </div>
+          }
+        }
       </div>
-    </ng-template>
-
-    <ng-template #searchSkeleton>
-      <div *ngFor="let iSearch of [].constructor(5)" class="card skeleton-loading">
-        <div class="skeleton-default skeleton-animated-background"></div>
-      </div>
-    </ng-template>
+    }
   `,
   styleUrl: './loading-skeleton.component.scss',
   standalone: true,
-  imports: [NgIf, NgFor]
+  imports: []
 })
 export class LoadingSkeletonComponent implements OnInit {
   @Input() loading = false;

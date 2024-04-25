@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgPlural, NgPluralCase, NgIf, DecimalPipe } from '@angular/common';
+import { NgPlural, NgPluralCase, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'dd-document-count',
@@ -9,7 +9,7 @@ import { NgPlural, NgPluralCase, NgIf, DecimalPipe } from '@angular/common';
   styleUrl: './document-count.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgPlural, NgPluralCase, TranslateModule, NgIf, NgbTooltip, DecimalPipe]
+  imports: [NgPlural, NgPluralCase, TranslateModule, NgbTooltip, DecimalPipe]
 })
 export class DocumentCountComponent {
   @Input() name = '';

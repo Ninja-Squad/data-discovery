@@ -12,70 +12,73 @@
     {{ node.text }}
     <dd-ontology-node-type [type]="node.payload.type"></dd-ontology-node-type>
   </ng-template>
-  <div class="content" *ngIf="treeView$ | async as treeView">
-    <div class="tree-section">
-      <div class="row gx-1">
-        <div class="col col-md-8">
-          <div class="mb-3">
-            <label
-              class="visually-hidden"
-              for="tree-filter"
-              translate="faidare.ontology-aggregation-modal.filter"
-            ></label>
-            <input
-              [formControl]="treeFilterCtrl"
-              id="tree-filter"
-              class="form-control"
-              [placeholder]="'faidare.ontology-aggregation-modal.filter' | translate"
-              type="search"
-            />
+  @if (treeView$ | async; as treeView) {
+    <div class="content">
+      <div class="tree-section">
+        <div class="row gx-1">
+          <div class="col col-md-8">
+            <div class="mb-3">
+              <label
+                class="visually-hidden"
+                for="tree-filter"
+                translate="faidare.ontology-aggregation-modal.filter"
+              ></label>
+              <input
+                [formControl]="treeFilterCtrl"
+                id="tree-filter"
+                class="form-control"
+                [placeholder]="'faidare.ontology-aggregation-modal.filter' | translate"
+                type="search"
+              />
+            </div>
+          </div>
+          <div class="col col-md-4">
+            <div class="mb-3">
+              <label
+                class="visually-hidden"
+                for="language"
+                translate="faidare.ontology-aggregation-modal.language"
+              ></label>
+              <select [formControl]="languageCtrl" id="language" class="form-select">
+                @for (language of languages; track language) {
+                  <option
+                    [ngValue]="language"
+                    [translate]="'faidare.ontology-language.' + language"
+                  ></option>
+                }
+              </select>
+            </div>
           </div>
         </div>
-        <div class="col col-md-4">
-          <div class="mb-3">
-            <label
-              class="visually-hidden"
-              for="language"
-              translate="faidare.ontology-aggregation-modal.language"
-            ></label>
-            <select [formControl]="languageCtrl" id="language" class="form-select">
-              <option
-                *ngFor="let language of languages"
-                [ngValue]="language"
-                [translate]="'faidare.ontology-language.' + language"
-              ></option>
-            </select>
-          </div>
-        </div>
-      </div>
 
-      <div class="border rounded p-1 tree">
-        <dd-tree
-          [filter]="treeView.filter"
-          [rootNodes]="treeView.tree"
-          [payloadTemplate]="payloadTemplate"
-          [textAccessor]="treeView.textAccessor"
-          (highlightedNode)="highlightNode($event)"
-          (selectedNodes)="selectedNodes = $event"
-        ></dd-tree>
+        <div class="border rounded p-1 tree">
+          <dd-tree
+            [filter]="treeView.filter"
+            [rootNodes]="treeView.tree"
+            [payloadTemplate]="payloadTemplate"
+            [textAccessor]="treeView.textAccessor"
+            (highlightedNode)="highlightNode($event)"
+            (selectedNodes)="selectedNodes = $event"
+          ></dd-tree>
+        </div>
+      </div>
+      <div class="details-section">
+        @if (highlightedNodeDetails$ | async; as highlightedNodeDetails) {
+          <dd-node-details [node]="highlightedNodeDetails"></dd-node-details>
+        }
       </div>
     </div>
-    <div class="details-section">
-      <dd-node-details
-        *ngIf="highlightedNodeDetails$ | async as highlightedNodeDetails"
-        [node]="highlightedNodeDetails"
-      ></dd-node-details>
-    </div>
-  </div>
+  }
 </div>
 <div class="modal-footer">
-  <div
-    id="limit-selection"
-    class="text-danger flex-grow-1"
-    *ngIf="selectedNodes.length > maxSelectedNodes"
-    translate="faidare.ontology-aggregation-modal.limit-selection"
-    [translateParams]="{ actual: selectedNodes.length | number, max: maxSelectedNodes | number }"
-  ></div>
+  @if (selectedNodes.length > maxSelectedNodes) {
+    <div
+      id="limit-selection"
+      class="text-danger flex-grow-1"
+      translate="faidare.ontology-aggregation-modal.limit-selection"
+      [translateParams]="{ actual: selectedNodes.length | number, max: maxSelectedNodes | number }"
+    ></div>
+  }
   <button
     id="ok-button"
     type="button"

@@ -14,7 +14,8 @@ class TestComponent {
   node: TypedNodeDetails = {
     type: 'ONTOLOGY',
     details: {
-      ontologyName: 'Test 1'
+      ontologyName: 'Test 1',
+      links: []
     }
   } as TypedNodeDetails;
 }
@@ -61,7 +62,9 @@ describe('NodeDetailsComponent', () => {
     tester.componentInstance.node = {
       type: 'TRAIT',
       details: {
-        name: 'Test 1'
+        name: 'Test 1',
+        synonyms: [],
+        alternativeAbbreviations: []
       }
     } as TypedNodeDetails;
     tester.detectChanges();
@@ -75,8 +78,12 @@ describe('NodeDetailsComponent', () => {
       type: 'VARIABLE',
       details: {
         name: 'Test 1',
+        synonyms: [],
+        contextOfUse: [],
         trait: {
-          name: 'Trait 1'
+          name: 'Trait 1',
+          synonyms: [],
+          alternativeAbbreviations: []
         }
       }
     } as TypedNodeDetails;

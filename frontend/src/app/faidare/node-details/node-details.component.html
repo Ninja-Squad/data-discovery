@@ -1,359 +1,456 @@
 <div class="container">
-  <ng-container *ngIf="node.type === 'ONTOLOGY'">
-    <h5>
-      {{ node.details.ontologyName }}
-      <dd-ontology-node-type type="ONTOLOGY"></dd-ontology-node-type>
-    </h5>
+  @switch (node.type) {
+    @case ('ONTOLOGY') {
+      <h5>
+        {{ node.details.ontologyName }}
+        <dd-ontology-node-type type="ONTOLOGY"></dd-ontology-node-type>
+      </h5>
 
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.name"></label>
-      <div class="col-8">{{ node.details.ontologyName }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.version">
-      <label class="col-4" translate="faidare.node-details.version"></label>
-      <div class="col-8">{{ node.details.version }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.authors">
-      <label class="col-4" translate="faidare.node-details.authors"></label>
-      <div class="col-8">{{ node.details.authors }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.links?.length">
-      <label class="col-4" translate="faidare.node-details.links"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let link of node.details.links">
-            <a [href]="link.href" target="_blank">{{ link.rel }}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.copyright">
-      <label class="col-4" translate="faidare.node-details.copyright"></label>
-      <div class="col-8">{{ node.details.copyright }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.license">
-      <label class="col-4" translate="faidare.node-details.license"></label>
-      <div class="col-8">{{ node.details.license }}</div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="node.type === 'TRAIT_CLASS'">
-    <h5>
-      {{ node.details.name }}
-      <dd-ontology-node-type type="TRAIT_CLASS"></dd-ontology-node-type>
-    </h5>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.name"></label>
-      <div class="col-8">{{ node.details.name }}</div>
-    </div>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.ontology-name"></label>
-      <div class="col-8">{{ node.details.ontologyName }}</div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="node.type === 'TRAIT'">
-    <h5>
-      {{ node.details.name }}
-      <dd-ontology-node-type type="TRAIT"></dd-ontology-node-type>
-    </h5>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.ontology-name"></label>
-      <div class="col-8">{{ node.details.ontologyName }}</div>
-    </div>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.id"></label>
-      <div class="col-8">{{ node.details.traitDbId }}</div>
-    </div>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.name"></label>
-      <div class="col-8">{{ node.details.name }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.description">
-      <label class="col-4" translate="faidare.node-details.description"></label>
-      <div class="col-8">{{ node.details.description }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.entity">
-      <label class="col-4" translate="faidare.node-details.entity"></label>
-      <div class="col-8">{{ node.details.entity }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.attribute">
-      <label class="col-4" translate="faidare.node-details.attribute"></label>
-      <div class="col-8">{{ node.details.attribute }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.class">
-      <label class="col-4" translate="faidare.node-details.class"></label>
-      <div class="col-8">{{ node.details.class }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.synonyms?.length">
-      <label class="col-4" translate="faidare.node-details.synonyms"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let synonym of node.details.synonyms">{{ synonym }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.mainAbbreviation">
-      <label class="col-4" translate="faidare.node-details.main-abbreviation"></label>
-      <div class="col-8">{{ node.details.mainAbbreviation }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.alternativeAbbreviations?.length">
-      <label class="col-4" translate="faidare.node-details.alternative-abbreviations"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let abbr of node.details.alternativeAbbreviations">{{ abbr }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.status">
-      <label class="col-4" translate="faidare.node-details.status"></label>
-      <div class="col-8">{{ node.details.status }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.xref">
-      <label class="col-4" translate="faidare.node-details.xref"></label>
-      <div class="col-8">
-        <a
-          *ngIf="isUrl(node.details.xref); else noLinkTraitXref"
-          [href]="node.details.xref"
-          target="_blank"
-          class="truncated"
-          >{{ node.details.xref }}</a
-        >
-        <ng-template #noLinkTraitXref>{{ node.details.xref }}</ng-template>
-      </div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="node.type === 'VARIABLE'">
-    <h5>
-      {{ node.details.name }}
-      <dd-ontology-node-type type="VARIABLE"></dd-ontology-node-type>
-    </h5>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.ontology-name"></label>
-      <div class="col-8">{{ node.details.ontologyName }}</div>
-    </div>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.id"></label>
-      <div class="col-8">{{ node.details.observationVariableDbId }}</div>
-    </div>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.name"></label>
-      <div class="col-8">{{ node.details.name }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.synonyms?.length">
-      <label class="col-4" translate="faidare.node-details.synonyms"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let synonym of node.details.synonyms">{{ synonym }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.institution">
-      <label class="col-4" translate="faidare.node-details.institution"></label>
-      <div class="col-8">{{ node.details.institution }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.scientist">
-      <label class="col-4" translate="faidare.node-details.scientist"></label>
-      <div class="col-8">{{ node.details.scientist }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.date">
-      <label class="col-4" translate="faidare.node-details.date"></label>
-      <div class="col-8">{{ node.details.date }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.crop">
-      <label class="col-4" translate="faidare.node-details.crop"></label>
-      <div class="col-8">{{ node.details.crop }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.xref">
-      <label class="col-4" translate="faidare.node-details.xref"></label>
-      <div class="col-8">
-        <a
-          *ngIf="isUrl(node.details.xref); else noLinkVariableXref"
-          [href]="node.details.xref"
-          target="_blank"
-          class="truncated"
-        >
-          {{ node.details.xref }}
-        </a>
-        <ng-template #noLinkVariableXref>{{ node.details.xref }}</ng-template>
-      </div>
-    </div>
-
-    <h6 class="mt-2">
-      {{ node.details.trait.name }}
-      <dd-ontology-node-type type="TRAIT"></dd-ontology-node-type>
-    </h6>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.id"></label>
-      <div class="col-8">{{ node.details.trait.traitDbId }}</div>
-    </div>
-    <div class="row gx-2">
-      <label class="col-4" translate="faidare.node-details.name"></label>
-      <div class="col-8">{{ node.details.trait.name }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.description">
-      <label class="col-4" translate="faidare.node-details.description"></label>
-      <div class="col-8">{{ node.details.trait.description }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.entity">
-      <label class="col-4" translate="faidare.node-details.entity"></label>
-      <div class="col-8">{{ node.details.trait.entity }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.attribute">
-      <label class="col-4" translate="faidare.node-details.attribute"></label>
-      <div class="col-8">{{ node.details.trait.attribute }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.class">
-      <label class="col-4" translate="faidare.node-details.class"></label>
-      <div class="col-8">{{ node.details.trait.class }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.synonyms?.length">
-      <label class="col-4" translate="faidare.node-details.synonyms"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let synonym of node.details.trait.synonyms">{{ synonym }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.mainAbbreviation">
-      <label class="col-4" translate="faidare.node-details.main-abbreviation"></label>
-      <div class="col-8">{{ node.details.trait.mainAbbreviation }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.alternativeAbbreviations?.length">
-      <label class="col-4" translate="faidare.node-details.alternative-abbreviations"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let abbr of node.details.trait.alternativeAbbreviations">{{ abbr }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.status">
-      <label class="col-4" translate="faidare.node-details.status"></label>
-      <div class="col-8">{{ node.details.trait.status }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.trait.xref">
-      <label class="col-4" translate="faidare.node-details.xref"></label>
-      <div class="col-8">
-        <a
-          *ngIf="isUrl(node.details.trait.xref); else noLinkVariableTraitXref"
-          [href]="node.details.trait.xref"
-          target="_blank"
-          class="truncated"
-        >
-          {{ node.details.trait.xref }}
-        </a>
-        <ng-template #noLinkVariableTraitXref>{{ node.details.trait.xref }}</ng-template>
-      </div>
-    </div>
-
-    <ng-container *ngIf="node.details.method?.methodDbId">
-      <h6 class="mt-2">
-        {{ node.details.method.name }}
-        <span class="badge badge-METHOD" translate="faidare.node-details.method"></span>
-      </h6>
-
-      <div class="row gx-2">
-        <label class="col-4" translate="faidare.node-details.id"></label>
-        <div class="col-8">{{ node.details.method.methodDbId }}</div>
-      </div>
       <div class="row gx-2">
         <label class="col-4" translate="faidare.node-details.name"></label>
-        <div class="col-8">{{ node.details.method.name }}</div>
+        <div class="col-8">{{ node.details.ontologyName }}</div>
       </div>
-      <div class="row gx-2" *ngIf="node.details.method.description">
-        <label class="col-4" translate="faidare.node-details.description"></label>
-        <div class="col-8">{{ node.details.method.description }}</div>
-      </div>
-      <div class="row gx-2" *ngIf="node.details.method.class">
-        <label class="col-4" translate="faidare.node-details.class"></label>
-        <div class="col-8">{{ node.details.method.class }}</div>
-      </div>
-      <div class="row gx-2" *ngIf="node.details.method.formula">
-        <label class="col-4" translate="faidare.node-details.formula"></label>
-        <div class="col-8">{{ node.details.method.formula }}</div>
-      </div>
-      <div class="row gx-2" *ngIf="node.details.method.reference">
-        <label class="col-4" translate="faidare.node-details.reference"></label>
-        <div class="col-8">{{ node.details.method.reference }}</div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="node.details.scale?.scaleDbId">
-      <h6 class="mt-2">
-        {{ node.details.scale.name }}
-        <span class="badge badge-SCALE" translate="faidare.node-details.scale"></span>
-      </h6>
-      <div class="row gx-2">
-        <label class="col-4" translate="faidare.node-details.id"></label>
-        <div class="col-8">{{ node.details.scale.scaleDbId }}</div>
-      </div>
-      <div class="row gx-2">
-        <label class="col-4" translate="faidare.node-details.name"></label>
-        <div class="col-8">{{ node.details.scale.name }}</div>
-      </div>
-      <div class="row gx-2" *ngIf="node.details.scale.dataType">
-        <label class="col-4" translate="faidare.node-details.data-type"></label>
-        <div class="col-8">{{ node.details.scale.dataType }}</div>
-      </div>
-      <div class="row gx-2" *ngIf="node.details.scale.decimalPlaces">
-        <label class="col-4" translate="faidare.node-details.decimal-places"></label>
-        <div class="col-8">{{ node.details.scale.decimalPlaces }}</div>
-      </div>
-      <ng-container *ngIf="node.details.scale.validValues">
-        <div class="row gx-2" *ngIf="node.details.scale.validValues.min != null">
-          <label class="col-4" translate="faidare.node-details.min"></label>
-          <div class="col-8">{{ node.details.scale.validValues.min }}</div>
+      @if (node.details.version) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.version"></label>
+          <div class="col-8">{{ node.details.version }}</div>
         </div>
-        <div class="row gx-2" *ngIf="node.details.scale.validValues.max != null">
-          <label class="col-4" translate="faidare.node-details.max"></label>
-          <div class="col-8">{{ node.details.scale.validValues.max }}</div>
+      }
+      @if (node.details.authors) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.authors"></label>
+          <div class="col-8">{{ node.details.authors }}</div>
         </div>
-        <div class="row gx-2" *ngIf="node.details.scale.validValues.categories?.length">
-          <label class="col-4" translate="faidare.node-details.categories"></label>
+      }
+      @if (node.details.links.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.links"></label>
           <div class="col-8">
             <ul class="list-unstyled">
-              <li *ngFor="let category of node.details.scale.validValues.categories">
-                {{ category }}
-              </li>
+              @for (link of node.details.links; track link) {
+                <li>
+                  <a [href]="link.href" target="_blank">{{ link.rel }}</a>
+                </li>
+              }
             </ul>
           </div>
         </div>
-      </ng-container>
-      <div class="row gx-2" *ngIf="node.details.scale.xref">
-        <label class="col-4" translate="faidare.node-details.xref"></label>
-        <div class="col-8">
-          <a
-            *ngIf="isUrl(node.details.scale.xref); else noLinkScaleXref"
-            [href]="node.details.scale.xref"
-            target="_blank"
-            class="truncated"
-          >
-            {{ node.details.scale.xref }}
-          </a>
-          <ng-template #noLinkScaleXref>{{ node.details.scale.xref }}</ng-template>
+      }
+      @if (node.details.copyright) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.copyright"></label>
+          <div class="col-8">{{ node.details.copyright }}</div>
         </div>
+      }
+      @if (node.details.license) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.license"></label>
+          <div class="col-8">{{ node.details.license }}</div>
+        </div>
+      }
+    }
+    @case ('TRAIT_CLASS') {
+      <h5>
+        {{ node.details.name }}
+        <dd-ontology-node-type type="TRAIT_CLASS"></dd-ontology-node-type>
+      </h5>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.name"></label>
+        <div class="col-8">{{ node.details.name }}</div>
       </div>
-    </ng-container>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.ontology-name"></label>
+        <div class="col-8">{{ node.details.ontologyName }}</div>
+      </div>
+    }
+    @case ('TRAIT') {
+      <h5>
+        {{ node.details.name }}
+        <dd-ontology-node-type type="TRAIT"></dd-ontology-node-type>
+      </h5>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.ontology-name"></label>
+        <div class="col-8">{{ node.details.ontologyName }}</div>
+      </div>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.id"></label>
+        <div class="col-8">{{ node.details.traitDbId }}</div>
+      </div>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.name"></label>
+        <div class="col-8">{{ node.details.name }}</div>
+      </div>
+      @if (node.details.description) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.description"></label>
+          <div class="col-8">{{ node.details.description }}</div>
+        </div>
+      }
+      @if (node.details.entity) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.entity"></label>
+          <div class="col-8">{{ node.details.entity }}</div>
+        </div>
+      }
+      @if (node.details.attribute) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.attribute"></label>
+          <div class="col-8">{{ node.details.attribute }}</div>
+        </div>
+      }
+      @if (node.details.class) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.class"></label>
+          <div class="col-8">{{ node.details.class }}</div>
+        </div>
+      }
+      @if (node.details.synonyms.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.synonyms"></label>
+          <div class="col-8">
+            <ul class="list-unstyled">
+              @for (synonym of node.details.synonyms; track $index) {
+                <li>{{ synonym }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (node.details.mainAbbreviation) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.main-abbreviation"></label>
+          <div class="col-8">{{ node.details.mainAbbreviation }}</div>
+        </div>
+      }
+      @if (node.details.alternativeAbbreviations.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.alternative-abbreviations"></label>
+          <div class="col-8">
+            <ul class="list-unstyled">
+              @for (abbr of node.details.alternativeAbbreviations; track $index) {
+                <li>{{ abbr }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (node.details.status) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.status"></label>
+          <div class="col-8">{{ node.details.status }}</div>
+        </div>
+      }
+      @if (node.details.xref) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.xref"></label>
+          <div class="col-8">
+            @if (isUrl(node.details.xref)) {
+              <a [href]="node.details.xref" target="_blank" class="truncated">{{
+                node.details.xref
+              }}</a>
+            } @else {
+              {{ node.details.xref }}
+            }
+          </div>
+        </div>
+      }
+    }
+    @case ('VARIABLE') {
+      <h5>
+        {{ node.details.name }}
+        <dd-ontology-node-type type="VARIABLE"></dd-ontology-node-type>
+      </h5>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.ontology-name"></label>
+        <div class="col-8">{{ node.details.ontologyName }}</div>
+      </div>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.id"></label>
+        <div class="col-8">{{ node.details.observationVariableDbId }}</div>
+      </div>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.name"></label>
+        <div class="col-8">{{ node.details.name }}</div>
+      </div>
+      @if (node.details.synonyms.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.synonyms"></label>
+          <div class="col-8">
+            <ul class="list-unstyled">
+              @for (synonym of node.details.synonyms; track $index) {
+                <li>{{ synonym }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (node.details.institution) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.institution"></label>
+          <div class="col-8">{{ node.details.institution }}</div>
+        </div>
+      }
+      @if (node.details.scientist) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.scientist"></label>
+          <div class="col-8">{{ node.details.scientist }}</div>
+        </div>
+      }
+      @if (node.details.date) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.date"></label>
+          <div class="col-8">{{ node.details.date }}</div>
+        </div>
+      }
+      @if (node.details.crop) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.crop"></label>
+          <div class="col-8">{{ node.details.crop }}</div>
+        </div>
+      }
+      @if (node.details.xref) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.xref"></label>
+          <div class="col-8">
+            @if (isUrl(node.details.xref)) {
+              <a [href]="node.details.xref" target="_blank" class="truncated">
+                {{ node.details.xref }}
+              </a>
+            } @else {
+              {{ node.details.xref }}
+            }
+          </div>
+        </div>
+      }
 
-    <div class="row gx-2" *ngIf="node.details.contextOfUse?.length">
-      <label class="col-4" translate="faidare.node-details.context-of-use"></label>
-      <div class="col-8">
-        <ul class="list-unstyled">
-          <li *ngFor="let context of node.details.contextOfUse">
-            {{ context }}
-          </li>
-        </ul>
+      <h6 class="mt-2">
+        {{ node.details.trait.name }}
+        <dd-ontology-node-type type="TRAIT"></dd-ontology-node-type>
+      </h6>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.id"></label>
+        <div class="col-8">{{ node.details.trait.traitDbId }}</div>
       </div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.growthStage">
-      <label class="col-4" translate="faidare.node-details.growth-stage"></label>
-      <div class="col-8">{{ node.details.growthStage }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.status">
-      <label class="col-4" translate="faidare.node-details.status"></label>
-      <div class="col-8">{{ node.details.status }}</div>
-    </div>
-    <div class="row gx-2" *ngIf="node.details.defaultValue">
-      <label class="col-4" translate="faidare.node-details.default-value"></label>
-      <div class="col-8">{{ node.details.defaultValue }}</div>
-    </div>
-  </ng-container>
+      <div class="row gx-2">
+        <label class="col-4" translate="faidare.node-details.name"></label>
+        <div class="col-8">{{ node.details.trait.name }}</div>
+      </div>
+      @if (node.details.trait.description) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.description"></label>
+          <div class="col-8">{{ node.details.trait.description }}</div>
+        </div>
+      }
+      @if (node.details.trait.entity) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.entity"></label>
+          <div class="col-8">{{ node.details.trait.entity }}</div>
+        </div>
+      }
+      @if (node.details.trait.attribute) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.attribute"></label>
+          <div class="col-8">{{ node.details.trait.attribute }}</div>
+        </div>
+      }
+      @if (node.details.trait.class) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.class"></label>
+          <div class="col-8">{{ node.details.trait.class }}</div>
+        </div>
+      }
+      @if (node.details.trait.synonyms.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.synonyms"></label>
+          <div class="col-8">
+            <ul class="list-unstyled">
+              @for (synonym of node.details.trait.synonyms; track $index) {
+                <li>{{ synonym }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (node.details.trait.mainAbbreviation) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.main-abbreviation"></label>
+          <div class="col-8">{{ node.details.trait.mainAbbreviation }}</div>
+        </div>
+      }
+      @if (node.details.trait.alternativeAbbreviations.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.alternative-abbreviations"></label>
+          <div class="col-8">
+            <ul class="list-unstyled">
+              @for (abbr of node.details.trait.alternativeAbbreviations; track $index) {
+                <li>{{ abbr }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (node.details.trait.status) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.status"></label>
+          <div class="col-8">{{ node.details.trait.status }}</div>
+        </div>
+      }
+      @if (node.details.trait.xref) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.xref"></label>
+          <div class="col-8">
+            @if (isUrl(node.details.trait.xref)) {
+              <a [href]="node.details.trait.xref" target="_blank" class="truncated">
+                {{ node.details.trait.xref }}
+              </a>
+            } @else {
+              {{ node.details.trait.xref }}
+            }
+          </div>
+        </div>
+      }
+
+      @if (node.details.method && node.details.method.methodDbId) {
+        <h6 class="mt-2">
+          {{ node.details.method.name }}
+          <span class="badge badge-METHOD" translate="faidare.node-details.method"></span>
+        </h6>
+
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.id"></label>
+          <div class="col-8">{{ node.details.method.methodDbId }}</div>
+        </div>
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.name"></label>
+          <div class="col-8">{{ node.details.method.name }}</div>
+        </div>
+        @if (node.details.method.description) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.description"></label>
+            <div class="col-8">{{ node.details.method.description }}</div>
+          </div>
+        }
+        @if (node.details.method.class) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.class"></label>
+            <div class="col-8">{{ node.details.method.class }}</div>
+          </div>
+        }
+        @if (node.details.method.formula) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.formula"></label>
+            <div class="col-8">{{ node.details.method.formula }}</div>
+          </div>
+        }
+        @if (node.details.method.reference) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.reference"></label>
+            <div class="col-8">{{ node.details.method.reference }}</div>
+          </div>
+        }
+      }
+
+      @if (node.details.scale && node.details.scale.scaleDbId) {
+        <h6 class="mt-2">
+          {{ node.details.scale.name }}
+          <span class="badge badge-SCALE" translate="faidare.node-details.scale"></span>
+        </h6>
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.id"></label>
+          <div class="col-8">{{ node.details.scale.scaleDbId }}</div>
+        </div>
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.name"></label>
+          <div class="col-8">{{ node.details.scale.name }}</div>
+        </div>
+        @if (node.details.scale.dataType) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.data-type"></label>
+            <div class="col-8">{{ node.details.scale.dataType }}</div>
+          </div>
+        }
+        @if (node.details.scale.decimalPlaces) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.decimal-places"></label>
+            <div class="col-8">{{ node.details.scale.decimalPlaces }}</div>
+          </div>
+        }
+        @if (node.details.scale.validValues) {
+          @if (node.details.scale.validValues.min != null) {
+            <div class="row gx-2">
+              <label class="col-4" translate="faidare.node-details.min"></label>
+              <div class="col-8">{{ node.details.scale.validValues.min }}</div>
+            </div>
+          }
+          @if (node.details.scale.validValues.max != null) {
+            <div class="row gx-2">
+              <label class="col-4" translate="faidare.node-details.max"></label>
+              <div class="col-8">{{ node.details.scale.validValues.max }}</div>
+            </div>
+          }
+          @if (node.details.scale.validValues.categories.length) {
+            <div class="row gx-2">
+              <label class="col-4" translate="faidare.node-details.categories"></label>
+              <div class="col-8">
+                <ul class="list-unstyled">
+                  @for (category of node.details.scale.validValues.categories; track $index) {
+                    <li>
+                      {{ category }}
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+        }
+        @if (node.details.scale.xref) {
+          <div class="row gx-2">
+            <label class="col-4" translate="faidare.node-details.xref"></label>
+            <div class="col-8">
+              @if (isUrl(node.details.scale.xref)) {
+                <a [href]="node.details.scale.xref" target="_blank" class="truncated">
+                  {{ node.details.scale.xref }}
+                </a>
+              } @else {
+                {{ node.details.scale.xref }}
+              }
+            </div>
+          </div>
+        }
+      }
+
+      @if (node.details.contextOfUse.length) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.context-of-use"></label>
+          <div class="col-8">
+            <ul class="list-unstyled">
+              @for (context of node.details.contextOfUse; track $index) {
+                <li>
+                  {{ context }}
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      @if (node.details.growthStage) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.growth-stage"></label>
+          <div class="col-8">{{ node.details.growthStage }}</div>
+        </div>
+      }
+      @if (node.details.status) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.status"></label>
+          <div class="col-8">{{ node.details.status }}</div>
+        </div>
+      }
+      @if (node.details.defaultValue) {
+        <div class="row gx-2">
+          <label class="col-4" translate="faidare.node-details.default-value"></label>
+          <div class="col-8">{{ node.details.defaultValue }}</div>
+        </div>
+      }
+    }
+  }
 </div>
