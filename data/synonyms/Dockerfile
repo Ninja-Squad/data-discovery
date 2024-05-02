@@ -1,4 +1,4 @@
-ARG ELASTIC_VERSION=7.17.20
+ARG ELASTIC_VERSION=7.17.21
 FROM docker.elastic.co/elasticsearch/elasticsearch:$ELASTIC_VERSION
 
 COPY . /usr/share/elasticsearch/config/analysis/synonyms/
