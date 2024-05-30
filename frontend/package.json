@@ -56,8 +56,8 @@
     "@angular/compiler-cli": "17.3.10",
     "@angular/language-service": "17.3.10",
     "@types/jasmine": "5.1.4",
-    "@typescript-eslint/eslint-plugin": "7.10.0",
-    "@typescript-eslint/parser": "7.10.0",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
     "cypress": "13.10.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
@@ -73,7 +73,7 @@
     "karma-junit-reporter": "2.0.1",
     "karma-mocha-reporter": "2.2.5",
     "mocha-spec-json-output-reporter": "1.1.7",
-    "ngx-speculoos": "12.0.0",
+    "ngx-speculoos": "12.0.1",
     "prettier": "3.2.5",
     "typescript": "5.3.3"
   }
