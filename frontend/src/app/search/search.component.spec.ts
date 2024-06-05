@@ -101,7 +101,6 @@ describe('SearchComponent', () => {
   it('should initialize state service when created', () => {
     const tester = new SearchComponentTester();
     tester.detectChanges();
-
     expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
     const model: Model = {
@@ -128,6 +127,7 @@ describe('SearchComponent', () => {
       documents: null
     });
     tester.detectChanges();
+
     expect(tester.results.length).toBe(0);
     expect(tester.aggregations.length).toBe(0);
     expect(tester.loaders.length).toBe(2);
