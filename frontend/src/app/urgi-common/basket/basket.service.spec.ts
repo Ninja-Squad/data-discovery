@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { Basket, BasketCreated, BasketItem, BasketService } from './basket.service';
 import { RareDocumentModel } from '../../rare/rare-document.model';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('BasketService', () => {
   let service: BasketService;
@@ -10,7 +11,7 @@ describe('BasketService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     // Object.getPrototypeOf is needed to make the test succeed on Firefox
     mockGetItem = spyOn(Object.getPrototypeOf(window.localStorage), 'getItem');

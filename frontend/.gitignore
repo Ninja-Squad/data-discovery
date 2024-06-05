@@ -44,3 +44,4 @@ cypress-result.json
 Thumbs.db
 
 /cypress/screenshots/
+.nx
