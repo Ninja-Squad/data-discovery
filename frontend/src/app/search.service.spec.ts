@@ -1,5 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
 
 import {
@@ -11,6 +11,7 @@ import {
 import { SearchService } from './search.service';
 import { Aggregation, Page } from './models/page';
 import { DocumentModel } from './models/document.model';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -18,7 +19,8 @@ describe('SearchService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
 
     service = TestBed.inject(SearchService);

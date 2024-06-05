@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ExportService } from './export.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('ExportService', () => {
   let service: ExportService;
@@ -9,7 +10,7 @@ describe('ExportService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
 
     service = TestBed.inject(ExportService);

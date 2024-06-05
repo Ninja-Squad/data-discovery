@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { PillarService } from './pillar.service';
 import { PillarModel } from './models/pillar.model';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('PillarService', () => {
   let service: PillarService;
@@ -10,7 +11,8 @@ describe('PillarService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
 
     service = TestBed.inject(PillarService);
