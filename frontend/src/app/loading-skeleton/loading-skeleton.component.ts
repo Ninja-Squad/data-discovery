@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ErrorInterceptorService } from '../error-interceptor.service';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 // Based ideas taken from https://codepen.io/Dreamdealer/pen/JyBdMX
 /*
@@ -21,7 +20,7 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 
- */
+*/
 
 @Component({
   selector: 'dd-loading-skeleton',
@@ -29,13 +28,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
     @if (loading) {
       <div class="loading">
         @if (aggregationStyle) {
-          @for (iAgg of [].constructor(3); track iAgg) {
+          @for (aggregation of [1, 2, 3]; track aggregation) {
             <div class="card skeleton-loading-aggregation">
               <div class="skeleton-aggregation skeleton-animated-background"></div>
             </div>
           }
         } @else {
-          @for (iSearch of [].constructor(5); track iSearch) {
+          @for (i of [1, 2, 3, 4, 5]; track i) {
             <div class="card skeleton-loading">
               <div class="skeleton-default skeleton-animated-background"></div>
             </div>
@@ -46,18 +45,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
   `,
   styleUrl: './loading-skeleton.component.scss',
   standalone: true,
-  imports: []
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoadingSkeletonComponent implements OnInit {
+export class LoadingSkeletonComponent {
   @Input() loading = false;
   @Input() aggregationStyle = false;
-
-  constructor(private errorService: ErrorInterceptorService) {}
-
-  ngOnInit(): void {
-    // Force loading stop when an error is intercepted
-    this.errorService.getErrors().subscribe(() => {
-      this.loading = false;
-    });
-  }
 }

@@ -4,8 +4,8 @@ import {
   combineLatest,
   delay,
   distinctUntilChanged,
-  EMPTY,
   filter,
+  finalize,
   ignoreElements,
   map,
   merge,
@@ -206,9 +206,9 @@ export class SearchStateService {
     // for now, we want a short delay here so that the loader is always displayed when a search is done
     const loading$ = of({ loading: true, documents: null }).pipe(delay(10), takeUntil(loaded$));
     const search$ = this.searchService.search(criteria).pipe(
-      tap(() => loaded$.next()),
+      finalize(() => loaded$.next()),
       map(aggregatedPage => ({ loading: false, documents: aggregatedPage })),
-      catchError(() => EMPTY)
+      catchError(() => of({ loading: false, documents: null }))
     );
 
     return merge(loading$, search$);
@@ -222,9 +222,9 @@ export class SearchStateService {
     // a long delay avoids a flickering effect, and also avoids losing the focus
     const loading$ = of({ loading: true, aggregations: [] }).pipe(delay(500), takeUntil(loaded$));
     const aggregations$ = this.searchService.aggregate(criteria).pipe(
-      tap(() => loaded$.next()),
+      finalize(() => loaded$.next()),
       map(aggregations => ({ loading: false, aggregations })),
-      catchError(() => EMPTY)
+      catchError(() => of({ loading: false, aggregations: [] }))
     );
 
     return merge(loading$, aggregations$);

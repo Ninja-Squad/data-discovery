@@ -108,10 +108,12 @@ describe('SearchStateService', () => {
 
     tick(100);
     documentsSubject.next(documents);
+    documentsSubject.complete();
     expect(model!).toBeFalsy();
 
     tick(100);
     aggregationsSubject.next(aggregations);
+    aggregationsSubject.complete();
     expect(model!).toEqual({
       searchCriteria: {
         query: 'Test',
@@ -197,6 +199,77 @@ describe('SearchStateService', () => {
       },
       documents,
       aggregations,
+      disabledAggregationName: null,
+      documentsLoading: false,
+      aggregationsLoading: false
+    });
+  }));
+
+  it('should set loading to false if an error occurs', fakeAsync(() => {
+    const route = stubRoute({
+      queryParams: {
+        query: 'Test'
+      }
+    });
+
+    const model$ = service.initialize(route);
+
+    const documentsSubject = new Subject<Page<DocumentModel>>();
+    const aggregationsSubject = new Subject<Array<Aggregation>>();
+
+    searchService.search.and.returnValue(documentsSubject);
+    searchService.aggregate.and.returnValue(aggregationsSubject);
+
+    let model: Model;
+    model$.subscribe(m => (model = m));
+    expect(model!).toBeFalsy();
+
+    tick(600);
+    expect(model!).toEqual({
+      searchCriteria: {
+        query: 'Test',
+        page: 1,
+        descendants: false,
+        aggregationCriteria: [],
+        sortCriterion: null,
+        fragment: null
+      },
+      documents: null,
+      aggregations: [],
+      disabledAggregationName: null,
+      documentsLoading: true,
+      aggregationsLoading: true
+    });
+
+    documentsSubject.error('oops');
+    expect(model!).toEqual({
+      searchCriteria: {
+        query: 'Test',
+        page: 1,
+        descendants: false,
+        aggregationCriteria: [],
+        sortCriterion: null,
+        fragment: null
+      },
+      documents: null,
+      aggregations: [],
+      disabledAggregationName: null,
+      documentsLoading: false,
+      aggregationsLoading: true
+    });
+
+    aggregationsSubject.error('oops');
+    expect(model!).toEqual({
+      searchCriteria: {
+        query: 'Test',
+        page: 1,
+        descendants: false,
+        aggregationCriteria: [],
+        sortCriterion: null,
+        fragment: null
+      },
+      documents: null,
+      aggregations: [],
       disabledAggregationName: null,
       documentsLoading: false,
       aggregationsLoading: false
