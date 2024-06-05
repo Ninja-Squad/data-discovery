@@ -29,3 +29,6 @@ jobs: # a collection of steps
       # check out source code to working directory
       - checkout
       - run: ./gradlew check build
+      - run: ./gradlew :frontend:assemble -Papp=wheatis
+      - run: ./gradlew :frontend:assemble -Papp=brc4env
+      - run: ./gradlew :frontend:assemble -Papp=faidare
