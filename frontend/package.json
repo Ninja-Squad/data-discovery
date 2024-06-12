@@ -39,7 +39,7 @@
     "@popperjs/core": "2.11.8",
     "bootstrap": "5.3.3",
     "font-awesome": "4.7.0",
-    "marked": "12.0.2",
+    "marked": "13.0.0",
     "ngx-markdown": "18.0.0",
     "prismjs": "1.29.0",
     "rxjs": "7.8.1",
