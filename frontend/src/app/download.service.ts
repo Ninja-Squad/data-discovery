@@ -1,11 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DownloadService {
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  private document: Document = inject(DOCUMENT);
 
   download(blob: Blob, fileName: string) {
     const invisibleLink = document.createElement('a');

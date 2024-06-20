@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 
@@ -9,15 +9,12 @@ import { MarkdownComponent } from 'ngx-markdown';
   standalone: true,
   imports: [MarkdownComponent]
 })
-export class MarkdownPageComponent implements OnInit {
+export class MarkdownPageComponent {
   mdFile = '';
+  private route = inject(ActivatedRoute);
+  private locale = inject(LOCALE_ID);
 
-  constructor(
-    private route: ActivatedRoute,
-    @Inject(LOCALE_ID) private locale: string
-  ) {}
-
-  ngOnInit() {
+  constructor() {
     // we extract the markdown file to display from the route data
     // and suffix it with the local (either 'en' or 'fr') to get the localized version.
     this.route.data.subscribe(

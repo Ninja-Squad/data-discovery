@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router, RouterLink } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
@@ -30,7 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class HomeComponent {
-  searchForm = this.fb.group({
+  searchForm = inject(NonNullableFormBuilder).group({
     search: ''
   });
   appName = environment.name;
@@ -41,7 +41,6 @@ export class HomeComponent {
   exampleQueries: Array<string> = environment.home.exampleQueries;
 
   constructor(
-    private fb: NonNullableFormBuilder,
     private router: Router,
     private searchService: SearchService
   ) {
