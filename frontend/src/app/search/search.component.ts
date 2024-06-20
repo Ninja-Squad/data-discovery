@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
@@ -12,7 +12,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { DocumentsComponent } from '../documents/documents.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
-import { NgbTypeahead, NgbCollapse, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapse, NgbPagination, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 
@@ -41,9 +41,8 @@ interface ViewModel extends Model {
 })
 export class SearchComponent {
   appName = environment.name;
-  searchCtrl = this.fb.control('');
-  searchForm = this.fb.group({
-    search: this.searchCtrl
+  searchForm = inject(NonNullableFormBuilder).group({
+    search: ''
   });
   suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
@@ -66,7 +65,7 @@ export class SearchComponent {
         collectionSize: model.documents ? this.computeCollectionSize(model.documents) : 0,
         filtersExpanded
       })),
-      tap(vm => this.searchCtrl.setValue(vm.searchCriteria.query))
+      tap(vm => this.searchForm.controls.search.setValue(vm.searchCriteria.query))
     );
   }
 
@@ -75,7 +74,7 @@ export class SearchComponent {
    * It uses the new search terms in the form, and asks for the default page (1) for this new query
    */
   newSearch() {
-    const query = this.searchCtrl.value;
+    const query = this.searchForm.controls.search.value;
     this.searchStateService.newSearch(query);
   }
 

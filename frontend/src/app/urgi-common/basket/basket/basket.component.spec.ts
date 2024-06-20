@@ -85,7 +85,6 @@ describe('BasketComponent', () => {
         { provide: LOCATION, useValue: location }
       ]
     });
-    tester = new BasketComponentTester();
   });
 
   afterEach(() => {
@@ -98,6 +97,7 @@ describe('BasketComponent', () => {
   });
 
   it('should display the number of items', () => {
+    tester = new BasketComponentTester();
     tester.detectChanges();
     // no item
     expect(tester.basketCounterAsText).toContainText('0');
@@ -141,6 +141,7 @@ describe('BasketComponent', () => {
   });
 
   it('should open a summary modal on click', () => {
+    tester = new BasketComponentTester();
     tester.detectChanges();
     basketEvents.next({
       items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
@@ -164,6 +165,7 @@ describe('BasketComponent', () => {
   });
 
   it('should send the basket', fakeAsync(() => {
+    tester = new BasketComponentTester();
     tester.detectChanges();
     const reference = 'ABCDEFGH';
     service.sendBasket.and.returnValue(
@@ -197,6 +199,7 @@ describe('BasketComponent', () => {
   }));
 
   it('should clear the basket', () => {
+    tester = new BasketComponentTester();
     tester.detectChanges();
     basketEvents.next({
       items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
@@ -210,6 +213,7 @@ describe('BasketComponent', () => {
 
   it('should not display if the basket feature is disabled', () => {
     service.isEnabled.and.returnValue(false);
+    tester = new BasketComponentTester();
     tester.detectChanges();
     expect(tester.basketCounter).toBeNull();
     expect(tester.basketCounterAsText).toBeNull();

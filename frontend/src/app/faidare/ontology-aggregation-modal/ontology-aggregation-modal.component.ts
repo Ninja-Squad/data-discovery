@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -49,6 +49,7 @@ interface TreeViewModel {
   ]
 })
 export class OntologyAggregationModalComponent {
+  private fb = inject(NonNullableFormBuilder);
   treeFilterCtrl = this.fb.control('');
   languageCtrl = this.fb.control<OntologyLanguage>('FR');
   languages = ONTOLOGY_LANGUAGES;
@@ -59,7 +60,6 @@ export class OntologyAggregationModalComponent {
   maxSelectedNodes = 20;
 
   constructor(
-    private fb: NonNullableFormBuilder,
     private modal: NgbActiveModal,
     private ontologyService: OntologyService
   ) {
