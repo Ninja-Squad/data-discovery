@@ -1,12 +1,13 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription, timer } from 'rxjs';
-import { LOCATION } from '../../../location.service';
+import { timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LOCATION } from '../../../location.service';
 
 @Component({
   selector: 'dd-basket',
@@ -15,28 +16,25 @@ import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
   standalone: true,
   imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip]
 })
-export class BasketComponent implements OnInit, OnDestroy {
+export class BasketComponent {
   itemCounter = 0;
   basket: Basket | null = null;
-  eulaAgreementControl = this.fb.control(false, Validators.requiredTrue);
+  eulaAgreementControl = inject(NonNullableFormBuilder).control(false, Validators.requiredTrue);
   submitted = false;
   confirmForbidden = false;
   isEnabled = false;
 
-  private basketSubscription?: Subscription;
+  private location = inject(LOCATION);
 
   constructor(
     private basketService: BasketService,
-    private modalService: NgbModal,
-    private fb: NonNullableFormBuilder,
-    @Inject(LOCATION) private location: Location
-  ) {}
-
-  ngOnInit(): void {
+    private modalService: NgbModal
+  ) {
     this.isEnabled = this.basketService.isEnabled();
     if (this.isEnabled) {
-      this.basketSubscription = this.basketService
+      this.basketService
         .getBasket()
+        .pipe(takeUntilDestroyed())
         .subscribe((basket: Basket | null) => {
           this.basket = basket;
           if (basket) {
@@ -44,10 +42,6 @@ export class BasketComponent implements OnInit, OnDestroy {
           }
         });
     }
-  }
-
-  ngOnDestroy(): void {
-    this.basketSubscription?.unsubscribe();
   }
 
   viewItems(basket: any) {

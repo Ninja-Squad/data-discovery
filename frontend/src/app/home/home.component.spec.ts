@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { NonNullableFormBuilder } from '@angular/forms';
 import { provideRouter, Router } from '@angular/router';
 import { ComponentTester } from 'ngx-speculoos';
 
@@ -59,13 +58,10 @@ describe('HomeComponent', () => {
   describe('when not showing aggregations', () => {
     it('should navigate to search when a query is entered', () => {
       // given a component
-      const fb = TestBed.inject(NonNullableFormBuilder);
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
-      const searchService = TestBed.inject(SearchService);
-
-      const component = new HomeComponent(fb, router, searchService);
+      const component = new HomeComponentTester().componentInstance;
 
       // with a query
       const query = 'Bacteria';
