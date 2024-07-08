@@ -14,10 +14,7 @@ import java.util.stream.Collectors;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
-import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
-import fr.inra.urgi.datadiscovery.dao.AggregationTester;
-import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
-import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
+import fr.inra.urgi.datadiscovery.dao.*;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
@@ -669,6 +666,81 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
             assertThat(result.getContent()).extracting(FaidareDocument::getId).containsOnly("r1", "r2", "r3");
         }
 
+
     }
+
+    // Create an inner class that extends AbstractDocumentDaoImpl to make getAnnotationsIds (protected method) visible.
+    private static class TestDocumentDaoImplTest extends AbstractDocumentDaoImpl{
+
+
+        public TestDocumentDaoImplTest() {
+            super(null, null, null);
+        }
+
+        @Override
+        protected Class getDocumentClass() {
+            return null;
+        }
+
+        @Override
+        protected Set<String> getSearchableFields() {
+            return Set.of();
+        }
+
+        @Override
+        protected List<? extends AppAggregation> getAppAggregations() {
+            return List.of();
+        }
+
+        @Override
+        protected List<? extends AppAggregation> getMainAppAggregations() {
+            return List.of();
+        }
+
+        @Override
+        protected PillarAggregationDescriptor getPillarAggregationDescriptor() {
+            return null;
+        }
+
+        public List<String> testGetAnnotationsIds(SearchRefinements refinements) {
+            return getAnnotationsIds(refinements);
+        }
+
+
+
+    }
+    private TestDocumentDaoImplTest exposeProtectedDocumentDao = new TestDocumentDaoImplTest();
+
+    @Test
+    public void testGetAnnotationsIds(){
+        SearchRefinements refinements = new SearchRefinements.Builder().withTerm(new AppAggregation() {
+            @Override
+            public String getName() {
+                return "annot";
+            }
+
+            @Override
+            public String getField() {
+                return "";
+            }
+
+            @Override
+            public Type getType() {
+                return null;
+            }
+        }, Set.of("(ABCDEF:1234567)", "(GMM:12.345.67)", " text before (GO:0000247)","(WTO:61012345) ko test", "space test (CO_231:0000657)     ")).build();
+
+        List<String> testResult = exposeProtectedDocumentDao.testGetAnnotationsIds(refinements);
+
+        assertThat(testResult.size()).isEqualTo(4);
+        assertThat(testResult).contains("ABCDEF:1234567");
+        assertThat(testResult).contains("GMM:12.345.67");
+        assertThat(testResult).contains("GO:0000247");
+        assertThat(testResult).contains("CO_231:0000657");
+        assertThat(testResult).doesNotContain("WTO:61012345");
+
+    }
+
+
 
 }

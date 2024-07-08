@@ -147,14 +147,14 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
     protected List<String> getAnnotationsIds(SearchRefinements refinements){
         List<String> annotIds = new ArrayList<String>();
-        Pattern pattern = Pattern.compile("\\(\\w{2,6}:\\d{7}\\)$");
+        Pattern pattern = Pattern.compile("\\((.*)\\)\\s*$");
         for (AppAggregation term : refinements.getTerms()) {
             if (term.getName().equals("annot")) {
                 Set<String> annotRefinements = refinements.getRefinementsForTerm(term);
                 for (String annotRefinement : annotRefinements) {
                     Matcher matcher = pattern.matcher(annotRefinement);
                     if (matcher.find()) {
-                        annotIds.add(matcher.group(0).replace("(","").replace(")",""));
+                        annotIds.add(matcher.group(0).replace("(","").replace(")","").replaceAll("\\s", ""));
                     }
                 }
             }
