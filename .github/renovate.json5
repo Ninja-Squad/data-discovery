@@ -54,7 +54,7 @@
         "^@angular/.*",
         "^@angular-devkit/.*"
       ],
-      "matchPackagePatterns": [
+      "matchDepPatterns": [
         "*"
       ],
       "matchUpdateTypes": [
