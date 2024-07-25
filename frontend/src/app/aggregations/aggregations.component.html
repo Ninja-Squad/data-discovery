@@ -1,6 +1,6 @@
 <!-- Loading skeleton aka PleaseWaitWidget -->
 <div class="text-center">
-  <dd-loading-skeleton [loading]="loading" [aggregationStyle]="true"></dd-loading-skeleton>
+  <dd-loading-skeleton [loading]="loading" [aggregationStyle]="true" />
 </div>
 @if (aggregations?.length && !loading) {
   <div>
@@ -12,7 +12,7 @@
             [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
             (aggregationChange)="onAggregationChange($event)"
             [disabled]="aggregation.name === disabledAggregationName"
-          ></dd-ontology-aggregation>
+          />
         } @else if (
           aggregation.type === 'SMALL' ||
           (aggregation.type === 'LARGE' && aggregation.buckets.length < 10)
@@ -24,7 +24,7 @@
             [searchDescendants]="searchDescendants"
             (searchDescendantsChange)="onSearchDescendantChange($event)"
             [disabled]="aggregation.name === disabledAggregationName"
-          ></dd-small-aggregation>
+          />
         } @else {
           <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
     and more than 10 options for this search -->
@@ -35,7 +35,7 @@
             [searchDescendants]="searchDescendants"
             (searchDescendantsChange)="onSearchDescendantChange($event)"
             [disabled]="aggregation.name === disabledAggregationName"
-          ></dd-large-aggregation>
+          />
         }
       </div>
     }

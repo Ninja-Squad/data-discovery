@@ -30,7 +30,7 @@
                 <dd-document-count
                   [name]="displayableKey(bucket.key)"
                   [count]="bucket.documentCount"
-                ></dd-document-count>
+                />
               </label>
             </div>
           </div>
@@ -42,7 +42,7 @@
           <dd-descendants-checkbox
             (searchDescendantsChange)="onSearchDescendants($event)"
             [searchDescendants]="searchDescendants"
-          ></dd-descendants-checkbox>
+          />
         </div>
       }
     </div>

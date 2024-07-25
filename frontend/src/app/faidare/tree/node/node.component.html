@@ -31,7 +31,7 @@
       (click)="highlight()"
     >
       @if (payloadTemplate) {
-        <ng-container *ngTemplateOutlet="payloadTemplate; context: { node: node }"></ng-container>
+        <ng-container *ngTemplateOutlet="payloadTemplate; context: { node: node }" />
       } @else {
         {{ node.text }}
       }
@@ -50,7 +50,7 @@
             [highlightedNodeId]="highlightedNodeId"
             [payloadTemplate]="payloadTemplate"
             [class.ms-4]="!childNode.hasVisibleChildren"
-          ></dd-node>
+          />
         </li>
       }
     }

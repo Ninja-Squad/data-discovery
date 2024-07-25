@@ -75,7 +75,8 @@
           {
             "allowNullOrUndefined": true
           }
-        ]
+        ],
+        "@angular-eslint/template/prefer-self-closing-tags": "error"
       }
     }
   ]

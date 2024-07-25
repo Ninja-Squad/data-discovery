@@ -47,19 +47,19 @@
         [selectedCriteria]="vm.searchCriteria.aggregationCriteria"
         (aggregationsChange)="updateSearchWithAggregation($event)"
         (searchDescendantsChange)="updateSearchWithDescendants($event)"
-      ></dd-aggregations>
+      />
     </div>
     <div class="col-12 col-md-8 col-lg-9">
       <!-- Loading skeleton aka PleaseWaitWidget -->
       <div class="text-center">
-        <dd-loading-skeleton [loading]="vm.documentsLoading"></dd-loading-skeleton>
+        <dd-loading-skeleton [loading]="vm.documentsLoading" />
       </div>
 
       @if (!vm.documentsLoading) {
         <div>
           <h2 class="visually-hidden" translate="search.results"></h2>
           <div>
-            <dd-documents></dd-documents>
+            <dd-documents />
           </div>
 
           @if (vm.documents && vm.documents.totalPages > 1) {
@@ -75,8 +75,7 @@
                 [boundaryLinks]="true"
                 [ellipses]="false"
                 size="sm"
-              >
-              </ngb-pagination>
+              />
             </div>
           }
         </div>

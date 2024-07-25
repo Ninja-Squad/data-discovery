@@ -15,7 +15,7 @@
               <!-- the test on the active tab is necessary because it takes some time between the click on the tab,
           causing an immediate change of tab, and the moment when the documents actually match the requested tag -->
               @if (vm.activeTab === 'all' && vm.documents) {
-                <ng-container [ngTemplateOutlet]="allResults"></ng-container>
+                <ng-container [ngTemplateOutlet]="allResults" />
               }
             </ng-template>
           </li>
@@ -27,7 +27,7 @@
               <!-- the test on the active tab is necessary because it takes some time between the click on the tab,
           causing an immediate change of tab, and the moment when the documents actually match the requested tag -->
               @if (vm.activeTab === 'germplasm' && vm.documents) {
-                <dd-germplasm-results></dd-germplasm-results>
+                <dd-germplasm-results />
               }
             </ng-template>
           </li>
@@ -35,14 +35,14 @@
         <div [ngbNavOutlet]="nav" class="mt-2"></div>
       </div>
     } @else {
-      <ng-container [ngTemplateOutlet]="allResults"></ng-container>
+      <ng-container [ngTemplateOutlet]="allResults" />
     }
     <ng-template #allResults>
       @if (vm.documents) {
         @for (document of vm.documents.content; track document.identifier) {
           <div class="mb-4">
             <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
-            <dd-document [document]="$any(document)"></dd-document>
+            <dd-document [document]="$any(document)" />
           </div>
         }
       }
