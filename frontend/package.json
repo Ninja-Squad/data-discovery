@@ -21,7 +21,8 @@
     "e2e:standalone": "ng e2e --headless --no-watch --browser=chrome",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "format": "prettier --write \"{src,cypress}/**/*.+(ts|js|json|html|scss)\""
+    "format": "prettier --write \"{src,cypress}/**/*.+(ts|js|json|html|scss)\"",
+    "knip": "npx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
   "dependencies": {

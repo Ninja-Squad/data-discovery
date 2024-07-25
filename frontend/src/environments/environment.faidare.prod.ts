@@ -5,7 +5,6 @@
 import { environment as devEnvironment } from './environment.faidare';
 import { DataDiscoveryEnvironment } from './environment.model';
 
-// ts-prune-ignore-next
 export const environment: DataDiscoveryEnvironment = {
   ...devEnvironment,
   faidare: {
