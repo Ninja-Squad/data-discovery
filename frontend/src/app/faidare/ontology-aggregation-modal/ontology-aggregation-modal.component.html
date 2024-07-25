@@ -10,7 +10,7 @@
 <div class="modal-body">
   <ng-template #payloadTemplate let-node="node">
     {{ node.text }}
-    <dd-ontology-node-type [type]="node.payload.type"></dd-ontology-node-type>
+    <dd-ontology-node-type [type]="node.payload.type" />
   </ng-template>
   @if (treeView$ | async; as treeView) {
     <div class="content">
@@ -59,12 +59,12 @@
             [textAccessor]="treeView.textAccessor"
             (highlightedNode)="highlightNode($event)"
             (selectedNodes)="selectedNodes = $event"
-          ></dd-tree>
+          />
         </div>
       </div>
       <div class="details-section">
         @if (highlightedNodeDetails$ | async; as highlightedNodeDetails) {
-          <dd-node-details [node]="highlightedNodeDetails"></dd-node-details>
+          <dd-node-details [node]="highlightedNodeDetails" />
         }
       </div>
     </div>

@@ -27,11 +27,11 @@
             <!-- for example, if the application is Rare it will be a `SelectAllResultsComponent` -->
             <!-- For others it will be an empty component -->
             <!-- As Ivy has a stricter type checking, we need to cast the documents as any -->
-            <dd-select-all-results [documents]="$any(vm.documents)"></dd-select-all-results>
+            <dd-select-all-results [documents]="$any(vm.documents)" />
           </div>
         }
       </div>
-      <dd-document-list></dd-document-list>
+      <dd-document-list />
     </div>
   } @else {
     <!-- else we display a simple message -->

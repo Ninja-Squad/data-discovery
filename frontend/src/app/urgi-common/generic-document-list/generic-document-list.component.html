@@ -4,7 +4,7 @@
       <!-- the following component will not be the same depending on the environment.documentComponent value -->
       <!-- for example, if the application is Rare then it will be a `RareDocumentComponent` -->
       <!-- As Ivy has a stricter type checking, we need to cast the document as any -->
-      <dd-document [document]="$any(document)"></dd-document>
+      <dd-document [document]="$any(document)" />
     </div>
   }
 }

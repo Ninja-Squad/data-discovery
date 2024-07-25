@@ -1,6 +1,6 @@
 <ng-template #resultTemplate let-bucket="result" let-t="term">
   @if (bucket !== 'REFINE') {
-    <ngb-highlight [result]="displayableKey(bucket.key)" [term]="t"></ngb-highlight>
+    <ngb-highlight [result]="displayableKey(bucket.key)" [term]="t" />
     <small class="ms-1 text-body-secondary">[{{ bucket.documentCount | number }}]</small>
   } @else {
     <div class="text-body-secondary small">
@@ -68,7 +68,7 @@
               [name]="displayableKey(key)"
               [count]="documentCountForKey(key)"
               [muted]="false"
-            ></dd-document-count>
+            />
             <button
               tabindex="-1"
               type="button"
@@ -100,7 +100,7 @@
           <dd-descendants-checkbox
             (searchDescendantsChange)="onSearchDescendants($event)"
             [searchDescendants]="searchDescendants"
-          ></dd-descendants-checkbox>
+          />
         </div>
       }
     </div>

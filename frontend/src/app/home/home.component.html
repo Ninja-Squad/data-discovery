@@ -2,7 +2,7 @@
   <div class="col-md-8 col-lg-9 order-md-last">
     <!-- the header is specific to each application -->
     <!-- for example, if the application is RARe, the component will be a RareHeaderComponent -->
-    <dd-header></dd-header>
+    <dd-header />
     <div class="pt-md-5">
       <h2 class="visually-hidden" translate="home.title"></h2>
 
@@ -45,13 +45,13 @@
           <dd-aggregations
             [aggregations]="mainAggregations"
             (aggregationsChange)="aggregationsChanged($event)"
-          ></dd-aggregations>
+          />
         }
       </div>
     } @else {
       <div>
         <h2 class="visually-hidden" translate="home.pillars"></h2>
-        <dd-pillars></dd-pillars>
+        <dd-pillars />
       </div>
     }
   </div>
