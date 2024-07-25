@@ -29,7 +29,7 @@ export interface SortCriterion {
   direction: 'asc' | 'desc';
 }
 
-export interface SearchCriteria {
+interface SearchCriteria {
   query: string;
   aggregationCriteria: Array<AggregationCriterion>;
   descendants: boolean;

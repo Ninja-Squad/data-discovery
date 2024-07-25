@@ -26,7 +26,7 @@ import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendant
 import { DocumentCountComponent } from '../document-count/document-count.component';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 
-export type BucketOrRefine = Bucket | 'REFINE';
+type BucketOrRefine = Bucket | 'REFINE';
 
 const maxResultsDisplayed = 8;
 

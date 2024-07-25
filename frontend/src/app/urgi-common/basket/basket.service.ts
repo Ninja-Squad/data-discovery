@@ -15,7 +15,7 @@ interface Accession {
 /**
  * An item of basket command
  */
-export interface BasketItem {
+interface BasketItem {
   /**
    * The RARe accession being ordered
    */
@@ -27,11 +27,11 @@ export interface BasketItem {
   accessionHolder: string;
 }
 
-export interface Basket {
+interface Basket {
   items: Array<BasketItem>;
 }
 
-export interface BasketCreated extends Basket {
+interface BasketCreated extends Basket {
   id: string;
   reference: string;
 }
