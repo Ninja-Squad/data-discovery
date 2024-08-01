@@ -28,6 +28,7 @@ Cypress.on('window:before:load', win => {
 afterEach(() => {
   // consoleSpy can be null if test failed already in beforeEach
   if (consoleSpy) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(consoleSpy).not.to.be.called;
   }
 });
