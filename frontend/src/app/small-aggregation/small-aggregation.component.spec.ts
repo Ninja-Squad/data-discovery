@@ -155,7 +155,6 @@ describe('SmallAggregationComponent', () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance;
     tester.componentInstance.aggregation = aggregation;
     tester.detectChanges();
     expect(tester.firstCheckbox).not.toBeChecked();

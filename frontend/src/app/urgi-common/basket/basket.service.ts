@@ -56,7 +56,7 @@ export class BasketService {
     if (rareBasketStringified) {
       try {
         this.basket = JSON.parse(rareBasketStringified);
-        // eslint-disable-next-line no-empty
+        // eslint-disable-next-line no-empty,@typescript-eslint/no-unused-vars
       } catch (e) {}
     }
     if (!this.basket) {
