@@ -13,7 +13,7 @@ This indexation can be done using the following approaches:
 
 Each of those approaches are described below and all assume a minimum information set comprising an URL for link back plus description.
 
- The metadata format must follow the indications below and we invite you to [contact us](mailto:urgi-data@inrae.fr?subject=%5BWheatIS%2FAIDARE%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
+ The metadata format must follow the indications below and we invite you to [contact us](mailto:urgi-data@inrae.fr?subject=%5BWheatIS%2FFAIDARE%5D) as soon as possible so that we can provide help and discuss the best way to go ahead.
 
 ## Breeding API (BrAPI)
 
@@ -22,6 +22,7 @@ Only Germplasms and study are indexed from a BreedingAPI endpoint, with their fu
 Those metadata will be used to create summary cards [such as](https://doi.org/10.15454/V8WRHY)
 The datadiscovery metadata files, following the  [specifications](#datadiscovery-metadata-specifications) below are generated from those summaries.
 Curently (FEB 2023), FAIDARE indexes BrAPI v1.1+ sources (V1.3 recomended).
+
 ### Web services
 
 The breedingAPI full specifications are available on [www.brapi.org](https://brapi.org). The resources indexed are germplasms and study only. Information cards are created using the following calls :
@@ -112,7 +113,6 @@ If you have any question or need help referencing your endpoint, you can [contac
 
 [Elixir's FAIDARE harvester](https://github.com/elixir-europe/plant-brapi-etl-data-lookup-gnpis) extract the metadata available from all declared sources (_i.e._ BrAPI endpoint) and index it into a centralised Elasticsearch cache.
 The sources are reindexed regularly (once a month maximum) but if you want a reindexation following a major update on your side, please [inform us](mailto:urgi-contact@inra.fr?subject=%5BFAIDARE%5D).
-
 
 ## Datadiscovery files
 
