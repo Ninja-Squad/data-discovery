@@ -54,7 +54,7 @@
     "@angular/language-service": "18.1.4",
     "@types/jasmine": "5.1.4",
     "angular-eslint": "18.3.0",
-    "cypress": "13.13.2",
+    "cypress": "13.13.3",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-deprecation": "3.0.0",
