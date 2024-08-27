@@ -1,6 +1,8 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended",
+    "group:allNonMajor",
+    "schedule:weekly"
   ],
   lockFileMaintenance: {
     enabled: true
@@ -14,30 +16,6 @@
   // auto-merge if build is OK
   "automerge": true,
   "packageRules": [
-    // allow patch updates for Angular packages,
-    // but we'll handle minor and major updates ourselves
-    {
-      "packagePatterns": [
-        "^@angular/.*",
-        "^@angular-devkit/.*"
-      ],
-      "updateTypes": [
-        "minor",
-        "major"
-      ],
-      "enabled": false
-    },
-    // same for TypeScript
-    {
-      "packageNames": [
-        "typescript"
-      ],
-      "updateTypes": [
-        "minor",
-        "major"
-      ],
-      "enabled": false
-    },
     // allow only patch and minor updates for elasticsearch docker image
     {
       "packageNames": [
@@ -47,26 +25,6 @@
         "major"
       ],
       "enabled": false
-    },
-    // group all minor dependencies, once a week
-    {
-      "excludePackagePatterns": [
-        "^@angular/.*",
-        "^@angular-devkit/.*"
-      ],
-      "matchDepPatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchCurrentVersion": ">=1",
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch",
-      "schedule": [
-        "after 1am on Thursday"
-      ]
     }
   ],
   "ignoreDeps": [
