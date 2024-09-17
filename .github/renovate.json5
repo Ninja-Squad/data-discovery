@@ -1,5 +1,5 @@
 {
-  "extends": [
+  extends: [
     "config:recommended",
     "group:allNonMajor",
     "schedule:weekly"
@@ -8,26 +8,37 @@
     enabled: true
   },
   // target chore/next branch
-  "baseBranches": [
+  baseBranches: [
     "chore/next"
   ],
   // only 1 PR at the same time (to avoid cascading rebase)
-  "prConcurrentLimit": 1,
+  prConcurrentLimit: 1,
   // auto-merge if build is OK
-  "automerge": true,
-  "packageRules": [
+  automerge: true,
+  packageRules: [
     // allow only patch and minor updates for elasticsearch docker image
     {
-      "packageNames": [
+      packageNames: [
         "docker.elastic.co/elasticsearch/elasticsearch"
       ],
-      "updateTypes": [
+      updateTypes: [
         "major"
       ],
-      "enabled": false
+      enabled: false
+    },
+    // allow only patch updates for TS packages
+    {
+      packageNames: [
+        "typescript"
+      ],
+      updateTypes: [
+        "minor",
+        "major"
+      ],
+      enabled: false
     }
   ],
-  "ignoreDeps": [
+  ignoreDeps: [
     // do not bump openjdk images on CIs as we'll manually handle the JDK bumps
     "cimg/openjdk",
     "circleci/openjdk"
