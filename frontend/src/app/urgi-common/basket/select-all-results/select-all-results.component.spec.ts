@@ -13,7 +13,7 @@ import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
 
 @Component({
   selector: 'dd-test',
-  template: '<dd-select-all-results [documents]="documents"></dd-select-all-results>',
+  template: '<dd-select-all-results [documents]="documents" />',
   standalone: true,
   imports: [SelectAllResultsComponent]
 })
