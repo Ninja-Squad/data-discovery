@@ -36,6 +36,13 @@
             "ignoreParameters": true
           }
         ],
+        "eqeqeq": [
+          "error",
+          "always",
+          {
+            "null": "ignore"
+          }
+        ],
         "no-console": "error",
         "no-fallthrough": "error",
         "no-restricted-syntax": [
