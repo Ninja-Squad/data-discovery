@@ -25,7 +25,7 @@ interface TestPayload {
       [textAccessor]="textAccessor"
       (selectedNodes)="selectedNodes = $event"
       (highlightedNode)="highlightedNode = $event"
-    ></dd-tree>
+    />
   `,
   standalone: true,
   imports: [TreeComponent]

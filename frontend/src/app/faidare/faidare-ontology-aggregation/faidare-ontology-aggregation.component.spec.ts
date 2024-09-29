@@ -12,7 +12,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template:
-    '<dd-ontology-aggregation [aggregation]="aggregation" [selectedKeys]="selectedKeys" (aggregationChange)="criterion = $event"></dd-ontology-aggregation>',
+    '<dd-ontology-aggregation [aggregation]="aggregation" [selectedKeys]="selectedKeys" (aggregationChange)="criterion = $event" />',
   standalone: true,
   imports: [FaidareOntologyAggregationComponent]
 })

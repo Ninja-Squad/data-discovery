@@ -19,7 +19,7 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
     [selectedCriteria]="selectedCriteria"
     [searchDescendants]="searchDescendants"
     (searchDescendantsChange)="searchDescendantsChanged = $event"
-  ></dd-aggregations>`,
+  />`,
   standalone: true,
   imports: [AggregationsComponent]
 })

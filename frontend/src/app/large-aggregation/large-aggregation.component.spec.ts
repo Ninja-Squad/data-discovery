@@ -21,7 +21,7 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
     (searchDescendantsChange)="searchDescendantsChanged = $event"
     [selectedKeys]="selectedKeys"
     [disabled]="disabled"
-  ></dd-large-aggregation>`,
+  />`,
   standalone: true,
   imports: [LargeAggregationComponent]
 })
