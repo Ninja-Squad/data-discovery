@@ -55,8 +55,7 @@ tasks {
             filter {
                 if (it.trim().startsWith("active:")) {
                     it.replace("rare", project.app)
-                }
-                else {
+                } else {
                     it
                 }
             }
@@ -124,7 +123,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("com.squareup.okhttp3:mockwebserver")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
     "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
