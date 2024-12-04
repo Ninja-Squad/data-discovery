@@ -1,6 +1,6 @@
 version: 2.1 # use CircleCI 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.4.8
+  browser-tools: circleci/browser-tools@1.4.9
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
 
@@ -8,7 +8,7 @@ jobs: # a collection of steps
 
     docker: # run the steps with Docker
       - image: cimg/openjdk:17.0-browsers # ...with this image as the primary container; this is where all `steps` will run
-      - image: docker.elastic.co/elasticsearch/elasticsearch:7.17.25
+      - image: docker.elastic.co/elasticsearch/elasticsearch:7.17.26
         name: elasticsearch
         environment:
           transport.host: localhost
