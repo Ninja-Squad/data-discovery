@@ -23,24 +23,27 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * Unit tests for {@link IndexFilter}
+ *
  * @author JB Nizet
  */
 @WebMvcTest(controllers = SearchController.class)
-@Import(SecurityConfig.class)
-@SpyBean(RareSortAnalyzer.class)
+@Import({SecurityConfig.class, RareSortAnalyzer.class})
 class IndexFilterTest {
-    @MockBean
+    @MockitoSpyBean
+    private RareSortAnalyzer rareSortAnalyzer;
+
+    @MockitoBean
     private RareDocumentDao mockDocumentDao;
 
-    @MockBean
+    @MockitoBean
     private AggregationAnalyzer mockAggregationAnalyzer;
 
     @Autowired

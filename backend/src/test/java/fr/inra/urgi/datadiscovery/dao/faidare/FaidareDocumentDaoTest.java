@@ -34,26 +34,26 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.elasticsearch.DataElasticsearchTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @TestPropertySource("/test-faidare.properties")
 @Import(ElasticSearchConfig.class)
 @DataElasticsearchTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles(AppProfile.FAIDARE)
-@DisabledIfEnvironmentVariable(named ="CIRCLECI", matches = "true", disabledReason = "Avoid to run ES tests depending on synonyms on CircleCI")
+@DisabledIfEnvironmentVariable(named = "CIRCLECI", matches = "true", disabledReason = "Avoid to run ES tests depending on synonyms on CircleCI")
 class FaidareDocumentDaoTest extends DocumentDaoTest {
 
     private static final String PHYSICAL_INDEX = "test-faidare-resource-physical-index";
     private static final String SUGGESTION_INDEX = "test-faidare-suggestions";
 
-    @MockBean
+    @MockitoBean
     private FaidareCurrentUser mockCurrentUser;
 
     @Autowired

@@ -31,22 +31,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.restdocs.request.ParameterDescriptor;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * REST-Docs tests for {@link SearchController}
  */
 @WebMvcTest(controllers = SearchController.class)
-@Import(DocumentationConfig.class)
+@Import({DocumentationConfig.class, RareAggregationAnalyzer.class, RareSortAnalyzer.class})
 @AutoConfigureRestDocs
-@SpyBean(RareAggregationAnalyzer.class)
-@SpyBean(RareSortAnalyzer.class)
 class SearchControllerDocTest {
+
+    @MockitoSpyBean
+    private RareAggregationAnalyzer rareAggregationAnalyzer;
+
+    @MockitoSpyBean
+    private RareSortAnalyzer rareSortAnalyzer;
 
     private static final ParameterDescriptor QUERY_PARAM =
         parameterWithName("query")
@@ -67,7 +71,7 @@ class SearchControllerDocTest {
             parameterWithName("main")
                     .description("If present and set to true, only the main aggregations are returned. This is used to only display some aggregations on the home page");
 
-    @MockBean
+    @MockitoBean
     private RareDocumentDao mockDocumentDao;
 
     @Autowired

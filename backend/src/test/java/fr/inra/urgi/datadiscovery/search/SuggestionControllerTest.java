@@ -5,12 +5,10 @@ import java.util.Arrays;
 import fr.inra.urgi.datadiscovery.config.SecurityConfig;
 import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
@@ -20,12 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Unit tests for {@link SuggestionController}
+ *
  * @author JB Nizet
  */
 @Import(SecurityConfig.class)
 @WebMvcTest(controllers = SuggestionController.class)
 class SuggestionControllerTest {
-    @MockBean
+    @MockitoBean
     private RareDocumentDao mockDocumentDao;
 
     @Autowired
