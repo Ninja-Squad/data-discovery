@@ -13,7 +13,7 @@ import { GenericDocumentModel } from '../generic-document.model';
   imports: [GenericDocumentComponent]
 })
 class TestComponent {
-  document = signal<GenericDocumentModel | undefined>(undefined)
+  document = signal<GenericDocumentModel | undefined>(undefined);
 }
 
 describe('DataDiscoveryDocumentComponent', () => {

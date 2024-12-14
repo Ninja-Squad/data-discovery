@@ -14,7 +14,7 @@ import { of } from 'rxjs';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-    template: ` <dd-large-aggregation
+  template: ` <dd-large-aggregation
     [aggregation]="aggregation"
     (aggregationChange)="aggregationChanged = $event"
     [searchDescendants]="searchDescendants"
@@ -22,7 +22,7 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
     [selectedKeys]="selectedKeys"
     [disabled]="disabled"
   />`,
-    imports: [LargeAggregationComponent]
+  imports: [LargeAggregationComponent]
 })
 class TestComponent {
   aggregation: Aggregation;

@@ -9,16 +9,16 @@ import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.c
 import { environment } from '../../environments/environment';
 
 @Component({
-    selector: 'dd-aggregations',
-    templateUrl: './aggregations.component.html',
-    styleUrl: './aggregations.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        LoadingSkeletonComponent,
-        SmallAggregationComponent,
-        LargeAggregationComponent,
-        environment.ontologyAggregationComponent
-    ]
+  selector: 'dd-aggregations',
+  templateUrl: './aggregations.component.html',
+  styleUrl: './aggregations.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    LoadingSkeletonComponent,
+    SmallAggregationComponent,
+    LargeAggregationComponent,
+    environment.ontologyAggregationComponent
+  ]
 })
 export class AggregationsComponent {
   readonly aggregations = input.required<Array<Aggregation> | null | undefined>();

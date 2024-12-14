@@ -9,11 +9,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'dd-pillars',
-    templateUrl: './pillars.component.html',
-    styleUrl: './pillars.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [TranslateModule, DocumentCountComponent, AsyncPipe]
+  selector: 'dd-pillars',
+  templateUrl: './pillars.component.html',
+  styleUrl: './pillars.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslateModule, DocumentCountComponent, AsyncPipe]
 })
 export class PillarsComponent {
   private pillarService = inject(PillarService);

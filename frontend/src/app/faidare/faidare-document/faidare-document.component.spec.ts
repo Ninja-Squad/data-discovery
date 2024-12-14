@@ -83,7 +83,6 @@ describe('FaidareDocumentComponent', () => {
 
   it('should display a resource', () => {
     const tester = new FaidareDocumentComponentTester();
-    const component = tester.componentInstance;
 
     // given a resource
     const resource = tester.componentInstance.document();
@@ -108,7 +107,6 @@ describe('FaidareDocumentComponent', () => {
   it('should not have the basket button if the feature is disabled', () => {
     basketService.isEnabled.and.returnValue(false);
     const tester = new FaidareDocumentComponentTester();
-    const component = tester.componentInstance;
 
     // given a resource
     tester.detectChanges();

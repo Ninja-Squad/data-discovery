@@ -15,11 +15,11 @@ interface ViewModel {
 }
 
 @Component({
-    selector: 'dd-document',
-    templateUrl: './faidare-document.component.html',
-    styleUrl: './faidare-document.component.scss',
-    imports: [AsyncPipe, TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'dd-document',
+  templateUrl: './faidare-document.component.html',
+  styleUrl: './faidare-document.component.scss',
+  imports: [AsyncPipe, TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentComponent {
   private basketService = inject(BasketService);

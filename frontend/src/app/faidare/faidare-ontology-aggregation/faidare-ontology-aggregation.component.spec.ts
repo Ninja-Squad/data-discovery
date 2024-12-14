@@ -11,8 +11,9 @@ import { Component } from '@angular/core';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-    template: '<dd-ontology-aggregation [aggregation]="aggregation" [selectedKeys]="selectedKeys" (aggregationChange)="criterion = $event" />',
-    imports: [FaidareOntologyAggregationComponent]
+  template:
+    '<dd-ontology-aggregation [aggregation]="aggregation" [selectedKeys]="selectedKeys" (aggregationChange)="criterion = $event" />',
+  imports: [FaidareOntologyAggregationComponent]
 })
 class TestComponent {
   aggregation = toAggregation('o', ['v1', 'v2', 'v3', NULL_VALUE]);

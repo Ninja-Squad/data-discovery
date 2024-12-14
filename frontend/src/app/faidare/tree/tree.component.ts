@@ -1,5 +1,20 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OutputRef, TemplateRef } from '@angular/core';
-import { InternalTree, InternalTreeNode, NodeInformation, TextAccessor, TreeNode, TreeService } from './tree.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  OutputRef,
+  TemplateRef
+} from '@angular/core';
+import {
+  InternalTree,
+  InternalTreeNode,
+  NodeInformation,
+  TextAccessor,
+  TreeNode,
+  TreeService
+} from './tree.service';
 import { distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NodeComponent } from './node/node.component';
@@ -36,22 +51,24 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
  *   displayed as indeterminate.
  */
 @Component({
-    selector: 'dd-tree',
-    templateUrl: './tree.component.html',
-    styleUrl: './tree.component.scss',
-    providers: [TreeService],
-    imports: [AsyncPipe, NodeComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'tree'
+  selector: 'dd-tree',
+  templateUrl: './tree.component.html',
+  styleUrl: './tree.component.scss',
+  providers: [TreeService],
+  imports: [AsyncPipe, NodeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'tree'
 })
 export class TreeComponent<P> {
-  private treeService = inject(TreeService)
+  private treeService = inject(TreeService);
 
   tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
 
-  readonly payloadTemplate = input<TemplateRef<{
-    node: InternalTreeNode<P>;
-  }>>();
+  readonly payloadTemplate = input<
+    TemplateRef<{
+      node: InternalTreeNode<P>;
+    }>
+  >();
 
   rootNodes = input.required<Array<TreeNode<P>>>();
   filter = input.required<string | null | undefined>();
@@ -72,7 +89,7 @@ export class TreeComponent<P> {
           }
       )
     )
-  )
+  );
 
   selectedNodes: OutputRef<Array<NodeInformation<P>>> = outputFromObservable(
     this.treeService.selectedNodesChanges()
@@ -83,7 +100,9 @@ export class TreeComponent<P> {
       map(filter => ({ type: 'FILTER', filter }))
     );
 
-    const changeTextActions$: Observable<ChangeTextAction<P>> = toObservable(this.sanitizedTextAccessor).pipe(
+    const changeTextActions$: Observable<ChangeTextAction<P>> = toObservable(
+      this.sanitizedTextAccessor
+    ).pipe(
       skip(1),
       map(textAccessor => ({ type: 'CHANGE_TEXT', textAccessor }))
     );

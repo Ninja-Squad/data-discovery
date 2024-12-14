@@ -23,8 +23,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 @Component({
-    selector: 'dd-loading-skeleton',
-    template: `
+  selector: 'dd-loading-skeleton',
+  template: `
     @if (loading()) {
       <div class="loading">
         @if (aggregationStyle()) {
@@ -43,9 +43,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
       </div>
     }
   `,
-    styleUrl: './loading-skeleton.component.scss',
-    imports: [],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './loading-skeleton.component.scss',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingSkeletonComponent {
   readonly loading = input(false);

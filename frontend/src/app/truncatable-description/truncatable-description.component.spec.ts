@@ -6,7 +6,7 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
 import { Component, signal } from '@angular/core';
 
 @Component({
-  template: `<dd-truncatable-description [description]="description()"/>`,
+  template: `<dd-truncatable-description [description]="description()" />`,
   imports: [TruncatableDescriptionComponent]
 })
 class TestComponent {

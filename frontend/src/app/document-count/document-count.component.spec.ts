@@ -7,7 +7,12 @@ import { provideDisabledNgbAnimation } from '../disable-animations';
 import { Component, signal } from '@angular/core';
 
 @Component({
-  template: `<dd-document-count [count]="count()" [muted]="muted()" [name]="name()" [url]="url()" />`,
+  template: `<dd-document-count
+    [count]="count()"
+    [muted]="muted()"
+    [name]="name()"
+    [url]="url()"
+  />`,
   imports: [DocumentCountComponent]
 })
 class TestComponent {

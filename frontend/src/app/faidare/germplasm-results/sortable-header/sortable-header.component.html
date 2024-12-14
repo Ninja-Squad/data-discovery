@@ -4,7 +4,9 @@
     [class.not-sorted]="sortable() !== criterion()?.sort"
     [class.fa-arrows-v]="sortable() !== criterion()?.sort"
     [class.fa-long-arrow-up]="sortable() === criterion()?.sort && criterion()?.direction !== 'desc'"
-    [class.fa-long-arrow-down]="sortable() === criterion()?.sort && criterion()?.direction === 'desc'"
+    [class.fa-long-arrow-down]="
+      sortable() === criterion()?.sort && criterion()?.direction === 'desc'
+    "
   ></span>
   <ng-content />
 </div>

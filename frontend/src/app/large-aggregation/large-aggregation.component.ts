@@ -32,23 +32,23 @@ export type BucketOrRefine = Bucket | 'REFINE';
 const maxResultsDisplayed = 8;
 
 @Component({
-    selector: 'dd-large-aggregation',
-    templateUrl: './large-aggregation.component.html',
-    styleUrl: './large-aggregation.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        NgPlural,
-        NgPluralCase,
-        DecimalPipe,
-        ReactiveFormsModule,
-        TranslateModule,
-        NgbHighlight,
-        NgbTooltip,
-        NgbTypeahead,
-        DocumentCountComponent,
-        DescendantsCheckboxComponent,
-        AggregationNamePipe
-    ]
+  selector: 'dd-large-aggregation',
+  templateUrl: './large-aggregation.component.html',
+  styleUrl: './large-aggregation.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgPlural,
+    NgPluralCase,
+    DecimalPipe,
+    ReactiveFormsModule,
+    TranslateModule,
+    NgbHighlight,
+    NgbTooltip,
+    NgbTypeahead,
+    DocumentCountComponent,
+    DescendantsCheckboxComponent,
+    AggregationNamePipe
+  ]
 })
 export class LargeAggregationComponent implements OnChanges {
   private translateService = inject(TranslateService);
@@ -73,8 +73,8 @@ export class LargeAggregationComponent implements OnChanges {
     return merge(text$, inputFocus$).pipe(
       distinctUntilChanged(),
       map(term => {
-        const allMatchingBuckets = this.aggregation().buckets
-          // returns values not already selected
+        const allMatchingBuckets = this.aggregation()
+          .buckets // returns values not already selected
           .filter(
             bucket =>
               !this.selectedKeys().includes(bucket.key) &&

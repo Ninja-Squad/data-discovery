@@ -4,11 +4,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgPlural, NgPluralCase, DecimalPipe } from '@angular/common';
 
 @Component({
-    selector: 'dd-document-count',
-    templateUrl: './document-count.component.html',
-    styleUrl: './document-count.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgPlural, NgPluralCase, TranslateModule, NgbTooltip, DecimalPipe]
+  selector: 'dd-document-count',
+  templateUrl: './document-count.component.html',
+  styleUrl: './document-count.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgPlural, NgPluralCase, TranslateModule, NgbTooltip, DecimalPipe]
 })
 export class DocumentCountComponent {
   readonly name = input('');

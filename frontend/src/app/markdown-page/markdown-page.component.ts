@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
-    selector: 'dd-markdown',
-    templateUrl: './markdown-page.component.html',
-    styleUrl: './markdown-page.component.scss',
-    imports: [MarkdownComponent]
+  selector: 'dd-markdown',
+  templateUrl: './markdown-page.component.html',
+  styleUrl: './markdown-page.component.scss',
+  imports: [MarkdownComponent]
 })
 export class MarkdownPageComponent {
   mdFile = '';

@@ -16,17 +16,17 @@ interface ViewModel {
 }
 
 @Component({
-    selector: 'dd-documents',
-    templateUrl: './documents.component.html',
-    styleUrl: './documents.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        AsyncPipe,
-        DecimalPipe,
-        TranslateModule,
-        environment.selectAllResultsComponent,
-        environment.documentListComponent
-    ]
+  selector: 'dd-documents',
+  templateUrl: './documents.component.html',
+  styleUrl: './documents.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    AsyncPipe,
+    DecimalPipe,
+    TranslateModule,
+    environment.selectAllResultsComponent,
+    environment.documentListComponent
+  ]
 })
 export class DocumentsComponent {
   vm$: Observable<ViewModel>;

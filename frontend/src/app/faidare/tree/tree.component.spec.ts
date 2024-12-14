@@ -11,7 +11,7 @@ interface TestPayload {
 }
 
 @Component({
-    template: `
+  template: `
     <ng-template #payloadTemplate let-node="node">
       {{ node.text }}
       @if (node.payload?.type) {
@@ -27,7 +27,7 @@ interface TestPayload {
       (highlightedNode)="highlightedNode = $event"
     />
   `,
-    imports: [TreeComponent]
+  imports: [TreeComponent]
 })
 class TestComponent {
   rootNodes: Array<TreeNode<TestPayload>> = [

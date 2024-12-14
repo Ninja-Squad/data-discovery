@@ -2,13 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { RareDocumentComponent } from './rare-document.component';
-import { toFaidareDocument, toRareDocument } from '../../models/test-model-generators';
+import { toRareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { BehaviorSubject } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { Component, signal } from '@angular/core';
-import { FaidareDocumentComponent } from '../../faidare/faidare-document/faidare-document.component';
-import { FaidareDocumentModel } from '../../faidare/faidare-document.model';
 import { RareDocumentModel } from '../rare-document.model';
 
 @Component({
@@ -145,7 +143,6 @@ describe('RareDocumentComponent', () => {
   it('should not have the basket button if the feature is disabled', () => {
     basketService.isEnabled.and.returnValue(false);
     const tester = new RareDocumentComponentTester();
-    const component = tester.componentInstance;
 
     // given a resource
     tester.detectChanges();

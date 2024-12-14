@@ -29,9 +29,9 @@ export const provideI18nTesting = () => {
       })
     ]),
     provideEnvironmentInitializer(() => {
-        const translateService = inject(TranslateService);
-        translateService.setTranslation('en', EN_TRANSLATIONS);
-        translateService.use('en');
-      })
+      const translateService = inject(TranslateService);
+      translateService.setTranslation('en', EN_TRANSLATIONS);
+      translateService.use('en');
+    })
   ];
 };

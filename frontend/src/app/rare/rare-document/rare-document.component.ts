@@ -15,11 +15,11 @@ interface ViewModel {
 }
 
 @Component({
-    selector: 'dd-document',
-    templateUrl: './rare-document.component.html',
-    styleUrl: './rare-document.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgbTooltip, TruncatableDescriptionComponent, AsyncPipe, TranslateModule]
+  selector: 'dd-document',
+  templateUrl: './rare-document.component.html',
+  styleUrl: './rare-document.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgbTooltip, TruncatableDescriptionComponent, AsyncPipe, TranslateModule]
 })
 export class RareDocumentComponent {
   private basketService = inject(BasketService);

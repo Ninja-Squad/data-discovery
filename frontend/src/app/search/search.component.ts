@@ -22,21 +22,21 @@ interface ViewModel extends Model {
 }
 
 @Component({
-    selector: 'dd-search',
-    templateUrl: './search.component.html',
-    styleUrl: './search.component.scss',
-    providers: [SearchStateService],
-    imports: [
-        TranslateModule,
-        ReactiveFormsModule,
-        NgbTypeahead,
-        NgbCollapse,
-        AggregationsComponent,
-        LoadingSkeletonComponent,
-        DocumentsComponent,
-        NgbPagination,
-        AsyncPipe
-    ]
+  selector: 'dd-search',
+  templateUrl: './search.component.html',
+  styleUrl: './search.component.scss',
+  providers: [SearchStateService],
+  imports: [
+    TranslateModule,
+    ReactiveFormsModule,
+    NgbTypeahead,
+    NgbCollapse,
+    AggregationsComponent,
+    LoadingSkeletonComponent,
+    DocumentsComponent,
+    NgbPagination,
+    AsyncPipe
+  ]
 })
 export class SearchComponent {
   private fb = inject(NonNullableFormBuilder);

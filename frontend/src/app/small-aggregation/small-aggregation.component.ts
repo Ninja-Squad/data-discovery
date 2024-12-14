@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnChanges, output, inject, input, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  output,
+  inject,
+  input,
+  model
+} from '@angular/core';
 import {
   FormControl,
   FormRecord,
@@ -16,18 +24,18 @@ import { DocumentCountComponent } from '../document-count/document-count.compone
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-    selector: 'dd-small-aggregation',
-    templateUrl: './small-aggregation.component.html',
-    styleUrl: './small-aggregation.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        NgbTooltip,
-        ReactiveFormsModule,
-        DocumentCountComponent,
-        DescendantsCheckboxComponent,
-        TranslateModule,
-        AggregationNamePipe
-    ]
+  selector: 'dd-small-aggregation',
+  templateUrl: './small-aggregation.component.html',
+  styleUrl: './small-aggregation.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgbTooltip,
+    ReactiveFormsModule,
+    DocumentCountComponent,
+    DescendantsCheckboxComponent,
+    TranslateModule,
+    AggregationNamePipe
+  ]
 })
 export class SmallAggregationComponent implements OnChanges {
   private fb = inject(NonNullableFormBuilder);

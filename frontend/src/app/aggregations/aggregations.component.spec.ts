@@ -13,14 +13,14 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-    template: ` <dd-aggregations
+  template: ` <dd-aggregations
     [aggregations]="aggregations"
     (aggregationsChange)="aggregationsChanged = $event"
     [selectedCriteria]="selectedCriteria"
     [searchDescendants]="searchDescendants"
     (searchDescendantsChange)="searchDescendantsChanged = $event"
   />`,
-    imports: [AggregationsComponent]
+  imports: [AggregationsComponent]
 })
 class TestComponent {
   aggregations: Array<Aggregation>;

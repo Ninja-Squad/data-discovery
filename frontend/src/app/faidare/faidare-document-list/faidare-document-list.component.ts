@@ -62,22 +62,22 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
  * Displays the search results for the Faidare application (by overriding the default DocumentListComponent).
  */
 @Component({
-    selector: 'dd-document-list',
-    templateUrl: './faidare-document-list.component.html',
-    styleUrl: './faidare-document-list.component.scss',
-    imports: [
-        AsyncPipe,
-        NgTemplateOutlet,
-        NgbNav,
-        NgbNavItem,
-        NgbNavLink,
-        NgbNavContent,
-        NgbNavOutlet,
-        TranslateModule,
-        GermplasmResultsComponent,
-        environment.documentComponent
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'dd-document-list',
+  templateUrl: './faidare-document-list.component.html',
+  styleUrl: './faidare-document-list.component.scss',
+  imports: [
+    AsyncPipe,
+    NgTemplateOutlet,
+    NgbNav,
+    NgbNavItem,
+    NgbNavLink,
+    NgbNavContent,
+    NgbNavOutlet,
+    TranslateModule,
+    GermplasmResultsComponent,
+    environment.documentComponent
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentListComponent {
   private searchStateService = inject(SearchStateService);

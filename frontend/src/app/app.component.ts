@@ -10,10 +10,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'dd-root',
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css',
-    imports: [NavbarComponent, ErrorComponent, RouterOutlet, AsyncPipe, environment.footerComponent]
+  selector: 'dd-root',
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+  imports: [NavbarComponent, ErrorComponent, RouterOutlet, AsyncPipe, environment.footerComponent]
 })
 export class AppComponent {
   private translateService = inject(TranslateService);

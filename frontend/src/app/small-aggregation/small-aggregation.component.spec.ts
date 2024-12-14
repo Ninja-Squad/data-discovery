@@ -12,7 +12,7 @@ import { Aggregation } from '../models/page';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-    template: ` <dd-small-aggregation
+  template: ` <dd-small-aggregation
     [aggregation]="aggregation"
     (aggregationChange)="aggregationChanged = $event"
     [searchDescendants]="searchDescendants"
@@ -20,7 +20,7 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
     [selectedKeys]="selectedKeys"
     [disabled]="disabled"
   />`,
-    imports: [SmallAggregationComponent]
+  imports: [SmallAggregationComponent]
 })
 class TestComponent {
   aggregation: Aggregation;

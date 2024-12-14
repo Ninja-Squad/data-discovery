@@ -34,18 +34,18 @@ interface TreeViewModel {
 }
 
 @Component({
-    selector: 'dd-ontology-aggregation-modal',
-    templateUrl: './ontology-aggregation-modal.component.html',
-    styleUrl: './ontology-aggregation-modal.component.scss',
-    imports: [
-        AsyncPipe,
-        DecimalPipe,
-        ReactiveFormsModule,
-        TranslateModule,
-        OntologyNodeTypeComponent,
-        TreeComponent,
-        NodeDetailsComponent
-    ]
+  selector: 'dd-ontology-aggregation-modal',
+  templateUrl: './ontology-aggregation-modal.component.html',
+  styleUrl: './ontology-aggregation-modal.component.scss',
+  imports: [
+    AsyncPipe,
+    DecimalPipe,
+    ReactiveFormsModule,
+    TranslateModule,
+    OntologyNodeTypeComponent,
+    TreeComponent,
+    NodeDetailsComponent
+  ]
 })
 export class OntologyAggregationModalComponent {
   private modal = inject(NgbActiveModal);

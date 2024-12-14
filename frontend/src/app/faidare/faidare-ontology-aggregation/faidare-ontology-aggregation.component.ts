@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, output, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  SimpleChanges,
+  output,
+  inject,
+  input
+} from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -8,11 +16,11 @@ import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'dd-ontology-aggregation',
-    templateUrl: './faidare-ontology-aggregation.component.html',
-    styleUrl: './faidare-ontology-aggregation.component.scss',
-    imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'dd-ontology-aggregation',
+  templateUrl: './faidare-ontology-aggregation.component.html',
+  styleUrl: './faidare-ontology-aggregation.component.scss',
+  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareOntologyAggregationComponent implements OnChanges {
   private modalService = inject(NgbModal);

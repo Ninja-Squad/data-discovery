@@ -5,11 +5,11 @@ import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-t
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'dd-node-details',
-    templateUrl: './node-details.component.html',
-    styleUrl: './node-details.component.scss',
-    imports: [TranslateModule, OntologyNodeTypeComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'dd-node-details',
+  templateUrl: './node-details.component.html',
+  styleUrl: './node-details.component.scss',
+  imports: [TranslateModule, OntologyNodeTypeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeDetailsComponent {
   readonly node = input.required<TypedNodeDetails>();

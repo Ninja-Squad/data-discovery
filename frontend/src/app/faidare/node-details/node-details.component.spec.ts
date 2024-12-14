@@ -6,8 +6,8 @@ import { TestBed } from '@angular/core/testing';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-    template: '<dd-node-details [node]="node" />',
-    imports: [NodeDetailsComponent]
+  template: '<dd-node-details [node]="node" />',
+  imports: [NodeDetailsComponent]
 })
 class TestComponent {
   node: TypedNodeDetails = {

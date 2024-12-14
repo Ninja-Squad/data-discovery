@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
-    selector: 'dd-header',
-    templateUrl: './rare-header.component.html',
-    styleUrl: './rare-header.component.scss',
-    imports: []
+  selector: 'dd-header',
+  templateUrl: './rare-header.component.html',
+  styleUrl: './rare-header.component.scss',
+  imports: []
 })
 export class RareHeaderComponent {
   isRareApp: boolean;

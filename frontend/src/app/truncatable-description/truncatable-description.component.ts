@@ -3,11 +3,11 @@ import { HighlightService } from '../highlight.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'dd-truncatable-description',
-    templateUrl: './truncatable-description.component.html',
-    styleUrl: './truncatable-description.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [TranslateModule]
+  selector: 'dd-truncatable-description',
+  templateUrl: './truncatable-description.component.html',
+  styleUrl: './truncatable-description.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslateModule]
 })
 export class TruncatableDescriptionComponent implements OnInit {
   private highlightService = inject(HighlightService);
