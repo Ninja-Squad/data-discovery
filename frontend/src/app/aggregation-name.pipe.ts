@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { environment } from '../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -10,7 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
   pure: false
 })
 export class AggregationNamePipe implements PipeTransform {
-  constructor(private translate: TranslateService) {}
+  private translate = inject(TranslateService);
+
   transform(aggregationKey: string): string {
     const key = `${environment.name}.aggregation.${aggregationKey}`;
     const aggregationTranslated = this.translate.instant(key);

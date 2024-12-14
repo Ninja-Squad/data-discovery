@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  ViewChild,
-  output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, ViewChild, output, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import {
@@ -49,6 +41,8 @@ const maxResultsDisplayed = 8;
     ]
 })
 export class LargeAggregationComponent implements OnChanges {
+  private translateService = inject(TranslateService);
+
   @Input() selectedKeys: Array<string> = [];
 
   @Input() aggregation!: Aggregation;
@@ -91,8 +85,6 @@ export class LargeAggregationComponent implements OnChanges {
       })
     );
   };
-
-  constructor(private translateService: TranslateService) {}
 
   ngOnChanges() {
     if (this.disabled) {

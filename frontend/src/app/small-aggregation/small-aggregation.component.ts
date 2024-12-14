@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-  output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, output, inject } from '@angular/core';
 import {
   FormControl,
   FormRecord,
@@ -36,6 +30,9 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
     ]
 })
 export class SmallAggregationComponent implements OnChanges {
+  private fb = inject(NonNullableFormBuilder);
+  private translateService = inject(TranslateService);
+
   @Input() aggregation!: Aggregation;
   @Input() searchDescendants = false;
   @Input() selectedKeys: Array<string> = [];
@@ -61,11 +58,6 @@ export class SmallAggregationComponent implements OnChanges {
         .map(([key]) => key)
     );
   }
-
-  constructor(
-    private fb: NonNullableFormBuilder,
-    private translateService: TranslateService
-  ) {}
 
   ngOnChanges(): void {
     // create as many form control as there are buckets

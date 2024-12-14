@@ -39,6 +39,10 @@ interface ViewModel extends Model {
     ]
 })
 export class SearchComponent {
+  private fb = inject(NonNullableFormBuilder);
+  private route = inject(ActivatedRoute);
+  private searchStateService = inject(SearchStateService);
+
   appName = environment.name;
   searchForm = inject(NonNullableFormBuilder).group({
     search: ''
@@ -50,14 +54,11 @@ export class SearchComponent {
 
   vm$: Observable<ViewModel>;
 
-  constructor(
-    private fb: NonNullableFormBuilder,
-    private route: ActivatedRoute,
-    searchService: SearchService,
-    private searchStateService: SearchStateService
-  ) {
+  constructor() {
+    const searchService = inject(SearchService);
+
     this.suggesterTypeahead = searchService.getSuggesterTypeahead();
-    const model$ = searchStateService.initialize(this.route);
+    const model$ = this.searchStateService.initialize(this.route);
     this.vm$ = combineLatest([model$, this.filtersExpandedSubject]).pipe(
       map(([model, filtersExpanded]) => ({
         ...model,

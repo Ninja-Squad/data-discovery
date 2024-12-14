@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { HighlightService } from '../highlight.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -10,13 +10,13 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [TranslateModule]
 })
 export class TruncatableDescriptionComponent implements OnInit {
+  private highlightService = inject(HighlightService);
+
   @Input() description = '';
 
   descriptionCollapsed = true;
 
   truncatedDescription = '';
-
-  constructor(private highlightService: HighlightService) {}
 
   toggleDescription() {
     this.descriptionCollapsed = !this.descriptionCollapsed;

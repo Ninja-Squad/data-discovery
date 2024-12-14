@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { OrderableDocumentModel } from '../../models/document.model';
@@ -40,10 +40,12 @@ export interface BasketCreated extends Basket {
   providedIn: 'root'
 })
 export class BasketService {
+  private http = inject(HttpClient);
+
   basket: Basket | null = null;
   private basket$ = new BehaviorSubject<Basket | null>(this.basket);
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.restoreBasketFromLocalStorage();
   }
 

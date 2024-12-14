@@ -17,7 +17,7 @@ describe('AggregationNamePipe', () => {
         // here we do nothing
       }
     };
-    pipe = new AggregationNamePipe(translate);
+    pipe = TestBed.runInInjectionContext(() => new AggregationNamePipe());
   });
 
   it('should return the displayed name of an aggregation', () => {

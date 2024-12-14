@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { PillarModel } from './models/pillar.model';
   providedIn: 'root'
 })
 export class PillarService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   list(): Observable<Array<PillarModel>> {
     return this.http.get<Array<PillarModel>>('api/pillars');

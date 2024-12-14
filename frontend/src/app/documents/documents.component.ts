@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { BasketService } from '../urgi-common/basket/basket.service';
 import { map, Observable } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
@@ -32,7 +32,10 @@ export class DocumentsComponent {
   vm$: Observable<ViewModel>;
   isBasketEnabled: boolean;
 
-  constructor(basketService: BasketService, searchStateService: SearchStateService) {
+  constructor() {
+    const basketService = inject(BasketService);
+    const searchStateService = inject(SearchStateService);
+
     this.isBasketEnabled = basketService.isEnabled();
     this.vm$ = searchStateService.getDocuments().pipe(
       map(documents => ({

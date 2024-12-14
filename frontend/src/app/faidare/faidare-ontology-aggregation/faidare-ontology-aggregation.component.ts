@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, output, inject } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -22,6 +15,8 @@ import { TranslateModule } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareOntologyAggregationComponent implements OnChanges {
+  private modalService = inject(NgbModal);
+
   @Input() aggregation!: Aggregation;
   @Input() selectedKeys: Array<string> = [];
   readonly aggregationChange = output<AggregationCriterion>();
@@ -32,8 +27,6 @@ export class FaidareOntologyAggregationComponent implements OnChanges {
    * that is not selectable for this aggregation type
    */
   actualBucketLength = 0;
-
-  constructor(private modalService: NgbModal) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.aggregation) {

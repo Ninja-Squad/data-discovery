@@ -29,6 +29,9 @@ import { TranslateModule } from '@ngx-translate/core';
     ]
 })
 export class HomeComponent {
+  private router = inject(Router);
+  private searchService = inject(SearchService);
+
   searchForm = inject(NonNullableFormBuilder).group({
     search: ''
   });
@@ -39,10 +42,7 @@ export class HomeComponent {
   mainAggregations$: Observable<Array<Aggregation>> = EMPTY;
   exampleQueries: Array<string> = environment.home.exampleQueries;
 
-  constructor(
-    private router: Router,
-    private searchService: SearchService
-  ) {
+  constructor() {
     this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
     if (this.showAggregations) {
       this.mainAggregations$ = this.searchService.getMainAggregations();

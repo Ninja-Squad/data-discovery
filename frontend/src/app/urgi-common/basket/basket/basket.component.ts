@@ -16,6 +16,9 @@ import { LOCATION } from '../../../location.service';
     imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip]
 })
 export class BasketComponent {
+  private basketService = inject(BasketService);
+  private modalService = inject(NgbModal);
+
   itemCounter = 0;
   basket: Basket | null = null;
   eulaAgreementControl = inject(NonNullableFormBuilder).control(false, Validators.requiredTrue);
@@ -25,10 +28,7 @@ export class BasketComponent {
 
   private location = inject(LOCATION);
 
-  constructor(
-    private basketService: BasketService,
-    private modalService: NgbModal
-  ) {
+  constructor() {
     this.isEnabled = this.basketService.isEnabled();
     if (this.isEnabled) {
       this.basketService

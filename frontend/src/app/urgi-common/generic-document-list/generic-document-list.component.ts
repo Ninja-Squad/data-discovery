@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
 import { SearchStateService } from '../../search-state.service';
@@ -25,7 +25,9 @@ import { environment } from '../../../environments/environment';
 export class GenericDocumentListComponent {
   documents$: Observable<Page<DocumentModel>>;
 
-  constructor(searchStateService: SearchStateService) {
+  constructor() {
+    const searchStateService = inject(SearchStateService);
+
     this.documents$ = searchStateService.getDocuments();
   }
 }

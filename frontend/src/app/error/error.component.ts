@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
 import { filter, map, merge, Observable } from 'rxjs';
@@ -15,18 +15,14 @@ import { AsyncPipe } from '@angular/common';
     imports: [TranslateModule, AsyncPipe]
 })
 export class ErrorComponent {
-  error$: Observable<HttpError | null>;
+  private router = inject(Router);
+  private errorInterceptor = inject(ErrorInterceptorService);
 
-  constructor(
-    private router: Router,
-    private errorInterceptor: ErrorInterceptorService
-  ) {
-    this.error$ = merge(
-      this.errorInterceptor.getErrors(),
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        map(() => null)
-      )
-    );
-  }
+  error$: Observable<HttpError | null> = merge(
+    this.errorInterceptor.getErrors(),
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => null)
+    )
+  );
 }

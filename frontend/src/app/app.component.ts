@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { environment } from '../environments/environment';
@@ -16,12 +16,13 @@ import { AsyncPipe } from '@angular/common';
     imports: [NavbarComponent, ErrorComponent, RouterOutlet, AsyncPipe, environment.footerComponent]
 })
 export class AppComponent {
+  private translateService = inject(TranslateService);
+
   i18nReady$: Observable<boolean>;
 
-  constructor(
-    title: Title,
-    private translateService: TranslateService
-  ) {
+  constructor() {
+    const title = inject(Title);
+
     title.setTitle(environment.title);
 
     // we just want to make sure the translations are loaded. Whether the key exists of not doesn't actually matter

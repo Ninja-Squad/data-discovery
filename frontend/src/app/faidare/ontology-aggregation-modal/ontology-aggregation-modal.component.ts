@@ -48,6 +48,9 @@ interface TreeViewModel {
     ]
 })
 export class OntologyAggregationModalComponent {
+  private modal = inject(NgbActiveModal);
+  private ontologyService = inject(OntologyService);
+
   private fb = inject(NonNullableFormBuilder);
   treeFilterCtrl = this.fb.control('');
   languageCtrl = this.fb.control<OntologyLanguage>('FR');
@@ -58,11 +61,8 @@ export class OntologyAggregationModalComponent {
   selectedNodes: Array<NodeInformation<OntologyPayload>> = [];
   maxSelectedNodes = 20;
 
-  constructor(
-    private modal: NgbActiveModal,
-    private ontologyService: OntologyService
-  ) {
-    this.languageCtrl.setValue(ontologyService.getPreferredLanguage());
+  constructor() {
+    this.languageCtrl.setValue(this.ontologyService.getPreferredLanguage());
     this.languageCtrl.valueChanges.subscribe(language =>
       this.ontologyService.setPreferredLanguage(language)
     );

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   catchError,
@@ -19,7 +19,7 @@ import { SortCriterion } from './search-state.service';
   providedIn: 'root'
 })
 export class SearchService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   /**
    * Searches documents for the given query (full-text search), and retrieves the given page (starting at 1)

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
@@ -21,15 +21,17 @@ interface ViewModel {
     imports: [NgbTooltip, TruncatableDescriptionComponent, AsyncPipe, TranslateModule]
 })
 export class RareDocumentComponent {
+  private basketService = inject(BasketService);
+
   private documentSubject = new ReplaySubject<RareDocumentModel>();
   vm$: Observable<ViewModel>;
 
-  constructor(private basketService: BasketService) {
+  constructor() {
     this.vm$ = this.documentSubject.pipe(
       switchMap(document => {
-        const isBasketEnabled = basketService.isEnabled();
+        const isBasketEnabled = this.basketService.isEnabled();
         const selectedForOrdering$ = isBasketEnabled
-          ? basketService.isAccessionInBasket(document)
+          ? this.basketService.isAccessionInBasket(document)
           : of(false);
         return selectedForOrdering$.pipe(
           map(selectedForOrdering => ({

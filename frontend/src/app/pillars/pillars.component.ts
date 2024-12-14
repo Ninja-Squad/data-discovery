@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PillarService } from '../pillar.service';
@@ -16,10 +16,12 @@ import { AsyncPipe } from '@angular/common';
     imports: [TranslateModule, DocumentCountComponent, AsyncPipe]
 })
 export class PillarsComponent {
+  private pillarService = inject(PillarService);
+
   pillars$: Observable<Array<PillarModel>>;
   environment: any;
 
-  constructor(private pillarService: PillarService) {
+  constructor() {
     this.environment = environment;
     this.pillars$ = this.pillarService.list();
   }

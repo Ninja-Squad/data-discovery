@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
@@ -80,12 +80,14 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentListComponent {
+  private searchStateService = inject(SearchStateService);
+
   // the VM object used in the template
   vm$: Observable<ViewModel>;
 
-  constructor(private searchStateService: SearchStateService) {
+  constructor() {
     // if there is a fragment '#germplasm' in the URL, then set the Germplasm tab as the active one
-    this.vm$ = searchStateService.getModel().pipe(
+    this.vm$ = this.searchStateService.getModel().pipe(
       map(model => {
         const germplasmCount = this.findGermplasmCount(model);
         return {
@@ -105,7 +107,7 @@ export class FaidareDocumentListComponent {
         distinctUntilChanged()
       )
       .subscribe(activeTab => {
-        searchStateService.disableAggregation(
+        this.searchStateService.disableAggregation(
           activeTab === 'germplasm' ? ENTRY_AGGREGATION_KEY : null
         );
       });

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Page } from '../../models/page';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { ExportService } from '../export.service';
@@ -26,15 +26,15 @@ export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {
+  private exportService = inject(ExportService);
+  private downloadService = inject(DownloadService);
+  private searchStateService = inject(SearchStateService);
+
   vm$: Observable<ViewModel>;
   private downloadingSubject = new BehaviorSubject<null | 'mcpd' | 'plant-material'>(null);
 
-  constructor(
-    private exportService: ExportService,
-    private downloadService: DownloadService,
-    private searchStateService: SearchStateService
-  ) {
-    this.vm$ = combineLatest([this.downloadingSubject, searchStateService.getModel()]).pipe(
+  constructor() {
+    this.vm$ = combineLatest([this.downloadingSubject, this.searchStateService.getModel()]).pipe(
       map(([downloading, model]) => ({
         downloading,
         sortCriterion: model.searchCriteria.sortCriterion,

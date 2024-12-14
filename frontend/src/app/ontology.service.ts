@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TreeNode } from './faidare/tree/tree.service';
 import { map, Observable, shareReplay } from 'rxjs';
@@ -108,19 +108,20 @@ export type OntologyLanguage = (typeof ONTOLOGY_LANGUAGES)[number];
   providedIn: 'root'
 })
 export class OntologyService {
+  private http = inject(HttpClient);
+
   private tree$: Observable<Array<OntologyTreeNode>>;
   private treeI18ns: Map<OntologyLanguage, Observable<TreeI18n>>;
   private preferredLanguage: OntologyLanguage;
 
-  constructor(
-    private http: HttpClient,
-    translateService: TranslateService
-  ) {
-    this.tree$ = http.get<Array<OntologyTreeNode>>('api/ontologies').pipe(shareReplay());
+  constructor() {
+    const translateService = inject(TranslateService);
+
+    this.tree$ = this.http.get<Array<OntologyTreeNode>>('api/ontologies').pipe(shareReplay());
     this.treeI18ns = new Map<OntologyLanguage, Observable<TreeI18n>>(
       ONTOLOGY_LANGUAGES.map(language => [
         language,
-        http.get<TreeI18n>('api/ontologies/i18n', { params: { language } }).pipe(shareReplay())
+        this.http.get<TreeI18n>('api/ontologies/i18n', { params: { language } }).pipe(shareReplay())
       ])
     );
     this.preferredLanguage = translateService.instant('faidare.ontology-default-language');

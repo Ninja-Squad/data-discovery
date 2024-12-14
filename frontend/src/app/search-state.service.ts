@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   BehaviorSubject,
   combineLatest,
@@ -67,15 +67,13 @@ export interface Model {
 
 @Injectable()
 export class SearchStateService {
+  private searchService = inject(SearchService);
+  private router = inject(Router);
+
   private transitionSubject = new Subject<(criteria: SearchCriteria) => SearchCriteria>();
   private disabledAggregationNameSubject = new BehaviorSubject<string | null>(null);
 
   private model$!: Observable<Model>;
-
-  constructor(
-    private searchService: SearchService,
-    private router: Router
-  ) {}
 
   initialize(route: ActivatedRoute): Observable<Model> {
     const queryParams$ = route.queryParamMap;

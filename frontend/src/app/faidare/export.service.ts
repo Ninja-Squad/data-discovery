@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { Observable } from 'rxjs';
@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ExportService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   export(
     criteria: {

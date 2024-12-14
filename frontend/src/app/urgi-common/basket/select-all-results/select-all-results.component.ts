@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { Page } from '../../../models/page';
 import { BasketService } from '../basket.service';
 import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs';
@@ -19,10 +19,12 @@ interface ViewModel {
     imports: [TranslateModule, AsyncPipe]
 })
 export class SelectAllResultsComponent {
+  private basketService = inject(BasketService);
+
   vm$: Observable<ViewModel>;
   private documentsSubject = new BehaviorSubject<Array<OrderableDocumentModel>>([]);
 
-  constructor(private basketService: BasketService) {
+  constructor() {
     this.vm$ = this.documentsSubject.pipe(
       switchMap(documents => {
         const accessions = documents.filter(document => document.accessionHolder);
