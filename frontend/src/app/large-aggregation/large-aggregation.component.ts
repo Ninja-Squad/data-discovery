@@ -2,11 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   OnChanges,
-  Output,
-  ViewChild
+  ViewChild,
+  output
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
@@ -54,10 +53,10 @@ export class LargeAggregationComponent implements OnChanges {
 
   @Input() aggregation!: Aggregation;
   // the component emits an event if the user adds or removes a criterion
-  @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  readonly aggregationChange = output<AggregationCriterion>();
 
   @Input() searchDescendants = false;
-  @Output() searchDescendantsChange = new EventEmitter<boolean>();
+  readonly searchDescendantsChange = output<boolean>();
 
   @Input() disabled = false;
 

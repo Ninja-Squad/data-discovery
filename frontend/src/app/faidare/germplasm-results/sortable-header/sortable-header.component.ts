@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, output } from '@angular/core';
 import { Sort } from '../germplasm-results.component';
 import { SortCriterion } from '../../../search-state.service';
 
@@ -12,7 +12,7 @@ export class SortableHeaderComponent {
   @Input() sortable!: Sort;
   @Input() criterion: SortCriterion | null = null;
 
-  @Output() sorted = new EventEmitter<SortCriterion>();
+  readonly sorted = output<SortCriterion>();
 
   onSort(): void {
     this.sorted.emit({

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, output } from '@angular/core';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class DescendantsCheckboxComponent {
   @Input() searchDescendants = false;
-  @Output() searchDescendantsChange = new EventEmitter();
+  readonly searchDescendantsChange = output<boolean>();
 
   /**
    * Listen to checkBox status and change it accordingly

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 
@@ -13,7 +13,7 @@ import { AggregationCriterion } from '../../models/aggregation-criterion';
 })
 export class GenericOntologyAggregationComponent {
   @Input() aggregation!: Aggregation;
-  @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  readonly aggregationChange = output<AggregationCriterion>();
   @Input() selectedKeys: Array<string> = [];
   @Input() disabled = false;
 }

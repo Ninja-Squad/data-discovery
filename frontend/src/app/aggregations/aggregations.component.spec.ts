@@ -35,6 +35,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     super(TestComponent);
   }
 
+  get aggregationComponent() {
+    return this.component(AggregationsComponent);
+  }
+
   get smallAggregations() {
     return this.components(SmallAggregationComponent);
   }
@@ -80,7 +84,8 @@ describe('AggregationsComponent', () => {
   });
 
   it('should extract the selected criteria for the aggregation', () => {
-    const component = new AggregationsComponent();
+    const tester = new TestComponentTester();
+    const component = tester.aggregationComponent;
     component.selectedCriteria = [
       { name: 'coo', values: ['France', 'Italy'] },
       { name: 'domain', values: ['Plant'] }

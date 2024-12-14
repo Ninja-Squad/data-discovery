@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, output } from '@angular/core';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -24,8 +24,8 @@ export class AggregationsComponent {
   @Input({ required: true }) aggregations: Array<Aggregation> | null | undefined;
   @Input() selectedCriteria: Array<AggregationCriterion> = [];
   @Input() loading = false;
-  @Output() aggregationsChange = new EventEmitter<Array<AggregationCriterion>>();
-  @Output() searchDescendantsChange = new EventEmitter<boolean>();
+  readonly aggregationsChange = output<Array<AggregationCriterion>>();
+  readonly searchDescendantsChange = output<boolean>();
   @Input() searchDescendants = false;
   @Input() disabledAggregationName: string | null = null;
 

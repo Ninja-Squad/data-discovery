@@ -1,31 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-  Output,
-  TemplateRef
-} from '@angular/core';
-import {
-  InternalTree,
-  InternalTreeNode,
-  NodeInformation,
-  TextAccessor,
-  TreeNode,
-  TreeService
-} from './tree.service';
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  map,
-  merge,
-  Observable,
-  skip,
-  switchMap,
-  tap
-} from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit, OutputRef, TemplateRef } from '@angular/core';
+import { InternalTree, InternalTreeNode, NodeInformation, TextAccessor, TreeNode, TreeService } from './tree.service';
+import { BehaviorSubject, distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NodeComponent } from './node/node.component';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
 
 interface BaseAction {
   type: 'FILTER' | 'CHANGE_TEXT';
@@ -67,7 +45,9 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
     exportAs: 'tree'
 })
 export class TreeComponent<P> implements OnInit {
-  tree$: Observable<InternalTree<P>>;
+  private treeService = inject(TreeService)
+
+  tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
 
   private rootNodesSubject = new BehaviorSubject<Array<TreeNode<P>>>([]);
   private filterSubject = new BehaviorSubject<string>('');
@@ -91,15 +71,8 @@ export class TreeComponent<P> implements OnInit {
     this.textAccessorSubject.next(textAccessor ?? DEFAULT_TEXT_ACCESSOR);
   }
 
-  @Output()
-  highlightedNode: Observable<NodeInformation<P> | undefined>;
-
-  @Output()
-  selectedNodes: Observable<Array<NodeInformation<P>>>;
-
-  constructor(private treeService: TreeService<P>) {
-    this.tree$ = treeService.treeChanges();
-    this.highlightedNode = this.tree$.pipe(
+  highlightedNode: OutputRef<NodeInformation<P> | undefined> = outputFromObservable(
+    this.tree$.pipe(
       map(tree => tree.highlightedNode),
       distinctUntilChanged((a, b) => a?.id === b?.id),
       map(
@@ -109,9 +82,12 @@ export class TreeComponent<P> implements OnInit {
             payload: internalNodeInformation.payload
           }
       )
-    );
-    this.selectedNodes = treeService.selectedNodesChanges();
-  }
+    )
+  )
+
+  selectedNodes: OutputRef<Array<NodeInformation<P>>> = outputFromObservable(
+    this.treeService.selectedNodesChanges()
+  );
 
   ngOnInit(): void {
     const filterActions$: Observable<FilterAction> = this.filterSubject.pipe(

@@ -1,10 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Input,
   OnChanges,
-  Output
+  output
 } from '@angular/core';
 import {
   FormControl,
@@ -41,8 +40,8 @@ export class SmallAggregationComponent implements OnChanges {
   @Input() searchDescendants = false;
   @Input() selectedKeys: Array<string> = [];
   // the component emits an event if the user adds or remove a criterion
-  @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
-  @Output() searchDescendantsChange = new EventEmitter<boolean>();
+  readonly aggregationChange = output<AggregationCriterion>();
+  readonly searchDescendantsChange = output<boolean>();
   @Input() disabled = false;
 
   aggregationForm = new FormRecord<FormControl<boolean>>({});

@@ -1,11 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Input,
   OnChanges,
-  Output,
-  SimpleChanges
+  SimpleChanges,
+  output
 } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
@@ -25,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class FaidareOntologyAggregationComponent implements OnChanges {
   @Input() aggregation!: Aggregation;
   @Input() selectedKeys: Array<string> = [];
-  @Output() aggregationChange = new EventEmitter<AggregationCriterion>();
+  readonly aggregationChange = output<AggregationCriterion>();
   @Input() disabled = false;
 
   /**
