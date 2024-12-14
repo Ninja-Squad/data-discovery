@@ -1,16 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'dd-header',
   templateUrl: './rare-header.component.html',
   styleUrl: './rare-header.component.scss',
-  imports: []
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RareHeaderComponent {
-  isRareApp: boolean;
-
-  constructor() {
-    this.isRareApp = environment.name === 'rare';
-  }
+  isRareApp = environment.name === 'rare';
 }

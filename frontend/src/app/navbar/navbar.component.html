@@ -22,7 +22,7 @@
     <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
       <span class="fa fa-bars"></span>
     </button>
-    <div id="navbar" class="collapse navbar-collapse" [ngbCollapse]="navbarCollapsed">
+    <div id="navbar" class="collapse navbar-collapse" [ngbCollapse]="navbarCollapsed()">
       <ul class="navbar-nav me-auto">
         @for (link of navbar.links; track link) {
           @if (link.subMenu) {

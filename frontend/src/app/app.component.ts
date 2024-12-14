@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { environment } from '../environments/environment';
@@ -13,7 +13,8 @@ import { AsyncPipe } from '@angular/common';
   selector: 'dd-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [NavbarComponent, ErrorComponent, RouterOutlet, AsyncPipe, environment.footerComponent]
+  imports: [NavbarComponent, ErrorComponent, RouterOutlet, AsyncPipe, environment.footerComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   private translateService = inject(TranslateService);

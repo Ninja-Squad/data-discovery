@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
 import { filter, map, merge, Observable } from 'rxjs';
@@ -12,7 +12,8 @@ import { AsyncPipe } from '@angular/common';
   selector: 'dd-error',
   templateUrl: './error.component.html',
   styleUrl: './error.component.scss',
-  imports: [TranslateModule, AsyncPipe]
+  imports: [TranslateModule, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorComponent {
   private router = inject(Router);

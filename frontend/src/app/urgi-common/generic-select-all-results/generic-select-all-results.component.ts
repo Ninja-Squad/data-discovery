@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { GenericDocumentModel } from '../generic-document.model';
 import { Page } from '../../models/page';
 
@@ -11,7 +11,8 @@ import { Page } from '../../models/page';
 @Component({
   selector: 'dd-select-all-results',
   templateUrl: './generic-select-all-results.component.html',
-  styleUrl: './generic-select-all-results.component.scss'
+  styleUrl: './generic-select-all-results.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericSelectAllResultsComponent {
   readonly documents = input.required<Page<GenericDocumentModel>>();

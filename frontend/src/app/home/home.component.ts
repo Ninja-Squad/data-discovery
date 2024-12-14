@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { SearchService } from '../search.service';
 import { environment } from '../../environments/environment';
@@ -9,9 +9,9 @@ import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { PillarsComponent } from '../pillars/pillars.component';
-import { AsyncPipe } from '@angular/common';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'dd-home',
@@ -19,14 +19,14 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './home.component.scss',
   imports: [
     RouterLink,
-    AsyncPipe,
     ReactiveFormsModule,
     TranslateModule,
     NgbTypeahead,
     PillarsComponent,
     AggregationsComponent,
     environment.headerComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
   private router = inject(Router);
@@ -36,18 +36,14 @@ export class HomeComponent {
     search: ''
   });
   appName = environment.name;
-  suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
+  suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>> =
+    this.searchService.getSuggesterTypeahead();
 
   showAggregations = environment.home.showAggregations;
-  mainAggregations$: Observable<Array<Aggregation>> = EMPTY;
+  mainAggregations: Signal<Array<Aggregation> | undefined> = this.showAggregations
+    ? toSignal(this.searchService.getMainAggregations())
+    : signal([]);
   exampleQueries: Array<string> = environment.home.exampleQueries;
-
-  constructor() {
-    this.suggesterTypeahead = this.searchService.getSuggesterTypeahead();
-    if (this.showAggregations) {
-      this.mainAggregations$ = this.searchService.getMainAggregations();
-    }
-  }
 
   search() {
     this.router.navigate(['/search'], {

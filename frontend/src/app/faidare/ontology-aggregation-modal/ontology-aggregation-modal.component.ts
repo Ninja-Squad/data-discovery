@@ -1,11 +1,17 @@
-import { Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  Signal,
+  signal
+} from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
   combineLatest,
   debounceTime,
   defer,
-  EMPTY,
   map,
   Observable,
   startWith,
@@ -23,9 +29,10 @@ import { TypedNodeDetails } from '../ontology.model';
 import { Aggregation } from '../../models/page';
 import { TranslateModule } from '@ngx-translate/core';
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
-import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { TreeComponent } from '../tree/tree.component';
 import { NodeDetailsComponent } from '../node-details/node-details.component';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 interface TreeViewModel {
   filter: string;
@@ -38,43 +45,46 @@ interface TreeViewModel {
   templateUrl: './ontology-aggregation-modal.component.html',
   styleUrl: './ontology-aggregation-modal.component.scss',
   imports: [
-    AsyncPipe,
     DecimalPipe,
     ReactiveFormsModule,
     TranslateModule,
     OntologyNodeTypeComponent,
     TreeComponent,
     NodeDetailsComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OntologyAggregationModalComponent {
   private modal = inject(NgbActiveModal);
   private ontologyService = inject(OntologyService);
+  private destroyRef = inject(DestroyRef);
 
   private fb = inject(NonNullableFormBuilder);
   treeFilterCtrl = this.fb.control('');
   languageCtrl = this.fb.control<OntologyLanguage>('FR');
   languages = ONTOLOGY_LANGUAGES;
-  treeView$: Observable<TreeViewModel> = EMPTY;
+  treeView = signal<TreeViewModel | undefined>(undefined);
   private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
-  highlightedNodeDetails$: Observable<TypedNodeDetails>;
-  selectedNodes: Array<NodeInformation<OntologyPayload>> = [];
+  highlightedNodeDetails: Signal<TypedNodeDetails | undefined>;
+  selectedNodes = signal<Array<NodeInformation<OntologyPayload>>>([]);
   maxSelectedNodes = 20;
 
   constructor() {
     this.languageCtrl.setValue(this.ontologyService.getPreferredLanguage());
-    this.languageCtrl.valueChanges.subscribe(language =>
-      this.ontologyService.setPreferredLanguage(language)
-    );
+    this.languageCtrl.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(language => this.ontologyService.setPreferredLanguage(language));
 
-    this.highlightedNodeDetails$ = combineLatest([
-      this.languageCtrl.valueChanges.pipe(startWith(this.languageCtrl.value)),
-      this.highlightedNodeSubject
-    ]).pipe(
-      switchMap(([language, nodeInformation]) => {
-        const payload = nodeInformation.payload as OntologyPayload;
-        return this.getTypedNodeDetails(payload, language);
-      })
+    this.highlightedNodeDetails = toSignal(
+      combineLatest([
+        this.languageCtrl.valueChanges.pipe(startWith(this.languageCtrl.value)),
+        this.highlightedNodeSubject
+      ]).pipe(
+        switchMap(([language, nodeInformation]) => {
+          const payload = nodeInformation.payload as OntologyPayload;
+          return this.getTypedNodeDetails(payload, language);
+        })
+      )
     );
   }
 
@@ -94,9 +104,12 @@ export class OntologyAggregationModalComponent {
 
     const filter$ = this.treeFilterCtrl.valueChanges.pipe(debounceTime(400), startWith(''));
 
-    this.treeView$ = combineLatest([tree$, textAccessor$, filter$]).pipe(
-      map(([tree, textAccessor, filter]) => ({ tree, textAccessor, filter }))
-    );
+    combineLatest([tree$, textAccessor$, filter$])
+      .pipe(
+        map(([tree, textAccessor, filter]) => ({ tree, textAccessor, filter })),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(treeView => this.treeView.set(treeView));
   }
 
   private getTypedNodeDetails(
@@ -131,7 +144,7 @@ export class OntologyAggregationModalComponent {
 
   ok() {
     this.modal.close(
-      this.selectedNodes.map(nodeInformation => (nodeInformation.payload as OntologyPayload).id)
+      this.selectedNodes().map(nodeInformation => (nodeInformation.payload as OntologyPayload).id)
     );
   }
 

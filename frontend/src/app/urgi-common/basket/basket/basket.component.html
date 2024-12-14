@@ -1,5 +1,6 @@
+@let basket = this.basket();
 @if (isEnabled) {
-  @if (itemCounter === 0) {
+  @if (itemCounter() === 0) {
     <div class="basket-counter navbar-text">
       <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
       <span class="badge rounded-pill bg-light text-black">0</span>
@@ -11,19 +12,19 @@
       (click)="viewItems(basketModal)"
     >
       <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
-      <span class="badge rounded-pill bg-light text-black">{{ itemCounter | number }}</span>
+      <span class="badge rounded-pill bg-light text-black">{{ itemCounter() | number }}</span>
     </button>
   }
 }
 <ng-template #buttonTooltip>
-  <ng-container [ngPlural]="itemCounter">
+  <ng-container [ngPlural]="itemCounter()">
     <ng-template ngPluralCase="=1">
       <span translate="basket.one-item"></span>
     </ng-template>
     <ng-template ngPluralCase="other">
       <span
         translate="basket.several-items"
-        [translateParams]="{ itemCounter: itemCounter | number }"
+        [translateParams]="{ itemCounter: itemCounter() | number }"
       ></span>
     </ng-template>
   </ng-container>
@@ -79,7 +80,7 @@
                 for="eula-agreement"
                 translate="basket.eula-agreement"
               ></label>
-              @if (eulaAgreementControl.invalid && submitted) {
+              @if (eulaAgreementControl.invalid && submitted()) {
                 <div class="invalid-feedback d-block" id="eula-agreement-error">
                   <span translate="basket.eula-agreement-required"></span>
                 </div>
@@ -98,7 +99,7 @@
         type="button"
         id="send-basket"
         class="btn btn-outline-dark"
-        [class.confirm-forbidden]="confirmForbidden"
+        [class.confirm-forbidden]="confirmForbidden()"
         (click)="sendBasket(modal)"
         translate="basket.complete-order"
       ></button>

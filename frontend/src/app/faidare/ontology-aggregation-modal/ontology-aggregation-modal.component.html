@@ -12,7 +12,7 @@
     {{ node.text }}
     <dd-ontology-node-type [type]="node.payload.type" />
   </ng-template>
-  @if (treeView$ | async; as treeView) {
+  @if (treeView(); as treeView) {
     <div class="content">
       <div class="tree-section">
         <div class="row gx-1">
@@ -58,12 +58,12 @@
             [payloadTemplate]="payloadTemplate"
             [textAccessor]="treeView.textAccessor"
             (highlightedNode)="highlightNode($event)"
-            (selectedNodes)="selectedNodes = $event"
+            (selectedNodes)="selectedNodes.set($event)"
           />
         </div>
       </div>
       <div class="details-section">
-        @if (highlightedNodeDetails$ | async; as highlightedNodeDetails) {
+        @if (highlightedNodeDetails(); as highlightedNodeDetails) {
           <dd-node-details [node]="highlightedNodeDetails" />
         }
       </div>
@@ -71,19 +71,22 @@
   }
 </div>
 <div class="modal-footer">
-  @if (selectedNodes.length > maxSelectedNodes) {
+  @if (selectedNodes().length > maxSelectedNodes) {
     <div
       id="limit-selection"
       class="text-danger flex-grow-1"
       translate="faidare.ontology-aggregation-modal.limit-selection"
-      [translateParams]="{ actual: selectedNodes.length | number, max: maxSelectedNodes | number }"
+      [translateParams]="{
+        actual: selectedNodes().length | number,
+        max: maxSelectedNodes | number
+      }"
     ></div>
   }
   <button
     id="ok-button"
     type="button"
     class="btn btn-primary me-1"
-    [disabled]="selectedNodes.length > maxSelectedNodes"
+    [disabled]="selectedNodes().length > maxSelectedNodes"
     (click)="ok()"
     translate="faidare.ontology-aggregation-modal.ok"
   ></button>

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
@@ -36,7 +36,8 @@ interface ViewModel extends Model {
     DocumentsComponent,
     NgbPagination,
     AsyncPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
   private fb = inject(NonNullableFormBuilder);

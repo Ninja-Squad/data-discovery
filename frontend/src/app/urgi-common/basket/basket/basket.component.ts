@@ -1,61 +1,63 @@
-import { Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+  Signal,
+  TemplateRef
+} from '@angular/core';
 import { Basket, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { timer } from 'rxjs';
+import { switchMap, timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { LOCATION } from '../../../location.service';
 
 @Component({
   selector: 'dd-basket',
   templateUrl: './basket.component.html',
   styleUrl: './basket.component.scss',
-  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip]
+  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketComponent {
   private basketService = inject(BasketService);
   private modalService = inject(NgbModal);
+  private destroyRef = inject(DestroyRef);
 
-  itemCounter = 0;
-  basket: Basket | null = null;
+  isEnabled = this.basketService.isEnabled();
+  basket: Signal<Basket | null> = this.isEnabled
+    ? toSignal(this.basketService.getBasket(), { initialValue: null })
+    : signal(null);
+  itemCounter = computed(() => {
+    const basket = this.basket();
+    return basket ? basket.items.length : 0;
+  });
   eulaAgreementControl = inject(NonNullableFormBuilder).control(false, Validators.requiredTrue);
-  submitted = false;
-  confirmForbidden = false;
-  isEnabled = false;
+  submitted = signal(false);
+  confirmForbidden = signal(false);
 
   private location = inject(LOCATION);
 
-  constructor() {
-    this.isEnabled = this.basketService.isEnabled();
-    if (this.isEnabled) {
-      this.basketService
-        .getBasket()
-        .pipe(takeUntilDestroyed())
-        .subscribe((basket: Basket | null) => {
-          this.basket = basket;
-          if (basket) {
-            this.itemCounter = basket.items.length;
-          }
-        });
-    }
-  }
-
-  viewItems(basket: any) {
-    if (this.itemCounter > 0) {
-      this.modalService
-        .open(basket, { ariaLabelledBy: 'modal-title', size: 'lg', scrollable: true })
-        .result.then(
-          () => {
-            // trigger an sendBasket on rare-basket
-            this.basketService.sendBasket().subscribe(basketCreated => {
-              this.location.assign(`${environment.basket.url}/baskets/${basketCreated.reference}`);
-            });
-          },
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          () => {}
+  viewItems(basket: TemplateRef<unknown>) {
+    if (this.itemCounter() > 0) {
+      const modalRef = this.modalService.open(basket, {
+        ariaLabelledBy: 'modal-title',
+        size: 'lg',
+        scrollable: true
+      });
+      modalRef.closed
+        .pipe(
+          switchMap(() => this.basketService.sendBasket()),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(basketCreated =>
+          this.location.assign(`${environment.basket.url}/baskets/${basketCreated.reference}`)
         );
     }
   }
@@ -65,11 +67,13 @@ export class BasketComponent {
   }
 
   sendBasket(modal: NgbModalRef) {
-    this.submitted = true;
+    this.submitted.set(true);
     // the EULA agreement is mandatory
     if (this.eulaAgreementControl.invalid) {
-      this.confirmForbidden = true;
-      timer(350).subscribe(() => (this.confirmForbidden = false));
+      this.confirmForbidden.set(true);
+      timer(350)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.confirmForbidden.set(false));
     } else {
       modal.close('order');
     }

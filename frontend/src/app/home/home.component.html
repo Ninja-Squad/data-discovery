@@ -41,7 +41,7 @@
     @if (showAggregations) {
       <div>
         <h2 class="visually-hidden" translate="search.filters">Filters</h2>
-        @if (mainAggregations$ | async; as mainAggregations) {
+        @if (mainAggregations(); as mainAggregations) {
           <dd-aggregations
             [aggregations]="mainAggregations"
             (aggregationsChange)="aggregationsChanged($event)"

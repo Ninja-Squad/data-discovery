@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -11,7 +11,8 @@ interface DataProvider {
   selector: 'dd-footer',
   templateUrl: './faidare-footer.component.html',
   styleUrl: './faidare-footer.component.scss',
-  imports: [TranslateModule]
+  imports: [TranslateModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareFooterComponent {
   dataProviders: Array<DataProvider> = [

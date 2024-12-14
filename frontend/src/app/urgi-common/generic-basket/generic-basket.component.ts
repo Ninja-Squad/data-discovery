@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 /**
  * Generic basket that doesn't display anything.
@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'dd-basket',
   templateUrl: './generic-basket.component.html',
-  styleUrl: './generic-basket.component.scss'
+  styleUrl: './generic-basket.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericBasketComponent {}

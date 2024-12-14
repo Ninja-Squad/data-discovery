@@ -23,11 +23,5 @@ import { environment } from '../../../environments/environment';
   ]
 })
 export class GenericDocumentListComponent {
-  documents$: Observable<Page<DocumentModel>>;
-
-  constructor() {
-    const searchStateService = inject(SearchStateService);
-
-    this.documents$ = searchStateService.getDocuments();
-  }
+  documents$: Observable<Page<DocumentModel>> = inject(SearchStateService).getDocuments();
 }

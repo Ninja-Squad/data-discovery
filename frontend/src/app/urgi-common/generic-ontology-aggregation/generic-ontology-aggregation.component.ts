@@ -1,4 +1,4 @@
-import { Component, output, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 
@@ -9,7 +9,8 @@ import { AggregationCriterion } from '../../models/aggregation-criterion';
 @Component({
   selector: 'dd-ontology-aggregation',
   templateUrl: './generic-ontology-aggregation.component.html',
-  styleUrl: './generic-ontology-aggregation.component.scss'
+  styleUrl: './generic-ontology-aggregation.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericOntologyAggregationComponent {
   readonly aggregation = input.required<Aggregation>();

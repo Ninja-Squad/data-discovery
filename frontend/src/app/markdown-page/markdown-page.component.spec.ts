@@ -40,7 +40,7 @@ describe('MarkdownPageComponent', () => {
     const http = TestBed.inject(HttpTestingController);
 
     // the markdown file is extracted from the route data by our component
-    expect(tester.componentInstance.mdFile).toEqual('assets/help-en.md');
+    expect(tester.componentInstance.mdFile()).toEqual('assets/help-en.md');
 
     // the markdown component requests the server for the file
     // we return a fake markdown with just a title

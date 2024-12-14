@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 /**
  * Generic footer that doesn't display anything.
@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'dd-footer',
   templateUrl: './generic-footer.component.html',
-  styleUrl: './generic-footer.component.scss'
+  styleUrl: './generic-footer.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericFooterComponent {}

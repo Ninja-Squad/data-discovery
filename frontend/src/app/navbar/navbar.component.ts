@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,15 +21,16 @@ import {
     NgbDropdownMenu,
     RouterLink,
     environment.basketComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
-  navbarCollapsed = true;
+  navbarCollapsed = signal(true);
   navbar = environment.navbar;
   appName = environment.name;
 
   toggleNavbar() {
-    this.navbarCollapsed = !this.navbarCollapsed;
+    this.navbarCollapsed.update(collapsed => !collapsed);
   }
 
   hasSecondLogo() {

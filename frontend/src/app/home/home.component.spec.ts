@@ -105,12 +105,15 @@ describe('HomeComponent', () => {
       expect(tester.aggregations).toBeNull();
     });
 
-    it('should display example queries if there are some', () => {
+    it('should not display example queries if there are none', () => {
       const tester = new HomeComponentTester();
       tester.detectChanges();
 
       expect(tester.exampleQueriesSection).toBeNull();
+    });
 
+    it('should display example queries if there are some', () => {
+      const tester = new HomeComponentTester();
       tester.componentInstance.exampleQueries = ['foo', 'bar'];
       tester.detectChanges();
 
