@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, ViewChild, output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, output, inject, viewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import {
@@ -54,7 +54,7 @@ export class LargeAggregationComponent implements OnChanges {
 
   @Input() disabled = false;
 
-  @ViewChild('typeahead') typeahead!: ElementRef<HTMLInputElement>;
+  readonly typeahead = viewChild<ElementRef<HTMLInputElement>>('typeahead');
 
   focus$ = new Subject<string>();
   criterion = new FormControl('');
@@ -123,7 +123,7 @@ export class LargeAggregationComponent implements OnChanges {
         values: newSelectedKeys
       });
     }
-    this.typeahead.nativeElement.focus();
+    this.typeahead()!.nativeElement.focus();
   }
 
   documentCountForKey(key: string) {
