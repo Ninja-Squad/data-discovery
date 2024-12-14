@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { BasketService } from '../urgi-common/basket/basket.service';
-import { map, Observable } from 'rxjs';
+import { map } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { SearchStateService } from '../search-state.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface ViewModel {
   documents: Page<DocumentModel>;
@@ -21,7 +22,6 @@ interface ViewModel {
   styleUrl: './documents.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     DecimalPipe,
     TranslateModule,
     environment.selectAllResultsComponent,
@@ -29,7 +29,7 @@ interface ViewModel {
   ]
 })
 export class DocumentsComponent {
-  vm$: Observable<ViewModel>;
+  vm: Signal<ViewModel | undefined>;
   isBasketEnabled: boolean;
 
   constructor() {
@@ -37,13 +37,15 @@ export class DocumentsComponent {
     const searchStateService = inject(SearchStateService);
 
     this.isBasketEnabled = basketService.isEnabled();
-    this.vm$ = searchStateService.getDocuments().pipe(
-      map(documents => ({
-        documents,
-        firstResultIndex: this.firstResultIndex(documents),
-        lastResultIndex: this.lastResultIndex(documents),
-        resultLimited: this.resultLimited(documents)
-      }))
+    this.vm = toSignal(
+      searchStateService.getDocuments().pipe(
+        map(documents => ({
+          documents,
+          firstResultIndex: this.firstResultIndex(documents),
+          lastResultIndex: this.lastResultIndex(documents),
+          resultLimited: this.resultLimited(documents)
+        }))
+      )
     );
   }
 

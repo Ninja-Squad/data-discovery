@@ -16,9 +16,8 @@ import {
   TreeService
 } from './tree.service';
 import { distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { NodeComponent } from './node/node.component';
-import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
+import { outputFromObservable, toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 interface BaseAction {
   type: 'FILTER' | 'CHANGE_TEXT';
@@ -55,14 +54,15 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
   templateUrl: './tree.component.html',
   styleUrl: './tree.component.scss',
   providers: [TreeService],
-  imports: [AsyncPipe, NodeComponent],
+  imports: [NodeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'tree'
 })
 export class TreeComponent<P> {
   private treeService = inject(TreeService);
 
-  tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
+  private tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
+  tree = toSignal(this.tree$);
 
   readonly payloadTemplate = input<
     TemplateRef<{

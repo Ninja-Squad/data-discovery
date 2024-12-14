@@ -1,4 +1,4 @@
-@if (tree$ | async; as tree) {
+@if (tree(); as tree) {
   <ul class="list-unstyled">
     @for (node of tree.rootNodes; track node.id) {
       @if (!tree.filtered || node.matchingFilter || node.hasVisibleChildren) {

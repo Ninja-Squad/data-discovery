@@ -1,4 +1,4 @@
-@if (vm$ | async; as vm) {
+@if (vm(); as vm) {
   @if (vm.accessions.length > 0) {
     <div>
       @if (vm.allSelectedForOrdering) {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
@@ -14,7 +14,7 @@ import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.c
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { NgbCollapse, NgbPagination, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface ViewModel extends Model {
   collectionSize: number;
@@ -34,8 +34,7 @@ interface ViewModel extends Model {
     AggregationsComponent,
     LoadingSkeletonComponent,
     DocumentsComponent,
-    NgbPagination,
-    AsyncPipe
+    NgbPagination
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -53,20 +52,22 @@ export class SearchComponent {
   // hide or show the filters on small devices
   private filtersExpandedSubject = new BehaviorSubject<boolean>(false);
 
-  vm$: Observable<ViewModel>;
+  vm: Signal<ViewModel | undefined>;
 
   constructor() {
     const searchService = inject(SearchService);
 
     this.suggesterTypeahead = searchService.getSuggesterTypeahead();
     const model$ = this.searchStateService.initialize(this.route);
-    this.vm$ = combineLatest([model$, this.filtersExpandedSubject]).pipe(
-      map(([model, filtersExpanded]) => ({
-        ...model,
-        collectionSize: model.documents ? this.computeCollectionSize(model.documents) : 0,
-        filtersExpanded
-      })),
-      tap(vm => this.searchForm.controls.search.setValue(vm.searchCriteria.query))
+    this.vm = toSignal(
+      combineLatest([model$, this.filtersExpandedSubject]).pipe(
+        map(([model, filtersExpanded]) => ({
+          ...model,
+          collectionSize: model.documents ? this.computeCollectionSize(model.documents) : 0,
+          filtersExpanded
+        })),
+        tap(vm => this.searchForm.controls.search.setValue(vm.searchCriteria.query))
+      )
     );
   }
 

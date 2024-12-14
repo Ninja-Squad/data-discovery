@@ -17,7 +17,7 @@ import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
   imports: [SelectAllResultsComponent]
 })
 class TestComponent {
-  documents: Page<OrderableDocumentModel>;
+  documents: Page<OrderableDocumentModel> = toSinglePage<OrderableDocumentModel>([]);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

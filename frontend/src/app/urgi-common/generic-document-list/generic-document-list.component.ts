@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject, Signal } from '@angular/core';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
 import { SearchStateService } from '../../search-state.service';
-import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { environment } from '../../../environments/environment';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 /**
  * Default implementation of the document list (the search results).
@@ -17,11 +16,12 @@ import { environment } from '../../../environments/environment';
   styleUrl: './generic-document-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     // we use a forwardRef to avoid a circular dependency with environment.ts
     forwardRef(() => environment.documentComponent)
   ]
 })
 export class GenericDocumentListComponent {
-  documents$: Observable<Page<DocumentModel>> = inject(SearchStateService).getDocuments();
+  documents: Signal<Page<DocumentModel> | undefined> = toSignal(
+    inject(SearchStateService).getDocuments()
+  );
 }

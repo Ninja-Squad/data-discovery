@@ -1,10 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  Signal
+} from '@angular/core';
+import { map } from 'rxjs';
 import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   NgbNav,
   NgbNavContent,
@@ -15,6 +22,7 @@ import {
 import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 import { environment } from '../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const ENTRY_AGGREGATION_KEY = 'entry';
 const GERMPLASM_BUCKET_KEY = 'Germplasm';
@@ -66,7 +74,6 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
   templateUrl: './faidare-document-list.component.html',
   styleUrl: './faidare-document-list.component.scss',
   imports: [
-    AsyncPipe,
     NgTemplateOutlet,
     NgbNav,
     NgbNavItem,
@@ -83,34 +90,32 @@ export class FaidareDocumentListComponent {
   private searchStateService = inject(SearchStateService);
 
   // the VM object used in the template
-  vm$: Observable<ViewModel>;
+  vm: Signal<ViewModel | undefined>;
 
   constructor() {
     // if there is a fragment '#germplasm' in the URL, then set the Germplasm tab as the active one
-    this.vm$ = this.searchStateService.getModel().pipe(
-      map(model => {
-        const germplasmCount = this.findGermplasmCount(model);
-        return {
-          documents: model.documents,
-          activeTab:
-            model.searchCriteria.fragment === 'germplasm' && germplasmCount > 0
-              ? 'germplasm'
-              : 'all',
-          germplasmCount
-        };
-      })
+    this.vm = toSignal(
+      this.searchStateService.getModel().pipe(
+        map(model => {
+          const germplasmCount = this.findGermplasmCount(model);
+          return {
+            documents: model.documents,
+            activeTab:
+              model.searchCriteria.fragment === 'germplasm' && germplasmCount > 0
+                ? 'germplasm'
+                : 'all',
+            germplasmCount
+          };
+        })
+      )
     );
 
-    this.vm$
-      .pipe(
-        map(vm => vm.activeTab),
-        distinctUntilChanged()
+    const activeTab: Signal<string | undefined> = computed(() => this.vm()?.activeTab);
+    effect(() =>
+      this.searchStateService.disableAggregation(
+        activeTab() === 'germplasm' ? ENTRY_AGGREGATION_KEY : null
       )
-      .subscribe(activeTab => {
-        this.searchStateService.disableAggregation(
-          activeTab === 'germplasm' ? ENTRY_AGGREGATION_KEY : null
-        );
-      });
+    );
   }
 
   private findGermplasmCount(model: Model): number {

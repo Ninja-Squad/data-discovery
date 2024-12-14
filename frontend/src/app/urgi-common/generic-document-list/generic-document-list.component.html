@@ -1,4 +1,4 @@
-@if (documents$ | async; as documents) {
+@if (documents(); as documents) {
   @for (document of documents.content; track document.identifier) {
     <div class="mb-4">
       <!-- the following component will not be the same depending on the environment.documentComponent value -->

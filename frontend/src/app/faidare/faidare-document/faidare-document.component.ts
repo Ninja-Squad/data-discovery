@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, Signal } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { map, Observable, of, switchMap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { map, of, switchMap } from 'rxjs';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 interface ViewModel {
   document: FaidareDocumentModel;
@@ -18,7 +17,7 @@ interface ViewModel {
   selector: 'dd-document',
   templateUrl: './faidare-document.component.html',
   styleUrl: './faidare-document.component.scss',
-  imports: [AsyncPipe, TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
+  imports: [TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentComponent {
@@ -26,10 +25,8 @@ export class FaidareDocumentComponent {
 
   readonly document = input.required<FaidareDocumentModel>();
 
-  readonly vm$: Observable<ViewModel>;
-
-  constructor() {
-    this.vm$ = toObservable(this.document).pipe(
+  readonly vm: Signal<ViewModel | undefined> = toSignal(
+    toObservable(this.document).pipe(
       switchMap(document => {
         const isBasketEnabled = this.basketService.isEnabled();
         const selectedForOrdering$ = isBasketEnabled
@@ -43,8 +40,8 @@ export class FaidareDocumentComponent {
           }))
         );
       })
-    );
-  }
+    )
+  );
 
   addToBasket(document: FaidareDocumentModel) {
     this.basketService.addToBasket(document);

@@ -1,4 +1,4 @@
-@if (vm$ | async; as vm) {
+@if (vm(); as vm) {
   @if (vm.documents) {
     <div class="row my-3">
       <div class="col-md-6 text-center">
@@ -47,7 +47,7 @@
         @for (document of vm.documents.content; track document.identifier) {
           <tr>
             <td>
-              <a [href]="faidareUrl(document)">{{ document.name }}</a>
+              <a [href]="document.url">{{ document.name }}</a>
             </td>
             <td>{{ document.accessionNumber }}</td>
             <td>{{ document.species.join(', ') }}</td>
