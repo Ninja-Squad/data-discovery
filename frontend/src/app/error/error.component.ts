@@ -9,11 +9,10 @@ import { AsyncPipe } from '@angular/common';
  * Component which displays the errors emitted by the error-interceptor service, until the user navigates elsewhere
  */
 @Component({
-  selector: 'dd-error',
-  templateUrl: './error.component.html',
-  styleUrl: './error.component.scss',
-  standalone: true,
-  imports: [TranslateModule, AsyncPipe]
+    selector: 'dd-error',
+    templateUrl: './error.component.html',
+    styleUrl: './error.component.scss',
+    imports: [TranslateModule, AsyncPipe]
 })
 export class ErrorComponent {
   error$: Observable<HttpError | null>;

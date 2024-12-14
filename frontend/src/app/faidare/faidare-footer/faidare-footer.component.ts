@@ -8,11 +8,10 @@ interface DataProvider {
 }
 
 @Component({
-  selector: 'dd-footer',
-  templateUrl: './faidare-footer.component.html',
-  styleUrl: './faidare-footer.component.scss',
-  standalone: true,
-  imports: [TranslateModule]
+    selector: 'dd-footer',
+    templateUrl: './faidare-footer.component.html',
+    styleUrl: './faidare-footer.component.scss',
+    imports: [TranslateModule]
 })
 export class FaidareFooterComponent {
   dataProviders: Array<DataProvider> = [

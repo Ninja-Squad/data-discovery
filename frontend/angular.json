@@ -35,7 +35,10 @@
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/assets/rare/"
-              ]
+              ],
+              "sass": {
+                "silenceDeprecations": ["import"]
+              }
             },
             "styles": [
               "src/styles.scss",

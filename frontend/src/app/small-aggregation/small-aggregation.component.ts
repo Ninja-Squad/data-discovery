@@ -23,19 +23,18 @@ import { DocumentCountComponent } from '../document-count/document-count.compone
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'dd-small-aggregation',
-  templateUrl: './small-aggregation.component.html',
-  styleUrl: './small-aggregation.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    NgbTooltip,
-    ReactiveFormsModule,
-    DocumentCountComponent,
-    DescendantsCheckboxComponent,
-    TranslateModule,
-    AggregationNamePipe
-  ]
+    selector: 'dd-small-aggregation',
+    templateUrl: './small-aggregation.component.html',
+    styleUrl: './small-aggregation.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        NgbTooltip,
+        ReactiveFormsModule,
+        DocumentCountComponent,
+        DescendantsCheckboxComponent,
+        TranslateModule,
+        AggregationNamePipe
+    ]
 })
 export class SmallAggregationComponent implements OnChanges {
   @Input() aggregation!: Aggregation;

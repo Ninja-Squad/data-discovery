@@ -14,20 +14,19 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'dd-home',
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
-  standalone: true,
-  imports: [
-    RouterLink,
-    AsyncPipe,
-    ReactiveFormsModule,
-    TranslateModule,
-    NgbTypeahead,
-    PillarsComponent,
-    AggregationsComponent,
-    environment.headerComponent
-  ]
+    selector: 'dd-home',
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.scss',
+    imports: [
+        RouterLink,
+        AsyncPipe,
+        ReactiveFormsModule,
+        TranslateModule,
+        NgbTypeahead,
+        PillarsComponent,
+        AggregationsComponent,
+        environment.headerComponent
+    ]
 })
 export class HomeComponent {
   searchForm = inject(NonNullableFormBuilder).group({

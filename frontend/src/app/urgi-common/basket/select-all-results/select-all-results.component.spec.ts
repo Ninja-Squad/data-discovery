@@ -12,10 +12,9 @@ import { OrderableDocumentModel } from '../../../models/document.model';
 import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
 
 @Component({
-  selector: 'dd-test',
-  template: '<dd-select-all-results [documents]="documents" />',
-  standalone: true,
-  imports: [SelectAllResultsComponent]
+    selector: 'dd-test',
+    template: '<dd-select-all-results [documents]="documents" />',
+    imports: [SelectAllResultsComponent]
 })
 class TestComponent {
   documents: Page<OrderableDocumentModel>;

@@ -1,4 +1,4 @@
-import { ENVIRONMENT_INITIALIZER, importProvidersFrom, inject } from '@angular/core';
+import { importProvidersFrom, inject, provideEnvironmentInitializer } from '@angular/core';
 import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
@@ -28,14 +28,10 @@ export const provideI18nTesting = () => {
         }
       })
     ]),
-    {
-      provide: ENVIRONMENT_INITIALIZER,
-      multi: true,
-      useValue: () => {
+    provideEnvironmentInitializer(() => {
         const translateService = inject(TranslateService);
         translateService.setTranslation('en', EN_TRANSLATIONS);
         translateService.use('en');
-      }
-    }
+      })
   ];
 };

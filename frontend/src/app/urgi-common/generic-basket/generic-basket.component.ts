@@ -7,7 +7,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'dd-basket',
   templateUrl: './generic-basket.component.html',
-  styleUrl: './generic-basket.component.scss',
-  standalone: true
+  styleUrl: './generic-basket.component.scss'
 })
 export class GenericBasketComponent {}

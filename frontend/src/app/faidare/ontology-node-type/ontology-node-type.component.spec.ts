@@ -7,9 +7,8 @@ import { OntologyNodeType } from '../../ontology.service';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<dd-ontology-node-type [type]="type" />',
-  standalone: true,
-  imports: [OntologyNodeTypeComponent]
+    template: '<dd-ontology-node-type [type]="type" />',
+    imports: [OntologyNodeTypeComponent]
 })
 class TestComponent {
   type: OntologyNodeType = 'ONTOLOGY';

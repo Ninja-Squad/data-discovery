@@ -12,16 +12,15 @@ import { environment } from '../../../environments/environment';
  * display a document list, and a table in a separate tab dedicated to Germplasm results.
  */
 @Component({
-  selector: 'dd-document-list',
-  templateUrl: './generic-document-list.component.html',
-  styleUrl: './generic-document-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    // we use a forwardRef to avoid a circular dependency with environment.ts
-    forwardRef(() => environment.documentComponent)
-  ]
+    selector: 'dd-document-list',
+    templateUrl: './generic-document-list.component.html',
+    styleUrl: './generic-document-list.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        AsyncPipe,
+        // we use a forwardRef to avoid a circular dependency with environment.ts
+        forwardRef(() => environment.documentComponent)
+    ]
 })
 export class GenericDocumentListComponent {
   documents$: Observable<Page<DocumentModel>>;

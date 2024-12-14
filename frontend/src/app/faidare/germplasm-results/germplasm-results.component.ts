@@ -19,12 +19,11 @@ interface ViewModel {
 export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-status' | 'country';
 
 @Component({
-  selector: 'dd-germplasm-results',
-  templateUrl: './germplasm-results.component.html',
-  styleUrl: './germplasm-results.component.scss',
-  standalone: true,
-  imports: [AsyncPipe, TranslateModule, SortableHeaderComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dd-germplasm-results',
+    templateUrl: './germplasm-results.component.html',
+    styleUrl: './germplasm-results.component.scss',
+    imports: [AsyncPipe, TranslateModule, SortableHeaderComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {
   vm$: Observable<ViewModel>;

@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'dd-header',
   templateUrl: './faidare-header.component.html',
-  styleUrl: './faidare-header.component.scss',
-  standalone: true
+  styleUrl: './faidare-header.component.scss'
 })
 export class FaidareHeaderComponent {}

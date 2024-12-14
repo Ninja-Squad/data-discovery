@@ -58,14 +58,13 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
  *   displayed as indeterminate.
  */
 @Component({
-  selector: 'dd-tree',
-  templateUrl: './tree.component.html',
-  styleUrl: './tree.component.scss',
-  providers: [TreeService],
-  standalone: true,
-  imports: [AsyncPipe, NodeComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  exportAs: 'tree'
+    selector: 'dd-tree',
+    templateUrl: './tree.component.html',
+    styleUrl: './tree.component.scss',
+    providers: [TreeService],
+    imports: [AsyncPipe, NodeComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    exportAs: 'tree'
 })
 export class TreeComponent<P> implements OnInit {
   tree$: Observable<InternalTree<P>>;

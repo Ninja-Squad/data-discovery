@@ -10,19 +10,18 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'dd-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss',
-  standalone: true,
-  imports: [
-    NgbCollapse,
-    TranslateModule,
-    NgbDropdown,
-    NgbDropdownToggle,
-    NgbDropdownMenu,
-    RouterLink,
-    environment.basketComponent
-  ]
+    selector: 'dd-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.scss',
+    imports: [
+        NgbCollapse,
+        TranslateModule,
+        NgbDropdown,
+        NgbDropdownToggle,
+        NgbDropdownMenu,
+        RouterLink,
+        environment.basketComponent
+    ]
 })
 export class NavbarComponent {
   navbarCollapsed = true;

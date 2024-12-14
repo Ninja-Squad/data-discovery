@@ -48,8 +48,7 @@ class FaidareDocumentListComponentTester extends ComponentTester<FaidareDocument
 
 @Component({
   selector: 'dd-germplasm-results',
-  template: 'Germplasm Results here',
-  standalone: true
+  template: 'Germplasm Results here'
 })
 class GermplasmResultsStubComponent {}
 

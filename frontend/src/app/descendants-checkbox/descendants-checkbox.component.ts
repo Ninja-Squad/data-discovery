@@ -3,12 +3,11 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'dd-descendants-checkbox',
-  templateUrl: './descendants-checkbox.component.html',
-  styleUrl: './descendants-checkbox.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [TranslateModule, NgbTooltip]
+    selector: 'dd-descendants-checkbox',
+    templateUrl: './descendants-checkbox.component.html',
+    styleUrl: './descendants-checkbox.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [TranslateModule, NgbTooltip]
 })
 export class DescendantsCheckboxComponent {
   @Input() searchDescendants = false;

@@ -12,12 +12,11 @@ interface ViewModel {
 }
 
 @Component({
-  selector: 'dd-select-all-results',
-  templateUrl: './select-all-results.component.html',
-  styleUrl: './select-all-results.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [TranslateModule, AsyncPipe]
+    selector: 'dd-select-all-results',
+    templateUrl: './select-all-results.component.html',
+    styleUrl: './select-all-results.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [TranslateModule, AsyncPipe]
 })
 export class SelectAllResultsComponent {
   vm$: Observable<ViewModel>;

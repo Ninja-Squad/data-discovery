@@ -10,11 +10,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LOCATION } from '../../../location.service';
 
 @Component({
-  selector: 'dd-basket',
-  templateUrl: './basket.component.html',
-  styleUrl: './basket.component.scss',
-  standalone: true,
-  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip]
+    selector: 'dd-basket',
+    templateUrl: './basket.component.html',
+    styleUrl: './basket.component.scss',
+    imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip]
 })
 export class BasketComponent {
   itemCounter = 0;

@@ -16,12 +16,11 @@ import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'dd-ontology-aggregation',
-  templateUrl: './faidare-ontology-aggregation.component.html',
-  styleUrl: './faidare-ontology-aggregation.component.scss',
-  standalone: true,
-  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dd-ontology-aggregation',
+    templateUrl: './faidare-ontology-aggregation.component.html',
+    styleUrl: './faidare-ontology-aggregation.component.scss',
+    imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareOntologyAggregationComponent implements OnChanges {
   @Input() aggregation!: Aggregation;

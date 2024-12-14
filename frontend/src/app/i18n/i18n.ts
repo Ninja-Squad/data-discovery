@@ -1,4 +1,4 @@
-import { ENVIRONMENT_INITIALIZER, importProvidersFrom, inject, LOCALE_ID } from '@angular/core';
+import { importProvidersFrom, inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ModuleTranslateLoader } from './module-translate-loader';
 import { registerLocaleData } from '@angular/common';
@@ -35,10 +35,7 @@ export const provideI18n = () => {
       })
     ),
     { provide: LOCALE_ID, useValue: getBrowserLanguage() },
-    {
-      provide: ENVIRONMENT_INITIALIZER,
-      multi: true,
-      useValue: () => {
+    provideEnvironmentInitializer(() => {
         const translateService = inject(TranslateService);
         // this language will be used as a fallback when a translation isn't found in the current language
         translateService.setDefaultLang('en');
@@ -47,7 +44,6 @@ export const provideI18n = () => {
         translateService.use(locale);
         // set the locale on the document
         document.documentElement.lang = locale;
-      }
-    }
+      })
   ];
 };

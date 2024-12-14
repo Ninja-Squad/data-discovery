@@ -6,10 +6,8 @@ import { Component } from '@angular/core';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-  template:
-    '<dd-descendants-checkbox [searchDescendants]="value" (searchDescendantsChange)="onChange($event)" />',
-  standalone: true,
-  imports: [DescendantsCheckboxComponent]
+    template: '<dd-descendants-checkbox [searchDescendants]="value" (searchDescendantsChange)="onChange($event)" />',
+    imports: [DescendantsCheckboxComponent]
 })
 class TestComponent {
   value = true;

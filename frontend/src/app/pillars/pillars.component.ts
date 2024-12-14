@@ -9,12 +9,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'dd-pillars',
-  templateUrl: './pillars.component.html',
-  styleUrl: './pillars.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [TranslateModule, DocumentCountComponent, AsyncPipe]
+    selector: 'dd-pillars',
+    templateUrl: './pillars.component.html',
+    styleUrl: './pillars.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [TranslateModule, DocumentCountComponent, AsyncPipe]
 })
 export class PillarsComponent {
   pillars$: Observable<Array<PillarModel>>;

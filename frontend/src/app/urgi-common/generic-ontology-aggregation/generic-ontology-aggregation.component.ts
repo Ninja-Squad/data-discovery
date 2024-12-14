@@ -9,8 +9,7 @@ import { AggregationCriterion } from '../../models/aggregation-criterion';
 @Component({
   selector: 'dd-ontology-aggregation',
   templateUrl: './generic-ontology-aggregation.component.html',
-  styleUrl: './generic-ontology-aggregation.component.scss',
-  standalone: true
+  styleUrl: './generic-ontology-aggregation.component.scss'
 })
 export class GenericOntologyAggregationComponent {
   @Input() aggregation!: Aggregation;

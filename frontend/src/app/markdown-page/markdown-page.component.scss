@@ -1,3 +1,4 @@
+@use "sass:color";
 @import 'theme';
 
 // override default table
@@ -13,6 +14,6 @@
 }
 
 ::ng-deep thead th {
-  background-color: lighten($_theme-primary-color, 50%);
+  background-color: color.adjust($_theme-primary-color, $lightness: 50%);
   border-bottom: 2px solid $_theme-primary-color;
 }
