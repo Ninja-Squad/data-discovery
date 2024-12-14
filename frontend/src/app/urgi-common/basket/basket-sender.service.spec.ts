@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Basket, BasketService } from './basket.service';
+import { Basket } from './basket.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { BasketCreated, BasketSenderService } from './basket-sender.service';
