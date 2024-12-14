@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { BehaviorSubject } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { Component, signal } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
@@ -72,17 +71,16 @@ class RareDocumentComponentTester extends ComponentTester<TestComponent> {
 }
 
 describe('RareDocumentComponent', () => {
-  let basketService: jasmine.SpyObj<BasketService>;
-  let basketEvents: BehaviorSubject<boolean>;
+  let basketService: BasketService;
 
   beforeEach(() => {
-    basketEvents = new BehaviorSubject<boolean>(false);
-    basketService = createMock(BasketService);
-    basketService.isEnabled.and.returnValue(true);
-    basketService.isAccessionInBasket.and.returnValue(basketEvents);
     TestBed.configureTestingModule({
-      providers: [provideI18nTesting(), { provide: BasketService, useValue: basketService }]
+      providers: [provideI18nTesting()]
     });
+
+    basketService = TestBed.inject(BasketService);
+    basketService.clearBasket();
+    spyOn(basketService, 'isEnabled').and.returnValue(true);
   });
 
   it('should display a resource', () => {
@@ -141,7 +139,7 @@ describe('RareDocumentComponent', () => {
   });
 
   it('should not have the basket button if the feature is disabled', () => {
-    basketService.isEnabled.and.returnValue(false);
+    (basketService.isEnabled as jasmine.Spy).and.returnValue(false);
     const tester = new RareDocumentComponentTester();
 
     // given a resource
@@ -167,9 +165,7 @@ describe('RareDocumentComponent', () => {
     tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
-    expect(basketService.addToBasket).toHaveBeenCalledWith(component.document());
-    basketEvents.next(true);
-    tester.detectChanges();
+    expect(basketService.isAccessionInBasket(component.document())).toBeTrue();
 
     // we switched the button to display a green one
     expect(tester.addToBasketButton).toBeNull();
@@ -183,11 +179,7 @@ describe('RareDocumentComponent', () => {
     expect(tester.tooltip.textContent).toBe('Remove from basket');
 
     tester.removeFromBasketButton.click();
-    basketEvents.next(false);
-    tester.detectChanges();
-
-    // then we should have removed the item to the basket
-    expect(basketService.removeFromBasket).toHaveBeenCalledWith(component.document().identifier);
+    expect(basketService.isAccessionInBasket(component.document())).toBeFalse();
 
     // we switched back the button
     expect(tester.removeFromBasketButton).toBeNull();

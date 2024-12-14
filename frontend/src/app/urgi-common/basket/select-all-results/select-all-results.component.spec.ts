@@ -1,13 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
 import { SelectAllResultsComponent } from './select-all-results.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { BasketService } from '../basket.service';
-import { of } from 'rxjs';
 import { Component } from '@angular/core';
 import { Page } from '../../../models/page';
 import { toSecondPage, toSinglePage } from '../../../models/test-model-generators';
-import { RareDocumentModel } from '../../../rare/rare-document.model';
 import { OrderableDocumentModel } from '../../../models/document.model';
 import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
 
@@ -32,7 +30,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 
 describe('SelectAllResultsComponent', () => {
   let tester: TestComponentTester;
-  let service: jasmine.SpyObj<BasketService>;
+  let service: BasketService;
   const rosa = {
     name: 'Rosa',
     identifier: 'rosa',
@@ -49,10 +47,13 @@ describe('SelectAllResultsComponent', () => {
   } as OrderableDocumentModel;
 
   beforeEach(() => {
-    service = createMock(BasketService);
     TestBed.configureTestingModule({
-      providers: [provideI18nTesting(), { provide: BasketService, useValue: service }]
+      providers: [provideI18nTesting()]
     });
+
+    service = TestBed.inject(BasketService);
+    service.clearBasket();
+
     tester = new TestComponentTester();
   });
 
@@ -63,101 +64,86 @@ describe('SelectAllResultsComponent', () => {
   });
 
   it('should remove items from the basket', () => {
-    // rosa2 in basket, rosa not in basket
-    service.isAccessionInBasket.calls.reset();
-    service.isAccessionInBasket.and.returnValue(of(true));
+    // rosa in basket, rosa2 not in basket
+    service.addToBasket(rosa);
 
     // one result
     tester.componentInstance.documents = toSinglePage([rosa]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
     expect(tester.link).toContainText('Remove the item from the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.removeFromBasket).toHaveBeenCalledWith(rosa.identifier);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeFalse();
 
     // several results
+    service.addToBasket(rosa);
+    service.addToBasket(rosa2);
     tester.componentInstance.documents = toSinglePage([rosa, rosa2]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
     expect(tester.link).toContainText('Remove the 2 items from the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.removeFromBasket).toHaveBeenCalledWith(rosa.identifier);
-    expect(service.removeFromBasket).toHaveBeenCalledWith(rosa2.identifier);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeFalse();
+    expect(service.isAccessionInBasket(rosa2)).toBeFalse();
 
     // several pages of results
+    service.addToBasket(rosa);
+    service.addToBasket(rosa2);
     tester.componentInstance.documents = toSecondPage([rosa, rosa2]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
     expect(tester.link).toContainText('Remove the 2 items from the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.removeFromBasket).toHaveBeenCalledWith(rosa.identifier);
-    expect(service.removeFromBasket).toHaveBeenCalledWith(rosa2.identifier);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeFalse();
+    expect(service.isAccessionInBasket(rosa2)).toBeFalse();
   });
 
   it('should add items to the basket', () => {
-    service.isAccessionInBasket.and.returnValue(of(false));
-
     // one result
     tester.componentInstance.documents = toSinglePage([rosa]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
     expect(tester.link).toContainText('Add the item to the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeTrue();
 
     // several results
+    service.clearBasket();
     tester.componentInstance.documents = toSinglePage([rosa, rosa2]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
     expect(tester.link).toContainText('Add the 2 items to the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa);
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa2);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeTrue();
+    expect(service.isAccessionInBasket(rosa2)).toBeTrue();
 
     // several results, but one without an accession holder
+    service.clearBasket();
     tester.componentInstance.documents = toSinglePage([rosa, rosa2, rosaWithoutAccessionHolder]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
-    expect(service.isAccessionInBasket).not.toHaveBeenCalledWith(rosaWithoutAccessionHolder);
     // counter does not count the item without accession holders
     expect(tester.link).toContainText('Add the 2 items to the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa);
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa2);
-    expect(service.addToBasket).not.toHaveBeenCalledWith(rosaWithoutAccessionHolder);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeTrue();
+    expect(service.isAccessionInBasket(rosa2)).toBeTrue();
+    expect(service.isAccessionInBasket(rosaWithoutAccessionHolder)).toBeFalse();
 
     // only one result without accession holder
-    service.isAccessionInBasket.calls.reset();
+    service.clearBasket();
     tester.componentInstance.documents = toSinglePage([rosaWithoutAccessionHolder]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).not.toHaveBeenCalled();
     // counter is O, so no link
     expect(tester.link).toBeNull();
 
     // several pages of results
+    service.addToBasket(rosa);
     tester.componentInstance.documents = toSecondPage([rosa, rosa2]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
     expect(tester.link).toContainText('Add the 2 items to the basket');
 
-    // rosa2 in basket, rosa not in basket
-    service.isAccessionInBasket.and.callFake((accession: RareDocumentModel) => {
-      return of(accession.identifier === 'rosa');
-    });
+    service.addToBasket(rosa);
 
     // we default to add all
     tester.componentInstance.documents = toSinglePage([rosa, rosa2]);
     tester.detectChanges();
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa);
-    expect(service.isAccessionInBasket).toHaveBeenCalledWith(rosa2);
     expect(tester.link).toContainText('Add the 2 items to the basket');
-    tester.link.dispatchEventOfType('click');
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa);
-    expect(service.addToBasket).toHaveBeenCalledWith(rosa2);
+    tester.link.click();
+    expect(service.isAccessionInBasket(rosa)).toBeTrue();
+    expect(service.isAccessionInBasket(rosa2)).toBeTrue();
   });
 });

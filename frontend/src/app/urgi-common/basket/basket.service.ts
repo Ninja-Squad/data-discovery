@@ -1,6 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { effect, Injectable, signal } from '@angular/core';
 import { OrderableDocumentModel } from '../../models/document.model';
 import { environment } from '../../../environments/environment';
 
@@ -31,22 +29,16 @@ export interface Basket {
   items: Array<BasketItem>;
 }
 
-export interface BasketCreated extends Basket {
-  id: string;
-  reference: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class BasketService {
-  private http = inject(HttpClient);
-
-  basket: Basket | null = null;
-  private basket$ = new BehaviorSubject<Basket | null>(this.basket);
+  private _basket = signal<Basket>({ items: [] });
+  basket = this._basket.asReadonly();
 
   constructor() {
     this.restoreBasketFromLocalStorage();
+    effect(() => this.saveBasketToLocalStorage());
   }
 
   isEnabled() {
@@ -57,24 +49,19 @@ export class BasketService {
     const rareBasketStringified = window.localStorage.getItem('rare-basket');
     if (rareBasketStringified) {
       try {
-        this.basket = JSON.parse(rareBasketStringified);
+        this._basket.set(JSON.parse(rareBasketStringified));
         // eslint-disable-next-line no-empty,@typescript-eslint/no-unused-vars
       } catch (e) {}
     }
-    if (!this.basket) {
-      this.basket = {
+    if (!this._basket()) {
+      this._basket.set({
         items: []
-      };
+      });
     }
-    this.emitNewBasket();
-  }
-
-  private emitNewBasket() {
-    this.basket$.next({ ...this.basket! });
   }
 
   addToBasket(accession: OrderableDocumentModel) {
-    if (this.basket!.items.some(item => item.accession.identifier === accession.identifier)) {
+    if (this.isAccessionInBasket(accession)) {
       // already in basket
       return;
     }
@@ -85,46 +72,25 @@ export class BasketService {
       },
       accessionHolder: accession.accessionHolder!
     };
-    this.basket!.items.push(basketItem);
-    this.saveBasketToLocalStorage();
-    this.emitNewBasket();
+    this._basket.update(basket => ({ ...basket, items: [...basket.items, basketItem] }));
   }
 
-  isAccessionInBasket(document: OrderableDocumentModel): Observable<boolean> {
-    return this.basket$.pipe(
-      map(basket =>
-        basket!.items.map(item => item.accession.identifier).includes(document.identifier)
-      ),
-      // do not re-emit when value is the same
-      distinctUntilChanged()
-    );
+  isAccessionInBasket(document: OrderableDocumentModel): boolean {
+    return this._basket().items.some(item => item.accession.identifier === document.identifier);
   }
 
   removeFromBasket(identifier: string) {
-    this.basket!.items = this.basket!.items.filter(
-      item => identifier !== item.accession.identifier
-    );
-    this.saveBasketToLocalStorage();
-    this.emitNewBasket();
+    this._basket.update(basket => ({
+      ...basket,
+      items: basket.items.filter(item => item.accession.identifier !== identifier)
+    }));
   }
 
   private saveBasketToLocalStorage() {
-    window.localStorage.setItem('rare-basket', JSON.stringify(this.basket));
-  }
-
-  getBasket(): Observable<Basket | null> {
-    return this.basket$.asObservable();
-  }
-
-  sendBasket(): Observable<BasketCreated> {
-    return this.http
-      .post<BasketCreated>(`${environment.basket.url}/api/baskets`, this.basket)
-      .pipe(tap(() => this.clearBasket()));
+    window.localStorage.setItem('rare-basket', JSON.stringify(this._basket));
   }
 
   clearBasket() {
-    this.basket!.items = [];
-    this.saveBasketToLocalStorage();
-    this.emitNewBasket();
+    this._basket.update(basket => ({ ...basket, items: [] }));
   }
 }

@@ -15,8 +15,9 @@ import { switchMap, timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule } from '@ngx-translate/core';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LOCATION } from '../../../location.service';
+import { BasketSenderService } from '../basket-sender.service';
 
 @Component({
   selector: 'dd-basket',
@@ -27,13 +28,12 @@ import { LOCATION } from '../../../location.service';
 })
 export class BasketComponent {
   private basketService = inject(BasketService);
+  private basketSenderService = inject(BasketSenderService);
   private modalService = inject(NgbModal);
   private destroyRef = inject(DestroyRef);
 
   isEnabled = this.basketService.isEnabled();
-  basket: Signal<Basket | null> = this.isEnabled
-    ? toSignal(this.basketService.getBasket(), { initialValue: null })
-    : signal(null);
+  basket: Signal<Basket | null> = this.isEnabled ? this.basketService.basket : signal(null);
   itemCounter = computed(() => {
     const basket = this.basket();
     return basket ? basket.items.length : 0;
@@ -53,12 +53,13 @@ export class BasketComponent {
       });
       modalRef.closed
         .pipe(
-          switchMap(() => this.basketService.sendBasket()),
+          switchMap(() => this.basketSenderService.sendBasket(this.basketService.basket())),
           takeUntilDestroyed(this.destroyRef)
         )
-        .subscribe(basketCreated =>
-          this.location.assign(`${environment.basket.url}/baskets/${basketCreated.reference}`)
-        );
+        .subscribe(basketCreated => {
+          this.basketService.clearBasket();
+          this.location.assign(`${environment.basket.url}/baskets/${basketCreated.reference}`);
+        });
     }
   }
 

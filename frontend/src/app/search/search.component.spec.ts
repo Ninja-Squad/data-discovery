@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { filter, map, Observable, of, ReplaySubject } from 'rxjs';
+import { filter, map, Observable, ReplaySubject } from 'rxjs';
 import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { SearchComponent } from './search.component';
@@ -70,7 +70,7 @@ describe('SearchComponent', () => {
   beforeEach(() => {
     basketService = createMock(BasketService);
     basketService.isEnabled.and.returnValue(true);
-    basketService.isAccessionInBasket.and.returnValue(of(false));
+    basketService.isAccessionInBasket.and.returnValue(false);
 
     modelSubject = new ReplaySubject<Model>();
     searchStateService = createMock(SearchStateService);

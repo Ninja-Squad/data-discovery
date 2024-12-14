@@ -7,7 +7,7 @@ import { DocumentsComponent } from './documents.component';
 import { toRareDocument, toSinglePage } from '../models/test-model-generators';
 import { DocumentModel } from '../models/document.model';
 import { BasketService } from '../urgi-common/basket/basket.service';
-import { of, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { SearchStateService } from '../search-state.service';
 import { Page } from '../models/page';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
@@ -33,16 +33,12 @@ class DocumentsComponentTester extends ComponentTester<DocumentsComponent> {
 }
 
 describe('DocumentsComponent', () => {
-  let basketService: jasmine.SpyObj<BasketService>;
+  let basketService: BasketService;
   let searchStateService: jasmine.SpyObj<SearchStateService>;
   let documentsSubject: ReplaySubject<Page<DocumentModel>>;
   let tester: DocumentsComponentTester;
 
   beforeEach(() => {
-    basketService = createMock(BasketService);
-    basketService.isEnabled.and.returnValue(true);
-    basketService.isAccessionInBasket.and.returnValue(of(false));
-
     documentsSubject = new ReplaySubject<Page<DocumentModel>>(1);
     searchStateService = createMock(SearchStateService);
     searchStateService.getDocuments.and.returnValue(documentsSubject);
@@ -52,10 +48,13 @@ describe('DocumentsComponent', () => {
       providers: [
         provideI18nTesting(),
         provideDisabledNgbAnimation(),
-        { provide: BasketService, useValue: basketService },
         { provide: SearchStateService, useValue: searchStateService }
       ]
     });
+
+    basketService = TestBed.inject(BasketService);
+    basketService.clearBasket();
+    spyOn(basketService, 'isEnabled').and.returnValue(true);
 
     tester = new DocumentsComponentTester();
   });

@@ -2,11 +2,13 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { Basket, BasketCreated, BasketItem, BasketService } from '../basket.service';
-import { of, Subject } from 'rxjs';
+import { BasketService } from '../basket.service';
 import { LOCATION } from '../../../location.service';
 import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../../../disable-animations';
+import { OrderableDocumentModel } from '../../../models/document.model';
+import { BasketCreated, BasketSenderService } from '../basket-sender.service';
+import { of } from 'rxjs';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -68,23 +70,25 @@ class BasketComponentTester extends ComponentTester<BasketComponent> {
 
 describe('BasketComponent', () => {
   let tester: BasketComponentTester;
-  let service: jasmine.SpyObj<BasketService>;
+  let service: BasketService;
+  let basketSenderService: jasmine.SpyObj<BasketSenderService>;
   let location: jasmine.SpyObj<Location>;
-  const basketEvents = new Subject<Basket>();
 
   beforeEach(() => {
-    service = createMock(BasketService);
-    service.isEnabled.and.returnValue(true);
-    service.getBasket.and.returnValue(basketEvents);
+    basketSenderService = createMock(BasketSenderService);
     location = jasmine.createSpyObj<Location>('Location', ['assign']);
     TestBed.configureTestingModule({
       providers: [
         provideI18nTesting(),
         provideDisabledNgbAnimation(),
-        { provide: BasketService, useValue: service },
+        { provide: BasketSenderService, useValue: basketSenderService },
         { provide: LOCATION, useValue: location }
       ]
     });
+
+    service = TestBed.inject(BasketService);
+    service.clearBasket();
+    spyOn(service, 'isEnabled').and.returnValue(true);
   });
 
   afterEach(() => {
@@ -109,7 +113,7 @@ describe('BasketComponent', () => {
     expect(tester.tooltip).toBeNull();
 
     // 1 item
-    basketEvents.next({ items: [{ accession: { identifier: 'rosa' } } as BasketItem] });
+    service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('1');
 
@@ -123,12 +127,7 @@ describe('BasketComponent', () => {
     tester.basketCounter.dispatchEventOfType('mouseleave');
 
     // several items
-    basketEvents.next({
-      items: [
-        { accession: { identifier: 'rosa' } } as BasketItem,
-        { accession: { identifier: 'rosa rosae' } } as BasketItem
-      ]
-    });
+    service.addToBasket({ identifier: 'rosa rosae', name: 'rosa rosae' } as OrderableDocumentModel);
     tester.detectChanges();
     expect(tester.basketCounter).toContainText('2');
 
@@ -143,9 +142,8 @@ describe('BasketComponent', () => {
   it('should open a summary modal on click', () => {
     tester = new BasketComponentTester();
     tester.detectChanges();
-    basketEvents.next({
-      items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
-    });
+
+    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as OrderableDocumentModel);
     tester.detectChanges();
     tester.basketCounter.click();
 
@@ -154,8 +152,6 @@ describe('BasketComponent', () => {
 
     // remove item from basket
     tester.removeItemFromBasket.click();
-    expect(service.removeFromBasket).toHaveBeenCalledWith('rosa');
-    basketEvents.next({ items: [] });
     tester.detectChanges();
     expect(tester.modalBody.textContent).not.toContain('Rosa');
     expect(tester.modalBody.textContent).toContain('No item');
@@ -165,17 +161,12 @@ describe('BasketComponent', () => {
   });
 
   it('should send the basket', fakeAsync(() => {
+    basketSenderService.sendBasket.and.returnValue(of({ reference: 'ABCDEFGH' } as BasketCreated));
+
     tester = new BasketComponentTester();
     tester.detectChanges();
     const reference = 'ABCDEFGH';
-    service.sendBasket.and.returnValue(
-      of({
-        reference
-      } as BasketCreated)
-    );
-    basketEvents.next({
-      items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
-    });
+    service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
     tester.detectChanges();
     expect(tester.eulaAgreementError).toBeNull();
     tester.basketCounter.click();
@@ -184,13 +175,16 @@ describe('BasketComponent', () => {
     tick(400); // to resolve the animation
     tester.detectChanges();
 
+    const basket = service.basket();
+
     // EULA agreement is required
     expect(tester.eulaAgreementError).not.toBeNull();
     // agree
     tester.eulaAgreement.click();
     tester.sendBasket.click();
     tick();
-    expect(service.sendBasket).toHaveBeenCalled();
+    expect(basketSenderService.sendBasket).toHaveBeenCalledWith(basket);
+    expect(service.basket().items.length).toBe(0);
 
     expect(tester.modalTitle).toBeNull();
     expect(location.assign).toHaveBeenCalledWith(
@@ -201,18 +195,17 @@ describe('BasketComponent', () => {
   it('should clear the basket', () => {
     tester = new BasketComponentTester();
     tester.detectChanges();
-    basketEvents.next({
-      items: [{ accession: { identifier: 'rosa', name: 'Rosa' } } as BasketItem]
-    });
+    service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
+
     tester.detectChanges();
     tester.basketCounter.click();
 
     tester.clearBasket.click();
-    expect(service.clearBasket).toHaveBeenCalled();
+    expect(service.basket().items.length).toBe(0);
   });
 
   it('should not display if the basket feature is disabled', () => {
-    service.isEnabled.and.returnValue(false);
+    (service.isEnabled as jasmine.Spy).and.returnValue(false);
     tester = new BasketComponentTester();
     tester.detectChanges();
     expect(tester.basketCounter).toBeNull();
