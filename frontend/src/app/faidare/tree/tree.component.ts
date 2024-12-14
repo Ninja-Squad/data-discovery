@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, OutputRef, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit, OutputRef, TemplateRef, input } from '@angular/core';
 import { InternalTree, InternalTreeNode, NodeInformation, TextAccessor, TreeNode, TreeService } from './tree.service';
 import { BehaviorSubject, distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -53,19 +53,26 @@ export class TreeComponent<P> implements OnInit {
   private filterSubject = new BehaviorSubject<string>('');
   private textAccessorSubject = new BehaviorSubject<TextAccessor<P>>(DEFAULT_TEXT_ACCESSOR);
 
-  @Input()
-  payloadTemplate?: TemplateRef<{ node: InternalTreeNode<P> }>;
+  readonly payloadTemplate = input<TemplateRef<{
+    node: InternalTreeNode<P>;
+}>>();
 
+  // TODO: Skipped for migration because:
+  //  Accessor inputs cannot be migrated as they are too complex.
   @Input()
   set rootNodes(rootNodes: Array<TreeNode<P>>) {
     this.rootNodesSubject.next(rootNodes);
   }
 
+  // TODO: Skipped for migration because:
+  //  Accessor inputs cannot be migrated as they are too complex.
   @Input()
   set filter(text: string | null | undefined) {
     this.filterSubject.next((text ?? '').trim().toLowerCase());
   }
 
+  // TODO: Skipped for migration because:
+  //  Accessor inputs cannot be migrated as they are too complex.
   @Input()
   set textAccessor(textAccessor: TextAccessor<P> | null) {
     this.textAccessorSubject.next(textAccessor ?? DEFAULT_TEXT_ACCESSOR);

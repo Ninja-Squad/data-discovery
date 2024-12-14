@@ -22,31 +22,31 @@
       <!-- title -->
       <!-- tooltip precising what is the number displayed -->
       <ng-template #tooltipContent>
-        <ng-container [ngPlural]="aggregation.buckets.length">
+        <ng-container [ngPlural]="aggregation().buckets.length">
           <ng-template ngPluralCase="=1">
             <span translate="large-aggregation.only-one-value"></span>&ngsp;
-            <i>{{ aggregation.name | aggregationName }}</i>
+            <i>{{ aggregation().name | aggregationName }}</i>
           </ng-template>
           <ng-template ngPluralCase="other">
             <span
               translate="large-aggregation.several-values"
-              [translateParams]="{ count: aggregation.buckets.length | number }"
+              [translateParams]="{ count: aggregation().buckets.length | number }"
             ></span
             >&ngsp;
-            <i>{{ aggregation.name | aggregationName }}</i>
+            <i>{{ aggregation().name | aggregationName }}</i>
           </ng-template>
         </ng-container>
       </ng-template>
       <h3 class="card-title">
-        {{ aggregation.name | aggregationName }}
+        {{ aggregation().name | aggregationName }}
         <small
           class="text-body-secondary ms-1"
           [ngbTooltip]="tooltipContent"
           placement="top"
           container="body"
-          >({{ aggregation.buckets.length | number }})</small
+          >({{ aggregation().buckets.length | number }})</small
         >
-        @if (aggregation.name === 'gl') {
+        @if (aggregation().name === 'gl') {
           <span
             class="ms-1 fa fa-question-circle-o icon-size"
             aria-hidden="true"
@@ -58,11 +58,11 @@
 
       <!-- values as pills and a typeahead to add them -->
       <div class="mb-2">
-        @for (key of selectedKeys; track key) {
+        @for (key of selectedKeys(); track key) {
           <span
             class="badge rounded-pill bg-secondary me-1"
             tabindex="0"
-            (keydown.backspace)="!disabled && removeKey(key)"
+            (keydown.backspace)="!disabled() && removeKey(key)"
           >
             <dd-document-count
               [name]="displayableKey(key)"
@@ -74,7 +74,7 @@
               type="button"
               class="btn btn-link"
               (click)="removeKey(key)"
-              [disabled]="disabled"
+              [disabled]="disabled()"
             >
               &times;
             </button>
@@ -90,16 +90,16 @@
         [resultTemplate]="resultTemplate"
         container="body"
         placeholder="{{ 'large-aggregation.filter-on' | translate }} {{
-          aggregation.name.toLowerCase() | aggregationName
+          aggregation().name.toLowerCase() | aggregationName
         }}..."
         (focus)="focus$.next($any($event.target).value)"
       />
 
-      @if (aggregation.name === 'annot') {
+      @if (aggregation().name === 'annot') {
         <div class="mt-2">
           <dd-descendants-checkbox
             (searchDescendantsChange)="onSearchDescendants($event)"
-            [searchDescendants]="searchDescendants"
+            [searchDescendants]="searchDescendants()"
           />
         </div>
       }

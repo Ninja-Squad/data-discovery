@@ -3,11 +3,23 @@ import { ComponentTester } from 'ngx-speculoos';
 
 import { GenericDocumentComponent } from './generic-document.component';
 import { toWheatisDocument } from '../../models/test-model-generators';
+import { Component, signal } from '@angular/core';
+import { GenericDocumentModel } from '../generic-document.model';
+
+@Component({
+  template: `@if (document(); as document) {
+    <dd-document [document]="document" />
+  }`,
+  imports: [GenericDocumentComponent]
+})
+class TestComponent {
+  document = signal<GenericDocumentModel | undefined>(undefined)
+}
 
 describe('DataDiscoveryDocumentComponent', () => {
-  class DataDiscoveryDocumentComponentTester extends ComponentTester<GenericDocumentComponent> {
+  class DataDiscoveryDocumentComponentTester extends ComponentTester<TestComponent> {
     constructor() {
-      super(GenericDocumentComponent);
+      super(TestComponent);
     }
 
     get title() {
@@ -51,7 +63,7 @@ describe('DataDiscoveryDocumentComponent', () => {
 
     // given a resource
     const resource = toWheatisDocument('Bacteria');
-    component.document = resource;
+    component.document.set(resource);
     tester.detectChanges();
 
     // then we should display it

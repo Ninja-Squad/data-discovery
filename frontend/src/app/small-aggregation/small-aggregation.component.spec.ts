@@ -302,7 +302,7 @@ describe('SmallAggregationComponent', () => {
     expect(tester.searchDescendants).not.toBeNull();
 
     // when the checkbox emits an event, then we propagate it
-    tester.searchDescendants.searchDescendantsChange.emit(true);
+    tester.searchDescendants.searchDescendants.set(true);
     expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
   });
 

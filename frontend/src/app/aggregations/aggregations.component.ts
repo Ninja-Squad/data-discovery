@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, input, model } from '@angular/core';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -21,13 +21,12 @@ import { environment } from '../../environments/environment';
     ]
 })
 export class AggregationsComponent {
-  @Input({ required: true }) aggregations: Array<Aggregation> | null | undefined;
-  @Input() selectedCriteria: Array<AggregationCriterion> = [];
-  @Input() loading = false;
+  readonly aggregations = input.required<Array<Aggregation> | null | undefined>();
+  readonly selectedCriteria = input<Array<AggregationCriterion>>([]);
+  readonly loading = input(false);
   readonly aggregationsChange = output<Array<AggregationCriterion>>();
-  readonly searchDescendantsChange = output<boolean>();
-  @Input() searchDescendants = false;
-  @Input() disabledAggregationName: string | null = null;
+  readonly searchDescendants = model(false);
+  readonly disabledAggregationName = input<string | null>(null);
 
   /**
    * Extracts the selected criteria for the aggregation.
@@ -36,8 +35,9 @@ export class AggregationsComponent {
    * Returns an empty array if there are no values for this criteria
    */
   selectedKeysForAggregation(name: string): Array<string> {
-    if (this.selectedCriteria.length) {
-      const matchingCriteria = this.selectedCriteria.find(criteria => criteria.name === name);
+    const selectedCriteria = this.selectedCriteria();
+    if (selectedCriteria.length) {
+      const matchingCriteria = selectedCriteria.find(criteria => criteria.name === name);
       if (matchingCriteria) {
         return matchingCriteria.values;
       }
@@ -52,7 +52,7 @@ export class AggregationsComponent {
    * then emits the updated criteria.
    */
   onAggregationChange(criterionChanged: AggregationCriterion): void {
-    const newSelectedCriteria = this.selectedCriteria.filter(
+    const newSelectedCriteria = this.selectedCriteria().filter(
       criterion => criterion.name !== criterionChanged.name
     );
     newSelectedCriteria.push(criterionChanged);
@@ -60,7 +60,6 @@ export class AggregationsComponent {
   }
 
   onSearchDescendantChange(event: boolean) {
-    this.searchDescendants = event;
-    this.searchDescendantsChange.emit(event);
+    this.searchDescendants.set(event);
   }
 }

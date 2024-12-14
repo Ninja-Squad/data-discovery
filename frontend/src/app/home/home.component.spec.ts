@@ -158,7 +158,7 @@ describe('HomeComponent', () => {
 
       expect(tester.pillarsComponent).toBeNull();
       expect(tester.aggregations).not.toBeNull();
-      expect(tester.aggregations.aggregations).toBe(aggregations);
+      expect(tester.aggregations.aggregations()).toBe(aggregations);
 
       tester.aggregations.aggregationsChange.emit([
         {

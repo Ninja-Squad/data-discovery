@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, output, inject, input } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -17,10 +17,10 @@ import { TranslateModule } from '@ngx-translate/core';
 export class FaidareOntologyAggregationComponent implements OnChanges {
   private modalService = inject(NgbModal);
 
-  @Input() aggregation!: Aggregation;
-  @Input() selectedKeys: Array<string> = [];
+  readonly aggregation = input.required<Aggregation>();
+  readonly selectedKeys = input<Array<string>>([]);
   readonly aggregationChange = output<AggregationCriterion>();
-  @Input() disabled = false;
+  readonly disabled = input(false);
 
   /**
    * The actual bucket length, which is the bucket length minus one if one of the bucket keys is the null value,
@@ -30,8 +30,8 @@ export class FaidareOntologyAggregationComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.aggregation) {
-      this.actualBucketLength = this.aggregation.buckets.length;
-      if (this.aggregation.buckets.some(bucket => bucket.key === NULL_VALUE)) {
+      this.actualBucketLength = this.aggregation().buckets.length;
+      if (this.aggregation().buckets.some(bucket => bucket.key === NULL_VALUE)) {
         this.actualBucketLength -= 1;
       }
     }
@@ -39,11 +39,11 @@ export class FaidareOntologyAggregationComponent implements OnChanges {
 
   openModal() {
     const modal = this.modalService.open(OntologyAggregationModalComponent, { size: 'xl' });
-    modal.componentInstance.prepare(this.aggregation, this.selectedKeys);
+    modal.componentInstance.prepare(this.aggregation(), this.selectedKeys());
     modal.result.then(
       (selectedVariableIds: Array<string>) => {
         const event: AggregationCriterion = {
-          name: this.aggregation.name,
+          name: this.aggregation().name,
           values: selectedVariableIds
         };
         this.aggregationChange.emit(event);

@@ -1,17 +1,17 @@
 <!-- Loading skeleton aka PleaseWaitWidget -->
 <div class="text-center">
-  <dd-loading-skeleton [loading]="loading" [aggregationStyle]="true" />
+  <dd-loading-skeleton [loading]="loading()" [aggregationStyle]="true" />
 </div>
-@if (aggregations?.length && !loading) {
+@if (aggregations()?.length && !loading()) {
   <div>
-    @for (aggregation of aggregations; track aggregation.name) {
+    @for (aggregation of aggregations(); track aggregation.name) {
       <div>
         @if (aggregation.type === 'ONTOLOGY') {
           <dd-ontology-aggregation
             [aggregation]="aggregation"
             [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
             (aggregationChange)="onAggregationChange($event)"
-            [disabled]="aggregation.name === disabledAggregationName"
+            [disabled]="aggregation.name === disabledAggregationName()"
           />
         } @else if (
           aggregation.type === 'SMALL' ||
@@ -21,9 +21,9 @@
             [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
             [aggregation]="aggregation"
             (aggregationChange)="onAggregationChange($event)"
-            [searchDescendants]="searchDescendants"
+            [searchDescendants]="searchDescendants()"
             (searchDescendantsChange)="onSearchDescendantChange($event)"
-            [disabled]="aggregation.name === disabledAggregationName"
+            [disabled]="aggregation.name === disabledAggregationName()"
           />
         } @else {
           <!-- we display an input with autocomplete if there are usually many options, like for the taxon,
@@ -32,9 +32,9 @@
             [selectedKeys]="selectedKeysForAggregation(aggregation.name)"
             [aggregation]="aggregation"
             (aggregationChange)="onAggregationChange($event)"
-            [searchDescendants]="searchDescendants"
+            [searchDescendants]="searchDescendants()"
             (searchDescendantsChange)="onSearchDescendantChange($event)"
-            [disabled]="aggregation.name === disabledAggregationName"
+            [disabled]="aggregation.name === disabledAggregationName()"
           />
         }
       </div>

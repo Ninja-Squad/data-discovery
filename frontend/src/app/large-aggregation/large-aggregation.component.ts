@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, output, inject, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnChanges,
+  output,
+  inject,
+  viewChild,
+  input,
+  model
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import {
@@ -43,16 +53,15 @@ const maxResultsDisplayed = 8;
 export class LargeAggregationComponent implements OnChanges {
   private translateService = inject(TranslateService);
 
-  @Input() selectedKeys: Array<string> = [];
+  readonly selectedKeys = model<Array<string>>([]);
 
-  @Input() aggregation!: Aggregation;
+  readonly aggregation = input.required<Aggregation>();
   // the component emits an event if the user adds or removes a criterion
   readonly aggregationChange = output<AggregationCriterion>();
 
-  @Input() searchDescendants = false;
-  readonly searchDescendantsChange = output<boolean>();
+  readonly searchDescendants = model(false);
 
-  @Input() disabled = false;
+  readonly disabled = input(false);
 
   readonly typeahead = viewChild<ElementRef<HTMLInputElement>>('typeahead');
 
@@ -64,11 +73,11 @@ export class LargeAggregationComponent implements OnChanges {
     return merge(text$, inputFocus$).pipe(
       distinctUntilChanged(),
       map(term => {
-        const allMatchingBuckets = this.aggregation.buckets
+        const allMatchingBuckets = this.aggregation().buckets
           // returns values not already selected
           .filter(
             bucket =>
-              !this.selectedKeys.includes(bucket.key) &&
+              !this.selectedKeys().includes(bucket.key) &&
               // and that contains the term, ignoring the case
               this.displayableKey(bucket.key).toLowerCase().includes(term.toString().toLowerCase())
           );
@@ -87,7 +96,7 @@ export class LargeAggregationComponent implements OnChanges {
   };
 
   ngOnChanges() {
-    if (this.disabled) {
+    if (this.disabled()) {
       this.criterion.disable({ emitEvent: false });
     } else {
       this.criterion.enable({ emitEvent: false });
@@ -95,16 +104,15 @@ export class LargeAggregationComponent implements OnChanges {
   }
 
   onSearchDescendants(event: boolean) {
-    this.searchDescendants = event;
-    this.searchDescendantsChange.emit(event);
+    this.searchDescendants.set(event);
   }
 
   removeKey(key: string) {
-    const newSelectedKeys = this.selectedKeys.filter(k => k !== key);
-    this.selectedKeys = newSelectedKeys;
+    const newSelectedKeys = this.selectedKeys().filter(k => k !== key);
+    this.selectedKeys.set(newSelectedKeys);
 
     this.aggregationChange.emit({
-      name: this.aggregation.name,
+      name: this.aggregation().name,
       values: newSelectedKeys
     });
   }
@@ -115,11 +123,11 @@ export class LargeAggregationComponent implements OnChanges {
     if (selected !== 'REFINE') {
       // the item field of the event contains the bucket
       // we push the selected key to our collection of keys
-      const newSelectedKeys = [...this.selectedKeys, event.item.key];
-      this.selectedKeys = newSelectedKeys;
+      const newSelectedKeys = [...this.selectedKeys(), event.item.key];
+      this.selectedKeys.set(newSelectedKeys);
       this.criterion.setValue('');
       this.aggregationChange.emit({
-        name: this.aggregation.name,
+        name: this.aggregation().name,
         values: newSelectedKeys
       });
     }
@@ -127,7 +135,7 @@ export class LargeAggregationComponent implements OnChanges {
   }
 
   documentCountForKey(key: string) {
-    return this.aggregation.buckets.find(bucket => bucket.key === key)?.documentCount ?? 0;
+    return this.aggregation().buckets.find(bucket => bucket.key === key)?.documentCount ?? 0;
   }
 
   displayableKey(key: string): string {
@@ -138,9 +146,10 @@ export class LargeAggregationComponent implements OnChanges {
    * The aggregation is hidden if there are no buckets or if the only bucket is the NULL_VALUE bucket
    */
   get hideAggregation() {
+    const aggregation = this.aggregation();
     return (
-      this.aggregation.buckets.length === 0 ||
-      (this.aggregation.buckets.length === 1 && this.aggregation.buckets[0].key === NULL_VALUE)
+      aggregation.buckets.length === 0 ||
+      (aggregation.buckets.length === 1 && aggregation.buckets[0].key === NULL_VALUE)
     );
   }
 }

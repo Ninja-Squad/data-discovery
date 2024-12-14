@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { OntologyNodeType } from '../../ontology.service';
 import { NgClass } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,5 +11,5 @@ import { TranslateModule } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OntologyNodeTypeComponent {
-  @Input() type!: OntologyNodeType;
+  readonly type = input.required<OntologyNodeType>();
 }

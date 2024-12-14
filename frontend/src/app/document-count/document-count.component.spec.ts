@@ -4,11 +4,23 @@ import { ComponentTester } from 'ngx-speculoos';
 import { DocumentCountComponent } from './document-count.component';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../disable-animations';
+import { Component, signal } from '@angular/core';
+
+@Component({
+  template: `<dd-document-count [count]="count()" [muted]="muted()" [name]="name()" [url]="url()" />`,
+  imports: [DocumentCountComponent]
+})
+class TestComponent {
+  count = signal(0);
+  muted = signal(false);
+  name = signal('');
+  url = signal('');
+}
 
 describe('DocumentCountComponent', () => {
-  class DocumentCountComponentTester extends ComponentTester<DocumentCountComponent> {
+  class DocumentCountComponentTester extends ComponentTester<TestComponent> {
     constructor() {
-      super(DocumentCountComponent);
+      super(TestComponent);
     }
 
     get name() {
@@ -38,8 +50,8 @@ describe('DocumentCountComponent', () => {
     // given a component with a name and count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
-    component.name = 'Biotope';
-    component.count = 1298;
+    component.name.set('Biotope');
+    component.count.set(1298);
 
     // when displaying it
     tester.detectChanges();
@@ -53,9 +65,9 @@ describe('DocumentCountComponent', () => {
     // given a component with a name, a url and a count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
-    component.name = 'Florilège';
-    component.count = 1298;
-    component.url = 'http://florilege.arcad-project.org/fr/collections';
+    component.name.set('Florilège');
+    component.count.set(1298);
+    component.url.set('http://florilege.arcad-project.org/fr/collections');
 
     // when displaying it
     tester.detectChanges();
@@ -71,9 +83,9 @@ describe('DocumentCountComponent', () => {
     // given a component with a name, a url and a count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
-    component.name = 'Florilège';
-    component.count = 1298;
-    component.url = 'http://florilege.arcad-project.org/fr/collections';
+    component.name.set('Florilège');
+    component.count.set(1298);
+    component.url.set('http://florilege.arcad-project.org/fr/collections');
 
     // when displaying it
     tester.detectChanges();
@@ -89,7 +101,7 @@ describe('DocumentCountComponent', () => {
     expect(tester.tooltip).toBeNull();
 
     // with only one document
-    component.count = 1;
+    component.count.set(1);
 
     // when displaying it again
     tester.detectChanges();

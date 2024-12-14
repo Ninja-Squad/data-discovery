@@ -44,6 +44,8 @@ export class RareDocumentComponent {
     );
   }
 
+  // TODO: Skipped for migration because:
+  //  Accessor inputs cannot be migrated as they are too complex.
   @Input()
   set document(document: RareDocumentModel) {
     this.documentSubject.next(document);

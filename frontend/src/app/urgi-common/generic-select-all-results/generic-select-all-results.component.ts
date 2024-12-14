@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { GenericDocumentModel } from '../generic-document.model';
 import { Page } from '../../models/page';
 
@@ -14,5 +14,5 @@ import { Page } from '../../models/page';
   styleUrl: './generic-select-all-results.component.scss'
 })
 export class GenericSelectAllResultsComponent {
-  @Input() documents!: Page<GenericDocumentModel>;
+  readonly documents = input.required<Page<GenericDocumentModel>>();
 }

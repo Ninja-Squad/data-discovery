@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { GenericDocumentModel } from '../generic-document.model';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
@@ -11,5 +11,5 @@ import { TruncatableDescriptionComponent } from '../../truncatable-description/t
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenericDocumentComponent {
-  @Input() document!: GenericDocumentModel;
+  readonly document = input.required<GenericDocumentModel>();
 }

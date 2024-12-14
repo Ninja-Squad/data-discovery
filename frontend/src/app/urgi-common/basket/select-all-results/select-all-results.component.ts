@@ -49,6 +49,8 @@ export class SelectAllResultsComponent {
     );
   }
 
+  // TODO: Skipped for migration because:
+  //  Accessor inputs cannot be migrated as they are too complex.
   @Input()
   set documents(documents: Page<OrderableDocumentModel> | null) {
     this.documentsSubject.next(documents?.content ?? []);

@@ -205,7 +205,7 @@ describe('SearchComponent', () => {
 
     it('should change search descendants', () => {
       const event = true;
-      tester.aggregationsComponent.searchDescendantsChange.emit(event);
+      tester.aggregationsComponent.searchDescendants.set(event);
       tester.detectChanges();
 
       expect(searchStateService.changeSearchDescendants).toHaveBeenCalledWith(event);

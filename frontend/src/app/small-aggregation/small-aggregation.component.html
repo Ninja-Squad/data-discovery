@@ -3,8 +3,8 @@
     <div class="card-body">
       <!-- title -->
       <h3 class="card-title" [class.text-body-secondary]="aggregationForm.disabled">
-        {{ aggregation.name | aggregationName }}
-        @if (aggregation.name === 'gl') {
+        {{ aggregation().name | aggregationName }}
+        @if (aggregation().name === 'gl') {
           <span
             class="ms-1 fa fa-question-circle-o icon-size"
             aria-hidden="true"
@@ -16,17 +16,17 @@
 
       <!-- values -->
       <form [formGroup]="aggregationForm">
-        @for (bucket of aggregation.buckets; track bucket) {
+        @for (bucket of aggregation().buckets; track bucket) {
           <div class="card-text">
             <div class="form-check">
               <input
                 class="form-check-input"
                 type="checkbox"
-                [id]="aggregation.name + bucket.key"
+                [id]="aggregation().name + bucket.key"
                 [formControlName]="bucket.key"
                 (change)="onChange()"
               />
-              <label class="form-check-label" [for]="aggregation.name + bucket.key">
+              <label class="form-check-label" [for]="aggregation().name + bucket.key">
                 <dd-document-count
                   [name]="displayableKey(bucket.key)"
                   [count]="bucket.documentCount"
@@ -37,11 +37,11 @@
         }
       </form>
 
-      @if (aggregation.name === 'annot') {
+      @if (aggregation().name === 'annot') {
         <div class="mt-2">
           <dd-descendants-checkbox
             (searchDescendantsChange)="onSearchDescendants($event)"
-            [searchDescendants]="searchDescendants"
+            [searchDescendants]="searchDescendants()"
           />
         </div>
       }

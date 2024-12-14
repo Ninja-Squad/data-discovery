@@ -1,11 +1,11 @@
 <div class="text-nowrap d-inline">
-  @if (node.hasVisibleChildren) {
+  @if (node().hasVisibleChildren) {
     <span
       class="expand fa fa-fw fa-chevron-right me-1"
       role="button"
       tabindex="0"
       (click)="toggleExpanded()"
-      [class.expanded]="node.expanded || node.expandedForced"
+      [class.expanded]="node().expanded || node().expandedForced"
     ></span>
   }
 
@@ -14,41 +14,41 @@
       #selection
       type="checkbox"
       class="form-check-input"
-      [indeterminate]="node.selectionState === 'INDETERMINATE'"
-      [checked]="node.selectionState === 'CHECKED'"
+      [indeterminate]="node().selectionState === 'INDETERMINATE'"
+      [checked]="node().selectionState === 'CHECKED'"
       (change)="toggleSelection(selection.checked)"
-      [id]="node.id"
+      [id]="node().id"
     />
-    <label [for]="node.id" class="form-check-label">
-      <span class="visually-hidden">{{ node.text }}</span>
+    <label [for]="node().id" class="form-check-label">
+      <span class="visually-hidden">{{ node().text }}</span>
     </label>
     <span
       class="node-payload"
-      [class.matching]="node.matchingFilter"
-      [class.highlighted]="node.id === highlightedNodeId"
+      [class.matching]="node().matchingFilter"
+      [class.highlighted]="node().id === highlightedNodeId()"
       role="button"
       tabindex="0"
       (click)="highlight()"
     >
-      @if (payloadTemplate) {
-        <ng-container *ngTemplateOutlet="payloadTemplate; context: { node: node }" />
+      @if (payloadTemplate()) {
+        <ng-container *ngTemplateOutlet="payloadTemplate(); context: { node: node() }" />
       } @else {
-        {{ node.text }}
+        {{ node().text }}
       }
     </span>
   </div>
 </div>
 
-@if (node.hasVisibleChildren && (node.expanded || node.expandedForced)) {
+@if (node().hasVisibleChildren && (node().expanded || node().expandedForced)) {
   <ul class="list-unstyled">
-    @for (childNode of node.children; track childNode.id) {
-      @if (!filtered || childNode.matchingFilter || childNode.hasVisibleChildren) {
+    @for (childNode of node().children; track childNode.id) {
+      @if (!filtered() || childNode.matchingFilter || childNode.hasVisibleChildren) {
         <li class="ms-4">
           <dd-node
             [node]="childNode"
-            [filtered]="filtered"
-            [highlightedNodeId]="highlightedNodeId"
-            [payloadTemplate]="payloadTemplate"
+            [filtered]="filtered()"
+            [highlightedNodeId]="highlightedNodeId()"
+            [payloadTemplate]="payloadTemplate()"
             [class.ms-4]="!childNode.hasVisibleChildren"
           />
         </li>

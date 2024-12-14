@@ -44,6 +44,8 @@ export class FaidareDocumentComponent {
     );
   }
 
+  // TODO: Skipped for migration because:
+  //  Accessor inputs cannot be migrated as they are too complex.
   @Input()
   set document(document: FaidareDocumentModel) {
     this.documentSubject.next(document);

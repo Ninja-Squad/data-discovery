@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, TemplateRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, inject, input } from '@angular/core';
 import { InternalTreeNode, TreeService } from '../tree.service';
 import { NgTemplateOutlet } from '@angular/common';
 
@@ -12,20 +12,23 @@ import { NgTemplateOutlet } from '@angular/common';
 export class NodeComponent<P> {
   private treeService = inject<TreeService<P>>(TreeService);
 
-  @Input() node!: InternalTreeNode<P>;
-  @Input() filtered = false;
-  @Input() highlightedNodeId: string | undefined;
-  @Input() payloadTemplate?: TemplateRef<{ node: InternalTreeNode<P> }>;
+  readonly node = input.required<InternalTreeNode<P>>();
+  readonly filtered = input(false);
+  readonly highlightedNodeId = input<string>();
+  readonly payloadTemplate = input<TemplateRef<{
+    node: InternalTreeNode<P>;
+}>>();
 
   toggleExpanded() {
-    this.treeService.toggleExpanded(this.node, !(this.node.expanded || this.node.expandedForced));
+    const node = this.node();
+    this.treeService.toggleExpanded(this.node(), !(node.expanded || node.expandedForced));
   }
 
   toggleSelection(checked: boolean) {
-    this.treeService.toggleSelection(this.node, checked);
+    this.treeService.toggleSelection(this.node(), checked);
   }
 
   highlight() {
-    this.treeService.highlight(this.node);
+    this.treeService.highlight(this.node());
   }
 }

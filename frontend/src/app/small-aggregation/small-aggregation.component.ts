@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnChanges, output, inject, input, model } from '@angular/core';
 import {
   FormControl,
   FormRecord,
@@ -33,13 +33,12 @@ export class SmallAggregationComponent implements OnChanges {
   private fb = inject(NonNullableFormBuilder);
   private translateService = inject(TranslateService);
 
-  @Input() aggregation!: Aggregation;
-  @Input() searchDescendants = false;
-  @Input() selectedKeys: Array<string> = [];
+  readonly aggregation = input.required<Aggregation>();
+  readonly searchDescendants = model(false);
+  readonly selectedKeys = input<Array<string>>([]);
   // the component emits an event if the user adds or remove a criterion
   readonly aggregationChange = output<AggregationCriterion>();
-  readonly searchDescendantsChange = output<boolean>();
-  @Input() disabled = false;
+  readonly disabled = input(false);
 
   aggregationForm = new FormRecord<FormControl<boolean>>({});
 
@@ -61,14 +60,14 @@ export class SmallAggregationComponent implements OnChanges {
 
   ngOnChanges(): void {
     // create as many form control as there are buckets
-    const buckets = this.aggregation.buckets;
+    const buckets = this.aggregation().buckets;
     buckets.forEach(bucket => {
       let control = this.aggregationForm.get(bucket.key) as FormControl<boolean>;
       if (!control) {
         control = this.fb.control(false);
         this.aggregationForm.addControl(bucket.key, control);
       }
-      control.setValue(this.selectedKeys.includes(bucket.key));
+      control.setValue(this.selectedKeys().includes(bucket.key));
     });
     Object.keys(this.aggregationForm.controls).forEach(key => {
       if (!buckets.find(bucket => bucket.key === key)) {
@@ -76,7 +75,7 @@ export class SmallAggregationComponent implements OnChanges {
       }
     });
 
-    if (this.disabled || this.aggregation.buckets.length <= 1) {
+    if (this.disabled() || this.aggregation().buckets.length <= 1) {
       this.aggregationForm.disable();
     } else {
       this.aggregationForm.enable();
@@ -88,14 +87,13 @@ export class SmallAggregationComponent implements OnChanges {
   }
 
   onSearchDescendants(event: boolean) {
-    this.searchDescendants = event;
-    this.searchDescendantsChange.emit(event);
+    this.searchDescendants.set(event);
   }
 
   onChange() {
     const values = SmallAggregationComponent.extractKeys(this.aggregationForm.value);
     const event: AggregationCriterion = {
-      name: this.aggregation.name,
+      name: this.aggregation().name,
       values
     };
     this.aggregationChange.emit(event);
@@ -105,9 +103,10 @@ export class SmallAggregationComponent implements OnChanges {
    * The aggregation is hidden if there are no buckets or if the only bucket is the NULL_VALUE bucket
    */
   get hideAggregation() {
+    const aggregation = this.aggregation();
     return (
-      this.aggregation.buckets.length === 0 ||
-      (this.aggregation.buckets.length === 1 && this.aggregation.buckets[0].key === NULL_VALUE)
+      aggregation.buckets.length === 0 ||
+      (aggregation.buckets.length === 1 && aggregation.buckets[0].key === NULL_VALUE)
     );
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 // Based ideas taken from https://codepen.io/Dreamdealer/pen/JyBdMX
 /*
@@ -25,9 +25,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 @Component({
     selector: 'dd-loading-skeleton',
     template: `
-    @if (loading) {
+    @if (loading()) {
       <div class="loading">
-        @if (aggregationStyle) {
+        @if (aggregationStyle()) {
           @for (aggregation of [1, 2, 3]; track aggregation) {
             <div class="card skeleton-loading-aggregation">
               <div class="skeleton-aggregation skeleton-animated-background"></div>
@@ -48,6 +48,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingSkeletonComponent {
-  @Input() loading = false;
-  @Input() aggregationStyle = false;
+  readonly loading = input(false);
+  readonly aggregationStyle = input(false);
 }

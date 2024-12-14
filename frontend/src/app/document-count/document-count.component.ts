@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgPlural, NgPluralCase, DecimalPipe } from '@angular/common';
@@ -11,8 +11,8 @@ import { NgPlural, NgPluralCase, DecimalPipe } from '@angular/common';
     imports: [NgPlural, NgPluralCase, TranslateModule, NgbTooltip, DecimalPipe]
 })
 export class DocumentCountComponent {
-  @Input() name = '';
-  @Input() url = '';
-  @Input() count = 0;
-  @Input() muted = true;
+  readonly name = input('');
+  readonly url = input('');
+  readonly count = input(0);
+  readonly muted = input(true);
 }

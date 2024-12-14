@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TypedNodeDetails } from '../ontology.model';
 
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeDetailsComponent {
-  @Input() node!: TypedNodeDetails;
+  readonly node = input.required<TypedNodeDetails>();
 
   isUrl(value: string) {
     return value.startsWith('http://') || value.startsWith('https://');

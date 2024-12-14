@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, input } from '@angular/core';
 import { Sort } from '../germplasm-results.component';
 import { SortCriterion } from '../../../search-state.service';
 
@@ -9,17 +9,18 @@ import { SortCriterion } from '../../../search-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SortableHeaderComponent {
-  @Input() sortable!: Sort;
-  @Input() criterion: SortCriterion | null = null;
+  readonly sortable = input.required<Sort>();
+  readonly criterion = input<SortCriterion | null>(null);
 
   readonly sorted = output<SortCriterion>();
 
   onSort(): void {
+    const criterion = this.criterion();
     this.sorted.emit({
-      sort: this.sortable,
+      sort: this.sortable(),
       direction:
-        this.sortable === this.criterion?.sort
-          ? this.criterion.direction === 'desc'
+        this.sortable() === criterion?.sort
+          ? criterion.direction === 'desc'
             ? 'asc'
             : 'desc'
           : 'asc'

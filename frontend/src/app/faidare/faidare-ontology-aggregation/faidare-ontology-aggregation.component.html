@@ -30,20 +30,20 @@
         </small>
       </h3>
 
-      @if (selectedKeys.length === 0) {
+      @if (selectedKeys().length === 0) {
         <p translate="faidare.faidare-ontology-aggregation.no-selected-variable"></p>
-      } @else if (selectedKeys.length === 1) {
+      } @else if (selectedKeys().length === 1) {
         <p translate="faidare.faidare-ontology-aggregation.one-selected-variable"></p>
       } @else {
         <p
           translate="faidare.faidare-ontology-aggregation.selected-variables"
-          [translateParams]="{ count: selectedKeys.length | number }"
+          [translateParams]="{ count: selectedKeys().length | number }"
         ></p>
       }
       <button
         type="button"
         class="btn btn-sm btn-outline-dark"
-        [disabled]="aggregation.buckets.length === 1 || disabled"
+        [disabled]="aggregation().buckets.length === 1 || disabled()"
         (click)="openModal()"
         translate="faidare.faidare-ontology-aggregation.modify-selection"
       ></button>

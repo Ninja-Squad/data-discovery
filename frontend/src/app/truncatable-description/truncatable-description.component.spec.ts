@@ -3,11 +3,20 @@ import { ComponentTester } from 'ngx-speculoos';
 
 import { TruncatableDescriptionComponent } from './truncatable-description.component';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { Component, signal } from '@angular/core';
+
+@Component({
+  template: `<dd-truncatable-description [description]="description()"/>`,
+  imports: [TruncatableDescriptionComponent]
+})
+class TestComponent {
+  description = signal('');
+}
 
 describe('TruncatableDescriptionComponent', () => {
-  class TruncatableDescriptionComponentTester extends ComponentTester<TruncatableDescriptionComponent> {
+  class TruncatableDescriptionComponentTester extends ComponentTester<TestComponent> {
     constructor() {
-      super(TruncatableDescriptionComponent);
+      super(TestComponent);
     }
 
     get description() {
@@ -34,7 +43,7 @@ describe('TruncatableDescriptionComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource with a long description
-    component.description = Array(200).fill('aaa').join(' ');
+    component.description.set(Array(200).fill('aaa').join(' '));
     tester.detectChanges();
 
     // then we should truncate it
@@ -49,7 +58,7 @@ describe('TruncatableDescriptionComponent', () => {
 
     // then we should display the full description
     expect(tester.fullDescription).not.toBeNull();
-    expect(tester.fullDescription).toContainText(component.description);
+    expect(tester.fullDescription).toContainText(component.description());
     expect(tester.shortDescriptionButton).not.toBeNull();
     expect(tester.shortDescriptionButton).toContainText('Hide');
     expect(tester.description).toBeNull();
@@ -62,7 +71,7 @@ describe('TruncatableDescriptionComponent', () => {
 
     // given a resource with a long highlighted description
     const description = 'Hello <em>world</em>! The <em>world</em> is&nbsp;beautiful.';
-    component.description = description + ' ' + Array(200).fill('aaa').join(' ');
+    component.description.set(description + ' ' + Array(200).fill('aaa').join(' '));
     tester.detectChanges();
 
     // it should highlight the short description

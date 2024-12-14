@@ -1,4 +1,4 @@
-import { Component, Input, output } from '@angular/core';
+import { Component, output, input } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 
@@ -12,8 +12,8 @@ import { AggregationCriterion } from '../../models/aggregation-criterion';
   styleUrl: './generic-ontology-aggregation.component.scss'
 })
 export class GenericOntologyAggregationComponent {
-  @Input() aggregation!: Aggregation;
+  readonly aggregation = input.required<Aggregation>();
   readonly aggregationChange = output<AggregationCriterion>();
-  @Input() selectedKeys: Array<string> = [];
-  @Input() disabled = false;
+  readonly selectedKeys = input<Array<string>>([]);
+  readonly disabled = input(false);
 }

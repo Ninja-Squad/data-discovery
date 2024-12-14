@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input } from '@angular/core';
 import { HighlightService } from '../highlight.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class TruncatableDescriptionComponent implements OnInit {
   private highlightService = inject(HighlightService);
 
-  @Input() description = '';
+  readonly description = input('');
 
   descriptionCollapsed = true;
 
@@ -23,6 +23,6 @@ export class TruncatableDescriptionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.truncatedDescription = this.highlightService.truncate(this.description, 256, 100);
+    this.truncatedDescription = this.highlightService.truncate(this.description(), 256, 100);
   }
 }

@@ -85,18 +85,19 @@ describe('AggregationsComponent', () => {
 
   it('should extract the selected criteria for the aggregation', () => {
     const tester = new TestComponentTester();
-    const component = tester.aggregationComponent;
+    const component = tester.componentInstance;
     component.selectedCriteria = [
       { name: 'coo', values: ['France', 'Italy'] },
       { name: 'domain', values: ['Plant'] }
     ];
-    const cooCriteria = component.selectedKeysForAggregation('coo');
+    tester.detectChanges();
+    const cooCriteria = tester.aggregationComponent.selectedKeysForAggregation('coo');
     expect(cooCriteria).toEqual(['France', 'Italy']);
 
-    const domainCriteria = component.selectedKeysForAggregation('domain');
+    const domainCriteria = tester.aggregationComponent.selectedKeysForAggregation('domain');
     expect(domainCriteria).toEqual(['Plant']);
 
-    const unknownCriteria = component.selectedKeysForAggregation('unknown');
+    const unknownCriteria = tester.aggregationComponent.selectedKeysForAggregation('unknown');
     expect(unknownCriteria).toEqual([]);
   });
 
@@ -113,11 +114,11 @@ describe('AggregationsComponent', () => {
     // then it should display each aggregation
     expect(tester.smallAggregations.length).toBe(2);
     const aggregation1 = tester.smallAggregations[0];
-    expect(aggregation1.aggregation).toBe(domain);
-    expect(aggregation1.selectedKeys).toEqual([]);
+    expect(aggregation1.aggregation()).toBe(domain);
+    expect(aggregation1.selectedKeys()).toEqual([]);
     const aggregation2 = tester.smallAggregations[1];
-    expect(aggregation2.aggregation).toBe(coo);
-    expect(aggregation2.selectedKeys).toEqual(['France']);
+    expect(aggregation2.aggregation()).toBe(coo);
+    expect(aggregation2.selectedKeys()).toEqual(['France']);
   });
 
   it('should display aggregations of different types', () => {
@@ -146,13 +147,13 @@ describe('AggregationsComponent', () => {
     // then it should display an aggregation of each type
     expect(tester.smallAggregations.length).toBe(1);
     const small = tester.smallAggregations[0];
-    expect(small.aggregation).toBe(domain);
-    expect(small.selectedKeys).toEqual([]);
+    expect(small.aggregation()).toBe(domain);
+    expect(small.selectedKeys()).toEqual([]);
 
     expect(tester.largeAggregations.length).toBe(1);
     const large = tester.largeAggregations[0];
-    expect(large.aggregation).toBe(coo);
-    expect(large.selectedKeys).toEqual(['France']);
+    expect(large.aggregation()).toBe(coo);
+    expect(large.selectedKeys()).toEqual(['France']);
   });
 
   it('should display a small aggregation for a large one with few results', () => {
@@ -170,11 +171,11 @@ describe('AggregationsComponent', () => {
     // then it should display 2 small aggregations
     expect(tester.smallAggregations.length).toBe(2);
     const small = tester.smallAggregations[0];
-    expect(small.aggregation).toBe(domain);
-    expect(small.selectedKeys).toEqual([]);
+    expect(small.aggregation()).toBe(domain);
+    expect(small.selectedKeys()).toEqual([]);
     const largeAsSmall = tester.smallAggregations[1];
-    expect(largeAsSmall.aggregation).toBe(coo);
-    expect(largeAsSmall.selectedKeys).toEqual(['France']);
+    expect(largeAsSmall.aggregation()).toBe(coo);
+    expect(largeAsSmall.selectedKeys()).toEqual(['France']);
   });
 
   it('should emit change when a criterion changes', () => {
@@ -255,7 +256,7 @@ describe('AggregationsComponent', () => {
 
     // when an event is emitted by an aggregation
     const searchDescendants = tester.searchDescendants;
-    searchDescendants.searchDescendantsChange.emit(true);
+    searchDescendants.searchDescendants.set(true);
     tester.detectChanges();
 
     expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
@@ -287,7 +288,7 @@ describe('AggregationsComponent', () => {
     expect(tester.largeAggregations.length).toBe(1);
 
     // when an event is emitted by an aggregation
-    tester.searchDescendants.searchDescendantsChange.emit(true);
+    tester.searchDescendants.searchDescendants.set(true);
     tester.detectChanges();
 
     expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();

@@ -1,19 +1,19 @@
 <div>
   <h3>
-    <a class="main-link name" [href]="document.url" target="_blank">
-      {{ document.name }}
+    <a class="main-link name" [href]="document().url" target="_blank">
+      {{ document().name }}
     </a>
-    <small> - {{ document.databaseName }}</small>
+    <small> - {{ document().databaseName }}</small>
   </h3>
   <div>
-    <span class="type me-4">{{ document.entryType }}</span>
+    <span class="type me-4">{{ document().entryType }}</span>
     <span class="species me-4">
-      @for (s of document.species; track $index) {
+      @for (s of document().species; track $index) {
         <span class="badge bg-secondary me-2">{{ s }}</span>
       }
     </span>
   </div>
   <div>
-    <dd-truncatable-description [description]="document.description" />
+    <dd-truncatable-description [description]="document().description" />
   </div>
 </div>

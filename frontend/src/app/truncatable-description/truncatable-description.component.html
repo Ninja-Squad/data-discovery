@@ -1,7 +1,7 @@
 @if (descriptionCollapsed) {
   <div class="description">
     <span class="highlight" [innerHTML]="truncatedDescription"></span>
-    @if (truncatedDescription !== description) {
+    @if (truncatedDescription !== description()) {
       <button
         class="btn btn-link btn-inline"
         (click)="toggleDescription()"
@@ -17,7 +17,7 @@
       translate="truncatable-description.hide"
     ></button>
     <br />
-    <span class="highlight" [innerHTML]="description"></span>
+    <span class="highlight" [innerHTML]="description()"></span>
     <button
       class="btn btn-link btn-inline"
       (click)="toggleDescription()"
