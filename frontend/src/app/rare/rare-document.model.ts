@@ -9,7 +9,7 @@ export interface RareDocumentModel extends OrderableDocumentModel {
   pillarName: string;
   databaseSource: string;
   portalURL: string;
-  dataURL: string;
+  dataURL: string | null;
   domain: string;
   taxon: Array<string>;
   family: Array<string>;

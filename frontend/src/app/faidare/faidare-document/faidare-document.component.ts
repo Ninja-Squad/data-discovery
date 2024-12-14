@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 interface ViewModel {
   document: FaidareDocumentModel;
@@ -23,11 +24,12 @@ interface ViewModel {
 export class FaidareDocumentComponent {
   private basketService = inject(BasketService);
 
-  private documentSubject = new ReplaySubject<FaidareDocumentModel>();
-  vm$: Observable<ViewModel>;
+  readonly document = input.required<FaidareDocumentModel>();
+
+  readonly vm$: Observable<ViewModel>;
 
   constructor() {
-    this.vm$ = this.documentSubject.pipe(
+    this.vm$ = toObservable(this.document).pipe(
       switchMap(document => {
         const isBasketEnabled = this.basketService.isEnabled();
         const selectedForOrdering$ = isBasketEnabled
@@ -42,13 +44,6 @@ export class FaidareDocumentComponent {
         );
       })
     );
-  }
-
-  // TODO: Skipped for migration because:
-  //  Accessor inputs cannot be migrated as they are too complex.
-  @Input()
-  set document(document: FaidareDocumentModel) {
-    this.documentSubject.next(document);
   }
 
   addToBasket(document: FaidareDocumentModel) {

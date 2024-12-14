@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 interface ViewModel {
   document: RareDocumentModel;
@@ -23,11 +24,11 @@ interface ViewModel {
 export class RareDocumentComponent {
   private basketService = inject(BasketService);
 
-  private documentSubject = new ReplaySubject<RareDocumentModel>();
-  vm$: Observable<ViewModel>;
+  readonly document = input.required<RareDocumentModel>();
+  readonly vm$: Observable<ViewModel>;
 
   constructor() {
-    this.vm$ = this.documentSubject.pipe(
+    this.vm$ = toObservable(this.document).pipe(
       switchMap(document => {
         const isBasketEnabled = this.basketService.isEnabled();
         const selectedForOrdering$ = isBasketEnabled
@@ -42,13 +43,6 @@ export class RareDocumentComponent {
         );
       })
     );
-  }
-
-  // TODO: Skipped for migration because:
-  //  Accessor inputs cannot be migrated as they are too complex.
-  @Input()
-  set document(document: RareDocumentModel) {
-    this.documentSubject.next(document);
   }
 
   addToBasket(document: RareDocumentModel) {

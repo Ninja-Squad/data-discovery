@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, OutputRef, TemplateRef, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OutputRef, TemplateRef } from '@angular/core';
 import { InternalTree, InternalTreeNode, NodeInformation, TextAccessor, TreeNode, TreeService } from './tree.service';
-import { BehaviorSubject, distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NodeComponent } from './node/node.component';
-import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
 
 interface BaseAction {
   type: 'FILTER' | 'CHANGE_TEXT';
@@ -44,39 +44,21 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provide
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'tree'
 })
-export class TreeComponent<P> implements OnInit {
+export class TreeComponent<P> {
   private treeService = inject(TreeService)
 
   tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
 
-  private rootNodesSubject = new BehaviorSubject<Array<TreeNode<P>>>([]);
-  private filterSubject = new BehaviorSubject<string>('');
-  private textAccessorSubject = new BehaviorSubject<TextAccessor<P>>(DEFAULT_TEXT_ACCESSOR);
-
   readonly payloadTemplate = input<TemplateRef<{
     node: InternalTreeNode<P>;
-}>>();
+  }>>();
 
-  // TODO: Skipped for migration because:
-  //  Accessor inputs cannot be migrated as they are too complex.
-  @Input()
-  set rootNodes(rootNodes: Array<TreeNode<P>>) {
-    this.rootNodesSubject.next(rootNodes);
-  }
+  rootNodes = input.required<Array<TreeNode<P>>>();
+  filter = input.required<string | null | undefined>();
+  textAccessor = input.required<TextAccessor<P> | null>();
 
-  // TODO: Skipped for migration because:
-  //  Accessor inputs cannot be migrated as they are too complex.
-  @Input()
-  set filter(text: string | null | undefined) {
-    this.filterSubject.next((text ?? '').trim().toLowerCase());
-  }
-
-  // TODO: Skipped for migration because:
-  //  Accessor inputs cannot be migrated as they are too complex.
-  @Input()
-  set textAccessor(textAccessor: TextAccessor<P> | null) {
-    this.textAccessorSubject.next(textAccessor ?? DEFAULT_TEXT_ACCESSOR);
-  }
+  sanitizedFilter = computed(() => (this.filter() ?? '').trim().toLowerCase());
+  sanitizedTextAccessor = computed(() => this.textAccessor() ?? DEFAULT_TEXT_ACCESSOR);
 
   highlightedNode: OutputRef<NodeInformation<P> | undefined> = outputFromObservable(
     this.tree$.pipe(
@@ -96,22 +78,21 @@ export class TreeComponent<P> implements OnInit {
     this.treeService.selectedNodesChanges()
   );
 
-  ngOnInit(): void {
-    const filterActions$: Observable<FilterAction> = this.filterSubject.pipe(
-      distinctUntilChanged(),
+  constructor() {
+    const filterActions$: Observable<FilterAction> = toObservable(this.sanitizedFilter).pipe(
       map(filter => ({ type: 'FILTER', filter }))
     );
 
-    const changeTextActions$: Observable<ChangeTextAction<P>> = this.textAccessorSubject.pipe(
+    const changeTextActions$: Observable<ChangeTextAction<P>> = toObservable(this.sanitizedTextAccessor).pipe(
       skip(1),
       map(textAccessor => ({ type: 'CHANGE_TEXT', textAccessor }))
     );
 
     const actions$: Observable<Action<P>> = merge(filterActions$, changeTextActions$);
 
-    this.rootNodesSubject
+    toObservable(this.rootNodes)
       .pipe(
-        tap(rootNodes => this.treeService.initialize(rootNodes, this.textAccessorSubject.value)),
+        tap(rootNodes => this.treeService.initialize(rootNodes, this.sanitizedTextAccessor())),
         switchMap(() => actions$),
         tap(action => {
           switch (action.type) {

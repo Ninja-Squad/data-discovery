@@ -6,10 +6,20 @@ import { toFaidareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { BehaviorSubject } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { Component, signal } from '@angular/core';
+import { FaidareDocumentModel } from '../faidare-document.model';
 
-class FaidareDocumentComponentTester extends ComponentTester<FaidareDocumentComponent> {
+@Component({
+  template: '<dd-document [document]="document()" />',
+  imports: [FaidareDocumentComponent]
+})
+class TestComponent {
+  document = signal<FaidareDocumentModel>(toFaidareDocument('Bacteria'));
+}
+
+class FaidareDocumentComponentTester extends ComponentTester<TestComponent> {
   constructor() {
-    super(FaidareDocumentComponent);
+    super(TestComponent);
   }
 
   get title() {
@@ -76,8 +86,7 @@ describe('FaidareDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toFaidareDocument('Bacteria');
-    component.document = resource;
+    const resource = tester.componentInstance.document();
     tester.detectChanges();
 
     // then we should display it
@@ -102,7 +111,6 @@ describe('FaidareDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    component.document = toFaidareDocument('Bacteria');
     tester.detectChanges();
     // then the button should not be displayed
     expect(tester.addToBasketButton).toBeNull();
@@ -113,8 +121,6 @@ describe('FaidareDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toFaidareDocument('Bacteria');
-    component.document = resource;
     tester.detectChanges();
 
     // when hovering the add to basket button
@@ -127,7 +133,7 @@ describe('FaidareDocumentComponent', () => {
     tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
-    expect(basketService.addToBasket).toHaveBeenCalledWith(resource);
+    expect(basketService.addToBasket).toHaveBeenCalledWith(component.document());
     basketEvents.next(true);
     tester.detectChanges();
 
@@ -147,7 +153,7 @@ describe('FaidareDocumentComponent', () => {
     tester.detectChanges();
 
     // then we should have removed the item to the basket
-    expect(basketService.removeFromBasket).toHaveBeenCalledWith(resource.identifier);
+    expect(basketService.removeFromBasket).toHaveBeenCalledWith(component.document().identifier);
 
     // we switched back the button
     expect(tester.removeFromBasketButton).toBeNull();

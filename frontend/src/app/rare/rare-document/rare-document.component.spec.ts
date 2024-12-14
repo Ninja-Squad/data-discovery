@@ -2,14 +2,26 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { RareDocumentComponent } from './rare-document.component';
-import { toRareDocument } from '../../models/test-model-generators';
+import { toFaidareDocument, toRareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { BehaviorSubject } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { Component, signal } from '@angular/core';
+import { FaidareDocumentComponent } from '../../faidare/faidare-document/faidare-document.component';
+import { FaidareDocumentModel } from '../../faidare/faidare-document.model';
+import { RareDocumentModel } from '../rare-document.model';
 
-class RareDocumentComponentTester extends ComponentTester<RareDocumentComponent> {
+@Component({
+  template: '<dd-document [document]="document()" />',
+  imports: [RareDocumentComponent]
+})
+class TestComponent {
+  document = signal<RareDocumentModel>(toRareDocument('Bacteria'));
+}
+
+class RareDocumentComponentTester extends ComponentTester<TestComponent> {
   constructor() {
-    super(RareDocumentComponent);
+    super(TestComponent);
   }
 
   get title() {
@@ -80,8 +92,7 @@ describe('RareDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toRareDocument('Bacteria');
-    component.document = resource;
+    const resource = component.document();
     tester.detectChanges();
 
     // then we should display it
@@ -110,7 +121,7 @@ describe('RareDocumentComponent', () => {
     // given a resource with no data url
     const resource = toRareDocument('Bacteria');
     resource.dataURL = null;
-    component.document = resource;
+    component.document.set(resource);
     tester.detectChanges();
 
     // then we should link to portal url
@@ -124,7 +135,7 @@ describe('RareDocumentComponent', () => {
     // given a resource with several types
     const resource = toRareDocument('Bacteria');
     resource.materialType = ['type1', 'type2'];
-    component.document = resource;
+    component.document.set(resource);
     tester.detectChanges();
 
     // then we should list them
@@ -137,7 +148,6 @@ describe('RareDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    component.document = toRareDocument('Bacteria');
     tester.detectChanges();
     // then the button should not be displayed
     expect(tester.addToBasketButton).toBeNull();
@@ -148,8 +158,6 @@ describe('RareDocumentComponent', () => {
     const component = tester.componentInstance;
 
     // given a resource
-    const resource = toRareDocument('Bacteria');
-    component.document = resource;
     tester.detectChanges();
 
     // when hovering the add to basket button
@@ -162,7 +170,7 @@ describe('RareDocumentComponent', () => {
     tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
-    expect(basketService.addToBasket).toHaveBeenCalledWith(resource);
+    expect(basketService.addToBasket).toHaveBeenCalledWith(component.document());
     basketEvents.next(true);
     tester.detectChanges();
 
@@ -182,7 +190,7 @@ describe('RareDocumentComponent', () => {
     tester.detectChanges();
 
     // then we should have removed the item to the basket
-    expect(basketService.removeFromBasket).toHaveBeenCalledWith(resource.identifier);
+    expect(basketService.removeFromBasket).toHaveBeenCalledWith(component.document().identifier);
 
     // we switched back the button
     expect(tester.removeFromBasketButton).toBeNull();
