@@ -42,11 +42,16 @@ describe('ErrorComponent', () => {
     const errorInterceptorService = TestBed.inject(ErrorInterceptorService);
     spyOn(errorInterceptorService, 'getErrors').and.returnValue(httpErrors);
 
+    jasmine.clock().install();
+
     tester = new ErrorComponentTester();
     tester.detectChanges();
   });
 
+  afterEach(() => jasmine.clock().uninstall());
+
   it('should not display any error initially', () => {
+    jasmine.clock().tick(1);
     expect(tester.error).toBeNull();
   });
 
@@ -55,6 +60,7 @@ describe('ErrorComponent', () => {
       status: 500,
       message: 'Oulala'
     });
+    jasmine.clock().tick(1);
     tester.detectChanges();
 
     expect(tester.error).toContainText('Unexpected error occurred.');
@@ -65,6 +71,7 @@ describe('ErrorComponent', () => {
       status: null,
       message: null
     });
+    jasmine.clock().tick(1);
     tester.detectChanges();
 
     expect(tester.error).toContainText('Unexpected error occurred.');
@@ -72,10 +79,12 @@ describe('ErrorComponent', () => {
     expect(tester.message).toBeNull();
 
     routerEvents.next(new NavigationStart(1, 'foo', null));
+    jasmine.clock().tick(1);
     tester.detectChanges();
     expect(tester.error).not.toBeNull();
 
     routerEvents.next(new NavigationEnd(1, 'foo', null));
+    jasmine.clock().tick(1);
     tester.detectChanges();
     expect(tester.error).toBeNull();
   });

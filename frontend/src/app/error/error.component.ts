@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
-import { filter, map, merge } from 'rxjs';
+import { delay, filter, map, merge } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -23,6 +23,9 @@ export class ErrorComponent {
         filter(event => event instanceof NavigationEnd),
         map(() => undefined)
       )
+    ).pipe(
+      // add delay to properly show errors caused by toSignal
+      delay<HttpError | undefined>(1)
     )
   );
 }
