@@ -262,7 +262,7 @@ describe('LargeAggregationComponent', () => {
     expect(tester.inputField).toHaveValue('');
 
     // the focus is given back to the input
-    expect(tester.element(':focus')).toEqual(tester.inputField);
+    expect(document.activeElement).toBe(tester.inputField.nativeElement);
 
     // and a pill should appear
     expect(tester.pills.length).toBe(1);
@@ -288,7 +288,7 @@ describe('LargeAggregationComponent', () => {
     });
 
     // the focus is given back to the input
-    expect(tester.element(':focus')).toEqual(tester.inputField);
+    expect(document.activeElement).toBe(tester.inputField.nativeElement);
 
     // and another pill should appear
     expect(tester.pills.length).toBe(2);
@@ -345,7 +345,7 @@ describe('LargeAggregationComponent', () => {
     expect(tester.inputField).toHaveValue('a');
 
     // the focus is given back to the input
-    expect(tester.element(':focus')).toEqual(tester.inputField);
+    expect(document.activeElement).toBe(tester.inputField.nativeElement);
 
     // and a pill should not appear
     expect(tester.pills.length).toBe(0);
