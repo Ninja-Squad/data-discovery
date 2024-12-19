@@ -86,7 +86,7 @@ describe('FaidareDocumentListComponent', () => {
     tester = new FaidareDocumentListComponentTester();
   });
 
-  it('should list documents if no germplasm', () => {
+  it('should list documents if no germplasm', async () => {
     const model: Model = {
       documents: toSinglePage<DocumentModel>([
         {
@@ -102,14 +102,14 @@ describe('FaidareDocumentListComponent', () => {
       }
     } as Model;
     modelSubject.next(model);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.documents.length).toBe(1);
     // no germplasm tab
     expect(tester.tabs.length).toBe(0);
   });
 
-  it('should list documents in a germplasm tab if there is a germplasm document', () => {
+  it('should list documents in a germplasm tab if there is a germplasm document', async () => {
     // given one entry aggregation, with one document of type germplasm
     const entry: Aggregation = {
       name: 'entry',
@@ -131,7 +131,7 @@ describe('FaidareDocumentListComponent', () => {
       }
     } as Model;
     modelSubject.next(model);
-    tester.detectChanges();
+    await tester.stable();
 
     // then we have a germplasm tab
     expect(tester.tabs.length).toBe(2);
@@ -142,7 +142,7 @@ describe('FaidareDocumentListComponent', () => {
     expect(tester.germplasmResults).toBeNull();
     expect(searchStateService.disableAggregation).toHaveBeenCalledWith(null);
 
-    tester.secondTab.click();
+    await tester.secondTab.click();
     expect(tester.documents.length).toBe(0);
     expect(tester.germplasmResults).toBeNull();
     expect(searchStateService.applyTransition).toHaveBeenCalledWith(toGermplasmTransition);
@@ -153,12 +153,12 @@ describe('FaidareDocumentListComponent', () => {
         fragment: 'germplasm'
       }
     } as Model);
-    tester.detectChanges();
+    await tester.stable();
 
     searchStateService.applyTransition.calls.reset();
     expect(tester.germplasmResults).not.toBeNull();
 
-    tester.firstTab.click();
+    await tester.firstTab.click();
     expect(tester.germplasmResults).toBeNull();
     expect(tester.documents.length).toBe(0);
     expect(searchStateService.applyTransition).toHaveBeenCalledWith(toAllTransition);
@@ -169,12 +169,12 @@ describe('FaidareDocumentListComponent', () => {
         fragment: 'all'
       }
     } as Model);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.documents.length).toBe(1);
   });
 
-  it('should transition to all', () => {
+  it('should transition to all', async () => {
     const criteria: SearchCriteria = {
       fragment: 'germplasm',
       page: 2,

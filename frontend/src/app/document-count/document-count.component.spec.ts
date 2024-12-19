@@ -4,7 +4,7 @@ import { ComponentTester } from 'ngx-speculoos';
 import { DocumentCountComponent } from './document-count.component';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../disable-animations';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 @Component({
   template: `<dd-document-count
@@ -13,7 +13,8 @@ import { Component, signal } from '@angular/core';
     [name]="name()"
     [url]="url()"
   />`,
-  imports: [DocumentCountComponent]
+  imports: [DocumentCountComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   count = signal(0);
@@ -51,7 +52,7 @@ describe('DocumentCountComponent', () => {
     });
   });
 
-  it('should display a name and a count', () => {
+  it('should display a name and a count', async () => {
     // given a component with a name and count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
@@ -59,14 +60,14 @@ describe('DocumentCountComponent', () => {
     component.count.set(1298);
 
     // when displaying it
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should have the name and the count properly formatted
     expect(tester.name).toHaveText('Biotope');
     expect(tester.count).toHaveText('[1,298]');
   });
 
-  it('should display a link that opens in a new tab if it is possible and a count', () => {
+  it('should display a link that opens in a new tab if it is possible and a count', async () => {
     // given a component with a name, a url and a count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
@@ -75,7 +76,7 @@ describe('DocumentCountComponent', () => {
     component.url.set('http://florilege.arcad-project.org/fr/collections');
 
     // when displaying it
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should have the name in a link and the count properly formatted
     expect(tester.link).toHaveText('Florilège');
@@ -84,7 +85,7 @@ describe('DocumentCountComponent', () => {
     expect(tester.count).toHaveText('[1,298]');
   });
 
-  it('should display a tooltip to explain the count', () => {
+  it('should display a tooltip to explain the count', async () => {
     // given a component with a name, a url and a count
     const tester = new DocumentCountComponentTester();
     const component = tester.componentInstance;
@@ -93,24 +94,24 @@ describe('DocumentCountComponent', () => {
     component.url.set('http://florilege.arcad-project.org/fr/collections');
 
     // when displaying it
-    tester.detectChanges();
+    await tester.stable();
     // and hovering the element
-    tester.count.dispatchEventOfType('mouseenter');
+    await tester.count.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('1,298 documents match Florilège');
 
     // and hide it when leaving
-    tester.count.dispatchEventOfType('mouseleave');
+    await tester.count.dispatchEventOfType('mouseleave');
     expect(tester.tooltip).toBeNull();
 
     // with only one document
     component.count.set(1);
 
     // when displaying it again
-    tester.detectChanges();
-    tester.count.dispatchEventOfType('mouseenter');
+    await tester.stable();
+    await tester.count.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed with special text for one document
     expect(tester.tooltip).not.toBeNull();

@@ -21,7 +21,7 @@ describe('GenericDocumentListComponent', () => {
   let tester: GenericDocumentListComponentTester;
   let searchStateService: jasmine.SpyObj<SearchStateService>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     searchStateService = createMock(SearchStateService);
     searchStateService.getDocuments.and.returnValue(
       of(toSinglePage([{ name: 'doc 1', description: 'desc 1', identifier: 'd1', species: [] }]))
@@ -31,7 +31,7 @@ describe('GenericDocumentListComponent', () => {
       providers: [{ provide: SearchStateService, useValue: searchStateService }]
     });
     tester = new GenericDocumentListComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should list documents', () => {

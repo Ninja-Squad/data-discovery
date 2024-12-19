@@ -59,9 +59,9 @@ describe('DocumentsComponent', () => {
     tester = new DocumentsComponentTester();
   });
 
-  it('should display no results if empty', () => {
+  it('should display no results if empty', async () => {
     documentsSubject.next(toSinglePage([]));
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should display a message
     expect(tester.results.length).toBe(0);
@@ -69,12 +69,12 @@ describe('DocumentsComponent', () => {
     expect(tester.noResults).not.toBeNull();
   });
 
-  it('should display results if there are some', () => {
+  it('should display results if there are some', async () => {
     // given two results
     const bacteria1 = toRareDocument('Bacteria1');
     const bacteria2 = toRareDocument('Bacteria2');
     documentsSubject.next(toSinglePage([bacteria1, bacteria2]));
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should display each result
     expect(tester.noResults).toBeNull();
@@ -89,7 +89,7 @@ describe('DocumentsComponent', () => {
     expect(tester.resume).not.toContainText('limited');
   });
 
-  it('should display limited results in resume, and format numbers', () => {
+  it('should display limited results in resume, and format numbers', async () => {
     // given results
     const content: Array<DocumentModel> = [];
     for (let i = 0; i < 20; i++) {
@@ -104,7 +104,7 @@ describe('DocumentsComponent', () => {
       size: 20,
       maxResults: 10000
     });
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should display each result
     expect(tester.noResults).toBeNull();

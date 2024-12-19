@@ -3,14 +3,15 @@ import { ComponentTester } from 'ngx-speculoos';
 
 import { GenericDocumentComponent } from './generic-document.component';
 import { toWheatisDocument } from '../../models/test-model-generators';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { GenericDocumentModel } from '../generic-document.model';
 
 @Component({
   template: `@if (document(); as document) {
     <dd-document [document]="document" />
   }`,
-  imports: [GenericDocumentComponent]
+  imports: [GenericDocumentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   document = signal<GenericDocumentModel | undefined>(undefined);
@@ -57,14 +58,14 @@ describe('DataDiscoveryDocumentComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should display a resource', () => {
+  it('should display a resource', async () => {
     const tester = new DataDiscoveryDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
     const resource = toWheatisDocument('Bacteria');
     component.document.set(resource);
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should display it
     expect(tester.title).toContainText(resource.name);

@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnChanges,
-  SimpleChanges,
-  output,
-  inject,
-  input
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FaidareOntologyAggregationComponent implements OnChanges {
+export class FaidareOntologyAggregationComponent {
   private modalService = inject(NgbModal);
 
   readonly aggregation = input.required<Aggregation>();
@@ -34,16 +26,13 @@ export class FaidareOntologyAggregationComponent implements OnChanges {
    * The actual bucket length, which is the bucket length minus one if one of the bucket keys is the null value,
    * that is not selectable for this aggregation type
    */
-  actualBucketLength = 0;
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.aggregation) {
-      this.actualBucketLength = this.aggregation().buckets.length;
-      if (this.aggregation().buckets.some(bucket => bucket.key === NULL_VALUE)) {
-        this.actualBucketLength -= 1;
-      }
+  actualBucketLength = computed(() => {
+    let result = this.aggregation().buckets.length;
+    if (this.aggregation().buckets.some(bucket => bucket.key === NULL_VALUE)) {
+      result -= 1;
     }
-  }
+    return result;
+  });
 
   openModal() {
     const modal = this.modalService.open(OntologyAggregationModalComponent, { size: 'xl' });

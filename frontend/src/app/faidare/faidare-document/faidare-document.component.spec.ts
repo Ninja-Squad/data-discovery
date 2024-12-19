@@ -5,12 +5,13 @@ import { FaidareDocumentComponent } from './faidare-document.component';
 import { toFaidareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 
 @Component({
   template: '<dd-document [document]="document()" />',
-  imports: [FaidareDocumentComponent]
+  imports: [FaidareDocumentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   document = signal<FaidareDocumentModel>(toFaidareDocument('Bacteria'));
@@ -79,12 +80,12 @@ describe('FaidareDocumentComponent', () => {
     spyOn(basketService, 'isEnabled').and.returnValue(true);
   });
 
-  it('should display a resource', () => {
+  it('should display a resource', async () => {
     const tester = new FaidareDocumentComponentTester();
 
     // given a resource
     const resource = tester.componentInstance.document();
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should display it
     expect(tester.title).toContainText(resource.name);
@@ -102,31 +103,31 @@ describe('FaidareDocumentComponent', () => {
     expect(tester.addToBasketButton).not.toBeNull();
   });
 
-  it('should not have the basket button if the feature is disabled', () => {
+  it('should not have the basket button if the feature is disabled', async () => {
     (basketService.isEnabled as jasmine.Spy).and.returnValue(false);
     const tester = new FaidareDocumentComponentTester();
 
     // given a resource
-    tester.detectChanges();
+    await tester.stable();
     // then the button should not be displayed
     expect(tester.addToBasketButton).toBeNull();
   });
 
-  it('should add/remove to/from basket', () => {
+  it('should add/remove to/from basket', async () => {
     const tester = new FaidareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
-    tester.detectChanges();
+    await tester.stable();
 
     // when hovering the add to basket button
-    tester.addToBasketButton.dispatchEventOfType('mouseenter');
+    await tester.addToBasketButton.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('Add to basket');
 
-    tester.addToBasketButton.click();
+    await tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
     expect(basketService.isAccessionInBasket(component.document())).toBeTrue();
@@ -136,13 +137,13 @@ describe('FaidareDocumentComponent', () => {
     expect(tester.removeFromBasketButton).not.toBeNull();
 
     // when hovering the remove from basket button
-    tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
+    await tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('Remove from basket');
 
-    tester.removeFromBasketButton.click();
+    await tester.removeFromBasketButton.click();
     expect(basketService.isAccessionInBasket(component.document())).toBeFalse();
 
     // we switched back the button
