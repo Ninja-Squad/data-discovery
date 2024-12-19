@@ -7,28 +7,31 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { NULL_VALUE } from '../models/document.model';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { environment } from '../../environments/environment';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Aggregation } from '../models/page';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-  template: ` <dd-small-aggregation
-    [aggregation]="aggregation"
-    (aggregationChange)="aggregationChanged = $event"
-    [searchDescendants]="searchDescendants"
-    (searchDescendantsChange)="searchDescendantsChanged = $event"
-    [selectedKeys]="selectedKeys"
-    [disabled]="disabled"
-  />`,
-  imports: [SmallAggregationComponent]
+  template: `@if (aggregation(); as aggregation) {
+    <dd-small-aggregation
+      [aggregation]="aggregation"
+      (aggregationChange)="aggregationChanged.set($event)"
+      [searchDescendants]="searchDescendants()"
+      (searchDescendantsChange)="searchDescendantsChanged.set($event)"
+      [selectedKeys]="selectedKeys()"
+      [disabled]="disabled()"
+    />
+  }`,
+  imports: [SmallAggregationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  aggregation: Aggregation;
-  aggregationChanged: AggregationCriterion;
-  searchDescendants = false;
-  searchDescendantsChanged: boolean;
-  selectedKeys: Array<string> = [];
-  disabled = false;
+  aggregation = signal<Aggregation | undefined>(undefined);
+  aggregationChanged = signal<AggregationCriterion | undefined>(undefined);
+  searchDescendants = signal(false);
+  searchDescendantsChanged = signal(false);
+  selectedKeys = signal<Array<string>>([]);
+  disabled = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -68,12 +71,12 @@ describe('SmallAggregationComponent', () => {
 
   afterEach(() => (environment.name = 'rare'));
 
-  it('should display an aggregation with buckets', () => {
+  it('should display an aggregation with buckets', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     // then it should display a title
     expect(tester.title).toContainText('Country of origin');
@@ -89,12 +92,12 @@ describe('SmallAggregationComponent', () => {
     expect(tester.labels[3]).toContainText('[40]');
   });
 
-  it('should not display an aggregation with empty buckets', () => {
+  it('should not display an aggregation with empty buckets', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = toAggregation('coo', []);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('coo', []));
+    await tester.stable();
 
     // then it should not display a title
     expect(tester.title).toBeNull();
@@ -119,29 +122,29 @@ describe('SmallAggregationComponent', () => {
     expect(keys).toEqual(['France', 'Italy', NULL_VALUE]);
   });
 
-  it('should build a form based on the bucket', () => {
+  it('should build a form based on the bucket', async () => {
     const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    tester.componentInstance.aggregation = aggregation;
+    tester.componentInstance.aggregation.set(aggregation);
 
     // when initializing the component
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should have a form with several fields
     const controls = tester.smallAggregationComponent.aggregationForm.controls;
     expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
   });
 
-  it('should build a form and check selected criteria', () => {
+  it('should build a form and check selected criteria', async () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France'];
 
     const tester = new TestComponentTester();
-    tester.componentInstance.aggregation = aggregation;
-    tester.componentInstance.selectedKeys = selectedKeys;
+    tester.componentInstance.aggregation.set(aggregation);
+    tester.componentInstance.selectedKeys.set(selectedKeys);
 
     // when initializing the component
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should have a form with several fields
     const controls = tester.smallAggregationComponent.aggregationForm.controls;
@@ -150,33 +153,33 @@ describe('SmallAggregationComponent', () => {
     expect(tester.smallAggregationComponent.aggregationForm.get('France')!.value).toBeTruthy();
   });
 
-  it('should emit an event when a checkbox is toggled', () => {
+  it('should emit an event when a checkbox is toggled', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
     expect(tester.firstCheckbox).not.toBeChecked();
 
     // then it should emit an event
     // when a value is checked
-    tester.firstCheckbox.check();
-    tester.detectChanges();
+    await tester.firstCheckbox.check();
+    await tester.stable();
 
     expect(tester.firstCheckbox).toBeChecked();
-    expect(tester.componentInstance.aggregationChanged).toEqual({
+    expect(tester.componentInstance.aggregationChanged()).toEqual({
       name: 'coo',
       values: ['France']
     });
   });
 
-  it('should change the selected values in the form when the selectedValues input changes, without emitting events', () => {
+  it('should change the selected values in the form when the selectedValues input changes, without emitting events', async () => {
     const tester = new TestComponentTester();
-    tester.componentInstance.aggregation = aggregation;
-    tester.componentInstance.selectedKeys = [];
+    tester.componentInstance.aggregation.set(aggregation);
+    tester.componentInstance.selectedKeys.set([]);
 
     // when initializing the component
-    tester.detectChanges();
+    await tester.stable();
 
     // it should have a form with no selected checkbox
     expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
@@ -187,8 +190,8 @@ describe('SmallAggregationComponent', () => {
     });
 
     // when changing the selected values
-    tester.componentInstance.selectedKeys = ['France'];
-    tester.detectChanges();
+    tester.componentInstance.selectedKeys.set(['France']);
+    await tester.stable();
 
     // it should update the form selected checkbox
     expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
@@ -199,8 +202,8 @@ describe('SmallAggregationComponent', () => {
     });
 
     // when changing the selected values
-    tester.componentInstance.selectedKeys = ['France', 'Italy'];
-    tester.detectChanges();
+    tester.componentInstance.selectedKeys.set(['France', 'Italy']);
+    await tester.stable();
 
     // it should update the form selected checkboxes
     expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
@@ -211,8 +214,8 @@ describe('SmallAggregationComponent', () => {
     });
 
     // when changing the selected values but with no actual change
-    tester.componentInstance.selectedKeys = ['Italy', 'France'];
-    tester.detectChanges();
+    tester.componentInstance.selectedKeys.set(['Italy', 'France']);
+    await tester.stable();
 
     // it should leave the form selected checkboxes as they are
     expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
@@ -223,8 +226,8 @@ describe('SmallAggregationComponent', () => {
     });
 
     // when changing the selected values
-    tester.componentInstance.selectedKeys = ['France'];
-    tester.detectChanges();
+    tester.componentInstance.selectedKeys.set(['France']);
+    await tester.stable();
 
     // it should update the form selected checkboxes
     expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
@@ -235,8 +238,8 @@ describe('SmallAggregationComponent', () => {
     });
 
     // when changing the selected values
-    tester.componentInstance.selectedKeys = [];
-    tester.detectChanges();
+    tester.componentInstance.selectedKeys.set([]);
+    await tester.stable();
 
     // it should update the form selected checkboxes
     expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
@@ -247,15 +250,15 @@ describe('SmallAggregationComponent', () => {
     });
 
     // and all this shouldn't emit any event
-    expect(tester.componentInstance.aggregationChanged).toBeFalsy();
+    expect(tester.componentInstance.aggregationChanged()).toBeFalsy();
   });
 
-  it('should be disabled if only one bucket', () => {
+  it('should be disabled if only one bucket', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = toAggregation('coo', ['Italy']);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('coo', ['Italy']));
+    await tester.stable();
 
     expect(tester.smallAggregationComponent.aggregationForm.disabled).toBe(true);
     expect(tester.firstCheckbox.nativeElement.disabled).toBe(true);
@@ -263,59 +266,59 @@ describe('SmallAggregationComponent', () => {
     expect(tester.title.nativeElement.classList).toContain('text-body-secondary');
   });
 
-  it('should be disabled if when setting the disabled input', () => {
+  it('should be disabled if when setting the disabled input', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     expect(tester.smallAggregationComponent.aggregationForm.disabled).toBeFalse();
     expect(tester.firstCheckbox.nativeElement.disabled).toBeFalse();
 
-    tester.componentInstance.disabled = true;
-    tester.detectChanges();
+    tester.componentInstance.disabled.set(true);
+    await tester.stable();
     expect(tester.smallAggregationComponent.aggregationForm.disabled).toBeTrue();
     expect(tester.firstCheckbox.nativeElement.disabled).toBeTrue();
     expect(tester.title.nativeElement.classList).toContain('text-body-secondary');
   });
 
-  it('should be not be displayed if only NULL bucket', () => {
+  it('should be not be displayed if only NULL bucket', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation with only the NULL bucket
-    tester.componentInstance.aggregation = toAggregation(NULL_VALUE, []);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation(NULL_VALUE, []));
+    await tester.stable();
 
     expect(tester.title).toBeNull();
     expect(tester.firstCheckbox).toBeNull();
   });
 
-  it('should display search descendants option if annot bucket', () => {
+  it('should display search descendants option if annot bucket', async () => {
     environment.name = 'wheatis'; // annot is not available in the rare version of the app
     const tester = new TestComponentTester();
 
     // given an aggregation with only the NULL bucket
-    tester.componentInstance.aggregation = toAggregation('annot', ['annot1']);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('annot', ['annot1']));
+    await tester.stable();
 
     expect(tester.searchDescendants).not.toBeNull();
 
     // when the checkbox emits an event, then we propagate it
     tester.searchDescendants.searchDescendants.set(true);
-    expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
+    expect(tester.componentInstance.searchDescendantsChanged()).toBeTrue();
   });
 
-  it('should react to structural changes in the aggregation', () => {
+  it('should react to structural changes in the aggregation', async () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France', 'Italy'];
 
     const tester = new TestComponentTester();
-    tester.componentInstance.aggregation = aggregation;
-    tester.componentInstance.selectedKeys = selectedKeys;
+    tester.componentInstance.aggregation.set(aggregation);
+    tester.componentInstance.selectedKeys.set(selectedKeys);
 
     // when initializing the component
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should have a form with several fields
     expect(tester.testElement).toContainText('France');
@@ -324,13 +327,11 @@ describe('SmallAggregationComponent', () => {
     expect(tester.testElement).toContainText('None');
     expect(tester.checkboxes.map(checkbox => checkbox.checked)).toEqual([true, true, false, false]);
 
-    tester.componentInstance.aggregation = toAggregation('coo', [
-      'Italy',
-      'New Zealand',
-      'Portugal'
-    ]);
-    tester.componentInstance.selectedKeys = ['Italy', 'Portugal'];
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(
+      toAggregation('coo', ['Italy', 'New Zealand', 'Portugal'])
+    );
+    tester.componentInstance.selectedKeys.set(['Italy', 'Portugal']);
+    await tester.stable();
 
     expect(tester.testElement).not.toContainText('France');
     expect(tester.testElement).toContainText('Italy');
@@ -339,6 +340,6 @@ describe('SmallAggregationComponent', () => {
     expect(tester.testElement).toContainText('Portugal');
     expect(tester.checkboxes.map(checkbox => checkbox.checked)).toEqual([true, false, true]);
 
-    expect(tester.componentInstance.aggregationChanged).toBeFalsy();
+    expect(tester.componentInstance.aggregationChanged()).toBeFalsy();
   });
 });

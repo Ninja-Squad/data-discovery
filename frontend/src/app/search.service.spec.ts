@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
 
@@ -26,6 +26,8 @@ describe('SearchService', () => {
     service = TestBed.inject(SearchService);
     http = TestBed.inject(HttpTestingController);
   });
+
+  afterEach(() => jasmine.clock().uninstall());
 
   it('should search for the query', () => {
     let actualResults: Page<DocumentModel>;
@@ -154,7 +156,10 @@ describe('SearchService', () => {
     expect(actualAggregations).toEqual(expectedAggregations);
   });
 
-  it('should have a typeahead that suggests if text longer than 1, after 300 ms and only if changed', fakeAsync(() => {
+  it('should have a typeahead that suggests if text longer than 1, after 300 ms and only if changed', () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
+
     const typeahead = service.getSuggesterTypeahead();
 
     const entered = new Subject<string>();
@@ -163,36 +168,36 @@ describe('SearchService', () => {
 
     // simulate what is entered, character by character, after a delay between each one
     entered.next(' ');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' v');
-    tick(300); // should not trigger a search, but emit an empty array because input is too short
+    jasmine.clock().tick(300); // should not trigger a search, but emit an empty array because input is too short
     entered.next(' vi');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vit');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vit');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vit ');
-    tick(300); // should finally trigger a search for 'vit'
+    jasmine.clock().tick(300); // should finally trigger a search for 'vit'
 
     const vitResult = ['vitis', 'vitis vinifera'];
     http.expectOne('api/suggest?query=vit').flush(vitResult);
 
     entered.next(' viti ');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' viti');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vit');
-    tick(300); // should not trigger a second search since same value
+    jasmine.clock().tick(300); // should not trigger a second search since same value
 
     entered.next(' viti');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vitis');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vitis ');
-    tick(100);
+    jasmine.clock().tick(100);
     entered.next(' vitis v');
-    tick(300); // should trigger a second search
+    jasmine.clock().tick(300); // should trigger a second search
 
     const vitisVResult = ['vitis vinifera'];
     http.expectOne('api/suggest?query=vitis%20v').flush(vitisVResult);
@@ -200,5 +205,5 @@ describe('SearchService', () => {
     expect(results).toEqual([[], vitResult, vitisVResult]);
 
     http.verify();
-  }));
+  });
 });

@@ -66,7 +66,7 @@ describe('GermplasmResultsComponent', () => {
 
   let initialModel: Model;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     modelSubject = new ReplaySubject<Model>(1);
     searchStateService = createMock(SearchStateService);
     searchStateService.getModel.and.returnValue(modelSubject);
@@ -118,7 +118,7 @@ describe('GermplasmResultsComponent', () => {
       }
     } as Model;
     modelSubject.next(initialModel);
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display a table of results', () => {
@@ -152,14 +152,14 @@ describe('GermplasmResultsComponent', () => {
     expect(tester.downloadMcpdSpinner).toBeNull();
   });*/
 
-  it('should download plant material results', () => {
+  it('should download plant material results', async () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
     exportService.export.and.returnValue(blobSubject);
 
     expect(tester.downloadPlantMaterialSpinner).toBeNull();
 
-    tester.downloadPlantMaterial.click();
+    await tester.downloadPlantMaterial.click();
 
     expect(tester.downloadPlantMaterialSpinner).not.toBeNull();
     expect(exportService.export).toHaveBeenCalledWith(
@@ -169,18 +169,18 @@ describe('GermplasmResultsComponent', () => {
 
     blobSubject.next(blob);
     blobSubject.complete();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
     expect(tester.downloadPlantMaterialSpinner).toBeNull();
   });
 
-  it('should sort', () => {
+  it('should sort', async () => {
     expect(tester.sortedAscHeaders.length).toBe(0);
     expect(tester.sortedDescHeaders.length).toBe(0);
 
     const speciesHeader = tester.headers[2];
-    speciesHeader.click();
+    await speciesHeader.click();
 
     expect(searchStateService.sort).toHaveBeenCalledWith({
       sort: 'species',
@@ -198,13 +198,13 @@ describe('GermplasmResultsComponent', () => {
         }
       }
     });
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.sortedAscHeaders.length).toBe(1);
     expect(tester.sortedAscHeaders[0]).toContainText('Species');
     expect(tester.sortedDescHeaders.length).toBe(0);
 
-    speciesHeader.click();
+    await speciesHeader.click();
 
     expect(searchStateService.sort).toHaveBeenCalledWith({
       sort: 'species',
@@ -222,13 +222,13 @@ describe('GermplasmResultsComponent', () => {
         }
       }
     });
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.sortedAscHeaders.length).toBe(0);
     expect(tester.sortedDescHeaders.length).toBe(1);
     expect(tester.sortedDescHeaders[0]).toContainText('Species');
 
-    speciesHeader.click();
+    await speciesHeader.click();
 
     expect(searchStateService.sort).toHaveBeenCalledWith({
       sort: 'species',
@@ -246,7 +246,7 @@ describe('GermplasmResultsComponent', () => {
         }
       }
     });
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.sortedAscHeaders.length).toBe(1);
     expect(tester.sortedAscHeaders[0]).toContainText('Species');

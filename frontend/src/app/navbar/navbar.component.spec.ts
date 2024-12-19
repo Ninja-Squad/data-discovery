@@ -51,23 +51,23 @@ describe('NavbarComponent', () => {
     })
   );
 
-  it('should toggle the ngbCollapse on click', () => {
+  it('should toggle the ngbCollapse on click', async () => {
     const tester = new NavbarComponentTester();
 
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.navBar).not.toHaveClass('show');
 
-    tester.toggler.click();
+    await tester.toggler.click();
 
     expect(tester.navBar).toHaveClass('show');
 
-    tester.toggler.click();
+    await tester.toggler.click();
 
     expect(tester.navBar).not.toHaveClass('show');
   });
 
-  it('should display title and links that open in new tabs', () => {
+  it('should display title and links that open in new tabs', async () => {
     const tester = new NavbarComponentTester();
     const component = tester.componentInstance;
 
@@ -77,7 +77,7 @@ describe('NavbarComponent', () => {
       links: component.navbar.links
     };
 
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.title.attr('href')).toBe('https://www.agrobrc-rare.org/');
     expect(tester.logo.attr('title')).toBe('RARe Search');

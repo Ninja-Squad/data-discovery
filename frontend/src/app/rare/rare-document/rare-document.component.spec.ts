@@ -5,12 +5,13 @@ import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
 
 @Component({
   template: '<dd-document [document]="document()" />',
-  imports: [RareDocumentComponent]
+  imports: [RareDocumentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   document = signal<RareDocumentModel>(toRareDocument('Bacteria'));
@@ -83,13 +84,13 @@ describe('RareDocumentComponent', () => {
     spyOn(basketService, 'isEnabled').and.returnValue(true);
   });
 
-  it('should display a resource', () => {
+  it('should display a resource', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
     const resource = component.document();
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should display it
     expect(tester.title).toContainText(resource.name);
@@ -110,7 +111,7 @@ describe('RareDocumentComponent', () => {
     expect(tester.addToBasketButton).not.toBeNull();
   });
 
-  it('should have a link to portal if data url is null or empty', () => {
+  it('should have a link to portal if data url is null or empty', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
@@ -118,13 +119,13 @@ describe('RareDocumentComponent', () => {
     const resource = toRareDocument('Bacteria');
     resource.dataURL = null;
     component.document.set(resource);
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should link to portal url
     expect(tester.link.attr('href')).toBe(resource.portalURL);
   });
 
-  it('should display several types properly', () => {
+  it('should display several types properly', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
@@ -132,37 +133,37 @@ describe('RareDocumentComponent', () => {
     const resource = toRareDocument('Bacteria');
     resource.materialType = ['type1', 'type2'];
     component.document.set(resource);
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should list them
     expect(tester.type).toContainText('type1, type2');
   });
 
-  it('should not have the basket button if the feature is disabled', () => {
+  it('should not have the basket button if the feature is disabled', async () => {
     (basketService.isEnabled as jasmine.Spy).and.returnValue(false);
     const tester = new RareDocumentComponentTester();
 
     // given a resource
-    tester.detectChanges();
+    await tester.stable();
     // then the button should not be displayed
     expect(tester.addToBasketButton).toBeNull();
   });
 
-  it('should add/remove to/from basket', () => {
+  it('should add/remove to/from basket', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
-    tester.detectChanges();
+    await tester.stable();
 
     // when hovering the add to basket button
-    tester.addToBasketButton.dispatchEventOfType('mouseenter');
+    await tester.addToBasketButton.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('Add to basket');
 
-    tester.addToBasketButton.click();
+    await tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
     expect(basketService.isAccessionInBasket(component.document())).toBeTrue();
@@ -172,13 +173,13 @@ describe('RareDocumentComponent', () => {
     expect(tester.removeFromBasketButton).not.toBeNull();
 
     // when hovering the remove from basket button
-    tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
+    await tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('Remove from basket');
 
-    tester.removeFromBasketButton.click();
+    await tester.removeFromBasketButton.click();
     expect(basketService.isAccessionInBasket(component.document())).toBeFalse();
 
     // we switched back the button

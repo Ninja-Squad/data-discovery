@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { Model, SearchStateService } from './search-state.service';
 import { SearchService } from './search.service';
@@ -28,6 +28,8 @@ describe('SearchStateService', () => {
 
     service = TestBed.inject(SearchStateService);
   });
+
+  afterEach(() => jasmine.clock().uninstall());
 
   it('should initialize state with query parameters and fragment', () => {
     const route = stubRoute({
@@ -84,7 +86,9 @@ describe('SearchStateService', () => {
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should initialize state without loading status if it does not take too much time', fakeAsync(() => {
+  it('should initialize state without loading status if it does not take too much time', () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
     const route = stubRoute({
       queryParams: {
         query: 'Test'
@@ -106,12 +110,12 @@ describe('SearchStateService', () => {
     model$.subscribe(m => (model = m));
     expect(model!).toBeFalsy();
 
-    tick(100);
+    jasmine.clock().tick(100);
     documentsSubject.next(documents);
     documentsSubject.complete();
     expect(model!).toBeFalsy();
 
-    tick(100);
+    jasmine.clock().tick(100);
     aggregationsSubject.next(aggregations);
     aggregationsSubject.complete();
     expect(model!).toEqual({
@@ -129,9 +133,11 @@ describe('SearchStateService', () => {
       documentsLoading: false,
       aggregationsLoading: false
     });
-  }));
+  });
 
-  it('should initialize state with loading status if it does takes too much time', fakeAsync(() => {
+  it('should initialize state with loading status if it does takes too much time', () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
     const route = stubRoute({
       queryParams: {
         query: 'Test'
@@ -153,7 +159,7 @@ describe('SearchStateService', () => {
     model$.subscribe(m => (model = m));
     expect(model!).toBeFalsy();
 
-    tick(600);
+    jasmine.clock().tick(600);
     expect(model!).toEqual({
       searchCriteria: {
         query: 'Test',
@@ -203,9 +209,11 @@ describe('SearchStateService', () => {
       documentsLoading: false,
       aggregationsLoading: false
     });
-  }));
+  });
 
-  it('should set loading to false if an error occurs', fakeAsync(() => {
+  it('should set loading to false if an error occurs', () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
     const route = stubRoute({
       queryParams: {
         query: 'Test'
@@ -224,7 +232,7 @@ describe('SearchStateService', () => {
     model$.subscribe(m => (model = m));
     expect(model!).toBeFalsy();
 
-    tick(600);
+    jasmine.clock().tick(600);
     expect(model!).toEqual({
       searchCriteria: {
         query: 'Test',
@@ -274,7 +282,7 @@ describe('SearchStateService', () => {
       documentsLoading: false,
       aggregationsLoading: false
     });
-  }));
+  });
 
   describe('once initialized', () => {
     let model: Model;

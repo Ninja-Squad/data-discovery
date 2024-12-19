@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 
@@ -9,28 +9,31 @@ import { Aggregation, Bucket } from '../models/page';
 import { NULL_VALUE } from '../models/document.model';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { environment } from '../../environments/environment';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { of } from 'rxjs';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
-  template: ` <dd-large-aggregation
-    [aggregation]="aggregation"
-    (aggregationChange)="aggregationChanged = $event"
-    [searchDescendants]="searchDescendants"
-    (searchDescendantsChange)="searchDescendantsChanged = $event"
-    [selectedKeys]="selectedKeys"
-    [disabled]="disabled"
-  />`,
-  imports: [LargeAggregationComponent]
+  template: `@if (aggregation(); as aggregation) {
+    <dd-large-aggregation
+      [aggregation]="aggregation"
+      (aggregationChange)="aggregationChanged.set($event)"
+      [searchDescendants]="searchDescendants()"
+      (searchDescendantsChange)="searchDescendantsChanged.set($event)"
+      [selectedKeys]="selectedKeys()"
+      [disabled]="disabled()"
+    />
+  }`,
+  imports: [LargeAggregationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  aggregation: Aggregation;
-  aggregationChanged: AggregationCriterion;
-  searchDescendants = false;
-  searchDescendantsChanged: boolean;
-  selectedKeys: Array<string> = [];
-  disabled = false;
+  readonly aggregation = signal<Aggregation | undefined>(undefined);
+  readonly aggregationChanged = signal<AggregationCriterion | undefined>(undefined);
+  readonly searchDescendants = signal(false);
+  readonly searchDescendantsChanged = signal(false);
+  readonly selectedKeys = signal<Array<string>>([]);
+  readonly disabled = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -76,14 +79,17 @@ describe('LargeAggregationComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({ providers: [provideI18nTesting()] }));
 
-  afterEach(() => (environment.name = 'rare'));
+  afterEach(() => {
+    environment.name = 'rare';
+    jasmine.clock().uninstall();
+  });
 
-  it('should display an aggregation with buckets as a typeahead', () => {
+  it('should display an aggregation with buckets as a typeahead', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     // then it should display a title and the number of possible keys
     expect(tester.title).toContainText('Country of origin (4)');
@@ -94,12 +100,12 @@ describe('LargeAggregationComponent', () => {
     expect(tester.searchDescendants).toBeNull();
   });
 
-  it('should not display an aggregation with empty buckets', () => {
+  it('should not display an aggregation with empty buckets', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = toAggregation('coo', []);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('coo', []));
+    await tester.stable();
 
     // then it should not display a title
     expect(tester.title).toBeNull();
@@ -107,16 +113,16 @@ describe('LargeAggregationComponent', () => {
     expect(tester.inputField).toBeNull();
   });
 
-  it('should display the selected criteria as pills', () => {
+  it('should display the selected criteria as pills', async () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France', 'Italy', NULL_VALUE];
 
     const tester = new TestComponentTester();
-    tester.componentInstance.aggregation = aggregation;
-    tester.componentInstance.selectedKeys = selectedKeys;
+    tester.componentInstance.aggregation.set(aggregation);
+    tester.componentInstance.selectedKeys.set(selectedKeys);
 
     // when displaying the component
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should have several removable pills
     expect(tester.pills.length).toBe(3);
@@ -128,11 +134,11 @@ describe('LargeAggregationComponent', () => {
     expect(tester.pills[2].button('button')).not.toBeNull();
   });
 
-  it('should find one results containing the term entered', () => {
+  it('should find one results containing the term entered', async () => {
     const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
@@ -145,11 +151,11 @@ describe('LargeAggregationComponent', () => {
     expect((actualResults[0] as Bucket).key).toBe('France');
   });
 
-  it('should find one results containing the term entered when it is the null value translation', () => {
+  it('should find one results containing the term entered when it is the null value translation', async () => {
     const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
@@ -162,11 +168,11 @@ describe('LargeAggregationComponent', () => {
     expect((actualResults[0] as Bucket).key).toBe(NULL_VALUE);
   });
 
-  it('should find the results containing the term entered and ignore the case', () => {
+  it('should find the results containing the term entered and ignore the case', async () => {
     const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
@@ -192,12 +198,12 @@ describe('LargeAggregationComponent', () => {
     expect((actualResults[2] as Bucket).key).toBe(NULL_VALUE);
   });
 
-  it('should not find the results containing the term entered if it is already selected', () => {
+  it('should not find the results containing the term entered if it is already selected', async () => {
     const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    tester.componentInstance.aggregation = aggregation;
-    tester.componentInstance.selectedKeys = ['France'];
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    tester.componentInstance.selectedKeys.set(['France']);
+    await tester.stable();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
@@ -209,11 +215,11 @@ describe('LargeAggregationComponent', () => {
     expect(actualResults.length).toBe(0);
   });
 
-  it('should find 8 results max + a fake refine result', () => {
+  it('should find 8 results max + a fake refine result', async () => {
     const tester = new TestComponentTester();
     // given an aggregation with a bucket
-    tester.componentInstance.aggregation = toAggregation('coo', Array(30).fill('a'));
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('coo', Array(30).fill('a')));
+    await tester.stable();
 
     // when searching for a result
     let actualResults: Array<BucketOrRefine> = [];
@@ -229,19 +235,21 @@ describe('LargeAggregationComponent', () => {
     expect(actualResults[actualResults.length - 1]).toBe('REFINE');
   });
 
-  it('should emit an event when a value is added or removed and update pills', fakeAsync(() => {
+  it('should emit an event when a value is added or removed and update pills', async () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = aggregation;
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(aggregation);
+    await tester.stable();
 
     expect(tester.inputField).toHaveValue('');
     expect(tester.pills.length).toBe(0);
 
     // when a value is entered
     tester.inputField.fillWith('fr');
-    tick(200);
+    jasmine.clock().tick(200);
 
     // results should appear
     expect(tester.results.length).toBe(1);
@@ -249,10 +257,10 @@ describe('LargeAggregationComponent', () => {
 
     // when the result is selected
     tester.results[0].click();
-    tester.detectChanges();
+    await tester.stable();
 
     // an event is emitted
-    expect(tester.componentInstance.aggregationChanged).toEqual({
+    expect(tester.componentInstance.aggregationChanged()).toEqual({
       name: 'coo',
       values: ['France']
     });
@@ -269,19 +277,19 @@ describe('LargeAggregationComponent', () => {
 
     // when another value is entered
     tester.inputField.fillWith('ly');
-    tick(200);
+    jasmine.clock().tick(200);
 
     // results should appear
     expect(tester.results.length).toBe(1);
     expect(tester.results[0].textContent).toBe('Italy[20]');
 
     // when the result is selected
-    tester.results[0].click();
-    tester.detectChanges();
+    await tester.results[0].click();
+    await tester.stable();
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
-    expect(tester.componentInstance.aggregationChanged).toEqual({
+    expect(tester.componentInstance.aggregationChanged()).toEqual({
       name: 'coo',
       values: ['France', 'Italy']
     });
@@ -295,12 +303,11 @@ describe('LargeAggregationComponent', () => {
     expect(tester.pills[1]).toContainText('Italy[20]');
 
     // when a pill is removed
-    tester.pills[0].button('button')!.click();
-    tick();
+    await tester.pills[0].button('button')!.click();
 
     // another event is emitted
     expect(tester.inputField).toHaveValue('');
-    expect(tester.componentInstance.aggregationChanged).toEqual({
+    expect(tester.componentInstance.aggregationChanged()).toEqual({
       name: 'coo',
       values: ['Italy']
     });
@@ -308,24 +315,23 @@ describe('LargeAggregationComponent', () => {
     // and the pill should disappear
     expect(tester.pills.length).toBe(1);
     expect(tester.pills[0]).toContainText('Italy[20]');
+  });
 
-    // discard the remaining timer
-    tick(200);
-  }));
-
-  it('should not do anything if REFINE is selected', fakeAsync(() => {
+  it('should not do anything if REFINE is selected', async () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
     const tester = new TestComponentTester();
 
     // given an aggregation
-    tester.componentInstance.aggregation = toAggregation('coo', Array(30).fill('a'));
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('coo', Array(30).fill('a')));
+    await tester.stable();
 
     expect(tester.inputField).toHaveValue('');
     expect(tester.pills.length).toBe(0);
 
     // when a value is entered
-    tester.inputField.fillWith('a');
-    tick(200);
+    await tester.inputField.fillWith('a');
+    jasmine.clock().tick(200);
 
     // results should appear
     expect(tester.results.length).toBe(9);
@@ -334,11 +340,10 @@ describe('LargeAggregationComponent', () => {
     );
 
     // when the result is selected
-    tester.results[tester.results.length - 1].click();
-    tester.detectChanges();
+    await tester.results[tester.results.length - 1].click();
 
     // no event is emitted
-    expect(tester.componentInstance.aggregationChanged).toBeUndefined();
+    expect(tester.componentInstance.aggregationChanged()).toBeUndefined();
 
     // the input value stays the same
     expect(tester.inputField).toHaveValue('a');
@@ -348,55 +353,52 @@ describe('LargeAggregationComponent', () => {
 
     // and a pill should not appear
     expect(tester.pills.length).toBe(0);
+  });
 
-    // discard the remaining timer
-    tick(200);
-  }));
-
-  it('should be not be displayed if only NULL bucket', () => {
+  it('should be not be displayed if only NULL bucket', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation with only the NULL bucket
-    tester.componentInstance.aggregation = toAggregation(NULL_VALUE, []);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation(NULL_VALUE, []));
+    await tester.stable();
 
     expect(tester.title).toBeNull();
     expect(tester.inputField).toBeNull();
   });
 
-  it('should display search descendants option if annot bucket', () => {
+  it('should display search descendants option if annot bucket', async () => {
     environment.name = 'wheatis'; // annot is not available in the rare version of the app
     const tester = new TestComponentTester();
 
     // given an aggregation with only the NULL bucket
-    tester.componentInstance.aggregation = toAggregation('annot', ['annot1']);
-    tester.detectChanges();
+    tester.componentInstance.aggregation.set(toAggregation('annot', ['annot1']));
+    await tester.stable();
 
     expect(tester.searchDescendants).not.toBeNull();
 
     // when the checkbox emits an event, then we propagate it
     tester.searchDescendants.searchDescendants.set(true);
-    expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
+    expect(tester.componentInstance.searchDescendantsChanged()).toBeTrue();
   });
 
-  it('should be disabled', () => {
+  it('should be disabled', async () => {
     // given an aggregation with a bucket and a selected value
     const selectedKeys = ['France', 'Italy', NULL_VALUE];
 
     const tester = new TestComponentTester();
-    tester.componentInstance.aggregation = aggregation;
-    tester.componentInstance.selectedKeys = selectedKeys;
+    tester.componentInstance.aggregation.set(aggregation);
+    tester.componentInstance.selectedKeys.set(selectedKeys);
 
     // when displaying the component
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should have several removable pills
     expect(tester.pills.length).toBe(3);
     expect(tester.inputField.disabled).toBeFalse();
     tester.pills.forEach(pill => expect(pill.button('button')?.disabled).toBeFalse());
 
-    tester.componentInstance.disabled = true;
-    tester.detectChanges();
+    tester.componentInstance.disabled.set(true);
+    await tester.stable();
     expect(tester.inputField.disabled).toBeTrue();
     tester.pills.forEach(pill => expect(pill.button('button')?.disabled).toBeTrue());
   });

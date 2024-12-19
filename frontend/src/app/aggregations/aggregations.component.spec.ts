@@ -6,7 +6,7 @@ import { SmallAggregationComponent } from '../small-aggregation/small-aggregatio
 import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { environment } from '../../environments/environment';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Aggregation } from '../models/page';
 import { toAggregation } from '../models/test-model-generators';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -14,20 +14,21 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 @Component({
   template: ` <dd-aggregations
-    [aggregations]="aggregations"
-    (aggregationsChange)="aggregationsChanged = $event"
-    [selectedCriteria]="selectedCriteria"
-    [searchDescendants]="searchDescendants"
-    (searchDescendantsChange)="searchDescendantsChanged = $event"
+    [aggregations]="aggregations()"
+    (aggregationsChange)="aggregationsChanged.set($event)"
+    [selectedCriteria]="selectedCriteria()"
+    [searchDescendants]="searchDescendants()"
+    (searchDescendantsChange)="searchDescendantsChanged.set($event)"
   />`,
-  imports: [AggregationsComponent]
+  imports: [AggregationsComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  aggregations: Array<Aggregation>;
-  aggregationsChanged: Array<AggregationCriterion>;
-  selectedCriteria: Array<AggregationCriterion> = [];
-  searchDescendants = false;
-  searchDescendantsChanged: boolean;
+  aggregations = signal<Array<Aggregation>>([]);
+  aggregationsChanged = signal<Array<AggregationCriterion> | undefined>(undefined);
+  selectedCriteria = signal<Array<AggregationCriterion>>([]);
+  searchDescendants = signal(false);
+  searchDescendantsChanged = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -61,36 +62,33 @@ describe('AggregationsComponent', () => {
 
   afterEach(() => (environment.name = 'rare'));
 
-  it('should display no aggregations if null', () => {
+  it('should display no aggregations if null', async () => {
     const tester = new TestComponentTester();
 
     // given no aggregations
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should display no aggregations
     expect(tester.smallAggregations.length).toBe(0);
   });
 
-  it('should display no aggregations if empty', () => {
+  it('should display no aggregations if empty', async () => {
     const tester = new TestComponentTester();
-    const component = tester.componentInstance;
 
     // given no aggregations
-    component.aggregations = [];
-    tester.detectChanges();
+    await tester.stable();
 
     // then it should display no aggregations
     expect(tester.smallAggregations.length).toBe(0);
   });
 
-  it('should extract the selected criteria for the aggregation', () => {
+  it('should extract the selected criteria for the aggregation', async () => {
     const tester = new TestComponentTester();
-    const component = tester.componentInstance;
-    component.selectedCriteria = [
+    tester.componentInstance.selectedCriteria.set([
       { name: 'coo', values: ['France', 'Italy'] },
       { name: 'domain', values: ['Plant'] }
-    ];
-    tester.detectChanges();
+    ]);
+    await tester.stable();
     const cooCriteria = tester.aggregationComponent.selectedKeysForAggregation('coo');
     expect(cooCriteria).toEqual(['France', 'Italy']);
 
@@ -101,15 +99,15 @@ describe('AggregationsComponent', () => {
     expect(unknownCriteria).toEqual([]);
   });
 
-  it('should display aggregations if there are some', () => {
+  it('should display aggregations if there are some', async () => {
     const tester = new TestComponentTester();
 
     // given a few aggregations
     const domain = toAggregation('domain', ['Plant']);
     const coo = toAggregation('coo', ['France', 'Italy']);
-    tester.componentInstance.aggregations = [domain, coo];
-    tester.componentInstance.selectedCriteria = [{ name: 'coo', values: ['France'] }];
-    tester.detectChanges();
+    tester.componentInstance.aggregations.set([domain, coo]);
+    tester.componentInstance.selectedCriteria.set([{ name: 'coo', values: ['France'] }]);
+    await tester.stable();
 
     // then it should display each aggregation
     expect(tester.smallAggregations.length).toBe(2);
@@ -121,7 +119,7 @@ describe('AggregationsComponent', () => {
     expect(aggregation2.selectedKeys()).toEqual(['France']);
   });
 
-  it('should display aggregations of different types', () => {
+  it('should display aggregations of different types', async () => {
     const tester = new TestComponentTester();
 
     // given a few aggregations
@@ -140,9 +138,9 @@ describe('AggregationsComponent', () => {
       'Canada'
     ]);
     coo.type = 'LARGE';
-    tester.componentInstance.aggregations = [domain, coo];
-    tester.componentInstance.selectedCriteria = [{ name: 'coo', values: ['France'] }];
-    tester.detectChanges();
+    tester.componentInstance.aggregations.set([domain, coo]);
+    tester.componentInstance.selectedCriteria.set([{ name: 'coo', values: ['France'] }]);
+    await tester.stable();
 
     // then it should display an aggregation of each type
     expect(tester.smallAggregations.length).toBe(1);
@@ -156,7 +154,7 @@ describe('AggregationsComponent', () => {
     expect(large.selectedKeys()).toEqual(['France']);
   });
 
-  it('should display a small aggregation for a large one with few results', () => {
+  it('should display a small aggregation for a large one with few results', async () => {
     const tester = new TestComponentTester();
 
     // given a few aggregations
@@ -164,9 +162,9 @@ describe('AggregationsComponent', () => {
     // country of origin as a large aggregation with only 2 options to see if it is displayed as a small one
     const coo = toAggregation('coo', ['France', 'Italy']);
     coo.type = 'LARGE';
-    tester.componentInstance.aggregations = [domain, coo];
-    tester.componentInstance.selectedCriteria = [{ name: 'coo', values: ['France'] }];
-    tester.detectChanges();
+    tester.componentInstance.aggregations.set([domain, coo]);
+    tester.componentInstance.selectedCriteria.set([{ name: 'coo', values: ['France'] }]);
+    await tester.stable();
 
     // then it should display 2 small aggregations
     expect(tester.smallAggregations.length).toBe(2);
@@ -178,15 +176,15 @@ describe('AggregationsComponent', () => {
     expect(largeAsSmall.selectedKeys()).toEqual(['France']);
   });
 
-  it('should emit change when a criterion changes', () => {
+  it('should emit change when a criterion changes', async () => {
     const tester = new TestComponentTester();
 
     // given a few aggregations
     const domain = toAggregation('domain', ['Plant']);
     const coo = toAggregation('coo', ['France', 'Italy']);
-    tester.componentInstance.aggregations = [domain, coo];
-    tester.componentInstance.selectedCriteria = [{ name: 'coo', values: ['France'] }];
-    tester.detectChanges();
+    tester.componentInstance.aggregations.set([domain, coo]);
+    tester.componentInstance.selectedCriteria.set([{ name: 'coo', values: ['France'] }]);
+    await tester.stable();
 
     // when the aggregation emits an event
     const aggregationComponent = tester.smallAggregations[0];
@@ -194,38 +192,38 @@ describe('AggregationsComponent', () => {
     aggregationComponent.aggregationChange.emit(criteria);
 
     // then it should add a emit an event
-    expect(tester.componentInstance.aggregationsChanged.length).toBe(1);
-    expect(tester.componentInstance.aggregationsChanged[0]).toBe(criteria);
+    expect(tester.componentInstance.aggregationsChanged().length).toBe(1);
+    expect(tester.componentInstance.aggregationsChanged()[0]).toBe(criteria);
 
     // when the aggregation emits an event with another value
     const updatedCriteria = { name: 'coo', values: ['France', 'Italy'] };
     aggregationComponent.aggregationChange.emit(updatedCriteria);
 
     // then it should update the existing criteria
-    expect(tester.componentInstance.aggregationsChanged.length).toBe(1);
-    expect(tester.componentInstance.aggregationsChanged[0]).toBe(updatedCriteria);
+    expect(tester.componentInstance.aggregationsChanged().length).toBe(1);
+    expect(tester.componentInstance.aggregationsChanged()[0]).toBe(updatedCriteria);
 
     // when the aggregation emits an event with no values
     const emptyCriteria = { name: 'coo', values: [] as Array<string> };
     aggregationComponent.aggregationChange.emit(emptyCriteria);
 
     // then it should delete the criteria
-    expect(tester.componentInstance.aggregationsChanged[0]).toBe(emptyCriteria);
+    expect(tester.componentInstance.aggregationsChanged()[0]).toBe(emptyCriteria);
   });
 
-  it('should emit all criteria when an aggregation emits a change', () => {
+  it('should emit all criteria when an aggregation emits a change', async () => {
     const tester = new TestComponentTester();
 
     // given an aggregation
     const domain = toAggregation('domain', ['Plant']);
     const coo = toAggregation('coo', ['France', 'Italy']);
-    tester.componentInstance.aggregations = [domain, coo];
+    tester.componentInstance.aggregations.set([domain, coo]);
     // and two selected criteria
-    tester.componentInstance.selectedCriteria = [
+    tester.componentInstance.selectedCriteria.set([
       { name: 'domain', values: ['Plant'] },
       { name: 'coo', values: ['Italy'] }
-    ];
-    tester.detectChanges();
+    ]);
+    await tester.stable();
 
     // when an event is emitted by an aggregation
     const aggregationComponent = tester.smallAggregations[0];
@@ -233,23 +231,23 @@ describe('AggregationsComponent', () => {
       name: 'coo',
       values: ['France']
     });
-    tester.detectChanges();
+    await tester.stable();
 
-    expect(tester.componentInstance.aggregationsChanged.length).toBe(2);
-    expect(tester.componentInstance.aggregationsChanged[0].name).toBe('domain');
-    expect(tester.componentInstance.aggregationsChanged[0].values).toEqual(['Plant']);
-    expect(tester.componentInstance.aggregationsChanged[1].name).toBe('coo');
-    expect(tester.componentInstance.aggregationsChanged[1].values).toEqual(['France']);
+    expect(tester.componentInstance.aggregationsChanged().length).toBe(2);
+    expect(tester.componentInstance.aggregationsChanged()[0].name).toBe('domain');
+    expect(tester.componentInstance.aggregationsChanged()[0].values).toEqual(['Plant']);
+    expect(tester.componentInstance.aggregationsChanged()[1].name).toBe('coo');
+    expect(tester.componentInstance.aggregationsChanged()[1].values).toEqual(['France']);
   });
 
-  it('should emit when the search descendant option emits a change for small aggregation', () => {
+  it('should emit when the search descendant option emits a change for small aggregation', async () => {
     environment.name = 'wheatis'; // annot is not available in the rare version of the app
     const tester = new TestComponentTester();
 
     // given an annot aggregation (small)
     const annot = toAggregation('annot', ['annot1']);
-    tester.componentInstance.aggregations = [annot];
-    tester.detectChanges();
+    tester.componentInstance.aggregations.set([annot]);
+    await tester.stable();
 
     // one small aggregation
     expect(tester.smallAggregations.length).toBe(1);
@@ -257,12 +255,12 @@ describe('AggregationsComponent', () => {
     // when an event is emitted by an aggregation
     const searchDescendants = tester.searchDescendants;
     searchDescendants.searchDescendants.set(true);
-    tester.detectChanges();
+    await tester.stable();
 
-    expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
+    expect(tester.componentInstance.searchDescendantsChanged()).toBeTrue();
   });
 
-  it('should emit when the search descendant option emits a change for large aggregation', () => {
+  it('should emit when the search descendant option emits a change for large aggregation', async () => {
     environment.name = 'wheatis'; // annot is not available in the rare version of the app
     const tester = new TestComponentTester();
 
@@ -281,16 +279,16 @@ describe('AggregationsComponent', () => {
       'a9'
     ]);
     annot.type = 'LARGE';
-    component.aggregations = [annot];
-    tester.detectChanges();
+    component.aggregations.set([annot]);
+    await tester.stable();
 
     // one large aggregation
     expect(tester.largeAggregations.length).toBe(1);
 
     // when an event is emitted by an aggregation
     tester.searchDescendants.searchDescendants.set(true);
-    tester.detectChanges();
+    await tester.stable();
 
-    expect(tester.componentInstance.searchDescendantsChanged).toBeTrue();
+    expect(tester.componentInstance.searchDescendantsChanged()).toBeTrue();
   });
 });

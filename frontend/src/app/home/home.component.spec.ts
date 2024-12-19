@@ -76,46 +76,46 @@ describe('HomeComponent', () => {
       });
     });
 
-    it('should display a search bar and trigger a search', () => {
+    it('should display a search bar and trigger a search', async () => {
       // given a component
       const tester = new HomeComponentTester();
       const component = tester.componentInstance;
       spyOn(component, 'search');
 
       // then it should display the search bar containing that query
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.searchBar).toHaveValue('');
 
       // with a query
       const query = 'Bacteria';
-      tester.searchBar.fillWith(query);
+      await tester.searchBar.fillWith(query);
 
       // trigger search
-      tester.searchButton.click();
+      await tester.searchButton.click();
       expect(component.search).toHaveBeenCalled();
       expect(component.searchForm.get('search').value).toBe(query);
     });
 
-    it('should display the pillars', () => {
+    it('should display the pillars', async () => {
       const tester = new HomeComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.pillarsComponent).not.toBeNull();
       expect(tester.aggregations).toBeNull();
     });
 
-    it('should not display example queries if there are none', () => {
+    it('should not display example queries if there are none', async () => {
       const tester = new HomeComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.exampleQueriesSection).toBeNull();
     });
 
-    it('should display example queries if there are some', () => {
+    it('should display example queries if there are some', async () => {
       const tester = new HomeComponentTester();
       tester.componentInstance.exampleQueries = ['foo', 'bar'];
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.exampleQueriesSection).not.toBeNull();
       expect(tester.exampleQueries.length).toBe(2);
@@ -133,7 +133,7 @@ describe('HomeComponent', () => {
       environment.home.showAggregations = false;
     });
 
-    it('should display aggregations and navigate to search when an aggregation is selected', () => {
+    it('should display aggregations and navigate to search when an aggregation is selected', async () => {
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
@@ -157,7 +157,7 @@ describe('HomeComponent', () => {
       spyOn(searchService, 'getMainAggregations').and.returnValue(of(aggregations));
 
       const tester = new HomeComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.pillarsComponent).toBeNull();
       expect(tester.aggregations).not.toBeNull();

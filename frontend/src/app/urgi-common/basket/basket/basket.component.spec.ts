@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
@@ -98,91 +98,96 @@ describe('BasketComponent', () => {
     if (tester.modalBackdrop) {
       tester.modalBackdrop.parentElement.removeChild(tester.modalBackdrop);
     }
+
+    jasmine.clock().uninstall();
   });
 
-  it('should display the number of items', () => {
+  it('should display the number of items', async () => {
     tester = new BasketComponentTester();
-    tester.detectChanges();
+    await tester.stable();
     // no item
     expect(tester.basketCounterAsText).toContainText('0');
 
     // when hovering the navbar
-    tester.basketCounterAsText.dispatchEventOfType('mouseenter');
+    await tester.basketCounterAsText.dispatchEventOfType('mouseenter');
 
     // then we should not have the tooltip displayed
     expect(tester.tooltip).toBeNull();
 
     // 1 item
     service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.basketCounter).toContainText('1');
 
     // when hovering the navbar
-    tester.basketCounter.dispatchEventOfType('mouseenter');
+    await tester.basketCounter.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('Click to view the item');
 
-    tester.basketCounter.dispatchEventOfType('mouseleave');
+    await tester.basketCounter.dispatchEventOfType('mouseleave');
 
     // several items
     service.addToBasket({ identifier: 'rosa rosae', name: 'rosa rosae' } as OrderableDocumentModel);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.basketCounter).toContainText('2');
 
     // when hovering the navbar
-    tester.basketCounter.dispatchEventOfType('mouseenter');
+    await tester.basketCounter.dispatchEventOfType('mouseenter');
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
     expect(tester.tooltip.textContent).toBe('Click to view the 2 items');
   });
 
-  it('should open a summary modal on click', () => {
+  it('should open a summary modal on click', async () => {
     tester = new BasketComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as OrderableDocumentModel);
-    tester.detectChanges();
-    tester.basketCounter.click();
+    await tester.stable();
+    await tester.basketCounter.click();
 
     expect(tester.modalTitle.textContent).toBe('Order summary');
     expect(tester.modalBody.textContent).toContain('Rosa');
 
     // remove item from basket
-    tester.removeItemFromBasket.click();
-    tester.detectChanges();
+    await tester.removeItemFromBasket.click();
+    await tester.stable();
+
     expect(tester.modalBody.textContent).not.toContain('Rosa');
     expect(tester.modalBody.textContent).toContain('No item');
 
-    tester.modalClose.click();
+    await tester.modalClose.click();
     expect(tester.modalTitle).toBeNull();
   });
 
-  it('should send the basket', fakeAsync(() => {
+  it('should send the basket', async () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate();
     basketSenderService.sendBasket.and.returnValue(of({ reference: 'ABCDEFGH' } as BasketCreated));
 
     tester = new BasketComponentTester();
-    tester.detectChanges();
+    await tester.stable();
     const reference = 'ABCDEFGH';
     service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.eulaAgreementError).toBeNull();
-    tester.basketCounter.click();
+    await tester.basketCounter.click();
 
-    tester.sendBasket.click();
-    tick(400); // to resolve the animation
-    tester.detectChanges();
+    await tester.sendBasket.click();
+    jasmine.clock().tick(400); // to resolve the animation
+    await tester.stable();
 
     const basket = service.basket();
 
     // EULA agreement is required
     expect(tester.eulaAgreementError).not.toBeNull();
     // agree
-    tester.eulaAgreement.click();
-    tester.sendBasket.click();
-    tick();
+    await tester.eulaAgreement.click();
+    await tester.sendBasket.click();
+
     expect(basketSenderService.sendBasket).toHaveBeenCalledWith(basket);
     expect(service.basket().items.length).toBe(0);
 
@@ -190,24 +195,24 @@ describe('BasketComponent', () => {
     expect(location.assign).toHaveBeenCalledWith(
       `http://localhost:4201/rare-basket/baskets/${reference}`
     );
-  }));
+  });
 
-  it('should clear the basket', () => {
+  it('should clear the basket', async () => {
     tester = new BasketComponentTester();
-    tester.detectChanges();
+    await tester.stable();
     service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
 
-    tester.detectChanges();
-    tester.basketCounter.click();
+    await tester.stable();
+    await tester.basketCounter.click();
 
-    tester.clearBasket.click();
+    await tester.clearBasket.click();
     expect(service.basket().items.length).toBe(0);
   });
 
-  it('should not display if the basket feature is disabled', () => {
+  it('should not display if the basket feature is disabled', async () => {
     (service.isEnabled as jasmine.Spy).and.returnValue(false);
     tester = new BasketComponentTester();
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.basketCounter).toBeNull();
     expect(tester.basketCounterAsText).toBeNull();
   });

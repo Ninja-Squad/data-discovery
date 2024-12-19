@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { filter, map, Observable, ReplaySubject } from 'rxjs';
@@ -98,9 +98,9 @@ describe('SearchComponent', () => {
     });
   });
 
-  it('should initialize state service when created', () => {
+  it('should initialize state service when created', async () => {
     const tester = new SearchComponentTester();
-    tester.detectChanges();
+    await tester.stable();
     expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
     const model: Model = {
@@ -126,7 +126,7 @@ describe('SearchComponent', () => {
       documentsLoading: true,
       documents: null
     });
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.results.length).toBe(0);
     expect(tester.aggregations.length).toBe(0);
@@ -138,14 +138,14 @@ describe('SearchComponent', () => {
       documentsLoading: true,
       documents: null
     });
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.results.length).toBe(0);
     expect(tester.aggregations.length).toBe(2);
     expect(tester.loaders.length).toBe(1);
     expect(tester.pagination).toBeFalsy();
 
     modelSubject.next(model);
-    tester.detectChanges();
+    await tester.stable();
 
     // then the search should be populated
     expect(tester.searchBar).toHaveValue('Bacteria');
@@ -160,9 +160,9 @@ describe('SearchComponent', () => {
     let tester: SearchComponentTester;
     let initialModel: Model;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       tester = new SearchComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
@@ -183,57 +183,55 @@ describe('SearchComponent', () => {
       };
 
       modelSubject.next(initialModel);
-      tester.detectChanges();
+      await tester.stable();
     });
 
-    it('should change aggregation', () => {
+    it('should change aggregation', async () => {
       const event: Array<AggregationCriterion> = [];
       tester.aggregationsComponent.aggregationsChange.emit(event);
-      tester.detectChanges();
+      await tester.stable();
 
       expect(searchStateService.changeAggregations).toHaveBeenCalledWith(event);
     });
 
-    it('should change page', fakeAsync(() => {
+    it('should change page', async () => {
       tester.pagination.pageChange.emit(1);
-      tester.detectChanges();
-      tick();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(searchStateService.changePage).toHaveBeenCalledWith(1);
-    }));
+    });
 
-    it('should change search descendants', () => {
+    it('should change search descendants', async () => {
       const event = true;
       tester.aggregationsComponent.searchDescendants.set(event);
-      tester.detectChanges();
+      await tester.stable();
 
       expect(searchStateService.changeSearchDescendants).toHaveBeenCalledWith(event);
     });
 
-    it('should trigger new search', () => {
-      tester.searchBar.fillWith('hello');
-      tester.searchButton.click();
+    it('should trigger new search', async () => {
+      await tester.searchBar.fillWith('hello');
+      await tester.searchButton.click();
 
       expect(searchStateService.newSearch).toHaveBeenCalledWith('hello');
     });
 
-    it('should toggle filters', () => {
+    it('should toggle filters', async () => {
       expect(tester.element('.fa-caret-up')).toBeNull();
       expect(tester.element('.fa-caret-down')).not.toBeNull();
 
-      tester.filterToggler.click();
+      await tester.filterToggler.click();
 
       expect(tester.element('.fa-caret-up')).not.toBeNull();
       expect(tester.element('.fa-caret-down')).toBeNull();
 
-      tester.filterToggler.click();
+      await tester.filterToggler.click();
 
       expect(tester.element('.fa-caret-up')).toBeNull();
       expect(tester.element('.fa-caret-down')).not.toBeNull();
     });
 
-    it('should limit pagination to 500 pages, even if more results', () => {
+    it('should limit pagination to 500 pages, even if more results', async () => {
       const content: Array<DocumentModel> = [];
       for (let i = 0; i < 20; i++) {
         content.push(toRareDocument(`Bacteria ${i}`));
@@ -249,7 +247,7 @@ describe('SearchComponent', () => {
         ...initialModel,
         documents
       });
-      tester.detectChanges();
+      await tester.stable();
 
       // then it should limit the pagination to 500 pages in the pagination
       // and a pagination with one page
@@ -258,31 +256,31 @@ describe('SearchComponent', () => {
       expect(tester.pagination.pageCount).toBe(500);
     });
 
-    it('should not display pagination if empty result', () => {
+    it('should not display pagination if empty result', async () => {
       modelSubject.next({
         ...initialModel,
         documents: toSinglePage([])
       });
-      tester.detectChanges();
+      await tester.stable();
       expect(tester.pagination).toBeNull();
     });
 
-    it('should not display pagination if only one page of results', () => {
+    it('should not display pagination if only one page of results', async () => {
       modelSubject.next({
         ...initialModel,
         documents: toSinglePage([toRareDocument('Bacteria')])
       });
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.pagination).toBeNull();
     });
 
-    it('should update criteria when they change', () => {
+    it('should update criteria when they change', async () => {
       modelSubject.next({
         ...initialModel,
         aggregations: [toAggregation('coo', ['France', 'Italy'])]
       });
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.aggregations.length).toBe(1);
     });

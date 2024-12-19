@@ -21,10 +21,10 @@ class FaidareFooterComponentTester extends ComponentTester<FaidareFooterComponen
 describe('FaidareFooterComponent', () => {
   let tester: FaidareFooterComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
     tester = new FaidareFooterComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display data providers and elixir logo', () => {

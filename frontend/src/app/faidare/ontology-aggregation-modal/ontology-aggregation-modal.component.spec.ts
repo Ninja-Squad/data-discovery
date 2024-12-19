@@ -1,6 +1,6 @@
 import { OntologyAggregationModalComponent } from './ontology-aggregation-modal.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   OntologyDetails,
@@ -77,7 +77,7 @@ describe('OntologyAggregationModalComponent', () => {
   let tree: Array<TreeNode<OntologyPayload>>;
   let treeI18n: TreeI18n;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     activeModal = createMock(NgbActiveModal);
     ontologyService = createMock(OntologyService);
 
@@ -99,7 +99,7 @@ describe('OntologyAggregationModalComponent', () => {
 
     tester = new OntologyAggregationModalComponentTester();
     tester.componentInstance.prepare(toAggregation('o', ['v1', 'v2', 'v3']), ['v2']);
-    tester.detectChanges();
+    await tester.stable();
 
     tree = [
       {
@@ -171,14 +171,16 @@ describe('OntologyAggregationModalComponent', () => {
     };
   });
 
-  it('should display a tree with the default language selected', () => {
+  afterEach(() => jasmine.clock().uninstall());
+
+  it('should display a tree with the default language selected', async () => {
     expect(tester.tree).toBeNull();
     expect(tester.nodeDetails).toBeNull();
 
     treeSubject.next(tree);
     treeI18nSubject.next(treeI18n);
 
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.tree).not.toBeNull();
     expect(tester.treeFilter).toHaveValue('');
@@ -205,52 +207,60 @@ describe('OntologyAggregationModalComponent', () => {
   });
 
   describe('once initialized', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       treeSubject.next(tree);
       treeI18nSubject.next(treeI18n);
-      tester.detectChanges();
+      await tester.stable();
     });
 
-    it('should filter', fakeAsync(() => {
-      tester.treeFilter.fillWith('TC45');
-      tick(500);
-      tester.detectChanges();
+    it('should filter', async () => {
+      jasmine.clock().install();
+      jasmine.clock().mockDate();
+
+      expect(tester.tree).toContainText('TC1');
+
+      await tester.treeFilter.fillWith('TC45');
+      // using jasmine clock doesn't work here, but I don't know why
+      // since the delay is small, we'll really wait
+      jasmine.clock().tick(500);
+      await tester.stable();
 
       expect(tester.tree).not.toContainText('TC1');
 
-      tester.treeFilter.fillWith('');
-      tick(500);
-      tester.detectChanges();
+      await tester.treeFilter.fillWith('');
+      jasmine.clock().tick(500);
+      await tester.stable();
+      await tester.fixture.whenRenderingDone();
 
       expect(tester.tree).toContainText('TC1');
-    }));
+    });
 
-    it('should highlight ontology node', fakeAsync(() => {
+    it('should highlight ontology node', async () => {
       ontologyService.getOntology.and.returnValue(
         of({ ontologyName: 'O1', links: [] } as OntologyDetails)
       );
-      tester.nodeContaining('O1').click();
+      await tester.nodeContaining('O1').click();
 
       expect(tester.nodeDetails).toContainText('O1');
-    }));
+    });
 
-    it('should highlight trait class node', fakeAsync(() => {
+    it('should highlight trait class node', async () => {
       ontologyService.getTraitClass.and.returnValue(of({ name: 'TC1' } as TraitClassDetails));
-      tester.nodeContaining('TC1').click();
+      await tester.nodeContaining('TC1').click();
 
       expect(tester.nodeDetails).toContainText('TC1');
-    }));
+    });
 
-    it('should highlight trait node', fakeAsync(() => {
+    it('should highlight trait node', async () => {
       ontologyService.getTrait.and.returnValue(
         of({ name: 'T1', synonyms: [], alternativeAbbreviations: [] } as TraitDetails)
       );
-      tester.nodeContaining('T1').click();
+      await tester.nodeContaining('T1').click();
 
       expect(tester.nodeDetails).toContainText('T1');
-    }));
+    });
 
-    it('should highlight variable node', fakeAsync(() => {
+    it('should highlight variable node', async () => {
       ontologyService.getVariable.and.returnValue(
         of({
           name: 'V2',
@@ -259,16 +269,16 @@ describe('OntologyAggregationModalComponent', () => {
           trait: { name: 'T1', synonyms: [], alternativeAbbreviations: [] }
         } as VariableDetails)
       );
-      tester.nodeContaining('V2').click();
+      await tester.nodeContaining('V2').click();
 
       expect(tester.nodeDetails).toContainText('V2');
-    }));
+    });
 
-    it('should change the language', fakeAsync(() => {
+    it('should change the language', async () => {
       ontologyService.getOntology.and.returnValue(
         of({ ontologyName: 'O1', links: [] } as OntologyDetails)
       );
-      tester.nodeContaining('O1').click();
+      await tester.nodeContaining('O1').click();
 
       ontologyService.getTreeI18n.and.returnValue(
         of({
@@ -295,43 +305,43 @@ describe('OntologyAggregationModalComponent', () => {
         of({ ontologyName: 'Ola O1', links: [] } as OntologyDetails)
       );
 
-      tester.language?.selectLabel('Español');
+      await tester.language?.selectLabel('Español');
       expect(tester.tree).toContainText('Ola O1');
       expect(tester.nodeDetails).toContainText('Ola O1');
-    }));
+    });
 
-    it('should cancel', () => {
-      tester.cancel.click();
+    it('should cancel', async () => {
+      await tester.cancel.click();
       expect(activeModal.dismiss).toHaveBeenCalled();
     });
 
-    it('should display an error and disable close if more than max selected', () => {
+    it('should display an error and disable close if more than max selected', async () => {
       tester.componentInstance.maxSelectedNodes = 2;
-      tester.detectChanges();
+      await tester.stable();
       expect(tester.limitSelection).toBeNull();
       expect(tester.ok.disabled).toBeFalse();
 
-      tester.nodeCheckboxContaining('V1').check();
+      await tester.nodeCheckboxContaining('V1').check();
       expect(tester.limitSelection).toBeNull();
       expect(tester.ok.disabled).toBeFalse();
 
-      tester.nodeCheckboxContaining('V3').check();
+      await tester.nodeCheckboxContaining('V3').check();
       expect(tester.limitSelection).not.toBeNull();
       expect(tester.ok.disabled).toBeTrue();
       expect(tester.limitSelection).toContainText(
         '3 variables selected. Please limit the selection to max 2.'
       );
 
-      tester.nodeCheckboxContaining('V2').uncheck();
+      await tester.nodeCheckboxContaining('V2').uncheck();
       expect(tester.limitSelection).toBeNull();
       expect(tester.ok.disabled).toBeFalse();
     });
 
-    it('should close', () => {
-      tester.nodeCheckboxContaining('V1').check();
-      tester.nodeCheckboxContaining('V2').uncheck();
-      tester.nodeCheckboxContaining('V3').check();
-      tester.ok.click();
+    it('should close', async () => {
+      await tester.nodeCheckboxContaining('V1').check();
+      await tester.nodeCheckboxContaining('V2').uncheck();
+      await tester.nodeCheckboxContaining('V3').check();
+      await tester.ok.click();
       expect(activeModal.close).toHaveBeenCalledWith(['v1', 'v3']);
     });
   });

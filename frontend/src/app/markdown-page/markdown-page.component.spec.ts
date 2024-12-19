@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { MarkdownPageComponent } from './markdown-page.component';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +21,7 @@ describe('MarkdownPageComponent', () => {
     data: { mdFile: environment.helpMdFile }
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -33,10 +33,10 @@ describe('MarkdownPageComponent', () => {
     });
 
     tester = new MarkdownPageComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
-  it('should load and display the help file', fakeAsync(() => {
+  it('should load and display the help file', async () => {
     const http = TestBed.inject(HttpTestingController);
 
     // the markdown file is extracted from the route data by our component
@@ -51,11 +51,10 @@ describe('MarkdownPageComponent', () => {
       })
       .flush('# Help section');
 
-    tick();
-    tester.detectChanges();
+    await tester.stable();
 
     // the markdown component should render the title
     // no idea why using tester.element('h1') doesn't work
     expect(tester.nativeElement.querySelector('h1')?.textContent).toBe('Help section');
-  }));
+  });
 });

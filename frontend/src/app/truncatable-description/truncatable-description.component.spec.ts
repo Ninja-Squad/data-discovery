@@ -3,11 +3,12 @@ import { ComponentTester } from 'ngx-speculoos';
 
 import { TruncatableDescriptionComponent } from './truncatable-description.component';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 @Component({
   template: `<dd-truncatable-description [description]="description()" />`,
-  imports: [TruncatableDescriptionComponent]
+  imports: [TruncatableDescriptionComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   description = signal('');
@@ -38,13 +39,13 @@ describe('TruncatableDescriptionComponent', () => {
 
   beforeEach(() => TestBed.configureTestingModule({ providers: [provideI18nTesting()] }));
 
-  it('should truncate the long description and allow to display it fully', () => {
+  it('should truncate the long description and allow to display it fully', async () => {
     const tester = new TruncatableDescriptionComponentTester();
     const component = tester.componentInstance;
 
     // given a resource with a long description
     component.description.set(Array(200).fill('aaa').join(' '));
-    tester.detectChanges();
+    await tester.stable();
 
     // then we should truncate it
     expect(tester.fullDescriptionButton).not.toBeNull();
@@ -54,7 +55,7 @@ describe('TruncatableDescriptionComponent', () => {
     expect(tester.description.textContent.length).toBeGreaterThanOrEqual(252 + linkContent.length);
 
     // when we click on the link
-    tester.fullDescriptionButton.click();
+    await tester.fullDescriptionButton.click();
 
     // then we should display the full description
     expect(tester.fullDescription).not.toBeNull();
@@ -65,19 +66,19 @@ describe('TruncatableDescriptionComponent', () => {
     expect(tester.fullDescriptionButton).toBeNull();
   });
 
-  it('should display a highlighted description (truncated and full)', () => {
+  it('should display a highlighted description (truncated and full)', async () => {
     const tester = new TruncatableDescriptionComponentTester();
     const component = tester.componentInstance;
 
     // given a resource with a long highlighted description
     const description = 'Hello <em>world</em>! The <em>world</em> is&nbsp;beautiful.';
     component.description.set(description + ' ' + Array(200).fill('aaa').join(' '));
-    tester.detectChanges();
+    await tester.stable();
 
     // it should highlight the short description
     expect(tester.description).toContainText('Hello world! The world is\u00A0beautiful.');
 
-    tester.fullDescriptionButton.click();
+    await tester.fullDescriptionButton.click();
 
     // and also the long description
     expect(tester.fullDescription).toContainText('Hello world! The world is\u00A0beautiful.');

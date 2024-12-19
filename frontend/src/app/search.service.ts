@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   catchError,
@@ -100,6 +100,7 @@ export class SearchService {
             // if the query is only one character, prefer suggesting nothing: too vague
             return of([]);
           }
+
           return this.suggest(query).pipe(
             // otherwise send a request to the server
             catchError(() => of([])) // but if the request fails, suggest nothing

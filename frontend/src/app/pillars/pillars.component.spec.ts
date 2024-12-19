@@ -44,7 +44,7 @@ describe('PillarsComponent', () => {
   let pillarService: jasmine.SpyObj<PillarService>;
   const pillars$ = new Subject<Array<PillarModel>>();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     registerLocaleData(localeFr);
     pillarService = createMock(PillarService);
     pillarService.list.and.returnValue(pillars$);
@@ -53,7 +53,7 @@ describe('PillarsComponent', () => {
     });
 
     tester = new PillarsComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should not display any pillar nor any alert while pillars are not available yet', () => {
@@ -61,7 +61,7 @@ describe('PillarsComponent', () => {
     expect(tester.noDataAlert).toBeNull();
   });
 
-  it('should display pillars', () => {
+  it('should display pillars', async () => {
     const pillars: Array<PillarModel> = [
       {
         name: 'Plant',
@@ -85,7 +85,7 @@ describe('PillarsComponent', () => {
     ];
     pillars$.next(pillars);
 
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.dataProviders).toHaveText('Data providers');
 
@@ -104,9 +104,9 @@ describe('PillarsComponent', () => {
     expect(tester.databaseSourceLink(0, 1)).toBeNull();
   });
 
-  it('should display alert if no pillar has been found', () => {
+  it('should display alert if no pillar has been found', async () => {
     pillars$.next([]);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.noDataAlert).toContainText('No data found');
   });

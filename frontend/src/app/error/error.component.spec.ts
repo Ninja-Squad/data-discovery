@@ -31,7 +31,7 @@ describe('ErrorComponent', () => {
   let routerEvents: Subject<RouterEvent>;
   let httpErrors: Subject<HttpError>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     routerEvents = new Subject<RouterEvent>();
     httpErrors = new Subject<HttpError>();
 
@@ -43,9 +43,10 @@ describe('ErrorComponent', () => {
     spyOn(errorInterceptorService, 'getErrors').and.returnValue(httpErrors);
 
     jasmine.clock().install();
+    jasmine.clock().mockDate();
 
     tester = new ErrorComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   afterEach(() => jasmine.clock().uninstall());
@@ -55,13 +56,13 @@ describe('ErrorComponent', () => {
     expect(tester.error).toBeNull();
   });
 
-  it('should display an error when it is emitted, and hide it when navigation succeeds', () => {
+  it('should display an error when it is emitted, and hide it when navigation succeeds', async () => {
     httpErrors.next({
       status: 500,
       message: 'Oulala'
     });
     jasmine.clock().tick(1);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.error).toContainText('Unexpected error occurred.');
     expect(tester.status).toContainText('Status: 500');
@@ -72,7 +73,7 @@ describe('ErrorComponent', () => {
       message: null
     });
     jasmine.clock().tick(1);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.error).toContainText('Unexpected error occurred.');
     expect(tester.status).toBeNull();
@@ -80,12 +81,12 @@ describe('ErrorComponent', () => {
 
     routerEvents.next(new NavigationStart(1, 'foo', null));
     jasmine.clock().tick(1);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.error).not.toBeNull();
 
     routerEvents.next(new NavigationEnd(1, 'foo', null));
     jasmine.clock().tick(1);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.error).toBeNull();
   });
 });

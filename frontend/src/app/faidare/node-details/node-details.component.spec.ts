@@ -1,22 +1,23 @@
 import { NodeDetailsComponent } from './node-details.component';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TypedNodeDetails } from '../ontology.model';
 import { ComponentTester } from 'ngx-speculoos';
 import { TestBed } from '@angular/core/testing';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<dd-node-details [node]="node" />',
-  imports: [NodeDetailsComponent]
+  template: '<dd-node-details [node]="node()" />',
+  imports: [NodeDetailsComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  node: TypedNodeDetails = {
+  node = signal<TypedNodeDetails>({
     type: 'ONTOLOGY',
     details: {
       ontologyName: 'Test 1',
       links: []
     }
-  } as TypedNodeDetails;
+  } as TypedNodeDetails);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -32,11 +33,11 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('NodeDetailsComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display an ontology', () => {
@@ -44,36 +45,36 @@ describe('NodeDetailsComponent', () => {
     expect(tester.testElement).toContainText('Ontology');
   });
 
-  it('should display a trait class', () => {
-    tester.componentInstance.node = {
+  it('should display a trait class', async () => {
+    tester.componentInstance.node.set({
       type: 'TRAIT_CLASS',
       details: {
         name: 'Test 1'
       }
-    } as TypedNodeDetails;
-    tester.detectChanges();
+    } as TypedNodeDetails);
+    await tester.stable();
 
     expect(tester.testElement).toContainText('Test 1');
     expect(tester.testElement).toContainText('Trait class');
   });
 
-  it('should display a trait', () => {
-    tester.componentInstance.node = {
+  it('should display a trait', async () => {
+    tester.componentInstance.node.set({
       type: 'TRAIT',
       details: {
         name: 'Test 1',
         synonyms: [],
         alternativeAbbreviations: []
       }
-    } as TypedNodeDetails;
-    tester.detectChanges();
+    } as TypedNodeDetails);
+    await tester.stable();
 
     expect(tester.testElement).toContainText('Test 1');
     expect(tester.testElement).toContainText('Trait');
   });
 
-  it('should display a variable', () => {
-    tester.componentInstance.node = {
+  it('should display a variable', async () => {
+    tester.componentInstance.node.set({
       type: 'VARIABLE',
       details: {
         name: 'Test 1',
@@ -85,8 +86,8 @@ describe('NodeDetailsComponent', () => {
           alternativeAbbreviations: []
         }
       }
-    } as TypedNodeDetails;
-    tester.detectChanges();
+    } as TypedNodeDetails);
+    await tester.stable();
 
     expect(tester.testElement).toContainText('Test 1');
     expect(tester.testElement).toContainText('Variable');
