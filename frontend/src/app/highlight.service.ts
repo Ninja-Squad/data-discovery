@@ -17,7 +17,7 @@ export class HighlightService {
    * first highlighted node is displayed, with some context around.
    *
    * @param highlightedText the highlighted text, which normally contains <em> elements
-   * @param contextLength the length of the countext around the first displayed <em> element (including the text
+   * @param contextLength the length of the context around the first displayed <em> element (including the text
    * of the <em> element itself)
    */
   truncate(highlightedText: string, maxLength: number, contextLength: number): string {
@@ -126,8 +126,7 @@ export class HighlightService {
 
   private boundariesOfFirstHighlightedText(span: HTMLSpanElement): Boundaries | null {
     let index = 0;
-    for (let i = 0; i < span.childNodes.length; i++) {
-      const childNode = span.childNodes[i];
+    for (const childNode of span.childNodes) {
       if (childNode instanceof HTMLElement) {
         return { startIndex: index, endIndex: index + childNode.textContent!.length };
       } else {

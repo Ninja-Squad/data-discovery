@@ -14,7 +14,7 @@ import { GenericDocumentModel } from '../generic-document.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  document = signal<GenericDocumentModel | undefined>(undefined);
+  readonly document = signal<GenericDocumentModel | undefined>(undefined);
 }
 
 describe('DataDiscoveryDocumentComponent', () => {

@@ -58,16 +58,16 @@ export class OntologyAggregationModalComponent {
   private modal = inject(NgbActiveModal);
   private ontologyService = inject(OntologyService);
   private destroyRef = inject(DestroyRef);
-
   private fb = inject(NonNullableFormBuilder);
-  treeFilterCtrl = this.fb.control('');
-  languageCtrl = this.fb.control<OntologyLanguage>('FR');
-  languages = ONTOLOGY_LANGUAGES;
-  treeView = signal<TreeViewModel | undefined>(undefined);
+
+  readonly treeFilterCtrl = this.fb.control('');
+  readonly languageCtrl = this.fb.control<OntologyLanguage>('FR');
+  readonly languages = ONTOLOGY_LANGUAGES;
+  readonly treeView = signal<TreeViewModel | undefined>(undefined);
   private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
-  highlightedNodeDetails: Signal<TypedNodeDetails | undefined>;
-  selectedNodes = signal<Array<NodeInformation<OntologyPayload>>>([]);
-  maxSelectedNodes = 20;
+  readonly highlightedNodeDetails: Signal<TypedNodeDetails | undefined>;
+  readonly selectedNodes = signal<Array<NodeInformation<OntologyPayload>>>([]);
+  readonly maxSelectedNodes = 20;
 
   constructor() {
     this.languageCtrl.setValue(this.ontologyService.getPreferredLanguage());

@@ -14,7 +14,7 @@ import { RareDocumentModel } from '../rare-document.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  document = signal<RareDocumentModel>(toRareDocument('Bacteria'));
+  readonly document = signal<RareDocumentModel>(toRareDocument('Bacteria'));
 }
 
 class RareDocumentComponentTester extends ComponentTester<TestComponent> {

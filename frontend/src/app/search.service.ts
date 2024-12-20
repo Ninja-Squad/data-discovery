@@ -34,7 +34,7 @@ export class SearchService {
     // we decrease the page as the frontend is 1 based, and the backend 0 based.
     const page = criteria.page - 1;
     // we built the search parameters
-    const params: { [key: string]: string | number | Array<string> | boolean } = {
+    const params: Record<string, string | number | ReadonlyArray<string> | boolean> = {
       query: criteria.query,
       page,
       highlight: true,
@@ -65,7 +65,7 @@ export class SearchService {
     descendants: boolean;
   }): Observable<Array<Aggregation>> {
     // we built the search parameters
-    const params: { [key: string]: string | Array<string> | boolean } = {
+    const params: Record<string, string | ReadonlyArray<string> | boolean> = {
       query: criteria.query,
       descendants: criteria.descendants
     };

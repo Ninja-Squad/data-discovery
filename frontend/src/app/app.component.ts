@@ -17,7 +17,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  i18nReady = toSignal(
+  readonly i18nReady = toSignal(
     inject(TranslateService)
       .get('navbar.more')
       .pipe(

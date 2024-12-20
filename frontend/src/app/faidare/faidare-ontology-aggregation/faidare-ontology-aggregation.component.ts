@@ -26,7 +26,7 @@ export class FaidareOntologyAggregationComponent {
    * The actual bucket length, which is the bucket length minus one if one of the bucket keys is the null value,
    * that is not selectable for this aggregation type
    */
-  actualBucketLength = computed(() => {
+  readonly actualBucketLength = computed(() => {
     let result = this.aggregation().buckets.length;
     if (this.aggregation().buckets.some(bucket => bucket.key === NULL_VALUE)) {
       result -= 1;

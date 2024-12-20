@@ -43,16 +43,16 @@ export class SearchComponent {
   private route = inject(ActivatedRoute);
   private searchStateService = inject(SearchStateService);
 
-  appName = environment.name;
-  searchForm = inject(NonNullableFormBuilder).group({
+  readonly appName = environment.name;
+  readonly searchForm = inject(NonNullableFormBuilder).group({
     search: ''
   });
-  suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
+  readonly suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
   // hide or show the filters on small devices
   private filtersExpandedSubject = new BehaviorSubject<boolean>(false);
 
-  vm: Signal<ViewModel | undefined>;
+  readonly vm: Signal<ViewModel | undefined>;
 
   constructor() {
     const searchService = inject(SearchService);

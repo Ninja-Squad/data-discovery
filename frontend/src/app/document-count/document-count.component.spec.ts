@@ -17,10 +17,10 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  count = signal(0);
-  muted = signal(false);
-  name = signal('');
-  url = signal('');
+  readonly count = signal(0);
+  readonly muted = signal(false);
+  readonly name = signal('');
+  readonly url = signal('');
 }
 
 describe('DocumentCountComponent', () => {

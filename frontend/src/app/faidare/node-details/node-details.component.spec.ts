@@ -11,7 +11,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  node = signal<TypedNodeDetails>({
+  readonly node = signal<TypedNodeDetails>({
     type: 'ONTOLOGY',
     details: {
       ontologyName: 'Test 1',

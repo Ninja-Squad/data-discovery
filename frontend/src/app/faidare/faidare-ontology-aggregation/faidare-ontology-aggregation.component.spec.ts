@@ -17,9 +17,9 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  aggregation = signal(toAggregation('o', ['v1', 'v2', 'v3', NULL_VALUE]));
-  criterion = signal<AggregationCriterion | undefined>(undefined);
-  selectedKeys = signal<Array<string>>([]);
+  readonly aggregation = signal(toAggregation('o', ['v1', 'v2', 'v3', NULL_VALUE]));
+  readonly criterion = signal<AggregationCriterion | undefined>(undefined);
+  readonly selectedKeys = signal<Array<string>>([]);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

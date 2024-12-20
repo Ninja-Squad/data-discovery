@@ -13,5 +13,5 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [TranslateModule, DocumentCountComponent]
 })
 export class PillarsComponent {
-  pillars = toSignal(inject(PillarService).list());
+  readonly pillars = toSignal(inject(PillarService).list());
 }

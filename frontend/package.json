@@ -1,6 +1,7 @@
 {
   "name": "rare-frontend",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --configuration=rare --port=4000",
@@ -55,7 +56,7 @@
     "@types/jasmine": "5.1.5",
     "angular-eslint": "19.0.2",
     "cypress": "13.17.0",
-    "eslint": "8.57.1",
+    "eslint": "9.17.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
     "jasmine-core": "5.5.0",

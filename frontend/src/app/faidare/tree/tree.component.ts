@@ -35,7 +35,7 @@ interface ChangeTextAction<P> extends BaseAction {
 
 type Action<P> = FilterAction | ChangeTextAction<P>;
 
-const DEFAULT_TEXT_ACCESSOR: TextAccessor<any> = () => 'no text accessor provided';
+const DEFAULT_TEXT_ACCESSOR: TextAccessor<unknown> = () => 'no text accessor provided';
 
 /**
  * A relatively reusable tree component that has the following features:
@@ -62,7 +62,7 @@ export class TreeComponent<P> {
   private treeService = inject(TreeService);
 
   private tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
-  tree = toSignal(this.tree$);
+  readonly tree = toSignal(this.tree$);
 
   readonly payloadTemplate = input<
     TemplateRef<{
@@ -70,14 +70,14 @@ export class TreeComponent<P> {
     }>
   >();
 
-  rootNodes = input.required<Array<TreeNode<P>>>();
-  filter = input.required<string | null | undefined>();
-  textAccessor = input.required<TextAccessor<P> | null>();
+  readonly rootNodes = input.required<Array<TreeNode<P>>>();
+  readonly filter = input.required<string | null | undefined>();
+  readonly textAccessor = input.required<TextAccessor<P> | null>();
 
-  sanitizedFilter = computed(() => (this.filter() ?? '').trim().toLowerCase());
-  sanitizedTextAccessor = computed(() => this.textAccessor() ?? DEFAULT_TEXT_ACCESSOR);
+  readonly sanitizedFilter = computed(() => (this.filter() ?? '').trim().toLowerCase());
+  readonly sanitizedTextAccessor = computed(() => this.textAccessor() ?? DEFAULT_TEXT_ACCESSOR);
 
-  highlightedNode: OutputRef<NodeInformation<P> | undefined> = outputFromObservable(
+  readonly highlightedNode: OutputRef<NodeInformation<P> | undefined> = outputFromObservable(
     this.tree$.pipe(
       map(tree => tree.highlightedNode),
       distinctUntilChanged((a, b) => a?.id === b?.id),
@@ -91,7 +91,7 @@ export class TreeComponent<P> {
     )
   );
 
-  selectedNodes: OutputRef<Array<NodeInformation<P>>> = outputFromObservable(
+  readonly selectedNodes: OutputRef<Array<NodeInformation<P>>> = outputFromObservable(
     this.treeService.selectedNodesChanges()
   );
 

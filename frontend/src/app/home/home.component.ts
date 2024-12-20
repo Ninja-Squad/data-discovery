@@ -32,18 +32,18 @@ export class HomeComponent {
   private router = inject(Router);
   private searchService = inject(SearchService);
 
-  searchForm = inject(NonNullableFormBuilder).group({
+  readonly searchForm = inject(NonNullableFormBuilder).group({
     search: ''
   });
-  appName = environment.name;
-  suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>> =
+  readonly appName = environment.name;
+  readonly suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>> =
     this.searchService.getSuggesterTypeahead();
 
-  showAggregations = environment.home.showAggregations;
-  mainAggregations: Signal<Array<Aggregation> | undefined> = this.showAggregations
+  readonly showAggregations = environment.home.showAggregations;
+  readonly mainAggregations: Signal<Array<Aggregation> | undefined> = this.showAggregations
     ? toSignal(this.searchService.getMainAggregations())
     : signal([]);
-  exampleQueries: Array<string> = environment.home.exampleQueries;
+  readonly exampleQueries: Array<string> = environment.home.exampleQueries;
 
   search() {
     this.router.navigate(['/search'], {

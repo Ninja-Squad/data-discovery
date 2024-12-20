@@ -15,7 +15,7 @@ import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  documents = signal(toSinglePage<OrderableDocumentModel>([]));
+  readonly documents = signal(toSinglePage<OrderableDocumentModel>([]));
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

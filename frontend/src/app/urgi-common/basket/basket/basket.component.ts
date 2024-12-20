@@ -32,15 +32,20 @@ export class BasketComponent {
   private modalService = inject(NgbModal);
   private destroyRef = inject(DestroyRef);
 
-  isEnabled = this.basketService.isEnabled();
-  basket: Signal<Basket | null> = this.isEnabled ? this.basketService.basket : signal(null);
-  itemCounter = computed(() => {
+  readonly isEnabled = this.basketService.isEnabled();
+  readonly basket: Signal<Basket | null> = this.isEnabled
+    ? this.basketService.basket
+    : signal(null);
+  readonly itemCounter = computed(() => {
     const basket = this.basket();
     return basket ? basket.items.length : 0;
   });
-  eulaAgreementControl = inject(NonNullableFormBuilder).control(false, Validators.requiredTrue);
-  submitted = signal(false);
-  confirmForbidden = signal(false);
+  readonly eulaAgreementControl = inject(NonNullableFormBuilder).control(
+    false,
+    Validators.requiredTrue
+  );
+  readonly submitted = signal(false);
+  readonly confirmForbidden = signal(false);
 
   private location = inject(LOCATION);
 

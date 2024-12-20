@@ -36,31 +36,31 @@ export interface DataDiscoveryEnvironment {
   /**
    * The document component to use in the application
    */
-  documentComponent: Type<any>;
+  documentComponent: Type<unknown>;
   /**
    * The document list component to use in the application
    */
-  documentListComponent: Type<any>;
+  documentListComponent: Type<unknown>;
   /**
    * The ontology aggregation component to use in the application
    */
-  ontologyAggregationComponent: Type<any>;
+  ontologyAggregationComponent: Type<unknown>;
   /**
    * The header component to use in the application
    */
-  headerComponent: Type<any>;
+  headerComponent: Type<unknown>;
   /**
    * The footer component to use in the application
    */
-  footerComponent: Type<any>;
+  footerComponent: Type<unknown>;
   /**
    * The basket component to use in the application
    */
-  basketComponent: Type<any>;
+  basketComponent: Type<unknown>;
   /**
    * The select all results component to use in the application
    */
-  selectAllResultsComponent: Type<any>;
+  selectAllResultsComponent: Type<unknown>;
   /**
    * Markdown files served
    */

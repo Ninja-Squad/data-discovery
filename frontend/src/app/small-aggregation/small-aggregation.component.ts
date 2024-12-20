@@ -1,11 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnChanges,
-  output,
   inject,
   input,
-  model
+  model,
+  OnChanges,
+  output
 } from '@angular/core';
 import {
   FormControl,
@@ -57,13 +57,10 @@ export class SmallAggregationComponent implements OnChanges {
    * returns
    * [ 'France' ]
    */
-  static extractKeys(formValues: { [key: string]: boolean | null | undefined }) {
-    return (
-      Object.entries(formValues)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([_key, value]) => value)
-        .map(([key]) => key)
-    );
+  static extractKeys(formValues: Record<string, boolean | null | undefined>) {
+    return Object.entries(formValues)
+      .filter(([_key, value]) => value)
+      .map(([key]) => key);
   }
 
   ngOnChanges(): void {

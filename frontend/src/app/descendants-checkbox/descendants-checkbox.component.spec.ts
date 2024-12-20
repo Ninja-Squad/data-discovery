@@ -12,8 +12,8 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  value = signal(true);
-  eventReceived = signal<boolean | null>(null);
+  readonly value = signal(true);
+  readonly eventReceived = signal<boolean | null>(null);
 
   onChange(event: boolean) {
     this.eventReceived.set(event);

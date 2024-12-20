@@ -31,7 +31,7 @@ interface TestPayload {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  rootNodes = signal<Array<TreeNode<TestPayload>>>([
+  readonly rootNodes = signal<Array<TreeNode<TestPayload>>>([
     {
       payload: { id: 'b' },
       children: [
@@ -92,11 +92,10 @@ class TestComponent {
       ]
     }
   ]);
-  textAccessor = signal<TextAccessor<TestPayload>>(payload => payload.id.toUpperCase());
-  selectedNodes = signal<Array<NodeInformation<TestPayload>>>([]);
-  highlightedNode = signal<NodeInformation<TestPayload> | undefined>(undefined);
-
-  filter = signal<string | null>(null);
+  readonly textAccessor = signal<TextAccessor<TestPayload>>(payload => payload.id.toUpperCase());
+  readonly selectedNodes = signal<Array<NodeInformation<TestPayload>>>([]);
+  readonly highlightedNode = signal<NodeInformation<TestPayload> | undefined>(undefined);
+  readonly filter = signal<string | null>(null);
 }
 
 class TestNode {

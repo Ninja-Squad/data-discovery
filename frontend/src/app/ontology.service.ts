@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TreeNode } from './faidare/tree/tree.service';
 import { map, Observable, shareReplay } from 'rxjs';
@@ -98,7 +98,7 @@ export interface VariableDetails {
 
 export interface TreeI18n {
   language: string;
-  names: { [type in OntologyNodeType]: { [id: string]: string } };
+  names: Record<OntologyNodeType, Record<string, string>>;
 }
 
 export const ONTOLOGY_LANGUAGES = ['EN', 'FR', 'ES'] as const;
@@ -183,9 +183,9 @@ export class OntologyService {
     selectedVariableIds: Set<string>
   ): Array<TreeNode<OntologyPayload>> {
     const result: Array<TreeNode<OntologyPayload>> = [];
-    for (let i = 0; i < ontologyTreeNodes.length; i++) {
+    for (const ontologyTreeNode of ontologyTreeNodes) {
       const treeNode = this.toTreeNode(
-        ontologyTreeNodes[i],
+        ontologyTreeNode,
         selectableVariableIds,
         selectedVariableIds
       );

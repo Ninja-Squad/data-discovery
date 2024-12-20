@@ -26,14 +26,14 @@ export interface BasketItem {
 }
 
 export interface Basket {
-  items: Array<BasketItem>;
+  readonly items: ReadonlyArray<BasketItem>;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class BasketService {
-  private _basket = signal<Basket>({ items: [] });
+  private readonly _basket = signal<Basket>({ items: [] });
   basket = this._basket.asReadonly();
 
   constructor() {

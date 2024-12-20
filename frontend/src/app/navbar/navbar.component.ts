@@ -25,9 +25,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
-  navbarCollapsed = signal(true);
-  navbar = environment.navbar;
-  appName = environment.name;
+  readonly navbarCollapsed = signal(true);
+  readonly navbar = environment.navbar;
+  readonly appName = environment.name;
 
   toggleNavbar() {
     this.navbarCollapsed.update(collapsed => !collapsed);

@@ -12,7 +12,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  type = signal<OntologyNodeType>('ONTOLOGY');
+  readonly type = signal<OntologyNodeType>('ONTOLOGY');
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

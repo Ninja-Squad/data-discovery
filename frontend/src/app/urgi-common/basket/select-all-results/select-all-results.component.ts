@@ -20,7 +20,7 @@ export class SelectAllResultsComponent {
   private basketService = inject(BasketService);
 
   readonly documents = input.required<Page<OrderableDocumentModel>>();
-  vm: Signal<ViewModel> = computed(() => {
+  readonly vm: Signal<ViewModel> = computed(() => {
     const documents = this.documents();
     const accessions = documents.content.filter(document => document.accessionHolder);
     return {

@@ -14,7 +14,8 @@ import { map } from 'rxjs';
 export class MarkdownPageComponent {
   private route = inject(ActivatedRoute);
   private locale = inject(LOCALE_ID);
-  mdFile = toSignal(
+
+  readonly mdFile = toSignal(
     this.route.data.pipe(
       map(({ mdFile }) => mdFile.replace('.md', `-${this.locale.substring(0, 2)}.md`))
     )

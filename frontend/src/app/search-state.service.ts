@@ -1,6 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   delay,
   distinctUntilChanged,
@@ -22,7 +23,6 @@ import { SearchService } from './search.service';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { Aggregation, Page } from './models/page';
 import { DocumentModel } from './models/document.model';
-import { catchError } from 'rxjs/operators';
 
 export interface SortCriterion {
   sort: string;

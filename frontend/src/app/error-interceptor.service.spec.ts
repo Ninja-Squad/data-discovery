@@ -8,7 +8,6 @@ describe('ErrorInterceptorService', () => {
   let service: ErrorInterceptorService;
   let http: HttpTestingController;
   let httpClient: HttpClient;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const noop = () => {};
 
   beforeEach(() => {

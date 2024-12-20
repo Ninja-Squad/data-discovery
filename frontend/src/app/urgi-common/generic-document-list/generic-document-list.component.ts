@@ -21,7 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ]
 })
 export class GenericDocumentListComponent {
-  documents: Signal<Page<DocumentModel> | undefined> = toSignal(
+  readonly documents: Signal<Page<DocumentModel> | undefined> = toSignal(
     inject(SearchStateService).getDocuments()
   );
 }

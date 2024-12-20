@@ -24,11 +24,11 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  aggregations = signal<Array<Aggregation>>([]);
-  aggregationsChanged = signal<Array<AggregationCriterion> | undefined>(undefined);
-  selectedCriteria = signal<Array<AggregationCriterion>>([]);
-  searchDescendants = signal(false);
-  searchDescendantsChanged = signal(false);
+  readonly aggregations = signal<Array<Aggregation>>([]);
+  readonly aggregationsChanged = signal<Array<AggregationCriterion> | undefined>(undefined);
+  readonly selectedCriteria = signal<Array<AggregationCriterion>>([]);
+  readonly searchDescendants = signal(false);
+  readonly searchDescendantsChanged = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

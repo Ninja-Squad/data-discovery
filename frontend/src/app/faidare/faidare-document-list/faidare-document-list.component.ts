@@ -90,7 +90,7 @@ export class FaidareDocumentListComponent {
   private searchStateService = inject(SearchStateService);
 
   // the VM object used in the template
-  vm: Signal<ViewModel | undefined>;
+  readonly vm: Signal<ViewModel | undefined>;
 
   constructor() {
     // if there is a fragment '#germplasm' in the URL, then set the Germplasm tab as the active one

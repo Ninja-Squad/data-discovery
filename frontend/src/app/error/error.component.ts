@@ -16,7 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorComponent {
-  error: Signal<HttpError | undefined> = toSignal(
+  readonly error: Signal<HttpError | undefined> = toSignal(
     merge(
       inject(ErrorInterceptorService).getErrors(),
       inject(Router).events.pipe(

@@ -13,7 +13,7 @@ import { ReplaySubject } from 'rxjs';
 import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
 import { toSinglePage } from '../../models/test-model-generators';
 import { DocumentModel } from '../../models/document.model';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
@@ -48,7 +48,8 @@ class FaidareDocumentListComponentTester extends ComponentTester<FaidareDocument
 
 @Component({
   selector: 'dd-germplasm-results',
-  template: 'Germplasm Results here'
+  template: 'Germplasm Results here',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class GermplasmResultsStubComponent {}
 

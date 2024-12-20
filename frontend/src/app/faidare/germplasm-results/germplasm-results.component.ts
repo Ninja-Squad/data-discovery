@@ -37,10 +37,10 @@ export class GermplasmResultsComponent {
   private downloadService = inject(DownloadService);
   private searchStateService = inject(SearchStateService);
 
-  private downloading = signal<null | 'mcpd' | 'plant-material'>(null);
-  private model = toSignal(this.searchStateService.getModel());
+  private readonly downloading = signal<null | 'mcpd' | 'plant-material'>(null);
+  private readonly model = toSignal(this.searchStateService.getModel());
 
-  vm: Signal<ViewModel | undefined> = computed(() => {
+  readonly vm: Signal<ViewModel | undefined> = computed(() => {
     const downloading = this.downloading();
     const model = this.model();
     return model

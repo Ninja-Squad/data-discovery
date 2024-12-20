@@ -29,14 +29,12 @@ interface ViewModel {
   ]
 })
 export class DocumentsComponent {
-  vm: Signal<ViewModel | undefined>;
-  isBasketEnabled: boolean;
+  readonly vm: Signal<ViewModel | undefined>;
+  readonly isBasketEnabled = inject(BasketService).isEnabled();
 
   constructor() {
-    const basketService = inject(BasketService);
     const searchStateService = inject(SearchStateService);
 
-    this.isBasketEnabled = basketService.isEnabled();
     this.vm = toSignal(
       searchStateService.getDocuments().pipe(
         map(documents => ({

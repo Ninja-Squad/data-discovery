@@ -14,7 +14,7 @@ import { FaidareDocumentModel } from '../faidare-document.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  document = signal<FaidareDocumentModel>(toFaidareDocument('Bacteria'));
+  readonly document = signal<FaidareDocumentModel>(toFaidareDocument('Bacteria'));
 }
 
 class FaidareDocumentComponentTester extends ComponentTester<TestComponent> {

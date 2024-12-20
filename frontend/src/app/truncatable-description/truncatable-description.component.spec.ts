@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  description = signal('');
+  readonly description = signal('');
 }
 
 describe('TruncatableDescriptionComponent', () => {

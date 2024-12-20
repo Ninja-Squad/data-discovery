@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { Observable } from 'rxjs';
@@ -17,7 +17,7 @@ export class ExportService {
     },
     exportType: 'mcpd' | 'plant-material'
   ): Observable<Blob> {
-    const params: { [key: string]: string | number | Array<string> | boolean } = {
+    const params: Record<string, string | number | ReadonlyArray<string> | boolean> = {
       query: criteria.query ?? '',
       descendants: criteria.descendants
     };

@@ -26,12 +26,12 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  aggregation = signal<Aggregation | undefined>(undefined);
-  aggregationChanged = signal<AggregationCriterion | undefined>(undefined);
-  searchDescendants = signal(false);
-  searchDescendantsChanged = signal(false);
-  selectedKeys = signal<Array<string>>([]);
-  disabled = signal(false);
+  readonly aggregation = signal<Aggregation | undefined>(undefined);
+  readonly aggregationChanged = signal<AggregationCriterion | undefined>(undefined);
+  readonly searchDescendants = signal(false);
+  readonly searchDescendantsChanged = signal(false);
+  readonly selectedKeys = signal<Array<string>>([]);
+  readonly disabled = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -107,7 +107,7 @@ describe('SmallAggregationComponent', () => {
 
   it('should extract keys from selected values', () => {
     // given a few selected values among a bucket
-    const values: { [key: string]: boolean | null } = {
+    const values: Record<string, boolean | null> = {
       France: true,
       England: false,
       Italy: true,
