@@ -67,7 +67,7 @@ export class OntologyAggregationModalComponent {
   private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
   readonly highlightedNodeDetails: Signal<TypedNodeDetails | undefined>;
   readonly selectedNodes = signal<Array<NodeInformation<OntologyPayload>>>([]);
-  readonly maxSelectedNodes = 20;
+  maxSelectedNodes = 20;
 
   constructor() {
     this.languageCtrl.setValue(this.ontologyService.getPreferredLanguage());

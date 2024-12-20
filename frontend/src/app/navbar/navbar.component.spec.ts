@@ -7,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideDisabledNgbAnimation } from '../disable-animations';
+import { environment } from '../../environments/environment';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -68,15 +69,12 @@ describe('NavbarComponent', () => {
   });
 
   it('should display title and links that open in new tabs', async () => {
-    const tester = new NavbarComponentTester();
-    const component = tester.componentInstance;
-
-    component.navbar = {
+    environment.navbar = {
       logoUrl: 'https://www.agrobrc-rare.org/',
-      secondLogoUrl: 'https://wheatinitiative.org',
-      links: component.navbar.links
+      secondLogoUrl: '',
+      links: environment.navbar.links
     };
-
+    const tester = new NavbarComponentTester();
     await tester.stable();
 
     expect(tester.title.attr('href')).toBe('https://www.agrobrc-rare.org/');

@@ -106,6 +106,7 @@ describe('HomeComponent', () => {
     });
 
     it('should not display example queries if there are none', async () => {
+      environment.home.exampleQueries = [];
       const tester = new HomeComponentTester();
       await tester.stable();
 
@@ -113,8 +114,8 @@ describe('HomeComponent', () => {
     });
 
     it('should display example queries if there are some', async () => {
+      environment.home.exampleQueries = ['foo', 'bar'];
       const tester = new HomeComponentTester();
-      tester.componentInstance.exampleQueries = ['foo', 'bar'];
       await tester.stable();
 
       expect(tester.exampleQueriesSection).not.toBeNull();

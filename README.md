@@ -185,6 +185,9 @@ Before all, if you have cloned the repository without fetching the data (see [Da
 
 ### TL;DR
 
+You can use the `./scripts/index.sh` file as described in the section "UNIX/BSD or macOS". Or, if you're adventurous with Docker 
+you can try the following.
+
 Data (from master branch) indexing to your local Elasticsearch is done using the following command. Note that your local Elasticsearch instance should be already runing using `docker-compose up`:
 
 ```sh
@@ -232,11 +235,11 @@ docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:
 
 That should ease the indexing of data without having to craft a dedicated environment, which is explained below.
 
-#### UNIX/BSD
+#### UNIX/BSD or macOS
 
 Feedback related to portability on MacOS and other GNU/Linux distro is really welcomed.
 
-For MacOS, care to use latest GNU Parallel and Bash v4 versions, not the version provided by default via Brew.
+For macOS, care to use latest GNU Parallel and Bash v4 versions, not the version provided by default via Brew.
 Don't use zsh!
 
 Install the following packages to be able to run the scripts:
@@ -250,7 +253,7 @@ Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creati
 To create the index and its aliases execute the script below for local dev environment:
 
 ```sh
-./scripts/index.sh -app rare|brc4env|wheatis|data-discovery --local
+./scripts/index.sh -app rare|brc4env|wheatis|data-discovery --local -data data/[rare|brc4env|wheatis|data-discovery]
 ```
 
 The `-app` parameter will trigger a harvest of the resources stored in the Git LFS subdirectories `data/rare` and `data/faidare` filtered or not (`wheatis` and `brc4env` rely on `faidare` and `rare` data respectively).
