@@ -41,11 +41,10 @@ export class GermplasmResultsComponent {
   private readonly model = toSignal(this.searchStateService.getModel());
 
   readonly vm: Signal<ViewModel | undefined> = computed(() => {
-    const downloading = this.downloading();
     const model = this.model();
     return model
       ? {
-          downloading,
+          downloading: this.downloading(),
           sortCriterion: model.searchCriteria.sortCriterion,
           searchCriteria: model.searchCriteria,
           documents: model.documents as Page<FaidareDocumentModel> | null
