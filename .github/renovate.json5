@@ -1,46 +1,40 @@
 {
   extends: [
-    "config:recommended",
-    "group:allNonMajor",
-    "schedule:weekly"
+    'config:recommended',
+    'group:allNonMajor',
+    'schedule:weekly',
   ],
   lockFileMaintenance: {
-    enabled: true
+    enabled: true,
   },
-  // target chore/next branch
   baseBranches: [
-    "chore/next"
+    'chore/next',
   ],
-  // only 1 PR at the same time (to avoid cascading rebase)
   prConcurrentLimit: 1,
-  // auto-merge if build is OK
   automerge: true,
   packageRules: [
-    // allow only patch and minor updates for elasticsearch docker image
     {
-      packageNames: [
-        "docker.elastic.co/elasticsearch/elasticsearch"
+      matchPackageNames: [
+        'docker.elastic.co/elasticsearch/elasticsearch',
       ],
-      updateTypes: [
-        "major"
+      matchUpdateTypes: [
+        'major',
       ],
-      enabled: false
+      enabled: false,
     },
-    // allow only patch updates for TS packages
     {
-      packageNames: [
-        "typescript"
+      matchPackageNames: [
+        'typescript',
       ],
-      updateTypes: [
-        "minor",
-        "major"
+      matchUpdateTypes: [
+        'minor',
+        'major',
       ],
-      enabled: false
-    }
+      enabled: false,
+    },
   ],
   ignoreDeps: [
-    // do not bump openjdk images on CIs as we'll manually handle the JDK bumps
-    "cimg/openjdk",
-    "circleci/openjdk"
-  ]
+    'cimg/openjdk',
+    'circleci/openjdk',
+  ],
 }
