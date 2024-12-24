@@ -4,23 +4,23 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
-Run `yarn start` or `yarn start:rare` for a dev server. 
+Run `pnpm start` or `pnpm start:rare` for a dev server. 
 Navigate to `http://localhost:4000/rare-dev`. The app will automatically reload if you change any of the source files.
 
 To start another app, you can:
-- for WheatIS, run : `yarn start:wheatis`, then go to `http://localhost:4100/wheatis-dev`.
-- for DataDiscovery, run: `yarn start:data-discovery`, then go to `http://localhost:4200/data-discovery-dev`.
+- for WheatIS, run : `pnpm start:wheatis`, then go to `http://localhost:4100/wheatis-dev`.
+- for DataDiscovery, run: `pnpm start:data-discovery`, then go to `http://localhost:4200/data-discovery-dev`.
 
 ## Build
 
-Run `yarn build` or `yarn build:rare` for a production build of the RARe project. 
+Run `pnpm build` or `pnpm build:rare` for a production build of the RARe project. 
 The build artifacts will be stored in the `dist/` directory. 
 
-Use the `yarn build:wheatis` flag for a production build of WheatIS, and `yarn build:data-discovery` for DataDiscovery.
+Use the `pnpm build:wheatis` flag for a production build of WheatIS, and `pnpm build:data-discovery` for DataDiscovery.
 
 ## Running unit tests
 
-Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `pnpm test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Linting and formatting
 
@@ -43,7 +43,7 @@ The translation keys usually follow the convention
 
 ## Analyzing Application size
 
-Run `yarn build:stats` to generate size statistics and `yarn analyze` to visualize them.
+Run `pnpm build:stats` to generate size statistics and `pnpm analyze` to visualize them.
 
 # Add another application
 

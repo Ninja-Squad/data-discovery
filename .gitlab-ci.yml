@@ -8,7 +8,7 @@ stages:
   - deploy-production
 
 # The image contains a JDK 17 and a Chrome browser
-# Node, NPM and Yarn are installed by Gradle
+# Node and pnpm are installed by Gradle
 image: circleci/openjdk:17-buster-browsers
 
 default:
