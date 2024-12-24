@@ -1,10 +1,5 @@
-import {
-  importProvidersFrom,
-  inject,
-  LOCALE_ID,
-  provideEnvironmentInitializer
-} from '@angular/core';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
+import { TranslateLoader, TranslateService, provideTranslateService } from '@ngx-translate/core';
 import { ModuleTranslateLoader } from './module-translate-loader';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -31,14 +26,12 @@ function getBrowserLanguage() {
  */
 export const provideI18n = () => {
   return [
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useClass: ModuleTranslateLoader
-        }
-      })
-    ),
+    provideTranslateService({
+      loader: {
+        provide: TranslateLoader,
+        useClass: ModuleTranslateLoader
+      }
+    }),
     { provide: LOCALE_ID, useValue: getBrowserLanguage() },
     provideEnvironmentInitializer(() => {
       const translateService = inject(TranslateService);

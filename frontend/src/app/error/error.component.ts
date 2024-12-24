@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/cor
 import { NavigationEnd, Router } from '@angular/router';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
 import { delay, filter, map, merge } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 /**
@@ -12,7 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'dd-error',
   templateUrl: './error.component.html',
   styleUrl: './error.component.scss',
-  imports: [TranslateModule],
+  imports: [TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorComponent {

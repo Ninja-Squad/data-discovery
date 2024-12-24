@@ -10,7 +10,7 @@ import { AggregationCriterion } from '../models/aggregation-criterion';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { PillarsComponent } from '../pillars/pillars.component';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -20,7 +20,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [
     RouterLink,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     NgbTypeahead,
     PillarsComponent,
     AggregationsComponent,

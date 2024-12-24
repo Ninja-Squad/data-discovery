@@ -1,8 +1,8 @@
-import { importProvidersFrom, inject, provideEnvironmentInitializer } from '@angular/core';
+import { inject, provideEnvironmentInitializer } from '@angular/core';
 import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
-  TranslateModule,
+  provideTranslateService,
   TranslateService
 } from '@ngx-translate/core';
 import EN_TRANSLATIONS from './en.json';
@@ -19,15 +19,13 @@ class CustomMissingTranslationHandler implements MissingTranslationHandler {
  */
 export const provideI18nTesting = () => {
   return [
-    importProvidersFrom([
-      TranslateModule.forRoot({
-        useDefaultLang: false,
-        missingTranslationHandler: {
-          provide: MissingTranslationHandler,
-          useClass: CustomMissingTranslationHandler
-        }
-      })
-    ]),
+    provideTranslateService({
+      useDefaultLang: false,
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler
+      }
+    }),
     provideEnvironmentInitializer(() => {
       const translateService = inject(TranslateService);
       translateService.setTranslation('en', EN_TRANSLATIONS);

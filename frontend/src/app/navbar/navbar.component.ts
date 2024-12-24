@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { RouterLink } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import {
   NgbCollapse,
   NgbDropdown,
@@ -15,7 +15,8 @@ import {
   styleUrl: './navbar.component.scss',
   imports: [
     NgbCollapse,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     NgbDropdown,
     NgbDropdownToggle,
     NgbDropdownMenu,

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { BasketService } from '../basket.service';
 import { OrderableDocumentModel } from '../../../models/document.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { Page } from '../../../models/page';
 
 interface ViewModel {
@@ -14,7 +14,7 @@ interface ViewModel {
   templateUrl: './select-all-results.component.html',
   styleUrl: './select-all-results.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateModule]
+  imports: [TranslateDirective]
 })
 export class SelectAllResultsComponent {
   private basketService = inject(BasketService);

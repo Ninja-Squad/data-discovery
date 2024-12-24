@@ -17,7 +17,7 @@ import {
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
@@ -33,7 +33,7 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     DocumentCountComponent,
     DescendantsCheckboxComponent,
-    TranslateModule,
+    TranslatePipe,
     AggregationNamePipe
   ]
 })

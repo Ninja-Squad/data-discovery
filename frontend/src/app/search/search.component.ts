@@ -13,7 +13,7 @@ import { DocumentsComponent } from '../documents/documents.component';
 import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { NgbCollapse, NgbPagination, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 interface ViewModel extends Model {
@@ -27,7 +27,8 @@ interface ViewModel extends Model {
   styleUrl: './search.component.scss',
   providers: [SearchStateService],
   imports: [
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     ReactiveFormsModule,
     NgbTypeahead,
     NgbCollapse,

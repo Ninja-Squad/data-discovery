@@ -21,7 +21,7 @@ import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model
 
 import { Aggregation, Bucket } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
@@ -41,7 +41,8 @@ const maxResultsDisplayed = 8;
     NgPluralCase,
     DecimalPipe,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     NgbHighlight,
     NgbTooltip,
     NgbTypeahead,

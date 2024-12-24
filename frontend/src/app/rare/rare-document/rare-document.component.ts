@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
@@ -16,7 +16,7 @@ interface ViewModel {
   templateUrl: './rare-document.component.html',
   styleUrl: './rare-document.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgbTooltip, TruncatableDescriptionComponent, TranslateModule]
+  imports: [NgbTooltip, TruncatableDescriptionComponent, TranslatePipe]
 })
 export class RareDocumentComponent {
   private basketService = inject(BasketService);

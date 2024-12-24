@@ -5,13 +5,13 @@ import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
 import { NULL_VALUE } from '../../models/document.model';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'dd-ontology-aggregation',
   templateUrl: './faidare-ontology-aggregation.component.html',
   styleUrl: './faidare-ontology-aggregation.component.scss',
-  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, NgbTooltip],
+  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateDirective, NgbTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareOntologyAggregationComponent {

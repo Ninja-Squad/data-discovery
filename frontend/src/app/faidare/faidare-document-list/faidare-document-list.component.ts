@@ -21,7 +21,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 import { environment } from '../../../environments/environment';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 const ENTRY_AGGREGATION_KEY = 'entry';
@@ -80,7 +80,7 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
     NgbNavLink,
     NgbNavContent,
     NgbNavOutlet,
-    TranslateModule,
+    TranslateDirective,
     GermplasmResultsComponent,
     environment.documentComponent
   ],

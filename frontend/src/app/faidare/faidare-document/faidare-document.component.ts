@@ -3,7 +3,7 @@ import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketService } from '../../urgi-common/basket/basket.service';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface ViewModel {
   document: FaidareDocumentModel;
@@ -15,7 +15,7 @@ interface ViewModel {
   selector: 'dd-document',
   templateUrl: './faidare-document.component.html',
   styleUrl: './faidare-document.component.scss',
-  imports: [TranslateModule, NgbTooltip, TruncatableDescriptionComponent],
+  imports: [TranslatePipe, NgbTooltip, TruncatableDescriptionComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentComponent {

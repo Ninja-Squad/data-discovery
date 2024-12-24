@@ -13,7 +13,7 @@ import { DownloadService } from '../../download.service';
 import { finalize } from 'rxjs';
 import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
 import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 interface ViewModel {
@@ -29,7 +29,7 @@ export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-
   selector: 'dd-germplasm-results',
   templateUrl: './germplasm-results.component.html',
   styleUrl: './germplasm-results.component.scss',
-  imports: [TranslateModule, SortableHeaderComponent],
+  imports: [TranslateDirective, SortableHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {

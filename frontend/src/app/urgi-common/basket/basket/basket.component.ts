@@ -13,7 +13,7 @@ import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { switchMap, timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LOCATION } from '../../../location.service';
@@ -23,7 +23,14 @@ import { BasketSenderService } from '../basket-sender.service';
   selector: 'dd-basket',
   templateUrl: './basket.component.html',
   styleUrl: './basket.component.scss',
-  imports: [NgPlural, NgPluralCase, DecimalPipe, TranslateModule, ReactiveFormsModule, NgbTooltip],
+  imports: [
+    NgPlural,
+    NgPluralCase,
+    DecimalPipe,
+    TranslateDirective,
+    ReactiveFormsModule,
+    NgbTooltip
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketComponent {

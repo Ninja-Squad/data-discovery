@@ -4,7 +4,7 @@ import { map } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { SearchStateService } from '../search-state.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { DecimalPipe } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -23,7 +23,7 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DecimalPipe,
-    TranslateModule,
+    TranslateDirective,
     environment.selectAllResultsComponent,
     environment.documentListComponent
   ]

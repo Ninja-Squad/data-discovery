@@ -27,7 +27,7 @@ import {
 } from '../../ontology.service';
 import { TypedNodeDetails } from '../ontology.model';
 import { Aggregation } from '../../models/page';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
 import { DecimalPipe } from '@angular/common';
 import { TreeComponent } from '../tree/tree.component';
@@ -47,7 +47,8 @@ interface TreeViewModel {
   imports: [
     DecimalPipe,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     OntologyNodeTypeComponent,
     TreeComponent,
     NodeDetailsComponent
