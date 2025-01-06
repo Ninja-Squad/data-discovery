@@ -132,6 +132,7 @@ test-lint-build:
     ES_JAVA_OPTS: "-Xms2g -Xmx2g"
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/cache/Cypress'
   script:
     - ./gradlew --parallel check jacocoTestReport :frontend:lint
     # - ./gradlew assemble -Papp=${APP_NAME}
@@ -174,13 +175,6 @@ test-lint-build:
     paths:
       - backend/build/libs/${APP_NAME}.jar
     expire_in: 6 months
-  cache:
-    key: "${CI_COMMIT_REF_NAME}"
-    policy: pull-push
-    paths:
-      - .gradle
-      - frontend/.gradle/
-      - frontend/node_modules/
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /.*SKIP_DEPLOY.*/i # Ninja Squad should appreciate
       when: never
