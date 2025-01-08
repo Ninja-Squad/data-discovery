@@ -69,10 +69,10 @@ tasks {
     args.set(listOf("e2e:standalone"))
     dependsOn(prepare)
     inputs.dir("src")
-    inputs.dir("cypress")
-    inputs.file("cypress.config.ts")
+    inputs.dir("e2e")
+    inputs.file("playwright.config.ts")
     inputs.file("package.json")
-    outputs.file(layout.buildDirectory.file("cypress-result.json"))
+    outputs.dir("playwright-report")
   }
 
   val e2e by registering {

@@ -94,19 +94,19 @@ The project uses Angular for the frontend, with the Angular CLI.
 You need to install:
 
 - a recent enough NodeJS (ie. v18 LTS) is required for Angular.
-- Yarn as a package manager (see [here to install](https://yarnpkg.com/en/docs/install))
+- Pnpm as a package manager (see [here to install](https://pnpm.io/installation))
 
-Then in the `frontend` directory, run `yarn` to download the dependencies.
-Then run `yarn start` to start the app, using the proxy conf to reroute calls to `/api` to the backend.
+Then in the `frontend` directory, run `pnpm` to download the dependencies.
+Then run `pnpm start` to start the app, using the proxy conf to reroute calls to `/api` to the backend.
 
 The application will be available on:
 
-- <http://localhost:4000/rare-dev> for RARe (runs with: `yarn start:rare` or simply `yarn start`)
-- <http://localhost:4000/brc4env-dev> for RARe with basket (runs with: `yarn start:brc4env`)
-- <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `yarn start:wheatis`)
-- <http://localhost:4200/faidare-dev> for Faidare (runs with: `yarn start:faidare`)
+- <http://localhost:4000/rare-dev> for RARe (runs with: `pnpm start:rare` or simply `pnpm start`)
+- <http://localhost:4000/brc4env-dev> for RARe with basket (runs with: `pnpm start:brc4env`)
+- <http://localhost:4100/wheatis-dev> for WheatIS (runs with: `pnpm start:wheatis`)
+- <http://localhost:4200/faidare-dev> for Faidare (runs with: `pnpm start:faidare`)
 
-See [./frontend/package.json (scripts section)](./frontend/package.json) for other yarn commands.
+See [./frontend/package.json (scripts section)](./frontend/package.json) for other pnpm commands.
 
 ## Build
 
@@ -154,7 +154,7 @@ and [INRA-MIA Gitlab](https://forgemia.inra.fr/urgi-is/docker-rare).
 The image is based on `openjdk:8` and adds all stuff needed to run the tests
 (ie. a Chrome binary with a headless Chrome in `--no-sandbox` mode).
 
-We install `node` and `yarn` in `/tmp` (this is not the case for local builds)
+We install `node` and `pnpm` in `/tmp` (this is not the case for local builds)
 to avoid symbolic links issues on Docker.
 
 You can approximate what runs on CI by executing:
@@ -329,7 +329,7 @@ Adding this property has the following consequences:
 
 - the generated jar file (in `backend/build/libs`) is named `wheatis.jar` (resp. `brc4env.jar` instead of `rare.jar`;
 - the Spring active profile is `wheatis-app` (resp. `brc4env-app`) instead of `rare-app`;
-- the frontend application built and embedded inside the jar file is the WheatIS frontend application (resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command `yarn build:wheatis` (resp. `yarn build:brc4env`) is executed instead of the command `yarn:rare`.
+- the frontend application built and embedded inside the jar file is the WheatIS frontend application (resp. the RARe application with basket support) instead of the RARe frontend application, i.e. the frontend command `pnpm build:wheatis` (resp. `pnpm build:brc4env`) is executed instead of the command `pnpm:rare`.
 
 Since the active Spring profile is different, all the properties specific to this profile
 are applied. In particular:

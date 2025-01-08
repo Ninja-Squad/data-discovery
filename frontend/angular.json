@@ -37,7 +37,9 @@
                 "src/assets/rare/"
               ],
               "sass": {
-                "silenceDeprecations": ["import"]
+                "silenceDeprecations": [
+                  "import"
+                ]
               }
             },
             "styles": [
@@ -109,7 +111,9 @@
                   "src/assets/brc4env/"
                 ],
                 "sass": {
-                  "silenceDeprecations": ["import"]
+                  "silenceDeprecations": [
+                    "import"
+                  ]
                 }
               },
               "assets": [
@@ -136,7 +140,9 @@
                   "src/assets/brc4env/"
                 ],
                 "sass": {
-                  "silenceDeprecations": ["import"]
+                  "silenceDeprecations": [
+                    "import"
+                  ]
                 }
               },
               "assets": [
@@ -164,7 +170,9 @@
                   "src/assets/wheatis/"
                 ],
                 "sass": {
-                  "silenceDeprecations": ["import"]
+                  "silenceDeprecations": [
+                    "import"
+                  ]
                 }
               },
               "assets": [
@@ -191,7 +199,9 @@
                   "src/assets/wheatis/"
                 ],
                 "sass": {
-                  "silenceDeprecations": ["import"]
+                  "silenceDeprecations": [
+                    "import"
+                  ]
                 }
               },
               "assets": [
@@ -219,7 +229,9 @@
                   "src/assets/faidare/"
                 ],
                 "sass": {
-                  "silenceDeprecations": ["import"]
+                  "silenceDeprecations": [
+                    "import"
+                  ]
                 }
               },
               "assets": [
@@ -246,7 +258,9 @@
                   "src/assets/faidare/"
                 ],
                 "sass": {
-                  "silenceDeprecations": ["import"]
+                  "silenceDeprecations": [
+                    "import"
+                  ]
                 }
               },
               "assets": [
@@ -267,7 +281,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "proxyConfig": "proxy.conf.js"
+            "proxyConfig": "proxy.conf.mjs"
           },
           "configurations": {
             "production": {
@@ -346,35 +360,15 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "src/**/*.html",
-              "cypress/**/*.ts"
+              "e2e/**/*.ts"
             ],
             "maxWarnings": 0
           }
         },
-        "cypress-run": {
-          "builder": "@cypress/schematic:cypress",
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
           "options": {
             "devServerTarget": "data-discovery-frontend:serve:faidare"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "data-discovery-frontend:serve:faidare-production"
-            }
-          }
-        },
-        "cypress-open": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "watch": true,
-            "headless": false
-          }
-        },
-        "e2e": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "data-discovery-frontend:serve:faidare",
-            "watch": true,
-            "headless": false
           },
           "configurations": {
             "production": {

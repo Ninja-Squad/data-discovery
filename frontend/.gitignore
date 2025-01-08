@@ -37,11 +37,13 @@ testem.log
 /typings
 /karma-junit-tests-report
 eslint-result.txt
-cypress-result.json
 
 # System Files
 .DS_Store
 Thumbs.db
-
-/cypress/screenshots/
 .nx
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
