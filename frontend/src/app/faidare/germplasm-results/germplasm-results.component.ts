@@ -33,9 +33,9 @@ export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {
-  private exportService = inject(ExportService);
-  private downloadService = inject(DownloadService);
-  private searchStateService = inject(SearchStateService);
+  private readonly exportService = inject(ExportService);
+  private readonly downloadService = inject(DownloadService);
+  private readonly searchStateService = inject(SearchStateService);
 
   private readonly downloading = signal<null | 'mcpd' | 'plant-material'>(null);
   private readonly model = toSignal(this.searchStateService.getModel());

@@ -7,12 +7,7 @@ import {
   OnChanges,
   output
 } from '@angular/core';
-import {
-  FormControl,
-  FormRecord,
-  NonNullableFormBuilder,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormControl, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -38,8 +33,8 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
   ]
 })
 export class SmallAggregationComponent implements OnChanges {
-  private fb = inject(NonNullableFormBuilder);
-  private translateService = inject(TranslateService);
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly translateService = inject(TranslateService);
 
   readonly aggregation = input.required<Aggregation>();
   readonly searchDescendants = model(false);
@@ -48,7 +43,7 @@ export class SmallAggregationComponent implements OnChanges {
   readonly aggregationChange = output<AggregationCriterion>();
   readonly disabled = input(false);
 
-  aggregationForm = new FormRecord<FormControl<boolean>>({});
+  readonly aggregationForm = this.fb.record<FormControl<boolean>>({});
 
   /**
    * This extracts the keys with a truthy value from an object.

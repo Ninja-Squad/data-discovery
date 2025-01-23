@@ -10,7 +10,7 @@ import { NgTemplateOutlet } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeComponent<P> {
-  private treeService = inject<TreeService<P>>(TreeService);
+  private readonly treeService = inject<TreeService<P>>(TreeService);
 
   readonly node = input.required<InternalTreeNode<P>>();
   readonly filtered = input(false);

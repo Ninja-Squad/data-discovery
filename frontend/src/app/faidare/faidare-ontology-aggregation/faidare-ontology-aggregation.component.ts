@@ -15,7 +15,7 @@ import { TranslateDirective } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareOntologyAggregationComponent {
-  private modalService = inject(NgbModal);
+  private readonly modalService = inject(NgbModal);
 
   readonly aggregation = input.required<Aggregation>();
   readonly selectedKeys = input<Array<string>>([]);

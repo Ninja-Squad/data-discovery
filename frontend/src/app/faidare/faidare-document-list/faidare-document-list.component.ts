@@ -87,7 +87,7 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentListComponent {
-  private searchStateService = inject(SearchStateService);
+  private readonly searchStateService = inject(SearchStateService);
 
   // the VM object used in the template
   readonly vm: Signal<ViewModel | undefined>;

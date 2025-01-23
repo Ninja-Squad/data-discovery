@@ -34,10 +34,10 @@ import { BasketSenderService } from '../basket-sender.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketComponent {
-  private basketService = inject(BasketService);
-  private basketSenderService = inject(BasketSenderService);
-  private modalService = inject(NgbModal);
-  private destroyRef = inject(DestroyRef);
+  private readonly basketService = inject(BasketService);
+  private readonly basketSenderService = inject(BasketSenderService);
+  private readonly modalService = inject(NgbModal);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isEnabled = this.basketService.isEnabled();
   readonly basket: Signal<Basket | null> = this.isEnabled
@@ -54,7 +54,7 @@ export class BasketComponent {
   readonly submitted = signal(false);
   readonly confirmForbidden = signal(false);
 
-  private location = inject(LOCATION);
+  private readonly location = inject(LOCATION);
 
   viewItems(basket: TemplateRef<unknown>) {
     if (this.itemCounter() > 0) {

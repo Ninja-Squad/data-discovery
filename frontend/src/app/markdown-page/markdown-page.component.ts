@@ -12,8 +12,8 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkdownPageComponent {
-  private route = inject(ActivatedRoute);
-  private locale = inject(LOCALE_ID);
+  private readonly route = inject(ActivatedRoute);
+  private readonly locale = inject(LOCALE_ID);
 
   readonly mdFile = toSignal(
     this.route.data.pipe(

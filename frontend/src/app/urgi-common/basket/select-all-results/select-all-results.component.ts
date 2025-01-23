@@ -17,7 +17,7 @@ interface ViewModel {
   imports: [TranslateDirective]
 })
 export class SelectAllResultsComponent {
-  private basketService = inject(BasketService);
+  private readonly basketService = inject(BasketService);
 
   readonly documents = input.required<Page<OrderableDocumentModel>>();
   readonly vm: Signal<ViewModel> = computed(() => {

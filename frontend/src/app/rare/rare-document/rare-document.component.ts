@@ -19,7 +19,7 @@ interface ViewModel {
   imports: [NgbTooltip, TruncatableDescriptionComponent, TranslatePipe]
 })
 export class RareDocumentComponent {
-  private basketService = inject(BasketService);
+  private readonly basketService = inject(BasketService);
 
   readonly document = input.required<RareDocumentModel>();
   readonly vm: Signal<ViewModel> = computed(() => {

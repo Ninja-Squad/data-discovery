@@ -19,7 +19,7 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaidareDocumentComponent {
-  private basketService = inject(BasketService);
+  private readonly basketService = inject(BasketService);
 
   readonly document = input.required<FaidareDocumentModel>();
 

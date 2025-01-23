@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal, computed } from '@angular/core';
 import { HighlightService } from '../highlight.service';
 import { TranslateDirective } from '@ngx-translate/core';
 
@@ -9,20 +9,15 @@ import { TranslateDirective } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslateDirective]
 })
-export class TruncatableDescriptionComponent implements OnInit {
-  private highlightService = inject(HighlightService);
-
+export class TruncatableDescriptionComponent {
+  private readonly highlightService = inject(HighlightService);
   readonly description = input('');
-
-  descriptionCollapsed = true;
-
-  truncatedDescription = '';
+  readonly descriptionCollapsed = signal(true);
+  readonly truncatedDescription = computed(() =>
+    this.highlightService.truncate(this.description(), 256, 100)
+  );
 
   toggleDescription() {
-    this.descriptionCollapsed = !this.descriptionCollapsed;
-  }
-
-  ngOnInit() {
-    this.truncatedDescription = this.highlightService.truncate(this.description(), 256, 100);
+    this.descriptionCollapsed.update(collapsed => !collapsed);
   }
 }

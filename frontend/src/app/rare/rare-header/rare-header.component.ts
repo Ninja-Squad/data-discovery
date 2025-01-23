@@ -9,5 +9,6 @@ import { environment } from '../../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RareHeaderComponent {
+  // not readonly for testing purposes
   isRareApp = environment.name === 'rare';
 }

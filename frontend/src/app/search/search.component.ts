@@ -40,9 +40,8 @@ interface ViewModel extends Model {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
-  private fb = inject(NonNullableFormBuilder);
-  private route = inject(ActivatedRoute);
-  private searchStateService = inject(SearchStateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly searchStateService = inject(SearchStateService);
 
   readonly appName = environment.name;
   readonly searchForm = inject(NonNullableFormBuilder).group({
@@ -51,7 +50,7 @@ export class SearchComponent {
   readonly suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
   // hide or show the filters on small devices
-  private filtersExpandedSubject = new BehaviorSubject<boolean>(false);
+  private readonly filtersExpandedSubject = new BehaviorSubject<boolean>(false);
 
   readonly vm: Signal<ViewModel | undefined>;
 

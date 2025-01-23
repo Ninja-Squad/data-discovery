@@ -30,8 +30,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
-  private router = inject(Router);
-  private searchService = inject(SearchService);
+  private readonly router = inject(Router);
+  private readonly searchService = inject(SearchService);
 
   readonly searchForm = inject(NonNullableFormBuilder).group({
     search: ''

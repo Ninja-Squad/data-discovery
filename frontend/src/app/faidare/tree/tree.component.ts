@@ -59,9 +59,9 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<unknown> = () => 'no text accessor pro
   exportAs: 'tree'
 })
 export class TreeComponent<P> {
-  private treeService = inject(TreeService);
+  private readonly treeService = inject(TreeService);
 
-  private tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
+  private readonly tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
   readonly tree = toSignal(this.tree$);
 
   readonly payloadTemplate = input<

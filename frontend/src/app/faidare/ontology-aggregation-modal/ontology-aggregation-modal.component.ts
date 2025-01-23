@@ -56,18 +56,19 @@ interface TreeViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OntologyAggregationModalComponent {
-  private modal = inject(NgbActiveModal);
-  private ontologyService = inject(OntologyService);
-  private destroyRef = inject(DestroyRef);
-  private fb = inject(NonNullableFormBuilder);
+  private readonly modal = inject(NgbActiveModal);
+  private readonly ontologyService = inject(OntologyService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly fb = inject(NonNullableFormBuilder);
 
   readonly treeFilterCtrl = this.fb.control('');
   readonly languageCtrl = this.fb.control<OntologyLanguage>('FR');
   readonly languages = ONTOLOGY_LANGUAGES;
   readonly treeView = signal<TreeViewModel | undefined>(undefined);
-  private highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
+  private readonly highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
   readonly highlightedNodeDetails: Signal<TypedNodeDetails | undefined>;
   readonly selectedNodes = signal<Array<NodeInformation<OntologyPayload>>>([]);
+  // not readonly for testing purposes
   maxSelectedNodes = 20;
 
   constructor() {

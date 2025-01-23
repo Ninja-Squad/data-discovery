@@ -9,7 +9,7 @@ import {
   input,
   model
 } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import {
   NgbHighlight,
@@ -52,7 +52,7 @@ const maxResultsDisplayed = 8;
   ]
 })
 export class LargeAggregationComponent implements OnChanges {
-  private translateService = inject(TranslateService);
+  private readonly translateService = inject(TranslateService);
 
   readonly selectedKeys = model<Array<string>>([]);
 
@@ -66,10 +66,10 @@ export class LargeAggregationComponent implements OnChanges {
 
   readonly typeahead = viewChild<ElementRef<HTMLInputElement>>('typeahead');
 
-  focus$ = new Subject<string>();
-  criterion = new FormControl('');
+  readonly focus$ = new Subject<string>();
+  readonly criterion = inject(NonNullableFormBuilder).control('');
 
-  search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
+  readonly search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
     return merge(text$, inputFocus$).pipe(
       distinctUntilChanged(),
