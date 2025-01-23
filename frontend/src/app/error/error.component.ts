@@ -21,7 +21,7 @@ export class ErrorComponent {
       inject(ErrorInterceptorService).getErrors(),
       inject(Router).events.pipe(
         filter(event => event instanceof NavigationEnd),
-        map(() => undefined)
+        map((): undefined => undefined)
       )
     ).pipe(
       // add delay to properly show errors caused by toSignal

@@ -255,7 +255,7 @@ export class TreeService<P> {
       if (statesFound.size > 1) {
         newSelectionState = 'INDETERMINATE';
       } else if (statesFound.size === 1) {
-        newSelectionState = statesFound.values().next().value;
+        newSelectionState = statesFound.values().next().value!;
       }
     }
 
@@ -311,7 +311,7 @@ export class TreeService<P> {
       if (statesFound.size > 1) {
         selectionState = 'INDETERMINATE';
       } else if (statesFound.size === 1) {
-        selectionState = statesFound.values().next().value;
+        selectionState = statesFound.values().next().value!;
       }
     } else {
       selectionState = node.selected ? 'CHECKED' : 'UNCHECKED';
