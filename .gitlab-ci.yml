@@ -132,7 +132,6 @@ test-lint-build:
     ES_JAVA_OPTS: "-Xms2g -Xmx2g"
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-    CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/cache/Cypress'
   script:
     - ./gradlew --parallel check jacocoTestReport :frontend:lint
     # - ./gradlew assemble -Papp=${APP_NAME}
@@ -198,16 +197,19 @@ build-rare:
 build-brc4env:
   variables:
     APP_NAME: "brc4env"
+  needs: [ "build-rare" ]
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-wheatis:
   variables:
     APP_NAME: "wheatis"
+  needs: [ "build-brc4env" ]
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 build-faidare:
   variables:
     APP_NAME: "faidare"
+  needs: [ "build-wheatis" ]
   <<: *build_app           # Merge the contents of the 'build_app' alias
 
 restart-config-server:
