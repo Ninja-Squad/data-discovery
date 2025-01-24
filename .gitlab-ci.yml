@@ -9,7 +9,7 @@ stages:
 
 # The image contains a JDK 17 and a Chrome browser
 # Node and pnpm are installed by Gradle
-image: circleci/openjdk:17-buster-browsers
+image: cimg/openjdk:17.0.13-browsers
 
 default:
   tags:
