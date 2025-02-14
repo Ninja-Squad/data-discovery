@@ -10,6 +10,7 @@ import { RareHeaderComponent } from '../app/rare/rare-header/rare-header.compone
 import { GenericFooterComponent } from '../app/urgi-common/generic-footer/generic-footer.component';
 import { BasketComponent } from '../app/urgi-common/basket/basket/basket.component';
 import { SelectAllResultsComponent } from '../app/urgi-common/basket/select-all-results/select-all-results.component';
+import { GenericMapComponent } from '../app/urgi-common/generic-map/generic-map.component';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -27,6 +28,7 @@ export const environment: DataDiscoveryEnvironment = {
   footerComponent: GenericFooterComponent,
   basketComponent: BasketComponent,
   selectAllResultsComponent: SelectAllResultsComponent,
+  mapComponent: GenericMapComponent,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',

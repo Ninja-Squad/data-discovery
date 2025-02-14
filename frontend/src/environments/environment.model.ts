@@ -62,6 +62,11 @@ export interface DataDiscoveryEnvironment {
    */
   selectAllResultsComponent: Type<unknown>;
   /**
+   * The map component to use in the application
+   */
+  mapComponent: Type<unknown>;
+
+  /**
    * Markdown files served
    */
   helpMdFile: string;

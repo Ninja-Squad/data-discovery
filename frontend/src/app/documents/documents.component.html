@@ -1,4 +1,9 @@
 @if (vm(); as vm) {
+  <!-- the following component will not be the same depending on the environment. -->
+  <!-- If the application is Faidare it will be a `FaidareMapComponent` -->
+  <!-- For others it will be an empty component -->
+  <dd-map [documents]="$any(vm.documents.content)" />
+
   @if (vm.documents.content.length) {
     <!-- if there are results to display -->
     <div>
