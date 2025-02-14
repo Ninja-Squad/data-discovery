@@ -25,7 +25,8 @@ interface ViewModel {
     DecimalPipe,
     TranslateDirective,
     forwardRef(() => environment.selectAllResultsComponent),
-    forwardRef(() => environment.documentListComponent)
+    forwardRef(() => environment.documentListComponent),
+    forwardRef(() => environment.mapComponent)
   ]
 })
 export class DocumentsComponent {

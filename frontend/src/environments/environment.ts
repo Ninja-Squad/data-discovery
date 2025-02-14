@@ -10,6 +10,7 @@ import { GenericDocumentListComponent } from '../app/urgi-common/generic-documen
 import { GenericFooterComponent } from '../app/urgi-common/generic-footer/generic-footer.component';
 import { GenericBasketComponent } from '../app/urgi-common/generic-basket/generic-basket.component';
 import { GenericSelectAllResultsComponent } from '../app/urgi-common/generic-select-all-results/generic-select-all-results.component';
+import { GenericMapComponent } from '../app/urgi-common/generic-map/generic-map.component';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -27,6 +28,7 @@ export const environment: DataDiscoveryEnvironment = {
   footerComponent: GenericFooterComponent,
   basketComponent: GenericBasketComponent,
   selectAllResultsComponent: GenericSelectAllResultsComponent,
+  mapComponent: GenericMapComponent,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',

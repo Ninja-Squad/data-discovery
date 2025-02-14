@@ -10,6 +10,7 @@ import { WheatisHeaderComponent } from '../app/wheatis/wheatis-header/wheatis-he
 import { GenericDocumentComponent } from '../app/urgi-common/generic-document/generic-document.component';
 import { GenericBasketComponent } from '../app/urgi-common/generic-basket/generic-basket.component';
 import { GenericSelectAllResultsComponent } from '../app/urgi-common/generic-select-all-results/generic-select-all-results.component';
+import { FaidareMapContainerComponent } from '../app/faidare/faidare-map/faidare-map-container.component';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -30,6 +31,7 @@ export const environment: DataDiscoveryEnvironment = {
   footerComponent: GenericFooterComponent,
   basketComponent: GenericBasketComponent,
   selectAllResultsComponent: GenericSelectAllResultsComponent,
+  mapComponent: FaidareMapContainerComponent,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',

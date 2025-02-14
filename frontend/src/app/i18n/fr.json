@@ -252,6 +252,9 @@
       "institute": "Institut détenteur",
       "biological-status": "Statut biologique",
       "country-of-origin": "Pays d'origine"
+    },
+    "map": {
+      "details": "Détails"
     }
   }
 }
