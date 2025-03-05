@@ -133,10 +133,14 @@ test-lint-build:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
   script:
+    # we manually create the pnpm store directory to avoid permission issues
+    - sudo mkdir -p /builds/.pnpm-store
+    # we make it writable by everyone
+    - sudo chmod -R a+rw /builds/.pnpm-store
     - ./gradlew --parallel check jacocoTestReport :frontend:lint
     # - ./gradlew assemble -Papp=${APP_NAME}
-    - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
-    - export PATH="/tmp/node/:$PATH"
+    # - find /tmp/node/*/bin -name node -exec ln -s {} /tmp/node/node \;
+    # - export PATH="/tmp/node/:$PATH"
     # Sonar task disabled until https://sonarsource.atlassian.net/browse/SONARGRADL-133 is fixed
     # - ./gradlew sonar -x test # TODO: fix in GNP-6342
   # cache:

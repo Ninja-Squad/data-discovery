@@ -15,12 +15,6 @@ val versions = versionsFromPackageJson(file("package.json"))
 node {
   version.set(versions.node)
   pnpmVersion.set(versions.pnpm)
-
-  if (isCi) {
-    // we specify a custom installation directory because of permission issues on Docker
-    workDir.set(file("/tmp/node"))
-    pnpmWorkDir.set(file("/tmp/pnpm"))
-  }
   download.set(true)
 }
 
