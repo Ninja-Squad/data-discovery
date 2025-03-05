@@ -1,5 +1,6 @@
 import com.github.gradle.node.pnpm.task.PnpmInstallTask
 import com.github.gradle.node.pnpm.task.PnpmTask
+import frontend.versionsFromPackageJson
 
 plugins {
   base
@@ -9,8 +10,11 @@ plugins {
 
 val isCi = System.getenv("CI") != null
 
+val versions = versionsFromPackageJson(file("package.json"))
+
 node {
-  version.set("20.12.2")
+  version.set(versions.node)
+  pnpmVersion.set(versions.pnpm)
 
   if (isCi) {
     // we specify a custom installation directory because of permission issues on Docker
