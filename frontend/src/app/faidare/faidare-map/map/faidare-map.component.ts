@@ -8,6 +8,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import { FaidareDocumentModel } from '../../faidare-document.model';
 import { DOCUMENT } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,10 +36,13 @@ export class FaidareMapComponent {
         map = this.createMap(elementRef.nativeElement);
       }
 
-      const mapMarkers = this.createMarkers();
-      mapMarkers.forEach(marker => marker.addTo(map!));
+      const clusterGroup = L.markerClusterGroup();
+      const markers = this.createMarkers();
+      markers.forEach(marker => clusterGroup.addLayer(marker));
+      map.fitBounds(L.featureGroup(markers).getBounds());
+      map.addLayer(clusterGroup);
       onCleanup(() => {
-        mapMarkers.forEach(marker => map!.removeLayer(marker));
+        map!.removeLayer(clusterGroup);
       });
     });
   }
