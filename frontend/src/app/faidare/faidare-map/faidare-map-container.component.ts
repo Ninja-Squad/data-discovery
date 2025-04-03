@@ -19,12 +19,14 @@ export class FaidareMapContainerComponent {
   );
 
   private hasLocation(document: FaidareDocumentModel) {
+    // FIXME: really check if there is a latitude and longitude in the document
     return document.description.length >= 2;
   }
 
   private toMarker(
     document: FaidareDocumentModel
   ): FaidareDocumentModel & { location: L.LatLngExpression } {
+    // FIXME shouldn't have to do anything since the document should have the latitude and longitude
     return {
       ...document,
       location: [
