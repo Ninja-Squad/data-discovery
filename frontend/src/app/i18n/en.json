@@ -252,9 +252,6 @@
       "institute": "Holding institute",
       "biological-status": "Biological status",
       "country-of-origin": "Country of origin"
-    },
-    "map": {
-      "details": "Details"
     }
   }
 }

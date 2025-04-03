@@ -253,7 +253,7 @@ Harvesting (i.e. importing JSON documents into Elasticsearch) consists in creati
 To create the index and its aliases execute the script below for local dev environment:
 
 ```sh
-./scripts/index.sh -app rare|brc4env|wheatis|data-discovery --local -data data/[rare|brc4env|wheatis|data-discovery]
+./scripts/index.sh -app rare|brc4env|wheatis|data-discovery|faidare --local -data data/[rare|brc4env|wheatis|data-discovery|faidaire]
 ```
 
 The `-app` parameter will trigger a harvest of the resources stored in the Git LFS subdirectories `data/rare` and `data/faidare` filtered or not (`wheatis` and `brc4env` rely on `faidare` and `rare` data respectively).

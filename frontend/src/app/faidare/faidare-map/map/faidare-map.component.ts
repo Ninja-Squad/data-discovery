@@ -68,20 +68,63 @@ export class FaidareMapComponent {
 
       const popupElement = document.createElement('div');
 
-      const titleElement = document.createElement('strong');
-      titleElement.innerText = d.name;
-      popupElement.appendChild(titleElement);
-      popupElement.appendChild(document.createElement('br'));
-
-      const linkElement = document.createElement('a');
-      linkElement.innerText = this.translateService.instant('faidare.map.details');
-      linkElement.href = d.url;
-      popupElement.appendChild(linkElement);
+      popupElement.appendChild(this.popupTitle(d));
+      popupElement.appendChild(this.popupDatabaseName(d));
+      popupElement.appendChild(this.popupEntryTypeAndSpecies(d));
 
       const marker = L.marker(d.location, { icon: icon });
-      marker.bindPopup(popupElement, { offset: [1, -19] });
+      marker.bindPopup(() => this.popup(d), { offset: [1, -19] });
 
       return marker;
     });
+  }
+
+  private popup(d: FaidareDocumentModel): HTMLElement {
+    const popupElement = document.createElement('div');
+    popupElement.appendChild(this.popupTitle(d));
+    popupElement.appendChild(this.popupDatabaseName(d));
+    popupElement.appendChild(this.popupEntryTypeAndSpecies(d));
+    return popupElement;
+  }
+
+  private popupTitle(d: FaidareDocumentModel): HTMLElement {
+    const titleElement = document.createElement('div');
+    titleElement.classList.add('mb-1');
+    const strongElement = document.createElement('strong');
+    strongElement.classList.add('fs-6');
+    const linkElement = document.createElement('a');
+    linkElement.innerText = d.name;
+    linkElement.href = d.url;
+    linkElement.target = '_blank';
+    strongElement.appendChild(linkElement);
+    titleElement.appendChild(strongElement);
+
+    return titleElement;
+  }
+
+  private popupDatabaseName(d: FaidareDocumentModel): HTMLElement {
+    const wrappingElement = document.createElement('div');
+    wrappingElement.classList.add('mb-2');
+    const databaseName = document.createElement('em');
+    databaseName.innerText = d.databaseName;
+    wrappingElement.appendChild(databaseName);
+    return wrappingElement;
+  }
+
+  private popupEntryTypeAndSpecies(d: FaidareDocumentModel): HTMLElement {
+    const wrappingElement = document.createElement('div');
+
+    const entryType = document.createElement('span');
+    entryType.classList.add('me-4');
+    entryType.innerText = d.entryType;
+    wrappingElement.appendChild(entryType);
+
+    for (const species of d.species) {
+      const badge = document.createElement('span');
+      badge.classList.add('badge', 'bg-secondary', 'me-2');
+      badge.innerText = species;
+      wrappingElement.appendChild(badge);
+    }
+    return wrappingElement;
   }
 }
