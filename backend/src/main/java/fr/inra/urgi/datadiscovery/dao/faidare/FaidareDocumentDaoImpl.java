@@ -28,7 +28,7 @@ public class FaidareDocumentDaoImpl extends AbstractDocumentDaoImpl<FaidareDocum
 
     /**
      * Contains the fields searchable on a {@link FaidareDocument}.
-     * This is basically all fields at the exception of the ones containing a URL.
+     * This is basically all fields except the ones containing a URL or geographic locations.
      */
     private static final Set<String> SEARCHABLE_FIELDS = Collections.unmodifiableSet(Stream.of(
         "name",

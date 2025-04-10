@@ -1,5 +1,10 @@
 import { OrderableDocumentModel } from '../models/document.model';
 
+export interface GeographicLocation {
+  latitude: number;
+  longitude: number;
+}
+
 export interface FaidareDocumentModel extends OrderableDocumentModel {
   entryType: string;
   databaseName: string;
@@ -17,4 +22,5 @@ export interface FaidareDocumentModel extends OrderableDocumentModel {
   observationVariableIds: Array<string>;
   germplasmList: Array<string>;
   accessionNumber: string;
+  geographicLocation: Array<GeographicLocation>;
 }

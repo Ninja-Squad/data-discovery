@@ -14,11 +14,18 @@ import java.util.stream.Collectors;
 
 import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.ElasticSearchConfig;
-import fr.inra.urgi.datadiscovery.dao.*;
+import fr.inra.urgi.datadiscovery.dao.AbstractDocumentDaoImpl;
+import fr.inra.urgi.datadiscovery.dao.AggregationSelection;
+import fr.inra.urgi.datadiscovery.dao.AggregationTester;
+import fr.inra.urgi.datadiscovery.dao.AppAggregation;
+import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
+import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
+import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
+import fr.inra.urgi.datadiscovery.domain.faidare.GeographicLocation;
 import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareCurrentUser;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareUser;
@@ -95,6 +102,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                            .withDescription("14_mtDNA is a RFLP marker. It is used in GD2 database for the species Pinus banksiana.")
                            .withUrl("http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1")
                            .withSpecies(Collections.singletonList("Pinus banksiana"))
+                           .withGeographicLocations(List.of(new GeographicLocation(2.5, 3.6)))
                            .withNode("URGI")
                            .build();
 

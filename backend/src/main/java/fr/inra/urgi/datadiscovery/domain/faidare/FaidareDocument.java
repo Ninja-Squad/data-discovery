@@ -47,6 +47,8 @@ public final class FaidareDocument implements SearchDocument {
     private final String accessionNumber;
     private final String germplasmDbId;
     private final int groupId;
+    @JsonProperty("geographicLocation")
+    private final List<GeographicLocation> geographicLocations;
 
     @JsonCreator
     @PersistenceCreator
@@ -71,7 +73,8 @@ public final class FaidareDocument implements SearchDocument {
                            String accessionHolder,
                            String accessionNumber,
                            String germplasmDbId,
-                           Integer groupId) {
+                           Integer groupId,
+                           @JsonProperty("geographicLocation") List<GeographicLocation> geographicLocations) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -94,6 +97,7 @@ public final class FaidareDocument implements SearchDocument {
         this.accessionNumber = accessionNumber;
         this.germplasmDbId = germplasmDbId;
         this.groupId = groupId == null ? 0 : groupId;
+        this.geographicLocations = geographicLocations == null ? Collections.emptyList() : List.copyOf(geographicLocations);
     }
 
     public FaidareDocument(Builder builder) {
@@ -118,7 +122,8 @@ public final class FaidareDocument implements SearchDocument {
              builder.accessionHolder,
              builder.accessionNumber,
              builder.germplasmDbId,
-             builder.groupId);
+             builder.groupId,
+             builder.geographicLocations);
     }
 
     @Override
@@ -203,10 +208,16 @@ public final class FaidareDocument implements SearchDocument {
         return accessionNumber;
     }
 
-    public String getGermplasmDbId() { return germplasmDbId; }
+    public String getGermplasmDbId() {
+        return germplasmDbId;
+    }
 
     public int getGroupId() {
         return groupId;
+    }
+
+    public List<GeographicLocation> getGeographicLocations() {
+        return geographicLocations;
     }
 
     @Override
@@ -239,6 +250,7 @@ public final class FaidareDocument implements SearchDocument {
             Objects.equals(accessionHolder, that.accessionHolder) &&
             Objects.equals(accessionNumber, that.accessionNumber) &&
             Objects.equals(germplasmDbId, that.germplasmDbId) &&
+            Objects.equals(geographicLocations, that.geographicLocations) &&
             groupId == that.groupId;
     }
 
@@ -265,7 +277,8 @@ public final class FaidareDocument implements SearchDocument {
                             accessionHolder,
                             accessionNumber,
                             germplasmDbId,
-                            groupId);
+                            groupId,
+                            geographicLocations);
     }
 
     @Override
@@ -293,6 +306,7 @@ public final class FaidareDocument implements SearchDocument {
             ", accessionNumber='" + accessionNumber + '\'' +
             ", germplasmDbId='" + germplasmDbId +'\'' +
             ", groupId='" + groupId + '\'' +
+            ", geographicLocations='" + geographicLocations + '\'' +
             '}';
     }
 
@@ -328,6 +342,7 @@ public final class FaidareDocument implements SearchDocument {
         private String accessionNumber;
         private String germplasmDbId;
         private Integer groupId;
+        private List<GeographicLocation> geographicLocations = Collections.emptyList();
 
         private Builder() {
         }
@@ -355,6 +370,7 @@ public final class FaidareDocument implements SearchDocument {
             this.accessionNumber = document.getAccessionNumber();
             this.germplasmDbId = document.getGermplasmDbId();
             this.groupId = document.getGroupId();
+            this.geographicLocations = document.getGeographicLocations();
         }
 
         public Builder withId(String id) {
@@ -464,6 +480,11 @@ public final class FaidareDocument implements SearchDocument {
 
         public Builder withGroupId(int groupId) {
             this.groupId = groupId;
+            return this;
+        }
+
+        public Builder withGeographicLocations(List<GeographicLocation> geographicLocations) {
+            this.geographicLocations = List.copyOf(geographicLocations);
             return this;
         }
 
