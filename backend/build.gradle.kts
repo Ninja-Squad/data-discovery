@@ -91,6 +91,12 @@ tasks {
             exceptionFormat = TestExceptionFormat.FULL
         }
         outputs.dir(snippetsDir)
+
+        if (System.getenv("CI") != null) {
+            systemProperties(
+                "spring.elasticsearch.uris" to "http://elasticsearch:9200",
+            )
+        }
     }
 
     jacocoTestReport {
