@@ -43,6 +43,7 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.client.elc.Queries;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
@@ -146,7 +147,7 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     }
 
     protected List<String> getAnnotationsIds(SearchRefinements refinements){
-        List<String> annotIds = new ArrayList<String>();
+        List<String> annotIds = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\((.*)\\)\\s*$");
         for (AppAggregation term : refinements.getTerms()) {
             if (term.getName().equals("annot")) {
@@ -163,7 +164,6 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     }
 
     protected NativeQueryBuilder getQueryBuilder(String query, SearchRefinements refinements, Pageable page, boolean descendants) {
-        NativeQueryBuilder nativeQueryBuilder = NativeQuery.builder();
         // if the query is empty, rather than showing no result, we show everything.
         // this is necessary in Faidare because we need to show aggregations on the home page, and be able to search
         // only with refinements
@@ -384,7 +384,11 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
     @Override
     public void deleteAllSuggestions() {
-        elasticsearchTemplate.delete(NativeQuery.builder().withQuery(Queries.matchAllQueryAsQuery()).build(), getSuggestionDocumentClass());
+        elasticsearchTemplate.delete(
+            DeleteQuery.builder(
+                NativeQuery.builder().withQuery(Queries.matchAllQueryAsQuery()).build()
+            ).build(),
+            getSuggestionDocumentClass());
         elasticsearchTemplate.indexOps(getSuggestionDocumentClass()).refresh();
     }
 
@@ -507,9 +511,9 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
     /**
      * A Pageable implementation allowing to avoid loading any page (i.e. with a size equal to 0), because we
      * are not interested in loading search results, but only the aggregations
-     * (see https://www.elastic.co/guide/en/elasticsearch/reference/6.3/returning-only-agg-results.html).
+     * (see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.3/returning-only-agg-results.html">the documentation</a>).
      *
-     * We would normally use a {@link org.springframework.data.domain.PageRequest} as an implementation of
+     * We would normally use a {@link PageRequest} as an implementation of
      * {@link Pageable}, but PageRequest considers 0 as an invalid size. Hence this implementation.
      */
     private static final class NoPage implements Pageable {
