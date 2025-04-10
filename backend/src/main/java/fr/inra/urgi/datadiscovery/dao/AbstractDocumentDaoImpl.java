@@ -43,6 +43,7 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.client.elc.Queries;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
@@ -384,7 +385,9 @@ public abstract class AbstractDocumentDaoImpl<D extends SearchDocument> implemen
 
     @Override
     public void deleteAllSuggestions() {
-        elasticsearchTemplate.delete(NativeQuery.builder().withQuery(Queries.matchAllQueryAsQuery()).build(), getSuggestionDocumentClass());
+        elasticsearchTemplate.delete(DeleteQuery.builder(
+            NativeQuery.builder().withQuery(Queries.matchAllQueryAsQuery()).build()
+        ).build(), getSuggestionDocumentClass());
         elasticsearchTemplate.indexOps(getSuggestionDocumentClass()).refresh();
     }
 
