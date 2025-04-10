@@ -371,12 +371,7 @@
         "e2e": {
           "builder": "playwright-ng-schematics:playwright",
           "options": {
-            "devServerTarget": "data-discovery-frontend:serve:faidare"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "data-discovery-frontend:serve:faidare-production"
-            }
+            "devServerTarget": "data-discovery-frontend:serve:faidare-production"
           }
         }
       }

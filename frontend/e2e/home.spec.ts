@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from './utils';
 
 test('Home page should display aggregations', async ({ page }) => {
-  await page.route('**/faidare-dev/api/aggregate?main=true', route => {
+  await page.route('**/api/aggregate?main=true', route => {
     return route.fulfill({
       json: [
         {
