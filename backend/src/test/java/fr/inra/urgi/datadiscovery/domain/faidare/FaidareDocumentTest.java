@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,6 +26,7 @@ class FaidareDocumentTest {
     void shouldMarshallAndUnMarshall() throws IOException {
         FaidareDocument document =
             FaidareDocument.builder()
+                           .withId("doc1")
                            .withName("14_mtDNA")
                            .withEntryType("Marker")
                            .withDatabaseName("Evoltree")
@@ -41,6 +43,9 @@ class FaidareDocumentTest {
                            .withTaxonGroup(Collections.singletonList("Taxon group 1"))
                            .withObservationVariableIds(Collections.singletonList("OV1"))
                            .withCountryOfOrigin("France")
+                           .withGermplasmDbId("gerplasm1")
+                           .withGroupId(42)
+                           .withGeographicLocations(List.of(new GeographicLocation(2.5, 3.6)))
                            .build();
 
         String json = objectMapper.writer()
@@ -67,10 +72,11 @@ class FaidareDocumentTest {
         FaidareDocument document = objectMapper.readValue(json, FaidareDocument.class);
 
         assertThat(document.getSpecies()).containsExactly("Pinus banksiana");
+        assertThat(document.getGeographicLocations()).isEmpty();
     }
 
     @Test
-    void shouldSupportNullSpecies() throws IOException {
+    void shouldSupportNullSpeciesAndGeographicLocations() throws IOException {
         String json = "{\n" +
             "    \"entryType\": \"Marker\",\n" +
             "    \"databaseName\": \"Evoltree\",\n" +
@@ -78,11 +84,13 @@ class FaidareDocumentTest {
             "    \"url\": \"http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1\",\n" +
             "    \"species\": null,\n" +
             "    \"node\": \"URGI\",\n" +
-            "    \"name\": \"14_mtDNA\"\n" +
+            "    \"name\": \"14_mtDNA\",\n" +
+            "    \"geographicLocation\": null\n" +
             "  }";
 
         FaidareDocument document = objectMapper.readValue(json, FaidareDocument.class);
 
         assertThat(document.getSpecies()).isEmpty();
+        assertThat(document.getGeographicLocations()).isEmpty();
     }
 }
