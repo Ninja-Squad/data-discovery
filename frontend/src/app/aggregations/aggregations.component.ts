@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, output, input, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  input,
+  model,
+  output
+} from '@angular/core';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -17,7 +24,7 @@ import { environment } from '../../environments/environment';
     LoadingSkeletonComponent,
     SmallAggregationComponent,
     LargeAggregationComponent,
-    environment.ontologyAggregationComponent
+    forwardRef(() => environment.ontologyAggregationComponent)
   ]
 })
 export class AggregationsComponent {

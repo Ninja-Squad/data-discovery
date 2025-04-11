@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -21,7 +21,7 @@ import {
     NgbDropdownToggle,
     NgbDropdownMenu,
     RouterLink,
-    environment.basketComponent
+    forwardRef(() => environment.basketComponent)
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

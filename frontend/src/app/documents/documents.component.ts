@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject, Signal } from '@angular/core';
 import { BasketService } from '../urgi-common/basket/basket.service';
 import { map } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
@@ -24,8 +24,8 @@ interface ViewModel {
   imports: [
     DecimalPipe,
     TranslateDirective,
-    environment.selectAllResultsComponent,
-    environment.documentListComponent
+    forwardRef(() => environment.selectAllResultsComponent),
+    forwardRef(() => environment.documentListComponent)
   ]
 })
 export class DocumentsComponent {
