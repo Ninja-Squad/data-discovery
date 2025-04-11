@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   effect,
+  forwardRef,
   inject,
   Signal
 } from '@angular/core';
@@ -82,7 +83,7 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
     NgbNavOutlet,
     TranslateDirective,
     GermplasmResultsComponent,
-    environment.documentComponent
+    forwardRef(() => environment.documentComponent)
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

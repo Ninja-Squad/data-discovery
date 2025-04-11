@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { environment } from '../environments/environment';
@@ -13,7 +13,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'dd-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [NavbarComponent, ErrorComponent, RouterOutlet, environment.footerComponent],
+  imports: [
+    NavbarComponent,
+    ErrorComponent,
+    RouterOutlet,
+    forwardRef(() => environment.footerComponent)
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {

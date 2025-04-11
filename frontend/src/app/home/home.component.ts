@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  inject,
+  signal,
+  Signal
+} from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -25,7 +32,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     NgbTypeahead,
     PillarsComponent,
     AggregationsComponent,
-    environment.headerComponent
+    forwardRef(() => environment.headerComponent)
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
