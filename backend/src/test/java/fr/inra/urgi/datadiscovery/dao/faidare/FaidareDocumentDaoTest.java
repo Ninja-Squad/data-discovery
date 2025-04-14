@@ -22,10 +22,10 @@ import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.PillarAggregationDescriptor;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
+import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.faidare.FaidareDocument;
-import fr.inra.urgi.datadiscovery.domain.faidare.GeographicLocation;
 import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareCurrentUser;
 import fr.inra.urgi.datadiscovery.filter.faidare.FaidareUser;
@@ -45,6 +45,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -102,8 +103,8 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                            .withDescription("14_mtDNA is a RFLP marker. It is used in GD2 database for the species Pinus banksiana.")
                            .withUrl("http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1")
                            .withSpecies(Collections.singletonList("Pinus banksiana"))
-                           .withGeographicLocations(List.of(new GeographicLocation(2.5, 3.6)))
                            .withNode("URGI")
+                           .withGeographicLocations(List.of(new GeographicLocationDocument("1", "Site A", "farm", new GeoPoint(48.8566, 2.3522))))
                            .build();
 
         documentDao.saveAll(Collections.singleton(document));
@@ -352,6 +353,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withObservationVariableIds(Collections.singletonList("OV2"))
                             .withGermplasmList(Collections.singletonList("GL2"))
                             .withGroupId(1)
+                            .withGeographicLocations(List.of(new GeographicLocationDocument("3", "Site B", "local", new GeoPoint(21.854, 6.2094))))
                             .build();
 
             when(mockCurrentUser.get()).thenReturn(new FaidareUser("john", new HashSet<>(Arrays.asList(0, 1))));
