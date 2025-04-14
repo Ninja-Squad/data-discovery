@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -47,8 +48,7 @@ public final class FaidareDocument implements SearchDocument {
     private final String accessionNumber;
     private final String germplasmDbId;
     private final int groupId;
-    @JsonProperty("geographicLocation")
-    private final List<GeographicLocation> geographicLocations;
+    private final List<GeographicLocationDocument> geographicLocations;
 
     @JsonCreator
     @PersistenceCreator
@@ -74,7 +74,7 @@ public final class FaidareDocument implements SearchDocument {
                            String accessionNumber,
                            String germplasmDbId,
                            Integer groupId,
-                           @JsonProperty("geographicLocation") List<GeographicLocation> geographicLocations) {
+                           List<GeographicLocationDocument> geographicLocations) {
         this.id = id;
         this.name = name;
         this.entryType = entryType;
@@ -97,7 +97,7 @@ public final class FaidareDocument implements SearchDocument {
         this.accessionNumber = accessionNumber;
         this.germplasmDbId = germplasmDbId;
         this.groupId = groupId == null ? 0 : groupId;
-        this.geographicLocations = geographicLocations == null ? Collections.emptyList() : List.copyOf(geographicLocations);
+        this.geographicLocations = nullSafeUnmodifiableCopy(geographicLocations);
     }
 
     public FaidareDocument(Builder builder) {
@@ -216,18 +216,14 @@ public final class FaidareDocument implements SearchDocument {
         return groupId;
     }
 
-    public List<GeographicLocation> getGeographicLocations() {
+    public List<GeographicLocationDocument> getGeographicLocations() {
         return geographicLocations;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FaidareDocument that = (FaidareDocument) o;
         return Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
@@ -342,7 +338,7 @@ public final class FaidareDocument implements SearchDocument {
         private String accessionNumber;
         private String germplasmDbId;
         private Integer groupId;
-        private List<GeographicLocation> geographicLocations = Collections.emptyList();
+        private List<GeographicLocationDocument> geographicLocations;
 
         private Builder() {
         }
@@ -483,7 +479,7 @@ public final class FaidareDocument implements SearchDocument {
             return this;
         }
 
-        public Builder withGeographicLocations(List<GeographicLocation> geographicLocations) {
+        public Builder withGeographicLocations(List<GeographicLocationDocument> geographicLocations) {
             this.geographicLocations = List.copyOf(geographicLocations);
             return this;
         }

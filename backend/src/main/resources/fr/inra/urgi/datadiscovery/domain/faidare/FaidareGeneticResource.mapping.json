@@ -211,6 +211,31 @@
                     "ignore_above": 256
                 }
             }
+        },
+        "geographicLocations": {
+            "type": "nested",
+            "properties": {
+                "siteDbId": {
+                    "type": "keyword"
+                },
+                "siteName": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "siteType": {
+                    "type": "keyword"
+                },
+                "coordinates": {
+                    "type": "geo_point"
+                }
+            }
         }
+
+
     }
 }
