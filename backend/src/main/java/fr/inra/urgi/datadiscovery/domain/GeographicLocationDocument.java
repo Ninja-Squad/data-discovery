@@ -1,10 +1,14 @@
 package fr.inra.urgi.datadiscovery.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
-
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+/**
+ * Our definition of an immutable GeoPoint. Note that the JSON name of the properties (lat and lon) is
+ * mandatory in order for Elasticsearch to index it as a geo_point type.
+ * @author JB Nizet
+ */
 public final class GeographicLocationDocument {
 
     private final String siteId;
@@ -13,15 +17,24 @@ public final class GeographicLocationDocument {
 
     private final String siteType;
 
-    private GeoPoint coordinates;
+    /**
+     * The latitude
+     */
+    private final double lat;
 
+    /**
+     * The longitude
+     */
+    private final double lon;
 
     @JsonCreator
-    public GeographicLocationDocument(String siteId, String siteName, String siteType, GeoPoint coordinates) {
+    public GeographicLocationDocument(String siteId, String siteName, String siteType, double lat, double lon) {
+
         this.siteId = siteId;
         this.siteName = siteName;
         this.siteType = siteType;
-        this.coordinates = coordinates;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public String getSiteId() {
@@ -35,22 +48,12 @@ public final class GeographicLocationDocument {
     public String getSiteType() {
         return siteType;
     }
-
-    public GeoPoint getCoordinates() {
-        return coordinates;
+    public double getLat() {
+        return lat;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GeographicLocationDocument that = (GeographicLocationDocument) o;
-        return Objects.equals(siteId, that.siteId) && Objects.equals(siteName, that.siteName) && Objects.equals(siteType, that.siteType) && Objects.equals(coordinates, that.coordinates);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(siteId, siteName, siteType, coordinates);
+    public double getLon() {
+        return lon;
     }
 
     @Override
@@ -59,7 +62,21 @@ public final class GeographicLocationDocument {
                 "siteId='" + siteId + '\'' +
                 ", siteName='" + siteName + '\'' +
                 ", siteType='" + siteType + '\'' +
-                ", coordinates=" + coordinates +
+                ", lat=" + lat +
+                ", lon=" + lon +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeographicLocationDocument geographicLocationDocument = (GeographicLocationDocument) o;
+        return Double.compare(lat, geographicLocationDocument.lat) == 0 && Double.compare(lon, geographicLocationDocument.lon) == 0 && Objects.equals(siteId, geographicLocationDocument.siteId) && Objects.equals(siteName, geographicLocationDocument.siteName) && Objects.equals(siteType, geographicLocationDocument.siteType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(siteId, siteName, siteType, lat, lon);
     }
 }

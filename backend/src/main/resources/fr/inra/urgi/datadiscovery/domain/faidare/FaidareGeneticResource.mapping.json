@@ -230,8 +230,11 @@
                 "siteType": {
                     "type": "keyword"
                 },
-                "coordinates": {
-                    "type": "geo_point"
+                "lat": {
+                    "type": "double"
+                },
+                "lon" : {
+                    "type": "double"
                 }
             }
         }

@@ -47,7 +47,7 @@ class FaidareDocumentTest {
                            .withCountryOfOrigin("France")
                            .withGermplasmDbId("gerplasm1")
                            .withGroupId(42)
-                           .withGeographicLocations(List.of(new GeographicLocationDocument("site1", "Site 1", "siteType1", new GeoPoint(2.5, 3.6))))
+                           .withGeographicLocations(List.of(new GeographicLocationDocument("site1", "Site 1", "siteType1", 2.5, 3.6)))
                            .build();
 
         String json = objectMapper.writer()
