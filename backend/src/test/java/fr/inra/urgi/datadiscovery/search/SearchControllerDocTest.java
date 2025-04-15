@@ -22,7 +22,7 @@ import fr.inra.urgi.datadiscovery.dao.rare.RareDocumentDao;
 import fr.inra.urgi.datadiscovery.dao.rare.RareSortAnalyzer;
 import fr.inra.urgi.datadiscovery.doc.DocumentationConfig;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPageImpl;
-import fr.inra.urgi.datadiscovery.domain.Location;
+import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import fr.inra.urgi.datadiscovery.dto.AggregationDTO;
 import fr.inra.urgi.datadiscovery.dto.BucketDTO;
@@ -122,7 +122,7 @@ class SearchControllerDocTest {
                                .withGenus(Collections.singletonList("Vitis"))
                                .withSpecies(Collections.singletonList("Vitis vinifera"))
                                .withCountryOfCollect("Italy")
-                               .withLocationOfCollect(new Location(37.5, 15.099722))
+                               .withLocationOfCollect(new GeographicLocationDocument("3","SiteName", "Collecting site", 37.5, 15.099722))
                                .build();
 
         highlightedSyrah =

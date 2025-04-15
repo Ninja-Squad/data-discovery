@@ -45,7 +45,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -104,7 +103,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                            .withUrl("http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1")
                            .withSpecies(Collections.singletonList("Pinus banksiana"))
                            .withNode("URGI")
-                           .withGeographicLocations(List.of(new GeographicLocationDocument("1", "Site A", "farm", new GeoPoint(48.8566, 2.3522))))
+                           .withGeographicLocations(List.of(new GeographicLocationDocument("1", "Site A", "farm", 48.8566, 2.3522)))
                            .build();
 
         documentDao.saveAll(Collections.singleton(document));
@@ -353,7 +352,7 @@ class FaidareDocumentDaoTest extends DocumentDaoTest {
                             .withObservationVariableIds(Collections.singletonList("OV2"))
                             .withGermplasmList(Collections.singletonList("GL2"))
                             .withGroupId(1)
-                            .withGeographicLocations(List.of(new GeographicLocationDocument("3", "Site B", "local", new GeoPoint(21.854, 6.2094))))
+                            .withGeographicLocations(List.of(new GeographicLocationDocument("3", "Site B", "local", 21.854, 6.2094)))
                             .build();
 
             when(mockCurrentUser.get()).thenReturn(new FaidareUser("john", new HashSet<>(Arrays.asList(0, 1))));

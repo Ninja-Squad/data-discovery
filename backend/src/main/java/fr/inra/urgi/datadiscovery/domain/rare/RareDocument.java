@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.inra.urgi.datadiscovery.domain.Location;
+import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import fr.inra.urgi.datadiscovery.domain.SearchDocument;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -54,9 +54,9 @@ public class RareDocument implements SearchDocument {
     private final List<String> materialType;
     private final List<String> biotopeType;
     private final String countryOfOrigin;
-    private final Location locationOfOrigin;
+    private final GeographicLocationDocument locationOfOrigin;
     private final String countryOfCollect;
-    private final Location locationOfCollect;
+    private final GeographicLocationDocument locationOfCollect;
 
     @JsonCreator
     @PersistenceCreator
@@ -76,9 +76,9 @@ public class RareDocument implements SearchDocument {
                         List<String> materialType,
                         List<String> biotopeType,
                         String countryOfOrigin,
-                        Location locationOfOrigin,
+                        GeographicLocationDocument locationOfOrigin,
                         String countryOfCollect,
-                        Location locationOfCollect) {
+                        GeographicLocationDocument locationOfCollect) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -186,7 +186,7 @@ public class RareDocument implements SearchDocument {
         return countryOfOrigin;
     }
 
-    public Location getLocationOfOrigin() {
+    public GeographicLocationDocument getLocationOfOrigin() {
         return locationOfOrigin;
     }
 
@@ -194,7 +194,7 @@ public class RareDocument implements SearchDocument {
         return countryOfCollect;
     }
 
-    public Location getLocationOfCollect() {
+    public GeographicLocationDocument getLocationOfCollect() {
         return locationOfCollect;
     }
 
@@ -270,9 +270,9 @@ public class RareDocument implements SearchDocument {
             ", materialType='" + materialType + '\'' +
             ", biotopeType='" + biotopeType + '\'' +
             ", countryOfOrigin='" + countryOfOrigin + '\'' +
-            ", locationOfOrigin=" + locationOfOrigin +
+            ", geographicLocationDocumentOfOrigin=" + locationOfOrigin +
             ", countryOfCollect='" + countryOfCollect + '\'' +
-            ", locationOfCollect=" + locationOfCollect +
+            ", geographicLocationDocumentOfCollect=" + locationOfCollect +
             '}';
     }
 
@@ -303,9 +303,9 @@ public class RareDocument implements SearchDocument {
         private List<String> materialType = Collections.emptyList();
         private List<String> biotopeType = Collections.emptyList();
         private String countryOfOrigin;
-        private Location locationOfOrigin;
+        private GeographicLocationDocument locationOfOrigin;
         private String countryOfCollect;
-        private Location locationOfCollect;
+        private GeographicLocationDocument locationOfCollect;
 
         private Builder() {
         }
@@ -412,7 +412,7 @@ public class RareDocument implements SearchDocument {
             return this;
         }
 
-        public Builder withLocationOfOrigin(Location locationOfOrigin) {
+        public Builder withLocationOfOrigin(GeographicLocationDocument locationOfOrigin) {
             this.locationOfOrigin = locationOfOrigin;
             return this;
         }
@@ -422,7 +422,7 @@ public class RareDocument implements SearchDocument {
             return this;
         }
 
-        public Builder withLocationOfCollect(Location locationOfCollect) {
+        public Builder withLocationOfCollect(GeographicLocationDocument locationOfCollect) {
             this.locationOfCollect = locationOfCollect;
             return this;
         }

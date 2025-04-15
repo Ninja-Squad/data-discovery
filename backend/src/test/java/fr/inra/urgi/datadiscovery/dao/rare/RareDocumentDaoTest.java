@@ -15,7 +15,7 @@ import fr.inra.urgi.datadiscovery.dao.AggregationTester;
 import fr.inra.urgi.datadiscovery.dao.DocumentDaoTest;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.domain.AggregatedPage;
-import fr.inra.urgi.datadiscovery.domain.Location;
+import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import fr.inra.urgi.datadiscovery.domain.SuggestionDocument;
 import fr.inra.urgi.datadiscovery.domain.rare.RareDocument;
 import fr.inra.urgi.datadiscovery.pillar.DatabaseSourceDTO;
@@ -92,9 +92,9 @@ class RareDocumentDaoTest extends DocumentDaoTest {
                                .withMaterialType(Collections.singletonList("testMaterialType"))
                                .withBiotopeType(Collections.singletonList("testBiotopeType"))
                                .withCountryOfOrigin("France")
-                               .withLocationOfOrigin(new Location(0.1, 0.2))
+                               .withLocationOfOrigin(new GeographicLocationDocument(null, null, null,0.1, 0.2))
                                .withCountryOfCollect("Italy")
-                               .withLocationOfCollect(new Location(37.5,15.099722))
+                               .withLocationOfCollect(new GeographicLocationDocument(null, null, null,37.5,15.099722))
                                .build();
 
         documentDao.saveAll(Collections.singleton(document));

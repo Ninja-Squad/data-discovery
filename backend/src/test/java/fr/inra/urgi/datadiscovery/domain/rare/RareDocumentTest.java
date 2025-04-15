@@ -7,11 +7,10 @@ import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import fr.inra.urgi.datadiscovery.domain.Location;
+import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.context.annotation.Import;
 
 /**
  * Unit test to check that a {@link RareDocument} can correctly be marshalled/unmarshaleld to/from JSON
@@ -46,9 +45,9 @@ class RareDocumentTest {
                                .withMaterialType(Collections.singletonList("testMaterialType"))
                                .withBiotopeType(Collections.singletonList("testBiotopeType"))
                                .withCountryOfOrigin("France")
-                               .withLocationOfOrigin(new Location(0.1, 0.2))
+                               .withLocationOfOrigin(new GeographicLocationDocument("1", "TestSiteName1", "Origin site", 0.1, 0.2))
                                .withCountryOfCollect("Italy")
-                               .withLocationOfCollect(new Location(37.5,15.099722))
+                               .withLocationOfCollect(new GeographicLocationDocument("2", "TestSiteName2", "Collecting site ",37.5,15.099722))
                                .build();
 
         String json = objectMapper.writer()
