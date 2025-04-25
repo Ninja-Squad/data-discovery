@@ -19,10 +19,10 @@ export class FaidareMapContainerComponent {
   private toMarkers(
     document: FaidareDocumentModel
   ): Array<FaidareDocumentModel & { location: L.LatLngExpression }> {
-    return document.geographicLocation.map(geographicLocation => {
+    return document.geographicLocations.map(geographicLocation => {
       return {
         ...document,
-        location: [geographicLocation.latitude, geographicLocation.longitude]
+        location: [geographicLocation.lat, geographicLocation.lon]
       };
     });
   }
