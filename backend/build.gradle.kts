@@ -24,9 +24,12 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://repo.spring.io/milestone")
+    }
 }
 
-extra["springCloudVersion"] = "2024.0.1"
+extra["springCloudVersion"] = "2025.0.0-RC1"
 
 val snippetsDir = file("build/generated-snippets")
 
