@@ -3,6 +3,5 @@ import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   ...devEnvironment,
-  production: true,
-  rareBasket: 'http://localhost:4201'
+  production: true
 };
