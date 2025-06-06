@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import {
   NgbDropdownMenu,
   NgbDropdownToggle
 } from '@ng-bootstrap/ng-bootstrap';
+import { BasketComponent } from '../../environments/basket.default';
 
 @Component({
   selector: 'dd-navbar',
@@ -21,7 +22,7 @@ import {
     NgbDropdownToggle,
     NgbDropdownMenu,
     RouterLink,
-    forwardRef(() => environment.basketComponent)
+    BasketComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

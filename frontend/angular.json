@@ -87,6 +87,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket?default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ],
               "baseHref": "/rare-dev/"
@@ -96,6 +108,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ]
             },
@@ -104,6 +128,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.brc4env.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ],
               "baseHref": "/brc4env-dev/",
@@ -134,6 +170,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.brc4env.prod.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -163,6 +211,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.wheatis.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.wheatis.ts"
                 }
               ],
               "baseHref": "/wheatis-dev/",
@@ -193,6 +245,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.wheatis.prod.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.wheatis.ts"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -222,6 +278,38 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/document-list.default.ts",
+                  "with": "src/environments/document-list.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/ontology-aggregation.default.ts",
+                  "with": "src/environments/ontology-aggregation.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/footer.default.ts",
+                  "with": "src/environments/footer.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
+                },
+                {
+                  "replace": "src/environments/map-container.default.ts",
+                  "with": "src/environments/map-container.faidare.ts"
                 }
               ],
               "baseHref": "/faidare-dev/",
@@ -252,6 +340,38 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.faidare.prod.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/document-list.default.ts",
+                  "with": "src/environments/document-list.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/ontology-aggregation.default.ts",
+                  "with": "src/environments/ontology-aggregation.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/footer.default.ts",
+                  "with": "src/environments/footer.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
+                },
+                {
+                  "replace": "src/environments/map-container.default.ts",
+                  "with": "src/environments/map-container.faidare.ts"
                 }
               ],
               "stylePreprocessorOptions": {
