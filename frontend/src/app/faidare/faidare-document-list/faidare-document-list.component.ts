@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   effect,
-  forwardRef,
   inject,
   Signal
 } from '@angular/core';
@@ -21,9 +20,9 @@ import {
   NgbNavOutlet
 } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
-import { environment } from '../../../environments/environment';
 import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { DocumentComponent } from '../../../environments/document.default';
 
 const ENTRY_AGGREGATION_KEY = 'entry';
 const GERMPLASM_BUCKET_KEY = 'Germplasm';
@@ -83,7 +82,7 @@ export function toAllTransition(criteria: SearchCriteria): SearchCriteria {
     NgbNavOutlet,
     TranslateDirective,
     GermplasmResultsComponent,
-    forwardRef(() => environment.documentComponent)
+    DocumentComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

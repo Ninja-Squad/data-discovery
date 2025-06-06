@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  forwardRef,
-  inject,
-  signal,
-  Signal
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Params, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -19,6 +12,7 @@ import { PillarsComponent } from '../pillars/pillars.component';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { HeaderComponent } from '../../environments/header.default';
 
 @Component({
   selector: 'dd-home',
@@ -32,7 +26,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     NgbTypeahead,
     PillarsComponent,
     AggregationsComponent,
-    forwardRef(() => environment.headerComponent)
+    HeaderComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

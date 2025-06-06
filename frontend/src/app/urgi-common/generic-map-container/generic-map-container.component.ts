@@ -7,10 +7,10 @@ import { GenericDocumentModel } from '../generic-document.model';
  */
 @Component({
   selector: 'dd-map',
-  templateUrl: './generic-map.component.html',
-  styleUrl: './generic-map.component.scss',
+  templateUrl: './generic-map-container.component.html',
+  styleUrl: './generic-map-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GenericMapComponent {
+export class GenericMapContainerComponent {
   readonly documents = input.required<Array<GenericDocumentModel>>();
 }

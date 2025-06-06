@@ -14,10 +14,8 @@
       "schematics": {},
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/data-discovery-frontend",
-            "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js",
@@ -89,6 +87,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket?default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ],
               "baseHref": "/rare-dev/"
@@ -98,6 +108,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.rare.prod.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ]
             },
@@ -106,6 +128,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.brc4env.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ],
               "baseHref": "/brc4env-dev/",
@@ -136,6 +170,18 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.brc4env.prod.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.rare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -165,6 +211,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.wheatis.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.wheatis.ts"
                 }
               ],
               "baseHref": "/wheatis-dev/",
@@ -195,6 +245,10 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.wheatis.prod.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.wheatis.ts"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -224,6 +278,38 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/document-list.default.ts",
+                  "with": "src/environments/document-list.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/ontology-aggregation.default.ts",
+                  "with": "src/environments/ontology-aggregation.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/footer.default.ts",
+                  "with": "src/environments/footer.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
+                },
+                {
+                  "replace": "src/environments/map-container.default.ts",
+                  "with": "src/environments/map-container.faidare.ts"
                 }
               ],
               "baseHref": "/faidare-dev/",
@@ -254,6 +340,38 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.faidare.prod.ts"
+                },
+                {
+                  "replace": "src/environments/document.default.ts",
+                  "with": "src/environments/document.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/document-list.default.ts",
+                  "with": "src/environments/document-list.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/ontology-aggregation.default.ts",
+                  "with": "src/environments/ontology-aggregation.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/header.default.ts",
+                  "with": "src/environments/header.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/footer.default.ts",
+                  "with": "src/environments/footer.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/basket.default.ts",
+                  "with": "src/environments/basket.actual.ts"
+                },
+                {
+                  "replace": "src/environments/select-all-results.default.ts",
+                  "with": "src/environments/select-all-results.actual.ts"
+                },
+                {
+                  "replace": "src/environments/map-container.default.ts",
+                  "with": "src/environments/map-container.faidare.ts"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -282,7 +400,7 @@
           "defaultConfiguration": "development"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "proxyConfig": "proxy.conf.mjs"
           },
@@ -321,10 +439,10 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "browsers": "ChromeHeadlessNoSandbox",
             "main": "src/test.ts",
@@ -334,6 +452,11 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.cjs",
             "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": [
+                  "import"
+                ]
+              },
               "includePaths": [
                 "src/assets/rare/"
               ]
@@ -341,7 +464,6 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
             "assets": [
               {
                 "glob": "*",
@@ -379,7 +501,29 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

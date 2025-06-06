@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { BasketService } from '../urgi-common/basket/basket.service';
 import { map } from 'rxjs';
 import { DocumentModel } from '../models/document.model';
@@ -6,8 +6,10 @@ import { Page } from '../models/page';
 import { SearchStateService } from '../search-state.service';
 import { TranslateDirective } from '@ngx-translate/core';
 import { DecimalPipe } from '@angular/common';
-import { environment } from '../../environments/environment';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SelectAllResultsComponent } from '../../environments/select-all-results.default';
+import { DocumentListComponent } from '../../environments/document-list.default';
+import { MapContainerComponent } from '../../environments/map-container.default';
 
 interface ViewModel {
   documents: Page<DocumentModel>;
@@ -24,9 +26,9 @@ interface ViewModel {
   imports: [
     DecimalPipe,
     TranslateDirective,
-    forwardRef(() => environment.selectAllResultsComponent),
-    forwardRef(() => environment.documentListComponent),
-    forwardRef(() => environment.mapComponent)
+    SelectAllResultsComponent,
+    DocumentListComponent,
+    MapContainerComponent
   ]
 })
 export class DocumentsComponent {

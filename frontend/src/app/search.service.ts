@@ -41,8 +41,8 @@ export class SearchService {
       descendants: criteria.descendants
     };
     if (criteria.sortCriterion) {
-      params.sort = criteria.sortCriterion.sort;
-      params.direction = criteria.sortCriterion.direction;
+      params['sort'] = criteria.sortCriterion.sort;
+      params['direction'] = criteria.sortCriterion.direction;
     }
 
     // if we have aggregation values, add them as domain=Plantae&domain=...

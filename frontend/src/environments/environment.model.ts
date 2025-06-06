@@ -1,7 +1,6 @@
 /**
  * A link of the navbar
  */
-import { Type } from '@angular/core';
 
 interface Link {
   label: string;
@@ -33,39 +32,6 @@ export interface DataDiscoveryEnvironment {
     secondLogoUrl: string;
     links: Array<Link>;
   };
-  /**
-   * The document component to use in the application
-   */
-  documentComponent: Type<unknown>;
-  /**
-   * The document list component to use in the application
-   */
-  documentListComponent: Type<unknown>;
-  /**
-   * The ontology aggregation component to use in the application
-   */
-  ontologyAggregationComponent: Type<unknown>;
-  /**
-   * The header component to use in the application
-   */
-  headerComponent: Type<unknown>;
-  /**
-   * The footer component to use in the application
-   */
-  footerComponent: Type<unknown>;
-  /**
-   * The basket component to use in the application
-   */
-  basketComponent: Type<unknown>;
-  /**
-   * The select all results component to use in the application
-   */
-  selectAllResultsComponent: Type<unknown>;
-  /**
-   * The map component to use in the application
-   */
-  mapComponent: Type<unknown>;
-
   /**
    * Markdown files served
    */

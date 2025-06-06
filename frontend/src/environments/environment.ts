@@ -3,14 +3,6 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { DataDiscoveryEnvironment } from './environment.model';
-import { GenericOntologyAggregationComponent } from '../app/urgi-common/generic-ontology-aggregation/generic-ontology-aggregation.component';
-import { GenericDocumentComponent } from '../app/urgi-common/generic-document/generic-document.component';
-import { RareHeaderComponent } from '../app/rare/rare-header/rare-header.component';
-import { GenericDocumentListComponent } from '../app/urgi-common/generic-document-list/generic-document-list.component';
-import { GenericFooterComponent } from '../app/urgi-common/generic-footer/generic-footer.component';
-import { GenericBasketComponent } from '../app/urgi-common/generic-basket/generic-basket.component';
-import { GenericSelectAllResultsComponent } from '../app/urgi-common/generic-select-all-results/generic-select-all-results.component';
-import { GenericMapComponent } from '../app/urgi-common/generic-map/generic-map.component';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -21,14 +13,6 @@ export const environment: DataDiscoveryEnvironment = {
     secondLogoUrl: '',
     links: [{ label: 'agrobrc', url: 'https://www.agrobrc-rare.org/' }]
   },
-  documentComponent: GenericDocumentComponent,
-  documentListComponent: GenericDocumentListComponent,
-  ontologyAggregationComponent: GenericOntologyAggregationComponent,
-  headerComponent: RareHeaderComponent,
-  footerComponent: GenericFooterComponent,
-  basketComponent: GenericBasketComponent,
-  selectAllResultsComponent: GenericSelectAllResultsComponent,
-  mapComponent: GenericMapComponent,
   helpMdFile: 'assets/help.md',
   aboutUsMdFile: 'assets/about.md',
   joinUsMdFile: 'assets/join.md',
