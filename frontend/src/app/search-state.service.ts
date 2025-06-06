@@ -283,8 +283,8 @@ export class SearchStateService {
     });
 
     if (criteria.sortCriterion) {
-      result.sort = criteria.sortCriterion.sort;
-      result.direction = criteria.sortCriterion.direction;
+      result['sort'] = criteria.sortCriterion.sort;
+      result['direction'] = criteria.sortCriterion.direction;
     }
 
     return result;
