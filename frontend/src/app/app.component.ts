@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { environment } from '../environments/environment';
@@ -8,17 +8,13 @@ import { RouterOutlet } from '@angular/router';
 import { ErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FooterComponent } from '../environments/footer.default';
 
 @Component({
   selector: 'dd-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [
-    NavbarComponent,
-    ErrorComponent,
-    RouterOutlet,
-    forwardRef(() => environment.footerComponent)
-  ],
+  imports: [NavbarComponent, ErrorComponent, RouterOutlet, FooterComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
