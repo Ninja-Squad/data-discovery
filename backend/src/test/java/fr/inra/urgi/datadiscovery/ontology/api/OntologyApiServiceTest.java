@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 
 import fr.inra.urgi.datadiscovery.ontology.OntologyConfig;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Import;
  */
 @RestClientTest
 @Import({OntologyConfig.class, OntologyApiService.class})
+@Disabled("because the site is down apparently")
+// FIXME re-enable this test once the site is up again
 class OntologyApiServiceTest {
     @Autowired
     private OntologyApiService service;
