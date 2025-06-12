@@ -93,7 +93,7 @@
                   "with": "src/environments/document.rare.ts"
                 },
                 {
-                  "replace": "src/environments/basket?default.ts",
+                  "replace": "src/environments/basket.default.ts",
                   "with": "src/environments/basket.actual.ts"
                 },
                 {
