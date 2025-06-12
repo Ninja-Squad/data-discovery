@@ -29,7 +29,7 @@ repositories {
     }
 }
 
-extra["springCloudVersion"] = "2025.0.0-RC1"
+extra["springCloudVersion"] = "2025.0.0"
 
 val snippetsDir = file("build/generated-snippets")
 
