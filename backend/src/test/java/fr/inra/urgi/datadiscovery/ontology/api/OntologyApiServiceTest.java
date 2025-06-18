@@ -18,8 +18,6 @@ import org.springframework.context.annotation.Import;
  */
 @RestClientTest
 @Import({OntologyConfig.class, OntologyApiService.class})
-@Disabled("because the site is down apparently")
-// FIXME re-enable this test once the site is up again
 class OntologyApiServiceTest {
     @Autowired
     private OntologyApiService service;
