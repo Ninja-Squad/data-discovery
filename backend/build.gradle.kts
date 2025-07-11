@@ -120,6 +120,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+        mavenBom("com.squareup.okhttp3:okhttp-bom:5.1.0")
     }
 }
 
@@ -137,7 +138,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.1.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver")
 
     "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
