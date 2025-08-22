@@ -106,6 +106,7 @@ deploy-synonyms-to-cluster:
 # launch all tests and sonarqube analysis
 test-lint-build:
   stage: test
+  retry: 2
 
   # the backend tests need an elasticsearch instance
   services:
