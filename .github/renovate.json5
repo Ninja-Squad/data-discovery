@@ -8,7 +8,7 @@
     enabled: true
   },
   // target chore/next branch
-  baseBranches: [
+  baseBranchPatterns: [
     "chore/next"
   ],
   // only 1 PR at the same time (to avoid cascading rebase)
@@ -18,20 +18,20 @@
   packageRules: [
     // allow only patch and minor updates for elasticsearch docker image
     {
-      packageNames: [
+      matchPackageNames: [
         "docker.elastic.co/elasticsearch/elasticsearch"
       ],
-      updateTypes: [
+      matchUpdateTypes: [
         "major"
       ],
       enabled: false
     },
     // allow only patch updates for TS packages
     {
-      packageNames: [
+      matchPackageNames: [
         "typescript"
       ],
-      updateTypes: [
+      matchUpdateTypes: [
         "minor",
         "major"
       ],
