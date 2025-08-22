@@ -1,4 +1,10 @@
-import { inject, provideEnvironmentInitializer } from '@angular/core';
+import {
+  EnvironmentProviders,
+  inject,
+  makeEnvironmentProviders,
+  provideEnvironmentInitializer,
+  Provider
+} from '@angular/core';
 import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
@@ -8,7 +14,7 @@ import {
 import EN_TRANSLATIONS from './en.json';
 
 class CustomMissingTranslationHandler implements MissingTranslationHandler {
-  handle(params: MissingTranslationHandlerParams) {
+  handle(params: MissingTranslationHandlerParams): never {
     throw new Error(`Missing translation for key ${params.key}`);
   }
 }
@@ -17,11 +23,13 @@ class CustomMissingTranslationHandler implements MissingTranslationHandler {
  * Returns the necessary providers for i18n from ngx-translate to use in a test.
  * Uses the FR locale and a custom missing translation handler that throws an error.
  */
-export const provideI18nTesting = () => {
-  return [
+export function provideI18nTesting(options?: {
+  missingTranslationHandler: Provider;
+}): EnvironmentProviders {
+  return makeEnvironmentProviders([
     provideTranslateService({
       useDefaultLang: false,
-      missingTranslationHandler: {
+      missingTranslationHandler: options?.missingTranslationHandler ?? {
         provide: MissingTranslationHandler,
         useClass: CustomMissingTranslationHandler
       }
@@ -31,5 +39,5 @@ export const provideI18nTesting = () => {
       translateService.setTranslation('en', EN_TRANSLATIONS);
       translateService.use('en');
     })
-  ];
-};
+  ]);
+}
