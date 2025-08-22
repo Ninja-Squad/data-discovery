@@ -22,7 +22,7 @@
     "e2e:standalone": "ng e2e",
     "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
     "knip": "npx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore",
-    "postinstall": "pnpm exec playwright install"
+    "playwright-install": "pnpm exec playwright install"
   },
   "private": true,
   "packageManager": "pnpm@10.15.0",
