@@ -63,9 +63,15 @@ tasks {
     dependsOn(pnpmLint)
   }
 
+  val pnpmPlaywrightInstall by registering(PnpmTask::class) {
+    args.set(listOf("playwright-install"))
+    dependsOn(prepare)
+  }
+
   val pnpmE2e by registering(PnpmTask::class) {
     args.set(listOf("e2e:standalone"))
     dependsOn(prepare)
+    dependsOn(pnpmPlaywrightInstall)
     inputs.dir("src")
     inputs.dir("e2e")
     inputs.file("playwright.config.ts")
