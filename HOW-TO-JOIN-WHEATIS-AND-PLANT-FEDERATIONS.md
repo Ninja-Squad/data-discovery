@@ -49,11 +49,11 @@ If you don't want to implement a BrAPI endpoint,
 you can simply generate the json for the summary cards and make them available in a web folder that you should reference
 in [github](#referencing-of-a-brapi-endpoint). See some examples:
 
-- [germplasm](https://forgemia.inra.fr/urgi-is/data-discovery/-/raw/master/data/brapi-file-repo-example/germplasm.json)
-- [location](https://forgemia.inra.fr/urgi-is/data-discovery/-/raw/master/data/brapi-file-repo-example/location.json)
-- [observationVariables](https://forgemia.inra.fr/urgi-is/data-discovery/-/raw/master/data/brapi-file-repo-example/observationVariables.json)
-- [study](https://forgemia.inra.fr/urgi-is/data-discovery/-/raw/master/data/brapi-file-repo-example/study.json)
-- [trial](https://forgemia.inra.fr/urgi-is/data-discovery/-/raw/master/data/brapi-file-repo-example/trial.json)
+- [germplasm](https://forge.inrae.fr/urgi/is/data-discovery/-/raw/master/data/brapi-file-repo-example/germplasm.json)
+- [location](https://forge.inrae.fr/urgi/is/data-discovery/-/raw/master/data/brapi-file-repo-example/location.json)
+- [observationVariables](https://forge.inrae.fr/urgi/is/data-discovery/-/raw/master/data/brapi-file-repo-example/observationVariables.json)
+- [study](https://forge.inrae.fr/urgi/is/data-discovery/-/raw/master/data/brapi-file-repo-example/study.json)
+- [trial](https://forge.inrae.fr/urgi/is/data-discovery/-/raw/master/data/brapi-file-repo-example/trial.json)
 
 ### Referencing of a BrAPI endpoint
 

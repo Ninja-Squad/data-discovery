@@ -36,7 +36,7 @@ The indexing process depends on the following tools, you need to have them insta
 At the moment, all data is located next to the code in the `data` directory. If you want to have a look at the code only, you can ignore this directory at git clone step by setting the variable `GIT_LFS_SKIP_SMUDGE=1`, ie.:
 
 ```sh
-GIT_LFS_SKIP_SMUDGE=1 git clone git@forgemia.inra.fr:urgi-is/data-discovery.git
+GIT_LFS_SKIP_SMUDGE=1 git clone git@forge.inrae.fr:urgi/is/data-discovery.git
 ```
 
 After clone done, if you want to fetch some of the data (for instance for RARe only), let's run:
@@ -49,7 +49,7 @@ Downloading LFS objects: 100% (16/16), 8.8 MB | 0 B/s
 Git might request you to enable additional parameters, which is acceptable:
 
 ```sh
-git config lfs.https://forgemia.inra.fr/urgi-is/data-discovery.git/info/lfs.locksverify true
+git config lfs.https://forge.inrae.fr/urgi/is/data-discovery.git/info/lfs.locksverify true
 ```
 
 ### Backend
@@ -150,7 +150,7 @@ The `.gitlab-ci.yml` file describes how Gitlab is running the CI jobs.
 
 It uses a base docker image named `urgi/docker-browsers`
 available on [DockerHub](https://hub.docker.com/r/urgi/docker-browsers/)
-and [INRA-MIA Gitlab](https://forgemia.inra.fr/urgi-is/docker-rare).
+and [INRA-MIA Gitlab](https://forge.inrae.fr/urgi/is/docker-rare).
 The image is based on `openjdk:8` and adds all stuff needed to run the tests
 (ie. a Chrome binary with a headless Chrome in `--no-sandbox` mode).
 
@@ -191,25 +191,25 @@ you can try the following.
 Data (from master branch) indexing to your local Elasticsearch is done using the following command. Note that your local Elasticsearch instance should be already runing using `docker-compose up`:
 
 ```sh
-docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest --help
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forge.inrae.fr/urgi/is/docker-rare/data-discovery-loader:latest --help
 ```
 
 Example for indexing RARe data:
 
 ```sh
-docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest -host elasticsearch -app rare -env dev
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forge.inrae.fr/urgi/is/docker-rare/data-discovery-loader:latest -host elasticsearch -app rare -env dev
 ```
 
 If you need to spread the load on several CPUs, duplicate the value of `host` argument to simulate several Elasticsearch nodes, ie. below to use 4 CPUs:
 
 ```sh
-docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forge.inrae.fr/urgi/is/docker-rare/data-discovery-loader:latest -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
 ```
 
 Take care to use your branch's `CI_COMMIT_REF_SLUG` instead of `latest` docker tag if you have modified the indexing scripts, Elasticsearch mappings or settings, see <https://docs.gitlab.com/ee/ci/variables/predefined_variables.html>. Example for branch `story/faidare-fusion`, use docker tag `story-faidare-fusion`:
 
 ```sh
-docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:story-faidare-fusion -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
+docker run -t --volume $(pwd)/data:/opt/data/ --volume /tmp/bulk:/tmp/bulk/ --network=container:elasticsearch registry.forge.inrae.fr/urgi/is/docker-rare/data-discovery-loader:story-faidare-fusion -host "elasticsearch elasticsearch elasticsearch elasticsearch" -app rare -env dev
 ```
 
 If you need to test the docker loader with your local changes, look at job named `build-loader-docker-image` in the `.gitlab-ci.yml` at the root of the project to see how to build the image with your custom docker tag.
@@ -224,13 +224,13 @@ Output logs should be available in directory `/tmp/bulk/rare-dev`.
 
 ```sh
 # build the image
-docker build -t registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest .
+docker build -t registry.forge.inrae.fr/urgi/is/docker-rare/data-discovery-loader:latest .
 
 # Login before pushing the image
-docker login registry.forgemia.inra.fr/urgi-is/docker-rare -u <your ForgeMIA username>
+docker login registry.forge.inrae.fr/urgi/is/docker-rare -u <your ForgeMIA username>
 
 # push the built image
-docker push registry.forgemia.inra.fr/urgi-is/docker-rare/data-discovery-loader:latest
+docker push registry.forge.inrae.fr/urgi/is/docker-rare/data-discovery-loader:latest
 ```
 
 That should ease the indexing of data without having to craft a dedicated environment, which is explained below.
@@ -289,7 +289,7 @@ If such a configuration is not found, it will then fallback to the local `applic
 To avoid running the Spring Cloud config server every time when developing the application,
 all the properties are still available in `application.yml` even if they are configured on the remote Spring Cloud server as well.
 
-If you want to use the Spring Cloud config app locally, see <https://forgemia.inra.fr/urgi-is/data-discovery-config>
+If you want to use the Spring Cloud config app locally, see <https://forge.inrae.fr/urgi/is/data-discovery-config>
 
 The configuration is currently only read on startup, meaning the application has to be reboot if the configuration is changed on the Spring Cloud server. For a dynamic reload without restarting the application, see <http://cloud.spring.io/spring-cloud-static/Finchley.SR1/single/spring-cloud.html#refresh-scope>
 to check what has to be changed.

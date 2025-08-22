@@ -172,5 +172,5 @@ And edit them as desired.
 
 ## Ports used according to the applications and the environment:
 
-Checkout the (confidential) [README.md](https://forgemia.inra.fr/urgi-is/data-discovery-config/blob/master/README.md)
+Checkout the (confidential) [README.md](https://forge.inrae.fr/urgi/is/data-discovery-config/blob/master/README.md)
 file for the full list of deployment environments for the `data-discovery` webapp (server ports & context paths).
