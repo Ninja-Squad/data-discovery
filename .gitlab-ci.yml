@@ -38,7 +38,7 @@ build-es-synonyms-docker-image:
   # https://stackoverflow.com/questions/47280922/role-of-docker-in-docker-dind-service-in-gitlab-ci
   # The runner should be executed in privileged mode.
   # It is recommended to use dind with TLS enabled.
-  image: $CI_REGISTRY/urgi/is/docker-rare/docker-git:latest
+  image: $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/docker-git:latest
   stage: pre-build
 
   services:
@@ -49,7 +49,7 @@ build-es-synonyms-docker-image:
     - gzip -fd all_*.txt.gz
     - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t $CI_REGISTRY_IMAGE/elasticsearch-synonyms:${IMAGE_TAG} .
     # only build latest tag on master branch
-    - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t $CI_REGISTRY_IMAGE/elasticsearch-synonyms:latest . ; fi;
+    - if [ "${CI_DEFAULT_BRANCH}" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t $CI_REGISTRY_IMAGE/elasticsearch-synonyms:latest . ; fi;
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
     - docker push $CI_REGISTRY_IMAGE/elasticsearch-synonyms:${IMAGE_TAG}
@@ -62,22 +62,22 @@ build-es-synonyms-docker-image:
       #   - data/synonyms/*
 
 build-loader-docker-image:
-  image: $CI_REGISTRY/urgi/is/docker-rare/docker-git:latest
+  image: $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/docker-git:latest
   stage: pre-build
 
   services:
     - docker:28.3.3-dind
   script:
     # build the image
-    - docker build -t $CI_REGISTRY/urgi/is/docker-rare/data-discovery-loader:${IMAGE_TAG} .
+    - docker build -t $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:${IMAGE_TAG} .
     # only build latest tag on master branch
-    - if [ "master" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build -t $CI_REGISTRY/urgi/is/docker-rare/data-discovery-loader:latest . ; fi;
+    - if [ "${CI_DEFAULT_BRANCH}" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build -t $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:latest . ; fi;
     # Login before pushing the image
     - docker login $CI_REGISTRY -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
     # push the built image
-    - docker push $CI_REGISTRY/urgi/is/docker-rare/data-discovery-loader:${IMAGE_TAG}
+    - docker push $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:${IMAGE_TAG}
     # only push latest tag on master branch
-    - if [ $CI_DEFAULT_BRANCH == "${CI_COMMIT_REF_SLUG}" ] ; then docker push $CI_REGISTRY/urgi/is/docker-rare/data-discovery-loader:latest ; fi;
+    - if [ $CI_DEFAULT_BRANCH == "${CI_COMMIT_REF_SLUG}" ] ; then docker push $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:latest ; fi;
   rules: # from my point of view, following rule should not trigger the job (when only commiting .gitlab-ci.yml), but the job is executed currently, why?
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
@@ -88,7 +88,7 @@ build-loader-docker-image:
         - backend/src/test/resources/fr/inra/urgi/datadiscovery/dao/settings-suggestions.json
 
 deploy-synonyms-to-cluster:
-  image: $CI_REGISTRY/urgi/is/docker-rare/bash-git-lfs:latest
+  image: $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/bash-git-lfs:latest
   stage: pre-build
 
   script:
