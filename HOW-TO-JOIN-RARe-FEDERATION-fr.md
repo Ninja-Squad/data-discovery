@@ -35,6 +35,29 @@ Cette valeur est contrainte. Vous devez utiliser l'une des valeurs suivantes :
 Nom de la base de données à partir de laquelle les entités sont extraites.
 Ce nom peut différer d'une entité à l'autre au sein de vos données si vous les extrayez de systèmes d'information différents.
 
+Cette valeur est contrainte. Vous devez utiliser l'une des valeurs suivantes :
+Si la base de données de votre CRB est absente, veuillez nous contacter pour que nous puissions l'ajouter :
+
+- CRB-Anim
+- CEES
+- CoArCol
+- Colisa
+- EP-Coll
+- GenoSol
+- IBG
+- SmArtCol
+- CIRM-BIA
+- CIRM-BP
+- CIRM-CF
+- CIRM-CFBP
+- CIRM-Levures
+- FAN
+- SAMBO
+- Forest Tree GnpIS
+- CNRGV
+- Florilege
+- Siregal@GnpIS
+
 | Statut | Cardinalité | Contraintes |
 | :---: | :---: | :---: |
 | Obligatoire | 1 | Aucune |
@@ -232,10 +255,12 @@ Ce champ optionel est utilisé pour commander des ressources génétiques, il no
 Puisque cette valeur est utilisée pour lier une accession à son gestionnaire, elle est contrôlée. Vous devriez utiliser l'une des valeurs ci-dessous.
 Si votre CRB est absent, veuillez nous contacter pour que nous puissions l'ajouter :
 
-- CBGP
+- CEES
+- CoArCol
 - Colisa
 - EP-Coll
-- TCC
+- GenoSol
+- IBG
 - Forest BRC - Avignon
 - Forest BRC - Pierroton
 - Forest BRC - Orléans

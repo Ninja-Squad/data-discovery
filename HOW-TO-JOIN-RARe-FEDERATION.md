@@ -34,6 +34,27 @@ The value is constrained. You must use one of the following values:
 
 Name of the database from which the entry has been extracted.
 It can differ from one entry to another if you handle several information systems.
+If your BRC's database is missing, please ask us to add it:
+
+- CRB-Anim
+- CEES
+- CoArCol
+- Colisa
+- EP-Coll
+- GenoSol
+- IBG
+- SmArtCol
+- CIRM-BIA
+- CIRM-BP
+- CIRM-CF
+- CIRM-CFBP
+- CIRM-Levures
+- FAN
+- SAMBO
+- Forest Tree GnpIS
+- CNRGV
+- Florilege
+- Siregal@GnpIS
 
 | Status | Cardinality | Constraints |
 | :---: | :---: | :---: |
@@ -232,10 +253,12 @@ This optional field is used to order genetic resources, it allows us to know the
 Since the value is used to link the accession to its holder, it is constrained. You should use one of the following values.
 If your BRC is missing, please ask us to add it:
 
-- CBGP
+- CEES
+- CoArCol
 - Colisa
 - EP-Coll
-- TCC
+- GenoSol
+- IBG
 - Forest BRC - Avignon
 - Forest BRC - Pierroton
 - Forest BRC - Orléans
