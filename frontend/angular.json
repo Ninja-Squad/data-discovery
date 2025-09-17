@@ -486,7 +486,8 @@
               "src/**/*.html",
               "e2e/**/*.ts"
             ],
-            "maxWarnings": 0
+            "maxWarnings": 0,
+            "concurrency": "auto"
           }
         },
         "e2e": {
