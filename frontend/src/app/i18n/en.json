@@ -244,8 +244,13 @@
     },
     "ontology-default-language": "EN",
     "germplasm-results": {
-      "download-mcpd": "Export MCPD list as CSV",
-      "download-plant-material": "Export plant material list as CSV",
+      "download": "Export",
+      "export-type": {
+        "plant-material": "Plant material (CSV)",
+        "mcpd": "MCPD (CSV)",
+        "miappe-excel": "MIAPPE (Excel)",
+        "miappe-csv": "MIAPPE (CSV)"
+      },
       "name": "Germplasm name",
       "accession": "Accession #",
       "species": "Species",

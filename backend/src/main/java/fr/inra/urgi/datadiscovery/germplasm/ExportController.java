@@ -13,13 +13,14 @@ import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.dao.faidare.FaidareAggregation;
 import fr.inra.urgi.datadiscovery.dao.faidare.FaidareDocumentDao;
 import fr.inra.urgi.datadiscovery.exception.BadRequestException;
+import fr.inra.urgi.datadiscovery.germplasm.api.ExportFormat;
 import fr.inra.urgi.datadiscovery.germplasm.api.FaidareApiService;
 import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmExportCommand;
 import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmMcpdExportCommand;
+import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmMiappeExportCommand;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,7 +74,7 @@ public class ExportController {
         GermplasmMcpdExportCommand command = new GermplasmMcpdExportCommand(germplasmIds, Collections.emptyList());
         Flux<DataBuffer> result = faidareApiService.exportMcpd(command);
         StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).blockLast();
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
+        return ResponseEntity.ok().contentType(ExportFormat.CSV.getMediaType()).body(body);
     }
 
     /**
@@ -97,7 +98,34 @@ public class ExportController {
         GermplasmExportCommand command = new GermplasmExportCommand(germplasmIds, Collections.emptyList());
         Flux<DataBuffer> result = faidareApiService.exportPlantMaterial(command);
         StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).blockLast();
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("text/csv")).body(body);
+        return ResponseEntity.ok().contentType(ExportFormat.CSV.getMediaType()).body(body);
+    }
+
+    /**
+     * Searches for the given query and export the results by delegating to the Faidare application,
+     * using the MIAPPE (Excel) format
+     * This can only be called with parameters leading to only germplasm results, i.e. the parameters must have
+     * the document type aggregation with germplasm as the only value. If not, an error is thrown
+     * @param query the query
+     * @param format the format of the export
+     * @param parameters all the parameters, containing the refinements based on the aggregations. The names
+     * of the other parameters are the names of the aggregations, and the values are one of the values for that
+     * aggregation.
+     *
+     * @see AppAggregation
+     */
+    @GetMapping("/exports/miappe")
+    public ResponseEntity<StreamingResponseBody> exportGermplasmMiappe(
+        @RequestParam(value = "query", defaultValue = "") String query,
+        @RequestParam("descendants") Optional<Boolean> descendants,
+        @RequestParam(value = "format", defaultValue = "EXCEL") ExportFormat format,
+        @RequestParam MultiValueMap<String, String> parameters) {
+        Set<String> germplasmIds = findGermplasmIds(query, descendants, parameters);
+
+        GermplasmMiappeExportCommand command = new GermplasmMiappeExportCommand(germplasmIds, format);
+        Flux<DataBuffer> result = faidareApiService.exportMiappe(command);
+        StreamingResponseBody body = outputStream -> DataBufferUtils.write(result, outputStream).blockLast();
+        return ResponseEntity.ok().contentType(format.getMediaType()).body(body);
     }
 
     private Set<String> findGermplasmIds(String query,

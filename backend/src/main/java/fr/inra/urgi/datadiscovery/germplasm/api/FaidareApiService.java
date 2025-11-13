@@ -4,7 +4,6 @@ import fr.inra.urgi.datadiscovery.config.AppProfile;
 import fr.inra.urgi.datadiscovery.config.faidare.FaidareQualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -27,7 +26,7 @@ public class FaidareApiService {
         return webClient.post()
                         .uri("/germplasms/exports/mcpd")
                         .bodyValue(command)
-                        .accept(MediaType.parseMediaType("text/csv"))
+                        .accept(ExportFormat.CSV.getMediaType())
                         .retrieve()
                         .bodyToFlux(DataBuffer.class);
     }
@@ -36,7 +35,16 @@ public class FaidareApiService {
         return webClient.post()
                         .uri("/germplasms/exports/plant-material")
                         .bodyValue(command)
-                        .accept(MediaType.parseMediaType("text/csv"))
+                        .accept(ExportFormat.CSV.getMediaType())
+                        .retrieve()
+                        .bodyToFlux(DataBuffer.class);
+    }
+
+    public Flux<DataBuffer> exportMiappe(GermplasmMiappeExportCommand command) {
+        return webClient.post()
+                        .uri("/germplasms/exports/miappe")
+                        .bodyValue(command)
+                        .accept(command.format().getMediaType())
                         .retrieve()
                         .bodyToFlux(DataBuffer.class);
     }

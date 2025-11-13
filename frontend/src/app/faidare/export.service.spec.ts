@@ -17,8 +17,8 @@ describe('ExportService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('should export', () => {
-    let actualResults: Blob;
+  it('should export CSV', () => {
+    let actualBlob: Blob;
     service
       .export(
         {
@@ -28,12 +28,38 @@ describe('ExportService', () => {
         },
         'mcpd'
       )
-      .subscribe(blob => (actualResults = blob));
+      .subscribe(result => (actualBlob = result));
 
-    const expectedResults = new Blob();
+    const expectedBlob = new Blob();
     http
       .expectOne('api/germplasms/exports/mcpd?query=Bacteria&descendants=true&entry=Germplasm')
-      .flush(expectedResults);
-    expect(actualResults).toBe(expectedResults);
+      .flush(expectedBlob, { headers: { 'Content-Type': 'text/csv' } });
+    expect(actualBlob).toBe(expectedBlob);
+  });
+
+  it('should export Excel', () => {
+    let actualBlob: Blob | undefined;
+    service
+      .export(
+        {
+          query: 'Bacteria',
+          aggregationCriteria: [{ name: 'entry', values: ['Germplasm'] }],
+          descendants: true
+        },
+        'miappe-excel'
+      )
+      .subscribe(result => (actualBlob = result));
+
+    const expectedBlob = new Blob();
+    http
+      .expectOne(
+        'api/germplasms/exports/miappe?query=Bacteria&descendants=true&entry=Germplasm&format=EXCEL'
+      )
+      .flush(expectedBlob, {
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet'
+        }
+      });
+    expect(actualBlob).toBe(expectedBlob);
   });
 });
