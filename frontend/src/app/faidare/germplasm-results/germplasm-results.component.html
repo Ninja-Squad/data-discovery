@@ -1,62 +1,74 @@
 @if (vm(); as vm) {
   @if (vm.documents) {
-    <div class="row my-3">
-      <div class="col-md-6 text-center">
+    <div class="my-3">
+      <div ngbDropdown class="d-inline-block">
         <button
           type="button"
           class="btn btn-outline-primary"
-          (click)="export(vm.searchCriteria, 'plant-material')"
-          id="download-plant-material-button"
-          [disabled]="!!vm.downloading"
+          id="download-dropdown"
+          ngbDropdownToggle
+          [disabled]="vm.downloading"
         >
-          @if (vm.downloading === 'plant-material') {
+          @if (vm.downloading) {
             <span class="fa fa-spinner fa-spin fa-fw me-1"></span>
           } @else {
             <span class="fa fa-download fa-fw me-1"></span>
           }
-
-          <span translate="faidare.germplasm-results.download-plant-material"></span>
+          <span translate="faidare.germplasm-results.download"></span>
         </button>
+
+        <div ngbDropdownMenu aria-labelledby="download-dropdown">
+          @for (exportType of exportTypes; track exportType) {
+            <button
+              ngbDropdownItem
+              (click)="export(vm.searchCriteria, exportType)"
+              [id]="`download-${exportType}`"
+              [translate]="`faidare.germplasm-results.export-type.${exportType}`"
+            ></button>
+          }
+        </div>
       </div>
     </div>
 
-    <table class="table table-sm table-striped table-responsive-lg">
-      <thead>
-        <tr>
-          <th sortable="name" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
-            <span translate="faidare.germplasm-results.name"></span>
-          </th>
-          <th sortable="accession" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
-            <span translate="faidare.germplasm-results.accession"></span>
-          </th>
-          <th sortable="species" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
-            <span translate="faidare.germplasm-results.species"></span>
-          </th>
-          <th sortable="institute" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
-            <span translate="faidare.germplasm-results.institute"></span>
-          </th>
-          <th sortable="biological-status" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
-            <span translate="faidare.germplasm-results.biological-status"></span>
-          </th>
-          <th sortable="country" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
-            <span translate="faidare.germplasm-results.country-of-origin"></span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (document of vm.documents.content; track document.identifier) {
+    <div class="table-responsive-lg">
+      <table class="table table-sm table-striped">
+        <thead>
           <tr>
-            <td>
-              <a [href]="document.url">{{ document.name }}</a>
-            </td>
-            <td>{{ document.accessionNumber }}</td>
-            <td>{{ document.species.join(', ') }}</td>
-            <td>{{ document.holdingInstitute }}</td>
-            <td>{{ document.biologicalStatus }}</td>
-            <td>{{ document.countryOfOrigin }}</td>
+            <th sortable="name" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+              <span translate="faidare.germplasm-results.name"></span>
+            </th>
+            <th sortable="accession" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+              <span translate="faidare.germplasm-results.accession"></span>
+            </th>
+            <th sortable="species" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+              <span translate="faidare.germplasm-results.species"></span>
+            </th>
+            <th sortable="institute" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+              <span translate="faidare.germplasm-results.institute"></span>
+            </th>
+            <th sortable="biological-status" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+              <span translate="faidare.germplasm-results.biological-status"></span>
+            </th>
+            <th sortable="country" [criterion]="vm.sortCriterion" (sorted)="sort($event)">
+              <span translate="faidare.germplasm-results.country-of-origin"></span>
+            </th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (document of vm.documents.content; track document.identifier) {
+            <tr>
+              <td>
+                <a [href]="document.url">{{ document.name }}</a>
+              </td>
+              <td>{{ document.accessionNumber }}</td>
+              <td>{{ document.species.join(', ') }}</td>
+              <td>{{ document.holdingInstitute }}</td>
+              <td>{{ document.biologicalStatus }}</td>
+              <td>{{ document.countryOfOrigin }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 }

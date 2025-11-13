@@ -15,9 +15,11 @@ import fr.inra.urgi.datadiscovery.dao.AggregationAnalyzer;
 import fr.inra.urgi.datadiscovery.dao.SearchRefinements;
 import fr.inra.urgi.datadiscovery.dao.faidare.FaidareAggregation;
 import fr.inra.urgi.datadiscovery.dao.faidare.FaidareDocumentDao;
+import fr.inra.urgi.datadiscovery.germplasm.api.ExportFormat;
 import fr.inra.urgi.datadiscovery.germplasm.api.FaidareApiService;
 import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmExportCommand;
 import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmMcpdExportCommand;
+import fr.inra.urgi.datadiscovery.germplasm.api.GermplasmMiappeExportCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +102,7 @@ class ExportControllerTest {
                                      .andReturn();
         mockMvc.perform(asyncDispatch(mvcResult))
                .andExpect(status().isOk())
-               .andExpect(content().contentType("text/csv"))
+               .andExpect(content().contentType(ExportFormat.CSV.getMediaType()))
                .andExpect(content().string("A;B;C\na1;b1;c1\na2;b2;c2\n"));
     }
 
@@ -134,7 +136,42 @@ class ExportControllerTest {
                                      .andReturn();
         mockMvc.perform(asyncDispatch(mvcResult))
                .andExpect(status().isOk())
-               .andExpect(content().contentType("text/csv"))
+               .andExpect(content().contentType(ExportFormat.CSV.getMediaType()))
+               .andExpect(content().string("A;B;C\na1;b1;c1\na2;b2;c2\n"));
+    }
+
+    @Test
+    void shouldExportMiappe() throws Exception {
+        HashSet<String> expectedIds = new HashSet<>(Arrays.asList("a", "b"));
+        GermplasmMiappeExportCommand expectedCommand = new GermplasmMiappeExportCommand(expectedIds, ExportFormat.CSV);
+        when(mockFaidareDocumentDao.findAllIds("something",
+                                               false,
+                                               SearchRefinements.builder()
+                                                                .withTerm(FaidareAggregation.COUNTRY_OF_ORIGIN, Collections.singletonList("France"))
+                                                                .withTerm(FaidareAggregation.ENTRY_TYPE, Collections.singletonList("Germplasm"))
+                                                                .build(),
+                                               "germplasmDbId")
+        ).thenReturn(expectedIds);
+
+        DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
+        when(mockFaidareApiService.exportMiappe(expectedCommand)).thenReturn(
+            Flux.fromArray(new DataBuffer[] {
+                dataBufferFactory.wrap("A;B;C\n".getBytes(StandardCharsets.UTF_8)),
+                dataBufferFactory.wrap("a1;b1;c1\n".getBytes(StandardCharsets.UTF_8)),
+                dataBufferFactory.wrap("a2;b2;c2\n".getBytes(StandardCharsets.UTF_8))
+            })
+        );
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/germplasms/exports/miappe")
+                                                  .param("query", "something")
+                                                  .param("format", ExportFormat.CSV.name())
+                                                  .param(FaidareAggregation.COUNTRY_OF_ORIGIN.getName(), "France")
+                                                  .param(FaidareAggregation.ENTRY_TYPE.getName(), "Germplasm"))
+                                     .andExpect(request().asyncStarted())
+                                     .andReturn();
+        mockMvc.perform(asyncDispatch(mvcResult))
+               .andExpect(status().isOk())
+               .andExpect(content().contentType(ExportFormat.CSV.getMediaType()))
                .andExpect(content().string("A;B;C\na1;b1;c1\na2;b2;c2\n"));
     }
 }
