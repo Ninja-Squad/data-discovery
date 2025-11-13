@@ -8,28 +8,36 @@ import {
 } from '@angular/core';
 import { Page } from '../../models/page';
 import { FaidareDocumentModel } from '../faidare-document.model';
-import { ExportService } from '../export.service';
+import { EXPORT_TYPES, ExportService, ExportType } from '../export.service';
 import { DownloadService } from '../../download.service';
 import { finalize } from 'rxjs';
 import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
 import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
 import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 interface ViewModel {
   documents: Page<FaidareDocumentModel> | null;
-  downloading: null | 'mcpd' | 'plant-material';
+  downloading: boolean;
   sortCriterion: SortCriterion | null;
   searchCriteria: SearchCriteria;
 }
 
 export type Sort = 'name' | 'accession' | 'species' | 'institute' | 'biological-status' | 'country';
 
+export const FILE_NAMES: Record<ExportType, string> = {
+  'plant-material': 'plant-material.csv',
+  mcpd: 'mcpd.csv',
+  'miappe-excel': 'miappe.xlsx',
+  'miappe-csv': 'miappe.csv'
+};
+
 @Component({
   selector: 'dd-germplasm-results',
   templateUrl: './germplasm-results.component.html',
   styleUrl: './germplasm-results.component.scss',
-  imports: [TranslateDirective, SortableHeaderComponent],
+  imports: [TranslateDirective, SortableHeaderComponent, NgbDropdownModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GermplasmResultsComponent {
@@ -37,7 +45,8 @@ export class GermplasmResultsComponent {
   private readonly downloadService = inject(DownloadService);
   private readonly searchStateService = inject(SearchStateService);
 
-  private readonly downloading = signal<null | 'mcpd' | 'plant-material'>(null);
+  readonly exportTypes = EXPORT_TYPES.filter(type => type !== 'mcpd');
+  private readonly downloading = signal(false);
   private readonly model = toSignal(this.searchStateService.getModel());
 
   readonly vm: Signal<ViewModel | undefined> = computed(() => {
@@ -52,12 +61,12 @@ export class GermplasmResultsComponent {
       : undefined;
   });
 
-  export(searchCriteria: SearchCriteria, exportType: 'mcpd' | 'plant-material') {
-    this.downloading.set(exportType);
+  export(searchCriteria: SearchCriteria, exportType: ExportType) {
+    this.downloading.set(true);
     this.exportService
       .export(searchCriteria, exportType)
-      .pipe(finalize(() => this.downloading.set(null)))
-      .subscribe(blob => this.downloadService.download(blob, `${exportType}.csv`));
+      .pipe(finalize(() => this.downloading.set(false)))
+      .subscribe(blob => this.downloadService.download(blob, FILE_NAMES[exportType]));
   }
 
   sort(sortCriterion: SortCriterion) {
