@@ -24,20 +24,24 @@ class GermplasmResultsComponentTester extends ComponentTester<GermplasmResultsCo
     return this.elements<HTMLAnchorElement>('tbody tr a');
   }
 
+  get downloadDropdown() {
+    return this.button('#download-dropdown');
+  }
+
+  get downloadSpinner() {
+    return this.downloadDropdown.element('.fa-spinner');
+  }
+
   get downloadMcpd() {
-    return this.button('#download-mcpd-button');
+    return this.button('#download-mcpd');
   }
 
   get downloadPlantMaterial() {
-    return this.button('#download-plant-material-button');
+    return this.button('#download-plant-material');
   }
 
-  get downloadMcpdSpinner() {
-    return this.downloadMcpd.element('.fa-spinner');
-  }
-
-  get downloadPlantMaterialSpinner() {
-    return this.downloadPlantMaterial.element('.fa-spinner');
+  get downloadMiappeExcel() {
+    return this.button('#download-miappe-excel');
   }
 
   get headers() {
@@ -152,16 +156,17 @@ describe('GermplasmResultsComponent', () => {
     expect(tester.downloadMcpdSpinner).toBeNull();
   });*/
 
-  it('should download plant material results', async () => {
+  it('should download plant material results (CSV)', async () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
     exportService.export.and.returnValue(blobSubject);
 
-    expect(tester.downloadPlantMaterialSpinner).toBeNull();
+    expect(tester.downloadSpinner).toBeNull();
 
+    await tester.downloadDropdown.click();
     await tester.downloadPlantMaterial.click();
 
-    expect(tester.downloadPlantMaterialSpinner).not.toBeNull();
+    expect(tester.downloadSpinner).not.toBeNull();
     expect(exportService.export).toHaveBeenCalledWith(
       initialModel.searchCriteria,
       'plant-material'
@@ -172,7 +177,28 @@ describe('GermplasmResultsComponent', () => {
     await tester.stable();
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
-    expect(tester.downloadPlantMaterialSpinner).toBeNull();
+    expect(tester.downloadSpinner).toBeNull();
+  });
+
+  it('should download miappe results (Excel)', async () => {
+    const blob = new Blob();
+    const blobSubject = new Subject<Blob>();
+    exportService.export.and.returnValue(blobSubject);
+
+    expect(tester.downloadSpinner).toBeNull();
+
+    await tester.downloadDropdown.click();
+    await tester.downloadMiappeExcel.click();
+
+    expect(tester.downloadSpinner).not.toBeNull();
+    expect(exportService.export).toHaveBeenCalledWith(initialModel.searchCriteria, 'miappe-excel');
+
+    blobSubject.next(blob);
+    blobSubject.complete();
+    await tester.stable();
+
+    expect(downloadService.download).toHaveBeenCalledWith(blob, 'miappe.xlsx');
+    expect(tester.downloadSpinner).toBeNull();
   });
 
   it('should sort', async () => {
