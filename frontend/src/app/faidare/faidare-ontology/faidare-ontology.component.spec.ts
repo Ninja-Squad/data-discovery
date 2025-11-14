@@ -1,7 +1,5 @@
-import { OntologyAggregationModalComponent } from './ontology-aggregation-modal.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { createMock, RoutingTester } from 'ngx-speculoos';
 import { TestBed } from '@angular/core/testing';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   OntologyDetails,
   OntologyPayload,
@@ -11,14 +9,16 @@ import {
   TreeI18n,
   VariableDetails
 } from '../../ontology.service';
-import { toAggregation } from '../../models/test-model-generators';
 import { of, Subject } from 'rxjs';
 import { TreeNode } from '../tree/tree.service';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
+import { FaidareOntologyComponent } from './faidare-ontology.component';
 
-class OntologyAggregationModalComponentTester extends ComponentTester<OntologyAggregationModalComponent> {
-  constructor() {
-    super(OntologyAggregationModalComponent);
+class OntologyComponentTester extends RoutingTester {
+  constructor(harness: RouterTestingHarness) {
+    super(harness);
   }
 
   get treeFilter() {
@@ -41,35 +41,26 @@ class OntologyAggregationModalComponentTester extends ComponentTester<OntologyAg
     );
   }
 
-  nodeCheckboxContaining(text: string) {
+  get highlightedNode() {
+    return this.tree.element('.highlighted');
+  }
+
+  expanderOfNodeContaining(text: string) {
     return (
-      this.elements('dd-node')
-        .find(element => element.element('.node-payload').textContent.includes(text))
-        ?.input('input') ?? null
+      this.elements<HTMLElement>('.node')
+        .find(element => element.textContent.includes(text))
+        ?.element<HTMLElement>('.expand') ?? null
     );
   }
 
   get nodeDetails() {
     return this.element('dd-node-details');
   }
-
-  get limitSelection() {
-    return this.element('#limit-selection');
-  }
-
-  get ok() {
-    return this.button('#ok-button');
-  }
-
-  get cancel() {
-    return this.button('#cancel-button');
-  }
 }
 
-describe('OntologyAggregationModalComponent', () => {
-  let activeModal: jasmine.SpyObj<NgbActiveModal>;
+describe('OntologyComponent', () => {
   let ontologyService: jasmine.SpyObj<OntologyService>;
-  let tester: OntologyAggregationModalComponentTester;
+  let tester: OntologyComponentTester;
 
   let treeSubject: Subject<Array<TreeNode<OntologyPayload>>>;
   let treeI18nSubject: Subject<TreeI18n>;
@@ -78,13 +69,12 @@ describe('OntologyAggregationModalComponent', () => {
   let treeI18n: TreeI18n;
 
   beforeEach(async () => {
-    activeModal = createMock(NgbActiveModal);
     ontologyService = createMock(OntologyService);
 
     TestBed.configureTestingModule({
       providers: [
         provideI18nTesting(),
-        { provide: NgbActiveModal, useValue: activeModal },
+        provideRouter([{ path: 'ontology', component: FaidareOntologyComponent }]),
         { provide: OntologyService, useValue: ontologyService }
       ]
     });
@@ -94,12 +84,8 @@ describe('OntologyAggregationModalComponent', () => {
     treeSubject = new Subject<Array<TreeNode<OntologyPayload>>>();
     treeI18nSubject = new Subject<TreeI18n>();
 
-    ontologyService.getTree.and.returnValue(treeSubject);
+    ontologyService.getCompleteTree.and.returnValue(treeSubject);
     ontologyService.getTreeI18n.and.returnValue(treeI18nSubject);
-
-    tester = new OntologyAggregationModalComponentTester();
-    tester.componentInstance.prepare(toAggregation('o', ['v1', 'v2', 'v3']), ['v2']);
-    await tester.stable();
 
     tree = [
       {
@@ -132,7 +118,6 @@ describe('OntologyAggregationModalComponent', () => {
                       type: 'VARIABLE',
                       id: 'v2'
                     },
-                    selected: true,
                     children: []
                   },
                   {
@@ -174,6 +159,8 @@ describe('OntologyAggregationModalComponent', () => {
   afterEach(() => jasmine.clock().uninstall());
 
   it('should display a tree with the default language selected', async () => {
+    tester = new OntologyComponentTester(await RouterTestingHarness.create('/ontology'));
+
     expect(tester.tree).toBeNull();
     expect(tester.nodeDetails).toBeNull();
 
@@ -190,24 +177,51 @@ describe('OntologyAggregationModalComponent', () => {
     expect(tester.tree).toContainText('O1');
     expect(tester.tree).toContainText('Ontology');
 
+    expect(tester.tree).not.toContainText('TC1');
+    expect(tester.tree).not.toContainText('Trait class');
+
+    expect(tester.tree).not.toContainText('T1');
+    expect(tester.tree).not.toContainText('Trait');
+
+    expect(tester.tree).not.toContainText('V1');
+    expect(tester.tree).not.toContainText('Variable');
+
+    expect(tester.highlightedNode).toBeNull();
+
+    expect(ontologyService.getTreeI18n).toHaveBeenCalledWith('FR');
+  });
+
+  it('should highlight and expand path to node in fragment', async () => {
+    ontologyService.getTrait.and.returnValue(
+      of({ name: 'T1', synonyms: [], alternativeAbbreviations: [] } as TraitDetails)
+    );
+
+    tester = new OntologyComponentTester(await RouterTestingHarness.create('/ontology#t1'));
+    treeSubject.next(tree);
+    treeI18nSubject.next(treeI18n);
+
+    await tester.stable();
+
+    expect(tester.nodeDetails).toContainText('T1');
+
+    expect(tester.tree).toContainText('O1');
+    expect(tester.tree).toContainText('Ontology');
+
     expect(tester.tree).toContainText('TC1');
     expect(tester.tree).toContainText('Trait class');
 
     expect(tester.tree).toContainText('T1');
     expect(tester.tree).toContainText('Trait');
 
-    expect(tester.tree).toContainText('V1');
-    expect(tester.tree).toContainText('Variable');
+    expect(tester.tree).not.toContainText('V1');
+    expect(tester.tree).not.toContainText('Variable');
 
-    expect(ontologyService.getTree).toHaveBeenCalledWith({
-      selectableVariableIds: ['v1', 'v2', 'v3'],
-      selectedVariableIds: ['v2']
-    });
-    expect(ontologyService.getTreeI18n).toHaveBeenCalledWith('FR');
+    expect(tester.highlightedNode).toContainText('T1');
   });
 
   describe('once initialized', () => {
     beforeEach(async () => {
+      tester = new OntologyComponentTester(await RouterTestingHarness.create('/ontology'));
       treeSubject.next(tree);
       treeI18nSubject.next(treeI18n);
       await tester.stable();
@@ -216,6 +230,10 @@ describe('OntologyAggregationModalComponent', () => {
     it('should filter', async () => {
       jasmine.clock().install();
       jasmine.clock().mockDate();
+
+      await tester.expanderOfNodeContaining('O1').click();
+      await tester.expanderOfNodeContaining('TC1').click();
+      await tester.expanderOfNodeContaining('T1').click();
 
       expect(tester.tree).toContainText('TC1');
 
@@ -240,23 +258,33 @@ describe('OntologyAggregationModalComponent', () => {
       );
       await tester.nodeContaining('O1').click();
 
+      expect(tester.highlightedNode).toContainText('O1');
       expect(tester.nodeDetails).toContainText('O1');
+      expect(tester.url).toBe('/ontology#o1');
     });
 
     it('should highlight trait class node', async () => {
       ontologyService.getTraitClass.and.returnValue(of({ name: 'TC1' } as TraitClassDetails));
+
+      await tester.expanderOfNodeContaining('O1').click();
       await tester.nodeContaining('TC1').click();
 
+      expect(tester.highlightedNode).toContainText('TC1');
       expect(tester.nodeDetails).toContainText('TC1');
+      expect(tester.url).toBe('/ontology#tc1');
     });
 
     it('should highlight trait node', async () => {
       ontologyService.getTrait.and.returnValue(
         of({ name: 'T1', synonyms: [], alternativeAbbreviations: [] } as TraitDetails)
       );
+      await tester.expanderOfNodeContaining('O1').click();
+      await tester.expanderOfNodeContaining('TC1').click();
       await tester.nodeContaining('T1').click();
 
+      expect(tester.highlightedNode).toContainText('T1');
       expect(tester.nodeDetails).toContainText('T1');
+      expect(tester.url).toBe('/ontology#t1');
     });
 
     it('should highlight variable node', async () => {
@@ -268,9 +296,14 @@ describe('OntologyAggregationModalComponent', () => {
           trait: { name: 'T1', synonyms: [], alternativeAbbreviations: [] }
         } as VariableDetails)
       );
+      await tester.expanderOfNodeContaining('O1').click();
+      await tester.expanderOfNodeContaining('TC1').click();
+      await tester.expanderOfNodeContaining('T1').click();
       await tester.nodeContaining('V2').click();
 
+      expect(tester.highlightedNode).toContainText('V2');
       expect(tester.nodeDetails).toContainText('V2');
+      expect(tester.url).toBe('/ontology#v2');
     });
 
     it('should change the language', async () => {
@@ -307,41 +340,6 @@ describe('OntologyAggregationModalComponent', () => {
       await tester.language?.selectLabel('Español');
       expect(tester.tree).toContainText('Ola O1');
       expect(tester.nodeDetails).toContainText('Ola O1');
-    });
-
-    it('should cancel', async () => {
-      await tester.cancel.click();
-      expect(activeModal.dismiss).toHaveBeenCalled();
-    });
-
-    it('should display an error and disable close if more than max selected', async () => {
-      tester.componentInstance.maxSelectedNodes = 2;
-      await tester.stable();
-      expect(tester.limitSelection).toBeNull();
-      expect(tester.ok.disabled).toBeFalse();
-
-      await tester.nodeCheckboxContaining('V1').check();
-      expect(tester.limitSelection).toBeNull();
-      expect(tester.ok.disabled).toBeFalse();
-
-      await tester.nodeCheckboxContaining('V3').check();
-      expect(tester.limitSelection).not.toBeNull();
-      expect(tester.ok.disabled).toBeTrue();
-      expect(tester.limitSelection).toContainText(
-        '3 variables selected. Please limit the selection to max 2.'
-      );
-
-      await tester.nodeCheckboxContaining('V2').uncheck();
-      expect(tester.limitSelection).toBeNull();
-      expect(tester.ok.disabled).toBeFalse();
-    });
-
-    it('should close', async () => {
-      await tester.nodeCheckboxContaining('V1').check();
-      await tester.nodeCheckboxContaining('V2').uncheck();
-      await tester.nodeCheckboxContaining('V3').check();
-      await tester.ok.click();
-      expect(activeModal.close).toHaveBeenCalledWith(['v1', 'v3']);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, TemplateRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, TemplateRef } from '@angular/core';
 import { InternalTreeNode, TreeService } from '../tree.service';
 import { NgTemplateOutlet } from '@angular/common';
 
@@ -20,6 +20,7 @@ export class NodeComponent<P> {
       node: InternalTreeNode<P>;
     }>
   >();
+  readonly selectionVisible = input(true);
 
   toggleExpanded() {
     const node = this.node();

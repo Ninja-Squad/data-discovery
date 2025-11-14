@@ -1,5 +1,5 @@
 @let node = this.node();
-<div class="text-nowrap d-inline">
+<div class="text-nowrap d-inline node">
   @if (node.hasVisibleChildren) {
     <span
       class="expand fa fa-fw fa-chevron-right me-1"
@@ -10,19 +10,26 @@
     ></span>
   }
 
-  <div class="form-check form-check-inline me-1">
-    <input
-      #selection
-      type="checkbox"
-      class="form-check-input"
-      [indeterminate]="node.selectionState === 'INDETERMINATE'"
-      [checked]="node.selectionState === 'CHECKED'"
-      (change)="toggleSelection(selection.checked)"
-      [id]="node.id"
-    />
-    <label [for]="node.id" class="form-check-label">
-      <span class="visually-hidden">{{ node.text }}</span>
-    </label>
+  <div
+    class="me-1"
+    [class.form-check]="selectionVisible()"
+    [class.form-check-inline]="selectionVisible()"
+    [class.d-inline]="!selectionVisible()"
+  >
+    @if (selectionVisible()) {
+      <input
+        #selection
+        type="checkbox"
+        class="form-check-input"
+        [indeterminate]="node.selectionState === 'INDETERMINATE'"
+        [checked]="node.selectionState === 'CHECKED'"
+        (change)="toggleSelection(selection.checked)"
+        [id]="node.id"
+      />
+      <label [for]="node.id" class="form-check-label">
+        <span class="visually-hidden">{{ node.text }}</span>
+      </label>
+    }
     <span
       class="node-payload"
       [class.matching]="node.matchingFilter"
@@ -50,6 +57,7 @@
             [filtered]="filtered()"
             [highlightedNodeId]="highlightedNodeId()"
             [payloadTemplate]="payloadTemplate()"
+            [selectionVisible]="selectionVisible()"
             [class.ms-4]="!childNode.hasVisibleChildren"
           />
         </li>

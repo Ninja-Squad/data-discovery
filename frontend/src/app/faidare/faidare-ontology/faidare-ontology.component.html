@@ -1,0 +1,63 @@
+<h1 translate="faidare.ontology.title"></h1>
+<ng-template #payloadTemplate let-node="node">
+  {{ node.text }}
+  <dd-ontology-node-type [type]="node.payload.type" />
+</ng-template>
+@if (treeView(); as treeView) {
+  <div class="content">
+    <div class="tree-section">
+      <div class="row gx-1">
+        <div class="col col-md-8">
+          <div class="mb-3">
+            <label
+              class="visually-hidden"
+              for="tree-filter"
+              translate="faidare.ontology.filter"
+            ></label>
+            <input
+              [formControl]="treeFilterCtrl"
+              id="tree-filter"
+              class="form-control"
+              [placeholder]="'faidare.ontology.filter' | translate"
+              type="search"
+            />
+          </div>
+        </div>
+        <div class="col col-md-4">
+          <div class="mb-3">
+            <label
+              class="visually-hidden"
+              for="language"
+              translate="faidare.ontology.language"
+            ></label>
+            <select [formControl]="languageCtrl" id="language" class="form-select">
+              @for (language of languages; track language) {
+                <option
+                  [ngValue]="language"
+                  [translate]="'faidare.ontology-language.' + language"
+                ></option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="border rounded p-1 tree">
+        <dd-tree
+          [filter]="treeView.filter"
+          [rootNodes]="treeView.tree"
+          [payloadTemplate]="payloadTemplate"
+          [textAccessor]="treeView.textAccessor"
+          [selectionVisible]="false"
+          [highlightedNodePredicate]="treeView.highlightedNodePredicate"
+          (highlightedNode)="highlightNode($event)"
+        />
+      </div>
+    </div>
+    <div class="details-section">
+      @if (highlightedNodeDetails(); as highlightedNodeDetails) {
+        <dd-node-details [node]="highlightedNodeDetails" />
+      }
+    </div>
+  </div>
+}
