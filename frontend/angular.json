@@ -309,6 +309,10 @@
                 {
                   "replace": "src/environments/map-container.default.ts",
                   "with": "src/environments/map-container.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/ontology.default.ts",
+                  "with": "src/environments/ontology.faidare.ts"
                 }
               ],
               "baseHref": "/faidare-dev/",
@@ -371,6 +375,10 @@
                 {
                   "replace": "src/environments/map-container.default.ts",
                   "with": "src/environments/map-container.faidare.ts"
+                },
+                {
+                  "replace": "src/environments/ontology.default.ts",
+                  "with": "src/environments/ontology.faidare.ts"
                 }
               ],
               "stylePreprocessorOptions": {
