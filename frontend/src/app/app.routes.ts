@@ -3,6 +3,10 @@ import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
 import { environment } from '../environments/environment';
+import { OntologyComponent } from '../environments/ontology.default';
+
+const additionalRoutes: Routes =
+  environment.name === 'faidare' ? [{ path: 'ontology', component: OntologyComponent }] : [];
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,5 +20,6 @@ export const routes: Routes = [
   },
   { path: 'help', component: MarkdownPageComponent, data: { mdFile: environment.helpMdFile } },
   { path: 'news', component: MarkdownPageComponent, data: { mdFile: environment.newsMdFile } },
-  { path: 'eula', component: MarkdownPageComponent, data: { mdFile: environment.eulaMdFile } }
+  { path: 'eula', component: MarkdownPageComponent, data: { mdFile: environment.eulaMdFile } },
+  ...additionalRoutes
 ];

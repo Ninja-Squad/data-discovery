@@ -115,6 +115,7 @@ export interface InternalTreeNode<P> {
 }
 
 export type TextAccessor<P> = (payload: P) => string;
+export type PayloadPredicate<P> = (payload: P) => boolean;
 
 const NODE_COMPARATOR = (n1: InternalTreeNode<unknown>, n2: InternalTreeNode<unknown>) =>
   n1.text.localeCompare(n2.text);
@@ -173,6 +174,25 @@ export class TreeService<P> {
       rootNodes: tree.rootNodes.map(rootNode =>
         this.toggleSelectionRecursively(rootNode, targetNode, checked)
       )
+    };
+    this.tree$.next(newTree);
+  }
+
+  highlightNodeMatching(predicate: PayloadPredicate<P>) {
+    const tree = this.tree$.value;
+
+    const results = tree.rootNodes.map(rootNode =>
+      this.highlightNodeMatchingRecursively(rootNode, predicate)
+    );
+    const targetNode = results.find(result => result.highlightedNode)?.highlightedNode;
+    const highlightedNode: InternalNodeInformation<P> | undefined = targetNode
+      ? { id: targetNode.id, text: targetNode.text, payload: targetNode.payload }
+      : undefined;
+
+    const newTree: InternalTree<P> = {
+      ...tree,
+      rootNodes: results.map(result => result.transformedNode),
+      highlightedNode
     };
     this.tree$.next(newTree);
   }
@@ -345,6 +365,35 @@ export class TreeService<P> {
     }
     if (node.selectionState !== 'UNCHECKED') {
       node.children.forEach(childNode => this.findSelectedNodesInNode(childNode, selectedNodes));
+    }
+  }
+
+  private highlightNodeMatchingRecursively(
+    node: InternalTreeNode<P>,
+    predicate: PayloadPredicate<P>
+  ): { transformedNode: InternalTreeNode<P>; highlightedNode?: InternalTreeNode<P> } {
+    const matching = predicate(node.payload);
+    if (matching) {
+      return { transformedNode: node, highlightedNode: node };
+    } else {
+      const childrenResults = node.children.map(childNode =>
+        this.highlightNodeMatchingRecursively(childNode, predicate)
+      );
+      const highlightedNode = childrenResults.find(
+        result => result.highlightedNode
+      )?.highlightedNode;
+
+      if (highlightedNode) {
+        const transformedNode = {
+          ...node,
+          expanded: true,
+          children: childrenResults.map(result => result.transformedNode)
+        };
+
+        return { transformedNode, highlightedNode };
+      } else {
+        return { transformedNode: node };
+      }
     }
   }
 }
