@@ -6,7 +6,8 @@
     "legal-mentions": "Terms of use",
     "help": "Help",
     "news": "News/Perspectives",
-    "ws": "Web services"
+    "ws": "Web services",
+    "ontology": "Ontology"
   },
   "pillars": {
     "no-data": "No data found.",
@@ -236,6 +237,11 @@
       "limit-selection": "{{ actual }} variables selected. Please limit the selection to max {{ max }}.",
       "ok": "OK",
       "cancel": "Cancel"
+    },
+    "ontology": {
+      "title": "Ontology",
+      "filter": "Filter",
+      "language": "Language"
     },
     "ontology-language": {
       "EN": "English",

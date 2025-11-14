@@ -24,6 +24,15 @@
     </button>
     <div id="navbar" class="collapse navbar-collapse" [ngbCollapse]="navbarCollapsed()">
       <ul class="navbar-nav me-auto">
+        @if (appName === 'faidare') {
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center"
+              routerLink="/ontology"
+              translate="navbar.ontology"
+            ></a>
+          </li>
+        }
         @for (link of navbar.links; track link) {
           @if (link.subMenu) {
             <li class="nav-item" ngbDropdown>

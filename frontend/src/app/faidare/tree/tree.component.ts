@@ -11,6 +11,7 @@ import {
   InternalTree,
   InternalTreeNode,
   NodeInformation,
+  PayloadPredicate,
   TextAccessor,
   TreeNode,
   TreeService
@@ -59,7 +60,7 @@ const DEFAULT_TEXT_ACCESSOR: TextAccessor<unknown> = () => 'no text accessor pro
   exportAs: 'tree'
 })
 export class TreeComponent<P> {
-  private readonly treeService = inject(TreeService);
+  private readonly treeService: TreeService<P> = inject(TreeService);
 
   private readonly tree$: Observable<InternalTree<P>> = this.treeService.treeChanges();
   readonly tree = toSignal(this.tree$);
@@ -73,6 +74,13 @@ export class TreeComponent<P> {
   readonly rootNodes = input.required<Array<TreeNode<P>>>();
   readonly filter = input.required<string | null | undefined>();
   readonly textAccessor = input.required<TextAccessor<P> | null>();
+  readonly selectionVisible = input(true);
+
+  /**
+   * A predicate that can be provided in order to highlight the node which has a payload matching the
+   * predicate. This input is only used during the initialization of the component (i.e. when new root nodes are provided)
+   */
+  readonly highlightedNodePredicate = input<PayloadPredicate<P> | undefined>();
 
   readonly sanitizedFilter = computed(() => (this.filter() ?? '').trim().toLowerCase());
   readonly sanitizedTextAccessor = computed(() => this.textAccessor() ?? DEFAULT_TEXT_ACCESSOR);
@@ -111,7 +119,13 @@ export class TreeComponent<P> {
 
     toObservable(this.rootNodes)
       .pipe(
-        tap(rootNodes => this.treeService.initialize(rootNodes, this.sanitizedTextAccessor())),
+        tap(rootNodes => {
+          this.treeService.initialize(rootNodes, this.sanitizedTextAccessor());
+          const highlightedNodePredicate = this.highlightedNodePredicate();
+          if (highlightedNodePredicate) {
+            this.treeService.highlightNodeMatching(highlightedNodePredicate);
+          }
+        }),
         switchMap(() => actions$),
         tap(action => {
           switch (action.type) {

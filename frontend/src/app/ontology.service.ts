@@ -142,14 +142,22 @@ export class OntologyService {
     selectableVariableIds: Array<string>;
     selectedVariableIds: Array<string>;
   }): Observable<Array<TreeNode<OntologyPayload>>> {
+    const setOfSelectableVariableIds = new Set(options.selectableVariableIds);
+    const isVariableSelectable = (variableId: string) => setOfSelectableVariableIds.has(variableId);
     return this.tree$.pipe(
       map(ontologyTreeNodes =>
         this.toTreeNodes(
           ontologyTreeNodes,
-          new Set<string>(options.selectableVariableIds),
+          isVariableSelectable,
           new Set<string>(options.selectedVariableIds)
         )
       )
+    );
+  }
+
+  getCompleteTree(): Observable<Array<TreeNode<OntologyPayload>>> {
+    return this.tree$.pipe(
+      map(ontologyTreeNodes => this.toTreeNodes(ontologyTreeNodes, () => true, new Set<string>()))
     );
   }
 
@@ -179,16 +187,12 @@ export class OntologyService {
 
   private toTreeNodes(
     ontologyTreeNodes: Array<OntologyTreeNode>,
-    selectableVariableIds: Set<string>,
+    isVariableSelectable: (variableId: string) => boolean,
     selectedVariableIds: Set<string>
   ): Array<TreeNode<OntologyPayload>> {
     const result: Array<TreeNode<OntologyPayload>> = [];
     for (const ontologyTreeNode of ontologyTreeNodes) {
-      const treeNode = this.toTreeNode(
-        ontologyTreeNode,
-        selectableVariableIds,
-        selectedVariableIds
-      );
+      const treeNode = this.toTreeNode(ontologyTreeNode, isVariableSelectable, selectedVariableIds);
       if (treeNode) {
         result.push(treeNode);
       }
@@ -198,11 +202,11 @@ export class OntologyService {
 
   private toTreeNode(
     ontologyTreeNode: OntologyTreeNode,
-    selectableVariableIds: Set<string>,
+    isVariableSelectable: (variableId: string) => boolean,
     selectedVariableIds: Set<string>
   ): TreeNode<OntologyPayload> | null {
     if (ontologyTreeNode.payload.type === 'VARIABLE') {
-      if (selectableVariableIds.has(ontologyTreeNode.payload.id)) {
+      if (isVariableSelectable(ontologyTreeNode.payload.id)) {
         return {
           payload: ontologyTreeNode.payload,
           children: [],
@@ -214,7 +218,7 @@ export class OntologyService {
     } else {
       const children = this.toTreeNodes(
         ontologyTreeNode.children ?? [],
-        selectableVariableIds,
+        isVariableSelectable,
         selectedVariableIds
       );
       if (children.length) {
