@@ -120,7 +120,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-        mavenBom("com.squareup.okhttp3:okhttp-bom:5.3.0")
+        mavenBom("com.squareup.okhttp3:okhttp-bom:5.3.1")
     }
 }
 
