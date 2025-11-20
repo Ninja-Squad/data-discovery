@@ -603,8 +603,10 @@ deploy-faidare-to-beta:
   <<: *variables-faidare-beta
   <<: *deploy_to_vm
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_MESSAGE =~ /SKIP_DEPLOY/i
       when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
         - ./*.md
