@@ -1,13 +1,18 @@
 import { effect, Injectable, signal } from '@angular/core';
-import { OrderableDocumentModel } from '../../models/document.model';
 import { environment } from '../../../environments/environment';
 
 /**
- * A RARe accession, with its name and identifier
+ * A rare-basket accession, sent as part of a basket creation.
+ * It contains additional mandatory fields compared to the actual rare-basket accession
+ * because we want the accessions coming from here to contain those fields.
+ * The url is what actually identifies an accession in this application.
  */
-interface Accession {
-  identifier: string;
-  name: string;
+export interface Accession {
+  readonly name: string;
+  readonly identifier: string;
+  readonly accessionNumber: string | null;
+  readonly taxon: string;
+  readonly url: string;
 }
 
 /**
@@ -34,7 +39,7 @@ export interface Basket {
 })
 export class BasketService {
   private readonly _basket = signal<Basket>({ items: [] });
-  basket = this._basket.asReadonly();
+  readonly basket = this._basket.asReadonly();
 
   constructor() {
     this.restoreBasketFromLocalStorage();
@@ -60,34 +65,27 @@ export class BasketService {
     }
   }
 
-  addToBasket(accession: OrderableDocumentModel) {
-    if (this.isAccessionInBasket(accession)) {
+  addToBasket(item: BasketItem) {
+    if (this.isItemInBasket(item)) {
       // already in basket
       return;
     }
-    const basketItem: BasketItem = {
-      accession: {
-        identifier: accession.identifier,
-        name: accession.name
-      },
-      accessionHolder: accession.accessionHolder!
-    };
-    this._basket.update(basket => ({ ...basket, items: [...basket.items, basketItem] }));
+    this._basket.update(basket => ({ ...basket, items: [...basket.items, item] }));
   }
 
-  isAccessionInBasket(document: OrderableDocumentModel): boolean {
-    return this._basket().items.some(item => item.accession.identifier === document.identifier);
+  isItemInBasket(item: BasketItem): boolean {
+    return this._basket().items.some(i => i.accession.url === item.accession.url);
   }
 
-  removeFromBasket(identifier: string) {
+  removeFromBasket(item: BasketItem) {
     this._basket.update(basket => ({
       ...basket,
-      items: basket.items.filter(item => item.accession.identifier !== identifier)
+      items: basket.items.filter(i => i.accession.url !== item.accession.url)
     }));
   }
 
   private saveBasketToLocalStorage() {
-    window.localStorage.setItem('rare-basket', JSON.stringify(this._basket));
+    window.localStorage.setItem('rare-basket', JSON.stringify(this._basket()));
   }
 
   clearBasket() {

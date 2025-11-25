@@ -7,13 +7,13 @@
         </a>
         <small> - {{ vm.document.databaseName }}</small>
       </div>
-      @if (vm.isBasketEnabled && vm.document.accessionHolder) {
+      @if (vm.basketItem) {
         <div>
-          @if (vm.selectedForOrdering) {
+          @if (vm.isInBasket) {
             <button
               type="button"
               class="btn btn-sm btn-success"
-              (click)="removeFromBasket(vm.document)"
+              (click)="removeFromBasket()"
               [ngbTooltip]="'faidare-document.remove-from-basket' | translate"
               container="body"
             >
@@ -24,7 +24,7 @@
             <button
               type="button"
               class="btn btn-sm btn-outline-dark"
-              (click)="addToBasket(vm.document)"
+              (click)="addToBasket()"
               [ngbTooltip]="'faidare-document.add-to-basket' | translate"
               container="body"
             >

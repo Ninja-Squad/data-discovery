@@ -33,3 +33,16 @@
     transform: translateX(-0.5rem);
   }
 }
+
+.table-sticky {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.table-sticky thead th {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-top-width: 0;
+  z-index: 1; // otherwise it doesn't hide table cells that have an opacity
+}

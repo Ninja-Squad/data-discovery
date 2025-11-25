@@ -7,6 +7,8 @@ import { BasketService } from '../../urgi-common/basket/basket.service';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
+import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
+import { FaidareBasketAdapter } from '../faidare-basket-adapter.service';
 
 @Component({
   template: '<dd-document [document]="document()" />',
@@ -69,12 +71,14 @@ class FaidareDocumentComponentTester extends ComponentTester<TestComponent> {
 
 describe('FaidareDocumentComponent', () => {
   let basketService: BasketService;
+  let basketAdapter: BasketAdapter;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideI18nTesting()]
+      providers: [provideI18nTesting(), { provide: BasketAdapter, useClass: FaidareBasketAdapter }]
     });
 
+    basketAdapter = TestBed.inject(BasketAdapter);
     basketService = TestBed.inject(BasketService);
     basketService.clearBasket();
     spyOn(basketService, 'isEnabled').and.returnValue(true);
@@ -130,7 +134,9 @@ describe('FaidareDocumentComponent', () => {
     await tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
-    expect(basketService.isAccessionInBasket(component.document())).toBeTrue();
+    expect(
+      basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)
+    ).toBeTrue();
 
     // we switched the button to display a green one
     expect(tester.addToBasketButton).toBeNull();
@@ -144,7 +150,9 @@ describe('FaidareDocumentComponent', () => {
     expect(tester.tooltip.textContent).toBe('Remove from basket');
 
     await tester.removeFromBasketButton.click();
-    expect(basketService.isAccessionInBasket(component.document())).toBeFalse();
+    expect(
+      basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)
+    ).toBeFalse();
 
     // we switched back the button
     expect(tester.removeFromBasketButton).toBeNull();

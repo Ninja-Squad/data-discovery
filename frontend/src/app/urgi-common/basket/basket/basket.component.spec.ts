@@ -2,11 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { BasketService } from '../basket.service';
+import { BasketItem, BasketService } from '../basket.service';
 import { LOCATION } from '../../../location.service';
 import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../../../disable-animations';
-import { OrderableDocumentModel } from '../../../models/document.model';
 import { BasketCreated, BasketSenderService } from '../basket-sender.service';
 import { of } from 'rxjs';
 
@@ -115,7 +114,7 @@ describe('BasketComponent', () => {
     expect(tester.tooltip).toBeNull();
 
     // 1 item
-    service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
+    service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
     await tester.stable();
     expect(tester.basketCounter).toContainText('1');
 
@@ -129,7 +128,7 @@ describe('BasketComponent', () => {
     await tester.basketCounter.dispatchEventOfType('mouseleave');
 
     // several items
-    service.addToBasket({ identifier: 'rosa rosae', name: 'rosa rosae' } as OrderableDocumentModel);
+    service.addToBasket({ accession: { url: 'rosa rosae', name: 'rosa rosae' } } as BasketItem);
     await tester.stable();
     expect(tester.basketCounter).toContainText('2');
 
@@ -145,12 +144,15 @@ describe('BasketComponent', () => {
     tester = new BasketComponentTester();
     await tester.stable();
 
-    service.addToBasket({ identifier: 'rosa', name: 'Rosa' } as OrderableDocumentModel);
+    service.addToBasket({
+      accession: { url: 'rosa', name: 'Rosa', taxon: 'TheTaxon' }
+    } as BasketItem);
     await tester.stable();
     await tester.basketCounter.click();
 
     expect(tester.modalTitle.textContent).toBe('Order summary');
     expect(tester.modalBody.textContent).toContain('Rosa');
+    expect(tester.modalBody.textContent).toContain('TheTaxon');
 
     // remove item from basket
     await tester.removeItemFromBasket.click();
@@ -171,7 +173,7 @@ describe('BasketComponent', () => {
     tester = new BasketComponentTester();
     await tester.stable();
     const reference = 'ABCDEFGH';
-    service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
+    service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
     await tester.stable();
     expect(tester.eulaAgreementError).toBeNull();
     await tester.basketCounter.click();
@@ -200,7 +202,7 @@ describe('BasketComponent', () => {
   it('should clear the basket', async () => {
     tester = new BasketComponentTester();
     await tester.stable();
-    service.addToBasket({ identifier: 'rosa', name: 'rosa' } as OrderableDocumentModel);
+    service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
 
     await tester.stable();
     await tester.basketCounter.click();

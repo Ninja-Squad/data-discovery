@@ -1,11 +1,11 @@
-import { OrderableDocumentModel } from '../models/document.model';
+import { DocumentModel } from '../models/document.model';
 
 interface Location {
   lat: number;
   lon: number;
 }
 
-export interface RareDocumentModel extends OrderableDocumentModel {
+export interface RareDocumentModel extends DocumentModel {
   pillarName: string;
   databaseSource: string;
   portalURL: string;
@@ -21,4 +21,5 @@ export interface RareDocumentModel extends OrderableDocumentModel {
   locationOfOrigin: Location;
   countryOfCollect: string;
   locationOfCollect: Location;
+  accessionHolder: string;
 }

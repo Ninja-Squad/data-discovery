@@ -8,12 +8,12 @@ import {
   Signal,
   TemplateRef
 } from '@angular/core';
-import { Basket, BasketService } from '../basket.service';
+import { Basket, BasketItem, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { switchMap, timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { TranslateDirective } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LOCATION } from '../../../location.service';
@@ -29,7 +29,8 @@ import { BasketSenderService } from '../basket-sender.service';
     DecimalPipe,
     TranslateDirective,
     ReactiveFormsModule,
-    NgbTooltip
+    NgbTooltip,
+    TranslatePipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -47,6 +48,10 @@ export class BasketComponent {
     const basket = this.basket();
     return basket ? basket.items.length : 0;
   });
+  readonly accessionNumberDisplayed = computed(() => {
+    const basket = this.basket();
+    return basket ? basket.items.some(item => item.accession.accessionNumber) : false;
+  });
   readonly eulaAgreementControl = inject(NonNullableFormBuilder).control(
     false,
     Validators.requiredTrue
@@ -60,8 +65,7 @@ export class BasketComponent {
     if (this.itemCounter() > 0) {
       const modalRef = this.modalService.open(basket, {
         ariaLabelledBy: 'modal-title',
-        size: 'lg',
-        scrollable: true
+        size: 'lg'
       });
       modalRef.closed
         .pipe(
@@ -75,7 +79,7 @@ export class BasketComponent {
     }
   }
 
-  removeItemFromBasket(item: string) {
+  removeItemFromBasket(item: BasketItem) {
     this.basketService.removeFromBasket(item);
   }
 
