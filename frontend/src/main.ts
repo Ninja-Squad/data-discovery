@@ -6,6 +6,7 @@ import { errorInterceptor } from './app/error-interceptor.service';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideI18n } from './app/i18n/i18n';
 import { provideConfiguredMarkdown } from './app/markdown';
+import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -20,7 +21,8 @@ bootstrapApplication(AppComponent, {
       withViewTransitions({ skipInitialTransition: true })
     ),
     provideHttpClient(withInterceptors([errorInterceptor])),
-    provideI18n()
+    provideI18n(),
+    [...(environment.providers ?? [])]
   ]
 })
   // eslint-disable-next-line no-console

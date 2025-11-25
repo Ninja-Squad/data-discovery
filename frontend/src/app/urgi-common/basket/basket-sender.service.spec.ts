@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Basket } from './basket.service';
+import { Basket, BasketItem } from './basket.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BasketCreated, BasketSenderService } from './basket-sender.service';
 
@@ -20,11 +20,11 @@ describe('BasketService', () => {
       items: [
         {
           accession: {
-            identifier: 'rosa',
+            url: 'rosa',
             name: 'Rosa@'
           },
           accessionHolder: 'ah1'
-        }
+        } as BasketItem
       ]
     };
 
