@@ -9,6 +9,7 @@
     <button
       class="basket-counter btn btn-link"
       [ngbTooltip]="buttonTooltip"
+      triggers="hover"
       (click)="viewItems(basketModal)"
     >
       <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
@@ -32,60 +33,75 @@
 
 <ng-template #basketModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title" translate="basket.modal-title"></h4>
+    <h1 class="modal-title fs-5" id="modal-title" translate="basket.modal-title"></h1>
     <button
       type="button"
       class="btn btn-close"
-      aria-label="Close"
+      [attr.aria-label]="'basket.close' | translate"
       (click)="modal.dismiss()"
     ></button>
   </div>
   <div class="modal-body">
     @if (basket) {
       @if (basket.items.length > 0) {
-        @for (item of basket.items; track item) {
-          <div class="d-flex align-items-center">
-            <span class="flex-grow-1"
-              >{{ item.accession.name }}&ngsp;<small
-                class="text-body-secondary"
-                style="word-break: break-word"
-                >{{ item.accession.identifier }}</small
-              ></span
-            >&ngsp;
-            <button
-              type="button"
-              class="btn btn-outline-danger delete-btn"
-              (click)="removeItemFromBasket(item.accession.identifier)"
-            >
-              <span class="fa fa-fw fa-trash"></span>
-            </button>
-          </div>
-        }
-        <div class="mt-2">
-          <div class="border rounded p-2 bg-light small">
-            <div>
-              <span translate="basket.eula-beginning"></span>&ngsp;
-              <a href="./eula" target="_blank" translate="basket.eula-link"></a>&ngsp;
-              <span translate="basket.eula-end"></span>
-            </div>
-            <div class="form-check">
-              <input
-                [formControl]="eulaAgreementControl"
-                type="checkbox"
-                class="form-check-input"
-                id="eula-agreement"
-              />
-              <label
-                class="form-check-label"
-                for="eula-agreement"
-                translate="basket.eula-agreement"
-              ></label>
-              @if (eulaAgreementControl.invalid && submitted()) {
-                <div class="invalid-feedback d-block" id="eula-agreement-error">
-                  <span translate="basket.eula-agreement-required"></span>
-                </div>
+        <div class="overflow-y-auto" style="max-height: 60vh">
+          <table class="table table-sm table-sticky">
+            <thead>
+              <tr>
+                <th translate="basket.name-heading"></th>
+                @if (accessionNumberDisplayed()) {
+                  <th translate="basket.accession-number-heading"></th>
+                }
+                <th translate="basket.taxon-heading"></th>
+                <th class="text-end" [attr.aria-label]="'basket.action-heading' | translate"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of basket.items; track item) {
+                <tr>
+                  <td>{{ item.accession.name }}</td>
+                  @if (accessionNumberDisplayed()) {
+                    <td>{{ item.accession.accessionNumber }}</td>
+                  }
+                  <td>{{ item.accession.taxon }}</td>
+                  <td class="text-end">
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger delete-btn"
+                      (click)="removeItemFromBasket(item)"
+                      [attr.aria-label]="'basket.remove' | translate"
+                    >
+                      <span class="fa fa-fw fa-trash"></span>
+                    </button>
+                  </td>
+                </tr>
               }
-            </div>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-2 border rounded p-2 bg-light small">
+          <div>
+            <span translate="basket.eula-beginning"></span>&ngsp;
+            <a href="./eula" target="_blank" translate="basket.eula-link"></a>&ngsp;
+            <span translate="basket.eula-end"></span>
+          </div>
+          <div class="form-check">
+            <input
+              [formControl]="eulaAgreementControl"
+              type="checkbox"
+              class="form-check-input"
+              id="eula-agreement"
+            />
+            <label
+              class="form-check-label"
+              for="eula-agreement"
+              translate="basket.eula-agreement"
+            ></label>
+            @if (eulaAgreementControl.invalid && submitted()) {
+              <div class="invalid-feedback d-block" id="eula-agreement-error">
+                <span translate="basket.eula-agreement-required"></span>
+              </div>
+            }
           </div>
         </div>
       } @else {

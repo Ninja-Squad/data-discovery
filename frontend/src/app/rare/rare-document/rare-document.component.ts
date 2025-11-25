@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
-import { BasketService } from '../../urgi-common/basket/basket.service';
+import { BasketItem, BasketService } from '../../urgi-common/basket/basket.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
 
 interface ViewModel {
   document: RareDocumentModel;
-  isBasketEnabled: boolean;
-  selectedForOrdering: boolean;
+  basketItem: BasketItem | null;
+  isInBasket: boolean;
 }
 
 @Component({
@@ -20,24 +21,26 @@ interface ViewModel {
 })
 export class RareDocumentComponent {
   private readonly basketService = inject(BasketService);
+  private readonly basketAdapter = inject(BasketAdapter);
 
   readonly document = input.required<RareDocumentModel>();
+
   readonly vm: Signal<ViewModel> = computed(() => {
     const isBasketEnabled = this.basketService.isEnabled();
-    const selectedForOrdering =
-      isBasketEnabled && this.basketService.isAccessionInBasket(this.document());
+    const basketItem = isBasketEnabled ? this.basketAdapter.asBasketItem(this.document()) : null;
+    const isInBasket = !!basketItem && this.basketService.isItemInBasket(basketItem);
     return {
       document: this.document(),
-      isBasketEnabled,
-      selectedForOrdering
+      basketItem,
+      isInBasket
     };
   });
 
-  addToBasket(document: RareDocumentModel) {
-    this.basketService.addToBasket(document);
+  addToBasket() {
+    this.basketService.addToBasket(this.vm().basketItem!);
   }
 
-  removeFromBasket(document: RareDocumentModel) {
-    this.basketService.removeFromBasket(document.identifier);
+  removeFromBasket() {
+    this.basketService.removeFromBasket(this.vm().basketItem!);
   }
 }

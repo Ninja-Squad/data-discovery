@@ -1,6 +1,7 @@
 /**
  * A link of the navbar
  */
+import { EnvironmentProviders, Provider } from '@angular/core';
 
 interface Link {
   label: string;
@@ -64,4 +65,5 @@ export interface DataDiscoveryEnvironment {
     enabled: boolean;
     url: string;
   };
+  providers?: Array<Provider | EnvironmentProviders>;
 }

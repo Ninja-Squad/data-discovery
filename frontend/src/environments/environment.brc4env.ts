@@ -1,4 +1,6 @@
 import { DataDiscoveryEnvironment } from './environment.model';
+import { BasketAdapter } from '../app/urgi-common/basket/basket-adapter.service';
+import { RareBasketAdapter } from '../app/rare/rare-basket-adapter.service';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,
@@ -22,5 +24,6 @@ export const environment: DataDiscoveryEnvironment = {
   basket: {
     enabled: true,
     url: 'http://localhost:4201/rare-basket'
-  }
+  },
+  providers: [{ provide: BasketAdapter, useClass: RareBasketAdapter }]
 };

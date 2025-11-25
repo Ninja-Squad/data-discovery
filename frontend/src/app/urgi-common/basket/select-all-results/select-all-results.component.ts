@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
-import { BasketService } from '../basket.service';
-import { OrderableDocumentModel } from '../../../models/document.model';
+import { BasketItem, BasketService } from '../basket.service';
 import { TranslateDirective } from '@ngx-translate/core';
 import { Page } from '../../../models/page';
+import { DocumentModel } from '../../../models/document.model';
+import { BasketAdapter } from '../basket-adapter.service';
 
 interface ViewModel {
-  allSelectedForOrdering: boolean;
-  accessions: Array<OrderableDocumentModel>;
+  items: Array<BasketItem>;
+  allInBasket: boolean;
 }
 
 @Component({
@@ -17,25 +18,26 @@ interface ViewModel {
   imports: [TranslateDirective]
 })
 export class SelectAllResultsComponent {
+  private readonly basketAdapter = inject(BasketAdapter);
   private readonly basketService = inject(BasketService);
 
-  readonly documents = input.required<Page<OrderableDocumentModel>>();
+  readonly documents = input.required<Page<DocumentModel>>();
   readonly vm: Signal<ViewModel> = computed(() => {
     const documents = this.documents();
-    const accessions = documents.content.filter(document => document.accessionHolder);
+    const items: Array<BasketItem> = documents.content
+      .map(document => this.basketAdapter.asBasketItem(document))
+      .filter(item => !!item);
     return {
-      accessions,
-      allSelectedForOrdering:
-        accessions.length > 0 &&
-        accessions.every(accession => this.basketService.isAccessionInBasket(accession))
+      items,
+      allInBasket: items.length > 0 && items.every(item => this.basketService.isItemInBasket(item))
     };
   });
 
-  addAllToBasket(accessions: Array<OrderableDocumentModel>) {
-    accessions.forEach(accession => this.basketService.addToBasket(accession));
+  addAllToBasket() {
+    this.vm().items.forEach(item => this.basketService.addToBasket(item));
   }
 
-  removeAllFromBasket(accessions: Array<OrderableDocumentModel>) {
-    accessions.forEach(accession => this.basketService.removeFromBasket(accession.identifier));
+  removeAllFromBasket() {
+    this.vm().items.forEach(item => this.basketService.removeFromBasket(item));
   }
 }

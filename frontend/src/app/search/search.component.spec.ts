@@ -69,7 +69,7 @@ describe('SearchComponent', () => {
   beforeEach(() => {
     basketService = createMock(BasketService);
     basketService.isEnabled.and.returnValue(true);
-    basketService.isAccessionInBasket.and.returnValue(false);
+    basketService.isItemInBasket.and.returnValue(false);
 
     modelSubject = new ReplaySubject<Model>();
     searchStateService = createMock(SearchStateService);
