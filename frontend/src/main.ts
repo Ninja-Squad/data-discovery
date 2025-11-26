@@ -22,7 +22,7 @@ bootstrapApplication(AppComponent, {
     ),
     provideHttpClient(withInterceptors([errorInterceptor])),
     provideI18n(),
-    [...(environment.providers ?? [])]
+    ...(environment.providers ?? [])
   ]
 })
   // eslint-disable-next-line no-console
