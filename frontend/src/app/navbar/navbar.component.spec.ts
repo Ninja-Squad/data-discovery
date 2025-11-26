@@ -4,7 +4,6 @@ import { ComponentTester } from 'ngx-speculoos';
 import { NavbarComponent } from './navbar.component';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideDisabledNgbAnimation } from '../disable-animations';
 import { environment } from '../../environments/environment';
@@ -43,7 +42,6 @@ describe('NavbarComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
         provideHttpClientTesting(),
         provideI18nTesting(),
         provideRouter([]),

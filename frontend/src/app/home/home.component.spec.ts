@@ -9,7 +9,6 @@ import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { of } from 'rxjs';
 import { Aggregation } from '../models/page';
 import { environment } from '../../environments/environment';
-import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
@@ -46,12 +45,7 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
 describe('HomeComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideI18nTesting(),
-        provideRouter([])
-      ]
+      providers: [provideHttpClientTesting(), provideI18nTesting(), provideRouter([])]
     })
   );
 

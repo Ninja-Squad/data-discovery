@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { OntologyPayload, OntologyService } from './ontology.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TreeNode } from './faidare/tree/tree.service';
-import { provideHttpClient } from '@angular/common/http';
 import { provideI18nTesting } from './i18n/mock-18n.spec';
 
 describe('OntologyService', () => {
@@ -12,7 +11,7 @@ describe('OntologyService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideI18nTesting()]
+      providers: [provideHttpClientTesting(), provideI18nTesting()]
     });
     service = TestBed.inject(OntologyService);
     http = TestBed.inject(HttpTestingController);
