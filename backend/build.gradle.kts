@@ -10,8 +10,8 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.5.7"
-    id("com.gorylenko.gradle-git-properties") version "2.5.3"
+    id("org.springframework.boot") version "3.5.8"
+    id("com.gorylenko.gradle-git-properties") version "2.5.4"
     id("org.asciidoctor.jvm.convert") version "4.0.5"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.sonarqube")
@@ -120,7 +120,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-        mavenBom("com.squareup.okhttp3:okhttp-bom:5.3.1")
+        mavenBom("com.squareup.okhttp3:okhttp-bom:5.3.2")
     }
 }
 
