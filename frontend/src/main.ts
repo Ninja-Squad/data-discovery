@@ -6,11 +6,9 @@ import { errorInterceptor } from './app/error-interceptor.service';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideI18n } from './app/i18n/i18n';
 import { provideConfiguredMarkdown } from './app/markdown';
-import { provideZonelessChangeDetection } from '@angular/core';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZonelessChangeDetection(),
     provideConfiguredMarkdown(),
     provideRouter(
       routes,

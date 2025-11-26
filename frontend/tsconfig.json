@@ -17,7 +17,6 @@
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "typeCheckHostBindings": true,
     "strictTemplates": true,
     "extendedDiagnostics": {
       "defaultCategory": "error"

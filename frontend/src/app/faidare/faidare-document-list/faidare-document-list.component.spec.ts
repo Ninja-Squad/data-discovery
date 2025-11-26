@@ -14,7 +14,6 @@ import { Model, SearchCriteria, SearchStateService } from '../../search-state.se
 import { toSinglePage } from '../../models/test-model-generators';
 import { DocumentModel } from '../../models/document.model';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../../disable-animations';
@@ -74,7 +73,6 @@ describe('FaidareDocumentListComponent', () => {
     });
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
         provideHttpClientTesting(),
         provideI18nTesting(),
         provideDisabledNgbAnimation(),

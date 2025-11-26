@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { MarkdownPageComponent } from './markdown-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentTester, stubRoute } from 'ngx-speculoos';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
@@ -24,7 +23,6 @@ describe('MarkdownPageComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
         provideHttpClientTesting(),
         provideI18nTesting(),
         provideConfiguredMarkdown(),

@@ -19,7 +19,6 @@ import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
-import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
 
@@ -89,7 +88,6 @@ describe('SearchComponent', () => {
     });
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
         provideHttpClientTesting(),
         provideI18nTesting(),
         { provide: BasketService, useValue: basketService },

@@ -437,32 +437,22 @@
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
-        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {
+            "aot": true,
             "browsers": "ChromeHeadlessNoSandbox",
             "main": "src/test.ts",
-            "polyfills": [
-              "@angular/localize/init"
-            ],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.cjs",
             "stylePreprocessorOptions": {
               "sass": {
-                "silenceDeprecations": [
-                  "import"
-                ]
+                "silenceDeprecations": ["import"]
               },
-              "includePaths": [
-                "src/assets/rare/"
-              ]
+              "includePaths": ["src/assets/rare/"]
             },
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "assets": [
               {
                 "glob": "*",

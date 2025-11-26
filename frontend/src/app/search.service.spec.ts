@@ -11,7 +11,6 @@ import {
 import { SearchService } from './search.service';
 import { Aggregation, Page } from './models/page';
 import { DocumentModel } from './models/document.model';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -19,8 +18,7 @@ describe('SearchService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClientTesting()]
     });
 
     service = TestBed.inject(SearchService);

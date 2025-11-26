@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 
 import { Basket } from './basket.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
 import { BasketCreated, BasketSenderService } from './basket-sender.service';
 
 describe('BasketService', () => {
@@ -10,7 +9,7 @@ describe('BasketService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClientTesting()]
     });
 
     service = TestBed.inject(BasketSenderService);
