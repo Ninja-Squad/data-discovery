@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 
 /**
  * Unit test to check that a {@link FaidareDocument} can correctly be marshalled/unmarshaleld to/from JSON
@@ -79,16 +78,19 @@ class FaidareDocumentTest {
 
     @Test
     void shouldSupportNullSpeciesAndGeographicLocations() throws IOException {
-        String json = "{\n" +
-            "    \"entryType\": \"Marker\",\n" +
-            "    \"databaseName\": \"Evoltree\",\n" +
-            "    \"description\": \"14_mtDNA is a RFLP marker. It is used in GD2 database for the species Pinus banksiana.\",\n" +
-            "    \"url\": \"http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1\",\n" +
-            "    \"species\": null,\n" +
-            "    \"node\": \"URGI\",\n" +
-            "    \"name\": \"14_mtDNA\",\n" +
-            "    \"geographicLocation\": null\n" +
-            "  }";
+        String json =
+              """
+              {
+                "entryType": "Marker",
+                "databaseName": "Evoltree",
+                "description": "14_mtDNA is a RFLP marker. It is used in GD2 database for the species Pinus banksiana.",
+                "url": "http://www.evoltree.eu/zf2/public/elab/details?id=MARKER_14_mtDNA&st=fulltext&page=1",
+                "species": null,
+                "node": "URGI",
+                "name": "14_mtDNA",
+                "geographicLocation": null
+              }
+              """;
 
         FaidareDocument document = objectMapper.readValue(json, FaidareDocument.class);
 

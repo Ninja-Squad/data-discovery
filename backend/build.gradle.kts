@@ -10,7 +10,7 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "3.5.8"
+    id("org.springframework.boot") version "4.0.0"
     id("com.gorylenko.gradle-git-properties") version "2.5.4"
     id("org.asciidoctor.jvm.convert") version "4.0.5"
     id("io.spring.dependency-management") version "1.1.7"
@@ -24,12 +24,13 @@ java {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://repo.spring.io/milestone")
-    }
 }
 
-extra["springCloudVersion"] = "2025.0.0"
+asciidoctorj {
+    setVersion("3.0.0")
+}
+
+extra["springCloudVersion"] = "2025.1.0"
 
 val snippetsDir = file("build/generated-snippets")
 
@@ -81,7 +82,6 @@ tasks {
         into("BOOT-INF/classes/META-INF") {
             from(buildInfo.map { it.destinationDir })
         }
-        launchScript()
     }
 
     bootRun {
@@ -127,17 +127,22 @@ dependencyManagement {
 configurations.create("asciidoctorExt")
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-webclient")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("com.github.ben-manes.caffeine:caffeine")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.boot:spring-boot-restdocs")
     testImplementation("com.squareup.okhttp3:mockwebserver")
 
     "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")

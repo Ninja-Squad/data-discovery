@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.Collections;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import fr.inra.urgi.datadiscovery.domain.GeographicLocationDocument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 
 /**
  * Unit test to check that a {@link RareDocument} can correctly be marshalled/unmarshaleld to/from JSON
@@ -61,27 +61,30 @@ class RareDocumentTest {
 
     @Test
     void shouldSupportSingleValuedAttributes() throws IOException {
-        String json = "{\n" +
-            "    \"pillarName\": \"Plant\",\n" +
-            "    \"databaseSource\": \"Florilège\",\n" +
-            "    \"portalURL\": \"http://florilege.arcad-project.org/fr/collections\",\n" +
-            "    \"identifier\": \"doi:10.15454/1.4921785297227607E12\",\n" +
-            "    \"name\": \"Syrah\",\n" +
-            "    \"description\": \"Syrah is a Vitis vinifera subsp vinifera cv. Syrah accession (number: 150Mtp0, doi:10.15454/1.4921785297227607E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel. This accession has phenotyping data: Doligez_et_al_2013 - Study of the genetic determinism of berry weight and seed traits in a grapevine progeny.\",\n" +
-            "    \"dataURL\": \"https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==\",\n" +
-            "    \"domain\": \"Plantae\",\n" +
-            "    \"accessionHolder\": \"AH1\",\n" +
-            "    \"taxon\": \"Vitis vinifera\",\n" +
-            "    \"family\": \"Vitaceae\",\n" +
-            "    \"genus\": \"Vitis\",\n" +
-            "    \"species\": \"Vitis vinifera\",\n" +
-            "    \"materialType\": \"Test Material Type\",\n" +
-            "    \"biotopeType\": \"Test Biotope Type\",\n" +
-            "    \"countryOfOrigin\": null,\n" +
-            "    \"locationOfOrigin\": null,\n" +
-            "    \"countryOfCollect\": null,\n" +
-            "    \"locationOfCollect\": null\n" +
-            "}";
+        String json =
+              """
+              {
+                "pillarName": "Plant",
+                "databaseSource": "Florilège",
+                "portalURL": "http://florilege.arcad-project.org/fr/collections",
+                "identifier": "doi:10.15454/1.4921785297227607E12",
+                "name": "Syrah",
+                "description": "Syrah is a Vitis vinifera subsp vinifera cv. Syrah accession (number: 150Mtp0, doi:10.15454/1.4921785297227607E12) maintained by the GRAPEVINE (managed by INRA) and held by INRA. It is a maintained/maintenu accession of biological status traditional cultivar/cultivar traditionnel. This accession has phenotyping data: Doligez_et_al_2013 - Study of the genetic determinism of berry weight and seed traits in a grapevine progeny.",
+                "dataURL": "https://urgi.versailles.inrae.fr/faidare/#accessionCard/id=ZG9pOjEwLjE1NDU0LzEuNDkyMTc4NTI5NzIyNzYwN0UxMg==",
+                "domain": "Plantae",
+                "accessionHolder": "AH1",
+                "taxon": "Vitis vinifera",
+                "family": "Vitaceae",
+                "genus": "Vitis",
+                "species": "Vitis vinifera",
+                "materialType": "Test Material Type",
+                "biotopeType": "Test Biotope Type",
+                "countryOfOrigin": null,
+                "locationOfOrigin": null,
+                "countryOfCollect": null,
+                "locationOfCollect": null
+              }
+              """;
 
         RareDocument document = objectMapper.readValue(json, RareDocument.class);
 

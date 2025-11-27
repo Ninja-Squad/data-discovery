@@ -11,17 +11,17 @@ spring:
       name: rare
       password: f01a7031fc17
 
-  data:
-    elasticsearch:
-        host: 127.0.0.1
-        port: 9200
+  elasticsearch:
+    uris:
+      - http://localhost:9200
 
   jackson:
     deserialization:
       accept-single-value-as-array: true
 
-  codec:
-    max-in-memory-size: 5MB
+  http:
+    codecs:
+      max-in-memory-size: 5MB
 
   profiles:
     # This default active profile is replaced at gradle build time by the app passed using -Papp=wheatis for example
