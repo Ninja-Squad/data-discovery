@@ -11,6 +11,12 @@ stages:
 # Node and pnpm are installed by Gradle
 image: cimg/openjdk:17.0.13-browsers
 
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+    - when: never
+
 default:
   tags:
     - openstack
@@ -50,7 +56,7 @@ build-es-synonyms-docker-image:
     - docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t $CI_REGISTRY_IMAGE/elasticsearch-synonyms:${IMAGE_TAG} .
     # only build latest tag on master branch
     - if [ "${CI_DEFAULT_BRANCH}" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build --build-arg ELASTIC_VERSION=${ELASTIC_VERSION} -t $CI_REGISTRY_IMAGE/elasticsearch-synonyms:latest . ; fi;
-    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    - docker login $CI_REGISTRY -u whatever -p $GROUP_API_TOKEN
     # TODO: remove the old SHA image before pushing the new one? (https://gitlab.com/gitlab-org/gitlab-foss/issues/25322)
     - docker push $CI_REGISTRY_IMAGE/elasticsearch-synonyms:${IMAGE_TAG}
     # TODO fix above before merging into master branch
@@ -73,7 +79,7 @@ build-loader-docker-image:
     # only build latest tag on master branch
     - if [ "${CI_DEFAULT_BRANCH}" == "${CI_COMMIT_REF_SLUG}" ] ; then docker build -t $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:latest . ; fi;
     # Login before pushing the image
-    - docker login $CI_REGISTRY -u $CONTAINER_REGISTRY_USERNAME -p $CONTAINER_REGISTRY_TOKEN
+    - docker login $CI_REGISTRY -u whatever -p $GROUP_API_TOKEN
     # push the built image
     - docker push $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:${IMAGE_TAG}
     # only push latest tag on master branch
