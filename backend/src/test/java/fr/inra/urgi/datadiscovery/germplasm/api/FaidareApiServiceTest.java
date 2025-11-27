@@ -18,7 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.webclient.test.autoconfigure.WebClientTest;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -29,7 +29,7 @@ import reactor.core.publisher.Flux;
  * Unit tests for {@link FaidareApiService}
  * @author JB Nizet
  */
-@RestClientTest
+@WebClientTest
 class FaidareApiServiceTest {
     @Autowired
     private WebClient.Builder webClientBuilder;

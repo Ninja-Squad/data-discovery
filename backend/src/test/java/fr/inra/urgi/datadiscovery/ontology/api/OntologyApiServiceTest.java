@@ -5,10 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 
 import fr.inra.urgi.datadiscovery.ontology.OntologyConfig;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.webclient.test.autoconfigure.WebClientTest;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Import;
  *
  * @author JB Nizet
  */
-@RestClientTest
+@WebClientTest
 @Import({OntologyConfig.class, OntologyApiService.class})
 class OntologyApiServiceTest {
     @Autowired

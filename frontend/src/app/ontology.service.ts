@@ -89,8 +89,8 @@ export interface VariableDetails {
     scaleDbId: string;
     validValues: {
       categories: Array<string>;
-      max: number;
-      min: number;
+      max: number | null;
+      min: number | null;
     };
     xref: string;
   } | null;
