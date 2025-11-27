@@ -13,7 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.webclient.test.autoconfigure.WebClientTest;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  * Unit tests for {@link FaidareUserGroupsClient}
  * @author JB Nizet
  */
-@RestClientTest
+@WebClientTest
 class FaidareUserGroupsClientTest {
     @Autowired
     private WebClient.Builder webClientBuilder;

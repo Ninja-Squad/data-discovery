@@ -28,7 +28,7 @@ various properties (except identifiers, numeric fields and URLs) of all the gene
 include::{snippets}/search/fulltext/http-request.adoc[]
 
 .Request parameters
-include::{snippets}/search/fulltext/request-parameters.adoc[]
+include::{snippets}/search/fulltext/query-parameters.adoc[]
 
 .Curl
 include::{snippets}/search/fulltext/curl-request.adoc[]
@@ -55,7 +55,7 @@ If you omit the page parameter, the requested page is 0.
 include::{snippets}/search/page/http-request.adoc[]
 
 .Request parameters
-include::{snippets}/search/page/request-parameters.adoc[]
+include::{snippets}/search/page/query-parameters.adoc[]
 
 .Curl
 include::{snippets}/search/page/curl-request.adoc[]
@@ -76,7 +76,7 @@ words between `<em></em>` HTML tags.
 include::{snippets}/search/highlight/http-request.adoc[]
 
 .Request parameters
-include::{snippets}/search/highlight/request-parameters.adoc[]
+include::{snippets}/search/highlight/query-parameters.adoc[]
 
 .Curl
 include::{snippets}/search/highlight/curl-request.adoc[]
@@ -100,7 +100,7 @@ every distinct value of the property along with the number of matching documents
 include::{snippets}/search/aggregate/http-request.adoc[]
 
 .Request parameters
-include::{snippets}/search/aggregate/request-parameters.adoc[]
+include::{snippets}/search/aggregate/query-parameters.adoc[]
 
 .Curl
 include::{snippets}/search/aggregate/curl-request.adoc[]
@@ -137,7 +137,7 @@ can apply to further refine the query.
 include::{snippets}/search/filter/http-request.adoc[]
 
 .Request parameters
-include::{snippets}/search/filter/request-parameters.adoc[]
+include::{snippets}/search/filter/query-parameters.adoc[]
 
 .Curl
 include::{snippets}/search/filter/curl-request.adoc[]
@@ -178,7 +178,7 @@ The number of distinct suggested completions is limited to 10.
 include::{snippets}/suggestions/list/http-request.adoc[]
 
 .Request parameters
-include::{snippets}/suggestions/list/request-parameters.adoc[]
+include::{snippets}/suggestions/list/query-parameters.adoc[]
 
 .Curl
 include::{snippets}/suggestions/list/curl-request.adoc[]

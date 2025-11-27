@@ -1,8 +1,8 @@
 package fr.inra.urgi.datadiscovery.ontology.api;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * The ValidValues of a {@link Scale}
@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class ValidValues {
     private final List<String> categories;
-    private final double max;
-    private final double min;
+    private final Double max;
+    private final Double min;
 
     @JsonCreator
-    public ValidValues(List<String> categories, double max, double min) {
+    public ValidValues(List<String> categories, Double min, Double max) {
         this.categories = categories == null ? List.of() : List.copyOf(categories);
         this.max = max;
         this.min = min;
@@ -25,11 +25,11 @@ public class ValidValues {
         return categories;
     }
 
-    public double getMax() {
+    public Double getMax() {
         return max;
     }
 
-    public double getMin() {
+    public Double getMin() {
         return min;
     }
 
@@ -37,8 +37,8 @@ public class ValidValues {
     public String toString() {
         return "ValidValues{" +
             "categories=" + categories +
-            ", max=" + max +
             ", min=" + min +
+            ", max=" + max +
             '}';
     }
 }

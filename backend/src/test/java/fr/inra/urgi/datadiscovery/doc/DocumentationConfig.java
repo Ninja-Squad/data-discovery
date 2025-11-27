@@ -2,7 +2,7 @@ package fr.inra.urgi.datadiscovery.doc;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
-import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfigurationCustomizer;
+import org.springframework.boot.restdocs.test.autoconfigure.RestDocsMockMvcConfigurationCustomizer;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationConfigurer;
