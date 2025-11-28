@@ -20,15 +20,15 @@ public final class GeographicLocationDocument {
     /**
      * The latitude
      */
-    private final double lat;
+    private final Double lat;
 
     /**
      * The longitude
      */
-    private final double lon;
+    private final Double lon;
 
     @JsonCreator
-    public GeographicLocationDocument(String siteId, String siteName, String siteType, double lat, double lon) {
+    public GeographicLocationDocument(String siteId, String siteName, String siteType, Double lat, Double lon) {
 
         this.siteId = siteId;
         this.siteName = siteName;
@@ -48,31 +48,30 @@ public final class GeographicLocationDocument {
     public String getSiteType() {
         return siteType;
     }
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public double getLon() {
+    public Double getLon() {
         return lon;
     }
 
     @Override
     public String toString() {
         return "GeographicLocationDocument{" +
-                "siteId='" + siteId + '\'' +
+                "lat=" + lat +
+                ", siteId='" + siteId + '\'' +
                 ", siteName='" + siteName + '\'' +
                 ", siteType='" + siteType + '\'' +
-                ", lat=" + lat +
                 ", lon=" + lon +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GeographicLocationDocument geographicLocationDocument = (GeographicLocationDocument) o;
-        return Double.compare(lat, geographicLocationDocument.lat) == 0 && Double.compare(lon, geographicLocationDocument.lon) == 0 && Objects.equals(siteId, geographicLocationDocument.siteId) && Objects.equals(siteName, geographicLocationDocument.siteName) && Objects.equals(siteType, geographicLocationDocument.siteType);
+        GeographicLocationDocument that = (GeographicLocationDocument) o;
+        return Objects.equals(siteId, that.siteId) && Objects.equals(siteName, that.siteName) && Objects.equals(siteType, that.siteType) && Objects.equals(lat, that.lat) && Objects.equals(lon, that.lon);
     }
 
     @Override
