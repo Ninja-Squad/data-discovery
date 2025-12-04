@@ -5,6 +5,7 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
+import { AnalyticsService } from '../../analytics.service';
 
 interface ViewModel {
   document: FaidareDocumentModel;
@@ -22,6 +23,7 @@ interface ViewModel {
 export class FaidareDocumentComponent {
   private readonly basketService = inject(BasketService);
   private readonly basketAdapter = inject(BasketAdapter);
+  private readonly analyticsService = inject(AnalyticsService);
 
   readonly document = input.required<FaidareDocumentModel>();
 
@@ -42,5 +44,16 @@ export class FaidareDocumentComponent {
 
   removeFromBasket() {
     this.basketService.removeFromBasket(this.vm().basketItem!);
+  }
+
+  traceNavigation() {
+    const doc = this.document();
+    this.analyticsService.traceExternalNavigation({
+      databaseName: doc.databaseName,
+      node: doc.node,
+      entryType: doc.entryType,
+      species: doc.species[0],
+      toUrl: doc.url
+    });
   }
 }

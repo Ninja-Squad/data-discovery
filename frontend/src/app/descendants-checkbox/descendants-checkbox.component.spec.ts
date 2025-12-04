@@ -9,7 +9,8 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
   template:
     '<dd-descendants-checkbox [searchDescendants]="value()" (searchDescendantsChange)="onChange($event)" />',
   imports: [DescendantsCheckboxComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-descendants-checkbox-tester'
 })
 class TestComponent {
   readonly value = signal(true);

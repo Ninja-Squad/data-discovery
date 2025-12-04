@@ -29,6 +29,10 @@ export const environment: DataDiscoveryEnvironment = {
   basket: {
     enabled: false,
     url: ''
+  },
+  analytics: {
+    url: 'http://localhost:8082/api/navigations',
+    application: 'WHEATIS'
   }
 };
 

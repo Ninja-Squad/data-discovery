@@ -14,7 +14,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template:
     '<dd-ontology-aggregation [aggregation]="aggregation()" [selectedKeys]="selectedKeys()" (aggregationChange)="criterion.set($event)" />',
   imports: [FaidareOntologyAggregationComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-faidare-ontology-aggregation-tester'
 })
 class TestComponent {
   readonly aggregation = signal(toAggregation('o', ['v1', 'v2', 'v3', NULL_VALUE]));

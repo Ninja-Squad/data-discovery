@@ -9,7 +9,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 @Component({
   template: '<dd-ontology-node-type [type]="type()" />',
   imports: [OntologyNodeTypeComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-ontology-node-type-tester'
 })
 class TestComponent {
   readonly type = signal<OntologyNodeType>('ONTOLOGY');

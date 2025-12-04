@@ -10,7 +10,7 @@ import { DocumentModel } from '../../../models/document.model';
 import { BasketAdapter } from '../basket-adapter.service';
 
 @Component({
-  selector: 'dd-test',
+  selector: 'dd-select-all-results-tester',
   template: '<dd-select-all-results [documents]="documents()" />',
   imports: [SelectAllResultsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush

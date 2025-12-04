@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 
 import { FaidareDocumentComponent } from './faidare-document.component';
 import { toFaidareDocument } from '../../models/test-model-generators';
@@ -9,11 +9,13 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
 import { FaidareBasketAdapter } from '../faidare-basket-adapter.service';
+import { AnalyticsNavigation, AnalyticsService } from '../../analytics.service';
 
 @Component({
   template: '<dd-document [document]="document()" />',
   imports: [FaidareDocumentComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-faidare-document-tester'
 })
 class TestComponent {
   readonly document = signal<FaidareDocumentModel>(toFaidareDocument('Bacteria'));
@@ -29,7 +31,7 @@ class FaidareDocumentComponentTester extends ComponentTester<TestComponent> {
   }
 
   get link() {
-    return this.element('.main-link');
+    return this.element<HTMLAnchorElement>('.main-link');
   }
 
   get type() {
@@ -72,10 +74,17 @@ class FaidareDocumentComponentTester extends ComponentTester<TestComponent> {
 describe('FaidareDocumentComponent', () => {
   let basketService: BasketService;
   let basketAdapter: BasketAdapter;
+  let analyticsService: jasmine.SpyObj<AnalyticsService>;
 
   beforeEach(() => {
+    analyticsService = createMock(AnalyticsService);
+
     TestBed.configureTestingModule({
-      providers: [provideI18nTesting(), { provide: BasketAdapter, useClass: FaidareBasketAdapter }]
+      providers: [
+        provideI18nTesting(),
+        { provide: BasketAdapter, useClass: FaidareBasketAdapter },
+        { provide: AnalyticsService, useValue: analyticsService }
+      ]
     });
 
     basketAdapter = TestBed.inject(BasketAdapter);
@@ -157,5 +166,24 @@ describe('FaidareDocumentComponent', () => {
     // we switched back the button
     expect(tester.removeFromBasketButton).toBeNull();
     expect(tester.addToBasketButton).not.toBeNull();
+  });
+
+  it('should trace navigations', async () => {
+    const tester = new FaidareDocumentComponentTester();
+
+    await tester.stable();
+
+    // do not click on the link, because it causes a real navigation
+    // and apparently changing the href of the link causes issues with the tests
+    tester.link.debugElement.triggerEventHandler('click');
+
+    const expectedNavigation: AnalyticsNavigation = {
+      toUrl: 'http://brc4env.fr',
+      databaseName: 'BRC4Env',
+      node: 'Data provider',
+      species: 'Bacteria species',
+      entryType: 'Specimen'
+    };
+    expect(analyticsService.traceExternalNavigation).toHaveBeenCalledWith(expectedNavigation);
   });
 });
