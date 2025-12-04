@@ -55,6 +55,10 @@ export const environment: DataDiscoveryEnvironment = {
     enabled: true,
     url: 'http://localhost:4201/rare-basket'
   },
+  analytics: {
+    url: 'http://localhost:8082/api/navigations',
+    application: 'FAIDARE'
+  },
   providers: [{ provide: BasketAdapter, useClass: FaidareBasketAdapter }]
 };
 

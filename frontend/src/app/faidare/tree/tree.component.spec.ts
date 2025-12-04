@@ -28,7 +28,8 @@ interface TestPayload {
     />
   `,
   imports: [TreeComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-tree-tester'
 })
 class TestComponent {
   readonly rootNodes = signal<Array<TreeNode<TestPayload>>>([

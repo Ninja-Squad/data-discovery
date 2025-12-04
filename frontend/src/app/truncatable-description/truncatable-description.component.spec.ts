@@ -8,7 +8,8 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 @Component({
   template: `<dd-truncatable-description [description]="description()" />`,
   imports: [TruncatableDescriptionComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-truncatable-description-tester'
 })
 class TestComponent {
   readonly description = signal('');

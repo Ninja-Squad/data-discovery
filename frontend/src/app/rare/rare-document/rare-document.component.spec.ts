@@ -13,7 +13,8 @@ import { RareBasketAdapter } from '../rare-basket-adapter.service';
 @Component({
   template: '<dd-document [document]="document()" />',
   imports: [RareDocumentComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-rare-document-tester'
 })
 class TestComponent {
   readonly document = signal<RareDocumentModel>(toRareDocument('Bacteria'));
