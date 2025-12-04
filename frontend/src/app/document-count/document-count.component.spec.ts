@@ -14,7 +14,8 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
     [url]="url()"
   />`,
   imports: [DocumentCountComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-document-count-tester'
 })
 class TestComponent {
   readonly count = signal(0);

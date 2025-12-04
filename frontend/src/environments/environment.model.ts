@@ -65,5 +65,21 @@ export interface DataDiscoveryEnvironment {
     enabled: boolean;
     url: string;
   };
+  /**
+   * The analytics properties, which must be defined if navigations to external document URLs must
+   * be traced.
+   */
+  analytics?: {
+    /**
+     * The complete URL of the analytics endpoint where navigations to external document URLs should
+     * be traced.
+     */
+    url: string;
+
+    /**
+     * The name of the source application of the navigations
+     */
+    application: 'FAIDARE' | 'WHEATIS';
+  };
   providers?: Array<Provider | EnvironmentProviders>;
 }

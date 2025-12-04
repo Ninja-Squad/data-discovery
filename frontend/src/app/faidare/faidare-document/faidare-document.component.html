@@ -2,7 +2,12 @@
   <div>
     <h3 class="d-flex">
       <div class="flex-grow-1">
-        <a class="main-link name" [href]="vm.document.url" target="_blank">
+        <a
+          class="main-link name"
+          [href]="vm.document.url"
+          target="_blank"
+          (click)="traceNavigation()"
+        >
           {{ vm.document.name }}
         </a>
         <small> - {{ vm.document.databaseName }}</small>

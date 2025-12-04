@@ -14,5 +14,7 @@ export const environment: DataDiscoveryEnvironment = {
   basket: {
     enabled: true,
     url: '/rare-basket'
-  }
+  },
+  // TODO INRAE specify the analytics properties here
+  analytics: undefined
 };

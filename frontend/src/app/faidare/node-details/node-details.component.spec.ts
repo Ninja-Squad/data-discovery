@@ -8,7 +8,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 @Component({
   template: '<dd-node-details [node]="node()" />',
   imports: [NodeDetailsComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-node-details-tester'
 })
 class TestComponent {
   readonly node = signal<TypedNodeDetails>({

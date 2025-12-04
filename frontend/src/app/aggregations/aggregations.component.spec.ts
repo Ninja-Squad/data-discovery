@@ -21,7 +21,8 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
     (searchDescendantsChange)="searchDescendantsChanged.set($event)"
   />`,
   imports: [AggregationsComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-aggregations-tester'
 })
 class TestComponent {
   readonly aggregations = signal<Array<Aggregation>>([]);

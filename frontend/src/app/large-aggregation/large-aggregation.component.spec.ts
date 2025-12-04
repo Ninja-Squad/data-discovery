@@ -25,7 +25,8 @@ import { provideI18nTesting } from '../i18n/mock-18n.spec';
     />
   }`,
   imports: [LargeAggregationComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'dd-large-aggregation-tester'
 })
 class TestComponent {
   readonly aggregation = signal<Aggregation | undefined>(undefined);

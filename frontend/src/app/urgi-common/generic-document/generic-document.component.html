@@ -1,6 +1,6 @@
 <div>
   <h3>
-    <a class="main-link name" [href]="document().url" target="_blank">
+    <a class="main-link name" [href]="document().url" target="_blank" (click)="traceNavigation()">
       {{ document().name }}
     </a>
     <small> - {{ document().databaseName }}</small>
