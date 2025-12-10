@@ -7,7 +7,7 @@ import {
   input,
   ViewEncapsulation
 } from '@angular/core';
-import * as L from 'leaflet';
+import L from 'leaflet';
 import 'leaflet.markercluster';
 import { FaidareDocumentModel } from '../../faidare-document.model';
 import { DOCUMENT } from '@angular/common';
