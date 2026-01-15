@@ -74,7 +74,7 @@
     "karma-jasmine-html-reporter": "2.1.0",
     "karma-junit-reporter": "2.0.1",
     "karma-mocha-reporter": "2.2.5",
-    "ngx-speculoos": "14.0.0",
+    "ngx-speculoos": "15.0.0",
     "playwright-ng-schematics": "21.0.3",
     "prettier": "3.8.0",
     "typescript": "5.9.3",
