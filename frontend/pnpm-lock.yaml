@@ -30,8 +30,8 @@ importers:
         specifier: 21.1.0
         version: 21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/platform-browser@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0)))(rxjs@7.8.2)
       '@ng-bootstrap/ng-bootstrap':
-        specifier: 19.0.1
-        version: 19.0.1(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/forms@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/platform-browser@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0)))(rxjs@7.8.2))(@angular/localize@21.1.0(@angular/compiler-cli@21.1.0(@angular/compiler@21.1.0)(typescript@5.9.3))(@angular/compiler@21.1.0))(@popperjs/core@2.11.8)(rxjs@7.8.2)
+        specifier: 20.0.0
+        version: 20.0.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/forms@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/platform-browser@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0)))(rxjs@7.8.2))(@angular/localize@21.1.0(@angular/compiler-cli@21.1.0(@angular/compiler@21.1.0)(typescript@5.9.3))(@angular/compiler@21.1.0))(@popperjs/core@2.11.8)(rxjs@7.8.2)
       '@ngx-translate/core':
         specifier: 17.0.0
         version: 17.0.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))
@@ -1130,13 +1130,13 @@ packages:
   '@napi-rs/wasm-runtime@1.1.1':
     resolution: {integrity: sha512-p64ah1M1ld8xjWv3qbvFwHiFVWrq1yFvV4f7w+mzaqiR4IlSgkqhcRdHwsGgomwzBH51sRY4NEowLxnaBjcW/A==}
 
-  '@ng-bootstrap/ng-bootstrap@19.0.1':
-    resolution: {integrity: sha512-1lErAkwh0F+gWkzpiddViY4GfA9LVXkwLpgBsV9Mb3IC0zo6WNkY8WxCC+LqajirBTu20DCkZSqeRzrwaVLpZw==}
+  '@ng-bootstrap/ng-bootstrap@20.0.0':
+    resolution: {integrity: sha512-Jt+GUQ0PdM8VsOUUVr7vTQXhwcGwe2DCe1mmfS21vz9pLSOtGRz41ohZKc1egUevj5Rxm2sHVq5Sve68/nTMfA==}
     peerDependencies:
-      '@angular/common': ^20.0.0
-      '@angular/core': ^20.0.0
-      '@angular/forms': ^20.0.0
-      '@angular/localize': ^20.0.0
+      '@angular/common': ^21.0.0
+      '@angular/core': ^21.0.0
+      '@angular/forms': ^21.0.0
+      '@angular/localize': ^21.0.0
       '@popperjs/core': ^2.11.8
       rxjs: ^6.5.3 || ^7.4.0
 
@@ -5079,7 +5079,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@ng-bootstrap/ng-bootstrap@19.0.1(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/forms@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/platform-browser@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0)))(rxjs@7.8.2))(@angular/localize@21.1.0(@angular/compiler-cli@21.1.0(@angular/compiler@21.1.0)(typescript@5.9.3))(@angular/compiler@21.1.0))(@popperjs/core@2.11.8)(rxjs@7.8.2)':
+  '@ng-bootstrap/ng-bootstrap@20.0.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/forms@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(@angular/platform-browser@21.1.0(@angular/common@21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2))(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0)))(rxjs@7.8.2))(@angular/localize@21.1.0(@angular/compiler-cli@21.1.0(@angular/compiler@21.1.0)(typescript@5.9.3))(@angular/compiler@21.1.0))(@popperjs/core@2.11.8)(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 21.1.0(@angular/core@21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)
       '@angular/core': 21.1.0(@angular/compiler@21.1.0)(rxjs@7.8.2)(zone.js@0.16.0)
