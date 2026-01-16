@@ -11,6 +11,9 @@
             elif ."@type"=="study"
                then ."url"=($card + "studies/" + (."schema:identifier"|sub("=";"%3D")|sub("=";"%3D")))
 
+            elif ."@type"=="trial"
+               then ."url"=($card + "trials/" + (."schema:identifier"|sub("=";"%3D")|sub("=";"%3D")))
+
             else .
 
             end
