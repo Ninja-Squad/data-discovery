@@ -621,8 +621,10 @@ deploy-faidare-to-beta:
         - frontend/**/*
         - .gitlab-ci.yml
   allow_failure: false
-  needs: [ "restart-config-server","build-faidare" ]
-
+  needs: 
+    - job: build-faidare
+      optional: true
+    - job: restart-config-server
 deploy-faidare-to-staging-public:
   stage: deploy-staging
 
