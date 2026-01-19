@@ -48,7 +48,7 @@ build-es-synonyms-docker-image:
   stage: pre-build
 
   services:
-    - docker:29.1.4-dind
+    - docker:29.1.5-dind
   script:
     - git lfs pull -I "data/synonyms"
     - cd data/synonyms
@@ -72,7 +72,7 @@ build-loader-docker-image:
   stage: pre-build
 
   services:
-    - docker:29.1.4-dind
+    - docker:29.1.5-dind
   script:
     # build the image
     - docker build -t $CI_REGISTRY/${CI_PROJECT_NAMESPACE}/docker-rare/data-discovery-loader:${IMAGE_TAG} .
