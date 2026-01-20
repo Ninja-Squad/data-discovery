@@ -98,6 +98,7 @@ tasks {
         if (System.getenv("CI") != null) {
             systemProperties(
                 "spring.elasticsearch.uris" to "http://elasticsearch:9200",
+                "java.net.preferIPv4Stack" to "true"
             )
         }
     }
