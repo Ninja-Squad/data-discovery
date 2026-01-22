@@ -1,59 +1,50 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { ComponentTester } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { HomeComponent } from './home.component';
 import { SearchService } from '../search.service';
-import { PillarsComponent } from '../pillars/pillars.component';
-import { AggregationsComponent } from '../aggregations/aggregations.component';
 import { of } from 'rxjs';
 import { Aggregation } from '../models/page';
 import { environment } from '../../environments/environment';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-class HomeComponentTester extends ComponentTester<HomeComponent> {
-  constructor() {
-    super(HomeComponent);
-  }
-
-  get searchBar() {
-    return this.input('input');
-  }
-
-  get searchButton() {
-    return this.button('button');
-  }
-
-  get pillarsComponent() {
-    return this.element(PillarsComponent);
-  }
-
-  get exampleQueriesSection() {
-    return this.element('.example-queries');
-  }
-
-  get exampleQueries() {
-    return this.elements<HTMLAnchorElement>('.example-queries a');
-  }
-
-  get aggregations(): AggregationsComponent | null {
-    return this.component(AggregationsComponent);
-  }
+class HomeComponentTester {
+  readonly fixture = TestBed.createComponent(HomeComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly searchBar = page.getByCss('input');
+  readonly searchButton = page.getByCss('button');
+  readonly pillarsComponent = page.getByCss('dd-pillars');
+  readonly exampleQueriesSection = page.getByCss('.example-queries');
+  readonly exampleQueries = page.getByCss('.example-queries a');
+  readonly aggregationsComponent = page.getByCss('dd-aggregations');
 }
+
+@Component({
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+class FakeSearchComponent {}
 
 describe('HomeComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [provideHttpClientTesting(), provideI18nTesting(), provideRouter([])]
+      providers: [
+        provideHttpClientTesting(),
+        provideI18nTesting(),
+        provideRouter([{ path: 'search', component: FakeSearchComponent }])
+      ]
     })
   );
 
   describe('when not showing aggregations', () => {
-    it('should navigate to search when a query is entered', () => {
+    test('should navigate to search when a query is entered', () => {
       // given a component
       const router = TestBed.inject(Router);
-      spyOn(router, 'navigate');
+      vi.spyOn(router, 'navigate');
 
       const component = new HomeComponentTester().componentInstance;
 
@@ -70,20 +61,19 @@ describe('HomeComponent', () => {
       });
     });
 
-    it('should display a search bar and trigger a search', async () => {
+    test('should display a search bar and trigger a search', async () => {
       // given a component
       const tester = new HomeComponentTester();
       const component = tester.componentInstance;
-      spyOn(component, 'search');
+      vi.spyOn(component, 'search');
 
       // then it should display the search bar containing that query
-      await tester.stable();
-
-      expect(tester.searchBar).toHaveValue('');
+      await expect.element(tester.searchBar).toBeVisible();
+      await expect.element(tester.searchBar).toHaveValue('');
 
       // with a query
       const query = 'Bacteria';
-      await tester.searchBar.fillWith(query);
+      await tester.searchBar.fill(query);
 
       // trigger search
       await tester.searchButton.click();
@@ -91,31 +81,30 @@ describe('HomeComponent', () => {
       expect(component.searchForm.get('search').value).toBe(query);
     });
 
-    it('should display the pillars', async () => {
+    test('should display the pillars', async () => {
       const tester = new HomeComponentTester();
-      await tester.stable();
 
-      expect(tester.pillarsComponent).not.toBeNull();
-      expect(tester.aggregations).toBeNull();
+      await expect.element(tester.pillarsComponent).toBeInTheDocument();
+      await expect.element(tester.aggregationsComponent).not.toBeInTheDocument();
     });
 
-    it('should not display example queries if there are none', async () => {
+    test('should not display example queries if there are none', async () => {
       environment.home.exampleQueries = [];
       const tester = new HomeComponentTester();
-      await tester.stable();
 
-      expect(tester.exampleQueriesSection).toBeNull();
+      await expect.element(tester.exampleQueriesSection).not.toBeInTheDocument();
     });
 
-    it('should display example queries if there are some', async () => {
+    test('should display example queries if there are some', async () => {
       environment.home.exampleQueries = ['foo', 'bar'];
       const tester = new HomeComponentTester();
-      await tester.stable();
 
-      expect(tester.exampleQueriesSection).not.toBeNull();
-      expect(tester.exampleQueries.length).toBe(2);
-      expect(tester.exampleQueries[0]).toHaveText('foo');
-      expect(tester.exampleQueries[0].attr('href')).toBe('/search?query=foo');
+      await expect.element(tester.exampleQueriesSection).toBeInTheDocument();
+      expect(tester.exampleQueries).toHaveLength(2);
+      await expect.element(tester.exampleQueries.nth(0)).toHaveTextContent('foo');
+      await expect(tester.exampleQueries.nth(0).element().getAttribute('href')).toBe(
+        '/search?query=foo'
+      );
     });
   });
 
@@ -128,9 +117,9 @@ describe('HomeComponent', () => {
       environment.home.showAggregations = false;
     });
 
-    it('should display aggregations and navigate to search when an aggregation is selected', async () => {
+    test('should display aggregations and navigate to search when an aggregation is selected', async () => {
       const router = TestBed.inject(Router);
-      spyOn(router, 'navigate');
+      vi.spyOn(router, 'navigate');
 
       const searchService = TestBed.inject(SearchService);
       const aggregations: Array<Aggregation> = [
@@ -149,16 +138,16 @@ describe('HomeComponent', () => {
           ]
         }
       ];
-      spyOn(searchService, 'getMainAggregations').and.returnValue(of(aggregations));
+      vi.spyOn(searchService, 'getMainAggregations').mockReturnValue(of(aggregations));
 
       const tester = new HomeComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
 
-      expect(tester.pillarsComponent).toBeNull();
-      expect(tester.aggregations).not.toBeNull();
-      expect(tester.aggregations.aggregations()).toBe(aggregations);
+      await expect.element(tester.pillarsComponent).not.toBeInTheDocument();
+      await expect.element(tester.aggregationsComponent).toBeInTheDocument();
+      expect(tester.componentInstance.mainAggregations()).toBe(aggregations);
 
-      tester.aggregations.aggregationsChange.emit([
+      tester.componentInstance.aggregationsChanged([
         {
           name: 'coo',
           values: ['Italy']

@@ -43,13 +43,6 @@ tasks {
     outputs.dir("coverage")
   }
 
-  val pnpmTestMultiBrowsers by registering(PnpmTask::class) {
-    args.set(listOf("test-multi-browsers"))
-    dependsOn(prepare)
-    inputs.dir("src")
-    outputs.dir("coverage")
-  }
-
   val pnpmLint by registering(PnpmTask::class) {
     args.set(listOf("lint"))
     dependsOn(prepare)
@@ -68,10 +61,16 @@ tasks {
     dependsOn(prepare)
   }
 
+  val pnpmPlaywrightInstallDeps by registering(PnpmTask::class) {
+    args.set(listOf("playwright-install-deps"))
+    dependsOn(prepare)
+  }
+
   val pnpmE2e by registering(PnpmTask::class) {
     args.set(listOf("e2e:standalone"))
     dependsOn(prepare)
     dependsOn(pnpmPlaywrightInstall)
+    dependsOn(pnpmPlaywrightInstallDeps)
     inputs.dir("src")
     inputs.dir("e2e")
     inputs.file("playwright.config.ts")
@@ -84,11 +83,7 @@ tasks {
   }
 
   val test by registering {
-    if (isCi) {
-      dependsOn(pnpmTestMultiBrowsers)
-    } else {
-      dependsOn(pnpmTest)
-    }
+    dependsOn(pnpmTest)
   }
 
   check {

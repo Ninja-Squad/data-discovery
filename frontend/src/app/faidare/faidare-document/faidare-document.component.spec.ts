@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 
 import { FaidareDocumentComponent } from './faidare-document.component';
 import { toFaidareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
 import { FaidareBasketAdapter } from '../faidare-basket-adapter.service';
 import { AnalyticsNavigation, AnalyticsService } from '../../analytics.service';
+import { createMock, MockObject } from '../../../test/mock';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: '<dd-document [document]="document()" />',
@@ -21,60 +24,36 @@ class TestComponent {
   readonly document = signal<FaidareDocumentModel>(toFaidareDocument('Bacteria'));
 }
 
-class FaidareDocumentComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class FaidareDocumentComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly root = page.elementLocator(this.fixture.nativeElement);
 
-  get title() {
-    return this.element('h3');
-  }
-
-  get link() {
-    return this.element<HTMLAnchorElement>('.main-link');
-  }
-
-  get type() {
-    return this.element('.type');
-  }
-
-  get species() {
-    return this.element('.species');
-  }
-
-  get description() {
-    return this.element('.description');
-  }
-
-  get fullDescriptionButton() {
-    return this.button('.description button');
-  }
-
-  get fullDescription() {
-    return this.element('.full-description');
-  }
-
-  get shortDescriptionButton() {
-    return this.button('.full-description button');
-  }
-
-  get addToBasketButton() {
-    return this.button('button.btn-outline-dark');
-  }
-
-  get removeFromBasketButton() {
-    return this.button('button.btn-success');
-  }
+  readonly title = page.getByCss('h3');
+  readonly link = page.getByCss('.main-link');
+  readonly type = page.getByCss('.type');
+  readonly species = page.getByCss('.species');
+  readonly description = page.getByCss('.description');
+  readonly fullDescriptionButton = page.getByCss('.description button');
+  readonly fullDescription = page.getByCss('.full-description');
+  readonly shortDescriptionButton = page.getByCss('.full-description button');
+  readonly addToBasketButton = page.getByCss('button.btn-outline-dark');
+  readonly removeFromBasketButton = page.getByCss('button.btn-success');
 
   get tooltip() {
     return document.querySelector('ngb-tooltip-window');
+  }
+
+  get linkDebugElement() {
+    return this.fixture.debugElement.query(By.css('.main-link'));
   }
 }
 
 describe('FaidareDocumentComponent', () => {
   let basketService: BasketService;
   let basketAdapter: BasketAdapter;
-  let analyticsService: jasmine.SpyObj<AnalyticsService>;
+  let analyticsService: MockObject<AnalyticsService>;
+  let spyIsEnabled: Mock<() => boolean>;
 
   beforeEach(() => {
     analyticsService = createMock(AnalyticsService);
@@ -90,92 +69,95 @@ describe('FaidareDocumentComponent', () => {
     basketAdapter = TestBed.inject(BasketAdapter);
     basketService = TestBed.inject(BasketService);
     basketService.clearBasket();
-    spyOn(basketService, 'isEnabled').and.returnValue(true);
+    spyIsEnabled = vi.spyOn(basketService, 'isEnabled');
+    spyIsEnabled.mockReturnValue(true);
   });
 
-  it('should display a resource', async () => {
+  test('should display a resource', async () => {
     const tester = new FaidareDocumentComponentTester();
 
     // given a resource
     const resource = tester.componentInstance.document();
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // then we should display it
-    expect(tester.title).toContainText(resource.name);
-    expect(tester.title).toContainText(resource.databaseName);
-    expect(tester.link).toContainText(resource.name);
-    expect(tester.link.attr('href')).toBe(resource.url);
-    expect(tester.link.attr('target')).toBe('_blank');
-    expect(tester.type).toContainText(resource.entryType);
-    resource.species.forEach(text => expect(tester.species).toContainText(text));
-    expect(tester.description).toContainText(resource.description);
-    expect(tester.fullDescriptionButton).toBeNull();
-    expect(tester.fullDescription).toBeNull();
-    expect(tester.shortDescriptionButton).toBeNull();
-    expect(tester.removeFromBasketButton).toBeNull();
-    expect(tester.addToBasketButton).not.toBeNull();
+    await expect.element(tester.title).toHaveTextContent(resource.name);
+    await expect.element(tester.title).toHaveTextContent(resource.databaseName);
+    await expect.element(tester.link).toHaveTextContent(resource.name);
+    await expect(tester.link.element().getAttribute('href')).toBe(resource.url);
+    await expect(tester.link.element().getAttribute('target')).toBe('_blank');
+    await expect.element(tester.type).toHaveTextContent(resource.entryType);
+    for (const text of resource.species) {
+      await expect.element(tester.species).toHaveTextContent(text);
+    }
+    await expect.element(tester.description).toHaveTextContent(resource.description);
+    await expect.element(tester.fullDescriptionButton).not.toBeInTheDocument();
+    await expect.element(tester.fullDescription).not.toBeInTheDocument();
+    await expect.element(tester.shortDescriptionButton).not.toBeInTheDocument();
+    await expect.element(tester.removeFromBasketButton).not.toBeInTheDocument();
+    await expect.element(tester.addToBasketButton).toBeInTheDocument();
   });
 
-  it('should not have the basket button if the feature is disabled', async () => {
-    (basketService.isEnabled as jasmine.Spy).and.returnValue(false);
+  test('should not have the basket button if the feature is disabled', async () => {
+    spyIsEnabled.mockReturnValue(false);
     const tester = new FaidareDocumentComponentTester();
 
     // given a resource
-    await tester.stable();
+    await tester.fixture.whenStable();
     // then the button should not be displayed
-    expect(tester.addToBasketButton).toBeNull();
+    await expect.element(tester.addToBasketButton).not.toBeInTheDocument();
   });
 
-  it('should add/remove to/from basket', async () => {
+  test('should add/remove to/from basket', async () => {
     const tester = new FaidareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // when hovering the add to basket button
-    await tester.addToBasketButton.dispatchEventOfType('mouseenter');
+    await tester.addToBasketButton.hover();
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Add to basket');
+    expect(tester.tooltip?.textContent).toBe('Add to basket');
 
     await tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
-    expect(
-      basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)
-    ).toBeTrue();
+    expect(basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)).toBe(
+      true
+    );
 
     // we switched the button to display a green one
-    expect(tester.addToBasketButton).toBeNull();
-    expect(tester.removeFromBasketButton).not.toBeNull();
+    await expect.element(tester.addToBasketButton).not.toBeInTheDocument();
+    await expect.element(tester.removeFromBasketButton).toBeInTheDocument();
 
     // when hovering the remove from basket button
-    await tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
+    await tester.removeFromBasketButton.hover();
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Remove from basket');
+    expect(tester.tooltip?.textContent).toBe('Remove from basket');
 
     await tester.removeFromBasketButton.click();
-    expect(
-      basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)
-    ).toBeFalse();
+    expect(basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)).toBe(
+      false
+    );
 
     // we switched back the button
-    expect(tester.removeFromBasketButton).toBeNull();
-    expect(tester.addToBasketButton).not.toBeNull();
+    await expect.element(tester.removeFromBasketButton).not.toBeInTheDocument();
+    await expect.element(tester.addToBasketButton).toBeInTheDocument();
   });
 
-  it('should trace navigations', async () => {
+  test('should trace navigations', async () => {
     const tester = new FaidareDocumentComponentTester();
 
-    await tester.stable();
+    await expect.element(tester.link).toBeVisible();
 
     // do not click on the link, because it causes a real navigation
     // and apparently changing the href of the link causes issues with the tests
-    tester.link.debugElement.triggerEventHandler('click');
+    tester.linkDebugElement.triggerEventHandler('click');
 
     const expectedNavigation: AnalyticsNavigation = {
       toUrl: 'http://brc4env.fr',

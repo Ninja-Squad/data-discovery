@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { FaidareHeaderComponent } from './faidare-header.component';
-import { ComponentTester } from 'ngx-speculoos';
 
 describe('FaidareHeaderComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should display title and image', async () => {
-    const tester = ComponentTester.create(FaidareHeaderComponent);
+  test('should display title and image', async () => {
+    const fixture = TestBed.createComponent(FaidareHeaderComponent);
+    await fixture.whenStable();
 
-    await tester.stable();
-
-    const title = tester.element('h1');
-    expect(title).toContainText('FAIR Data-finder for Agronomic REsearch');
+    const title = page.getByCss('h1');
+    await expect.element(title).toHaveTextContent('FAIR Data-finder for Agronomic REsearch');
   });
 });

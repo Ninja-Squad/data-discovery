@@ -1,33 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ComponentTester } from 'ngx-speculoos';
-
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ErrorComponent } from './error.component';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 
-class ErrorComponentTester extends ComponentTester<ErrorComponent> {
+class ErrorComponentTester {
   constructor() {
-    super(ErrorComponent);
+    TestBed.createComponent(ErrorComponent);
   }
-
-  get error() {
-    return this.element('.error');
-  }
-
-  get status() {
-    return this.element('#error-status');
-  }
-
-  get message() {
-    return this.element('#error-message');
-  }
+  readonly error = page.getByCss('.error');
+  readonly status = page.getByCss('#error-status');
+  readonly message = page.getByCss('#error-message');
 }
 
 describe('ErrorComponent', () => {
   let tester: ErrorComponentTester;
-
   let routerEvents: Subject<RouterEvent>;
   let httpErrors: Subject<HttpError>;
 
@@ -40,53 +30,38 @@ describe('ErrorComponent', () => {
     });
 
     const errorInterceptorService = TestBed.inject(ErrorInterceptorService);
-    spyOn(errorInterceptorService, 'getErrors').and.returnValue(httpErrors);
-
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
+    vi.spyOn(errorInterceptorService, 'getErrors').mockReturnValue(httpErrors);
 
     tester = new ErrorComponentTester();
-    await tester.stable();
   });
 
-  afterEach(() => jasmine.clock().uninstall());
-
-  it('should not display any error initially', () => {
-    jasmine.clock().tick(1);
-    expect(tester.error).toBeNull();
+  test('should not display any error initially', async () => {
+    await expect.element(tester.error).not.toBeInTheDocument();
   });
 
-  it('should display an error when it is emitted, and hide it when navigation succeeds', async () => {
+  test('should display an error when it is emitted, and hide it when navigation succeeds', async () => {
     httpErrors.next({
       status: 500,
       message: 'Oulala'
     });
-    jasmine.clock().tick(1);
-    await tester.stable();
 
-    expect(tester.error).toContainText('Unexpected error occurred.');
-    expect(tester.status).toContainText('Status: 500');
-    expect(tester.message).toContainText('Message: Oulala');
+    await expect.element(tester.error).toHaveTextContent('Unexpected error occurred.');
+    await expect.element(tester.status).toHaveTextContent('Status: 500');
+    await expect.element(tester.message).toHaveTextContent('Message: Oulala');
 
     httpErrors.next({
       status: null,
       message: null
     });
-    jasmine.clock().tick(1);
-    await tester.stable();
 
-    expect(tester.error).toContainText('Unexpected error occurred.');
-    expect(tester.status).toBeNull();
-    expect(tester.message).toBeNull();
+    await expect.element(tester.error).toHaveTextContent('Unexpected error occurred.');
+    await expect.element(tester.status).not.toBeInTheDocument();
+    await expect.element(tester.message).not.toBeInTheDocument();
 
     routerEvents.next(new NavigationStart(1, 'foo', null));
-    jasmine.clock().tick(1);
-    await tester.stable();
-    expect(tester.error).not.toBeNull();
+    await expect.element(tester.error).toBeInTheDocument();
 
     routerEvents.next(new NavigationEnd(1, 'foo', null));
-    jasmine.clock().tick(1);
-    await tester.stable();
-    expect(tester.error).toBeNull();
+    await expect.element(tester.error).not.toBeInTheDocument();
   });
 });

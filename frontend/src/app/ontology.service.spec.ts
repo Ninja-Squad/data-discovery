@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { OntologyPayload, OntologyService } from './ontology.service';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TreeNode } from './faidare/tree/tree.service';
-import { provideI18nTesting } from './i18n/mock-18n.spec';
+import { provideI18nTesting } from './i18n/mock-18n';
 
 describe('OntologyService', () => {
   let service: OntologyService;
@@ -17,7 +18,7 @@ describe('OntologyService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('should get tree', () => {
+  test('should get tree', () => {
     let tree: Array<TreeNode<OntologyPayload>> = [];
     service
       .getTree({ selectableVariableIds: ['V1', 'V2'], selectedVariableIds: ['V2'] })

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ExportService } from './export.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -16,7 +17,7 @@ describe('ExportService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('should export CSV', () => {
+  test('should export CSV', () => {
     let actualBlob: Blob;
     service
       .export(
@@ -36,7 +37,7 @@ describe('ExportService', () => {
     expect(actualBlob).toBe(expectedBlob);
   });
 
-  it('should export Excel', () => {
+  test('should export Excel', () => {
     let actualBlob: Blob | undefined;
     service
       .export(

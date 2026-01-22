@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import {
   toAggregation,
@@ -25,9 +26,11 @@ describe('SearchService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => jasmine.clock().uninstall());
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-  it('should search for the query', () => {
+  test('should search for the query', () => {
     let actualResults: Page<DocumentModel>;
     service
       .search({
@@ -45,10 +48,10 @@ describe('SearchService', () => {
     http
       .expectOne('api/search?query=Bacteria&page=0&highlight=true&descendants=false')
       .flush(expectedResults);
-    expect(actualResults).toEqual(expectedResults);
+    expect(actualResults!).toEqual(expectedResults);
   });
 
-  it('should search for the query with sort', () => {
+  test('should search for the query with sort', () => {
     let actualResults: Page<DocumentModel>;
     service
       .search({
@@ -68,10 +71,10 @@ describe('SearchService', () => {
         'api/search?query=Bacteria&page=0&highlight=true&descendants=false&sort=name&direction=desc'
       )
       .flush(expectedResults);
-    expect(actualResults).toEqual(expectedResults);
+    expect(actualResults!).toEqual(expectedResults);
   });
 
-  it('should fetch the aggregations only', () => {
+  test('should fetch the aggregations only', () => {
     let actualResults: Array<Aggregation>;
     service
       .aggregate({
@@ -85,10 +88,10 @@ describe('SearchService', () => {
     const expectedResults = [aggregation];
 
     http.expectOne('api/aggregate?query=Bacteria&descendants=false').flush(expectedResults);
-    expect(actualResults).toEqual(expectedResults);
+    expect(actualResults!).toEqual(expectedResults);
   });
 
-  it('should search for the query and add the aggregations selected', () => {
+  test('should search for the query and add the aggregations selected', () => {
     let actualResults: Page<DocumentModel>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
     const domainCriteria = toAggregationCriterion('domain', ['Forest']);
@@ -110,10 +113,10 @@ describe('SearchService', () => {
         'api/search?query=Bacteria&page=0&highlight=true&descendants=false&coo=France&coo=Italy&domain=Forest'
       )
       .flush(expectedResults);
-    expect(actualResults).toEqual(expectedResults);
+    expect(actualResults!).toEqual(expectedResults);
   });
 
-  it('should fetch the aggregations and add the aggregations selected', () => {
+  test('should fetch the aggregations and add the aggregations selected', () => {
     let actualResults: Page<DocumentModel>;
     let actualAggregations: Array<Aggregation>;
     const cooCriteria = toAggregationCriterion('coo', ['France', 'Italy']);
@@ -150,13 +153,12 @@ describe('SearchService', () => {
         'api/aggregate?query=Bacteria&descendants=false&coo=France&coo=Italy&domain=Forest'
       )
       .flush(expectedAggregations);
-    expect(actualResults).toEqual(expectedResults);
-    expect(actualAggregations).toEqual(expectedAggregations);
+    expect(actualResults!).toEqual(expectedResults);
+    expect(actualAggregations!).toEqual(expectedAggregations);
   });
 
-  it('should have a typeahead that suggests if text longer than 1, after 300 ms and only if changed', () => {
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
+  test('should have a typeahead that suggests if text longer than 1, after 300 ms and only if changed', () => {
+    vi.useFakeTimers();
 
     const typeahead = service.getSuggesterTypeahead();
 
@@ -166,36 +168,36 @@ describe('SearchService', () => {
 
     // simulate what is entered, character by character, after a delay between each one
     entered.next(' ');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' v');
-    jasmine.clock().tick(300); // should not trigger a search, but emit an empty array because input is too short
+    vi.advanceTimersByTime(300); // should not trigger a search, but emit an empty array because input is too short
     entered.next(' vi');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vit');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vit');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vit ');
-    jasmine.clock().tick(300); // should finally trigger a search for 'vit'
+    vi.advanceTimersByTime(300); // should finally trigger a search for 'vit'
 
     const vitResult = ['vitis', 'vitis vinifera'];
     http.expectOne('api/suggest?query=vit').flush(vitResult);
 
     entered.next(' viti ');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' viti');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vit');
-    jasmine.clock().tick(300); // should not trigger a second search since same value
+    vi.advanceTimersByTime(300); // should not trigger a second search since same value
 
     entered.next(' viti');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vitis');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vitis ');
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     entered.next(' vitis v');
-    jasmine.clock().tick(300); // should trigger a second search
+    vi.advanceTimersByTime(300); // should trigger a second search
 
     const vitisVResult = ['vitis vinifera'];
     http.expectOne('api/suggest?query=vitis%20v').flush(vitisVResult);

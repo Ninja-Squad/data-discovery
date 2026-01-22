@@ -1,4 +1,3 @@
-import { createMock, RoutingTester } from 'ngx-speculoos';
 import { TestBed } from '@angular/core/testing';
 import {
   OntologyDetails,
@@ -11,55 +10,34 @@ import {
 } from '../../ontology.service';
 import { of, Subject } from 'rxjs';
 import { TreeNode } from '../tree/tree.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { FaidareOntologyComponent } from './faidare-ontology.component';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../../test/mock';
 
-class OntologyComponentTester extends RoutingTester {
-  constructor(harness: RouterTestingHarness) {
-    super(harness);
-  }
+class OntologyComponentTester {
+  readonly treeFilter = page.getByCss('#tree-filter');
+  readonly language = page.getByCss('#language');
+  readonly tree = page.getByCss('dd-tree');
+  readonly highlightedNode = page.getByCss('.highlighted');
+  readonly nodeDetails = page.getByCss('dd-node-details');
 
-  get treeFilter() {
-    return this.input('#tree-filter');
-  }
+  constructor(readonly harness: RouterTestingHarness) {}
 
-  get language() {
-    return this.select('#language');
-  }
-
-  get tree() {
-    return this.element('dd-tree');
+  expanderOfNodeContaining(text: string) {
+    return page.getByRole('button', { name: `Expand ${text}` });
   }
 
   nodeContaining(text: string) {
-    return (
-      this.elements<HTMLElement>('.node-payload').find(element =>
-        element.textContent.includes(text)
-      ) ?? null
-    );
-  }
-
-  get highlightedNode() {
-    return this.tree.element('.highlighted');
-  }
-
-  expanderOfNodeContaining(text: string) {
-    return (
-      this.elements<HTMLElement>('.node')
-        .find(element => element.textContent.includes(text))
-        ?.element<HTMLElement>('.expand') ?? null
-    );
-  }
-
-  get nodeDetails() {
-    return this.element('dd-node-details');
+    return page.getByCss('.node-payload').and(page.getByText(text));
   }
 }
 
 describe('OntologyComponent', () => {
-  let ontologyService: jasmine.SpyObj<OntologyService>;
+  let ontologyService: MockObject<OntologyService>;
   let tester: OntologyComponentTester;
 
   let treeSubject: Subject<Array<TreeNode<OntologyPayload>>>;
@@ -79,13 +57,13 @@ describe('OntologyComponent', () => {
       ]
     });
 
-    ontologyService.getPreferredLanguage.and.returnValue('FR');
+    ontologyService.getPreferredLanguage.mockReturnValue('FR');
 
     treeSubject = new Subject<Array<TreeNode<OntologyPayload>>>();
     treeI18nSubject = new Subject<TreeI18n>();
 
-    ontologyService.getCompleteTree.and.returnValue(treeSubject);
-    ontologyService.getTreeI18n.and.returnValue(treeI18nSubject);
+    ontologyService.getCompleteTree.mockReturnValue(treeSubject);
+    ontologyService.getTreeI18n.mockReturnValue(treeI18nSubject);
 
     tree = [
       {
@@ -156,43 +134,39 @@ describe('OntologyComponent', () => {
     };
   });
 
-  afterEach(() => jasmine.clock().uninstall());
-
-  it('should display a tree with the default language selected', async () => {
+  test('should display a tree with the default language selected', async () => {
     tester = new OntologyComponentTester(await RouterTestingHarness.create('/ontology'));
 
-    expect(tester.tree).toBeNull();
-    expect(tester.nodeDetails).toBeNull();
+    await expect.element(tester.tree).not.toBeInTheDocument();
+    await expect.element(tester.nodeDetails).not.toBeInTheDocument();
 
     treeSubject.next(tree);
     treeI18nSubject.next(treeI18n);
 
-    await tester.stable();
+    await expect.element(tester.tree).toBeVisible();
+    await expect.element(tester.treeFilter).toHaveDisplayValue('');
+    await expect.element(tester.language).toHaveDisplayValue('Français');
+    await expect.element(tester.nodeDetails).not.toBeInTheDocument();
 
-    expect(tester.tree).not.toBeNull();
-    expect(tester.treeFilter).toHaveValue('');
-    expect(tester.language).toHaveSelectedLabel('Français');
-    expect(tester.nodeDetails).toBeNull();
+    await expect.element(tester.tree).toHaveTextContent('O1');
+    await expect.element(tester.tree).toHaveTextContent('Ontology');
 
-    expect(tester.tree).toContainText('O1');
-    expect(tester.tree).toContainText('Ontology');
+    await expect.element(tester.tree).not.toHaveTextContent('TC1');
+    await expect.element(tester.tree).not.toHaveTextContent('Trait class');
 
-    expect(tester.tree).not.toContainText('TC1');
-    expect(tester.tree).not.toContainText('Trait class');
+    await expect.element(tester.tree).not.toHaveTextContent('T1');
+    await expect.element(tester.tree).not.toHaveTextContent('Trait');
 
-    expect(tester.tree).not.toContainText('T1');
-    expect(tester.tree).not.toContainText('Trait');
+    await expect.element(tester.tree).not.toHaveTextContent('V1');
+    await expect.element(tester.tree).not.toHaveTextContent('Variable');
 
-    expect(tester.tree).not.toContainText('V1');
-    expect(tester.tree).not.toContainText('Variable');
-
-    expect(tester.highlightedNode).toBeNull();
+    await expect.element(tester.highlightedNode).not.toBeInTheDocument();
 
     expect(ontologyService.getTreeI18n).toHaveBeenCalledWith('FR');
   });
 
-  it('should highlight and expand path to node in fragment', async () => {
-    ontologyService.getTrait.and.returnValue(
+  test('should highlight and expand path to node in fragment', async () => {
+    ontologyService.getTrait.mockReturnValue(
       of({ name: 'T1', synonyms: [], alternativeAbbreviations: [] } as TraitDetails)
     );
 
@@ -200,23 +174,21 @@ describe('OntologyComponent', () => {
     treeSubject.next(tree);
     treeI18nSubject.next(treeI18n);
 
-    await tester.stable();
+    await expect.element(tester.nodeDetails).toHaveTextContent('T1');
 
-    expect(tester.nodeDetails).toContainText('T1');
+    await expect.element(tester.tree).toHaveTextContent('O1');
+    await expect.element(tester.tree).toHaveTextContent('Ontology');
 
-    expect(tester.tree).toContainText('O1');
-    expect(tester.tree).toContainText('Ontology');
+    await expect.element(tester.tree).toHaveTextContent('TC1');
+    await expect.element(tester.tree).toHaveTextContent('Trait class');
 
-    expect(tester.tree).toContainText('TC1');
-    expect(tester.tree).toContainText('Trait class');
+    await expect.element(tester.tree).toHaveTextContent('T1');
+    await expect.element(tester.tree).toHaveTextContent('Trait');
 
-    expect(tester.tree).toContainText('T1');
-    expect(tester.tree).toContainText('Trait');
+    await expect.element(tester.tree).not.toHaveTextContent('V1');
+    await expect.element(tester.tree).not.toHaveTextContent('Variable');
 
-    expect(tester.tree).not.toContainText('V1');
-    expect(tester.tree).not.toContainText('Variable');
-
-    expect(tester.highlightedNode).toContainText('T1');
+    await expect.element(tester.highlightedNode).toHaveTextContent('T1');
   });
 
   describe('once initialized', () => {
@@ -224,71 +196,62 @@ describe('OntologyComponent', () => {
       tester = new OntologyComponentTester(await RouterTestingHarness.create('/ontology'));
       treeSubject.next(tree);
       treeI18nSubject.next(treeI18n);
-      await tester.stable();
+      await expect.element(tester.tree).toBeVisible();
     });
 
-    it('should filter', async () => {
-      jasmine.clock().install();
-      jasmine.clock().mockDate();
-
+    test('should filter', async () => {
       await tester.expanderOfNodeContaining('O1').click();
       await tester.expanderOfNodeContaining('TC1').click();
       await tester.expanderOfNodeContaining('T1').click();
 
-      expect(tester.tree).toContainText('TC1');
+      await expect.element(tester.tree).toHaveTextContent('TC1');
 
-      await tester.treeFilter.fillWith('TC45');
-      // using jasmine clock doesn't work here, but I don't know why
-      // since the delay is small, we'll really wait
-      jasmine.clock().tick(500);
-      await tester.stable();
+      await tester.treeFilter.fill('TC45');
 
-      expect(tester.tree).not.toContainText('TC1');
+      await expect.element(tester.tree).not.toHaveTextContent('TC1');
 
-      await tester.treeFilter.fillWith('');
-      jasmine.clock().tick(500);
-      await tester.stable();
+      await tester.treeFilter.fill('');
 
-      expect(tester.tree).toContainText('TC1');
+      await expect.element(tester.tree).not.toHaveTextContent('TC1');
     });
 
-    it('should highlight ontology node', async () => {
-      ontologyService.getOntology.and.returnValue(
+    test('should highlight ontology node', async () => {
+      ontologyService.getOntology.mockReturnValue(
         of({ ontologyName: 'O1', links: [] } as OntologyDetails)
       );
       await tester.nodeContaining('O1').click();
 
-      expect(tester.highlightedNode).toContainText('O1');
-      expect(tester.nodeDetails).toContainText('O1');
-      expect(tester.url).toBe('/ontology#o1');
+      await expect.element(tester.highlightedNode).toHaveTextContent('O1');
+      await expect.element(tester.nodeDetails).toHaveTextContent('O1');
+      expect(TestBed.inject(Router).url).toBe('/ontology#o1');
     });
 
-    it('should highlight trait class node', async () => {
-      ontologyService.getTraitClass.and.returnValue(of({ name: 'TC1' } as TraitClassDetails));
+    test('should highlight trait class node', async () => {
+      ontologyService.getTraitClass.mockReturnValue(of({ name: 'TC1' } as TraitClassDetails));
 
       await tester.expanderOfNodeContaining('O1').click();
       await tester.nodeContaining('TC1').click();
 
-      expect(tester.highlightedNode).toContainText('TC1');
-      expect(tester.nodeDetails).toContainText('TC1');
-      expect(tester.url).toBe('/ontology#tc1');
+      await expect.element(tester.highlightedNode).toHaveTextContent('TC1');
+      await expect.element(tester.nodeDetails).toHaveTextContent('TC1');
+      expect(TestBed.inject(Router).url).toBe('/ontology#tc1');
     });
 
-    it('should highlight trait node', async () => {
-      ontologyService.getTrait.and.returnValue(
+    test('should highlight trait node', async () => {
+      ontologyService.getTrait.mockReturnValue(
         of({ name: 'T1', synonyms: [], alternativeAbbreviations: [] } as TraitDetails)
       );
       await tester.expanderOfNodeContaining('O1').click();
       await tester.expanderOfNodeContaining('TC1').click();
       await tester.nodeContaining('T1').click();
 
-      expect(tester.highlightedNode).toContainText('T1');
-      expect(tester.nodeDetails).toContainText('T1');
-      expect(tester.url).toBe('/ontology#t1');
+      await expect.element(tester.highlightedNode).toHaveTextContent('T1');
+      await expect.element(tester.nodeDetails).toHaveTextContent('T1');
+      expect(TestBed.inject(Router).url).toBe('/ontology#t1');
     });
 
-    it('should highlight variable node', async () => {
-      ontologyService.getVariable.and.returnValue(
+    test('should highlight variable node', async () => {
+      ontologyService.getVariable.mockReturnValue(
         of({
           name: 'V2',
           synonyms: [],
@@ -301,18 +264,18 @@ describe('OntologyComponent', () => {
       await tester.expanderOfNodeContaining('T1').click();
       await tester.nodeContaining('V2').click();
 
-      expect(tester.highlightedNode).toContainText('V2');
-      expect(tester.nodeDetails).toContainText('V2');
-      expect(tester.url).toBe('/ontology#v2');
+      await expect.element(tester.highlightedNode).toHaveTextContent('V2');
+      await expect.element(tester.nodeDetails).toHaveTextContent('V2');
+      expect(TestBed.inject(Router).url).toBe('/ontology#v2');
     });
 
-    it('should change the language', async () => {
-      ontologyService.getOntology.and.returnValue(
+    test('should change the language', async () => {
+      ontologyService.getOntology.mockReturnValue(
         of({ ontologyName: 'O1', links: [] } as OntologyDetails)
       );
       await tester.nodeContaining('O1').click();
 
-      ontologyService.getTreeI18n.and.returnValue(
+      ontologyService.getTreeI18n.mockReturnValue(
         of({
           language: 'ES',
           names: {
@@ -333,13 +296,13 @@ describe('OntologyComponent', () => {
           }
         })
       );
-      ontologyService.getOntology.and.returnValue(
+      ontologyService.getOntology.mockReturnValue(
         of({ ontologyName: 'Ola O1', links: [] } as OntologyDetails)
       );
 
-      await tester.language?.selectLabel('Español');
-      expect(tester.tree).toContainText('Ola O1');
-      expect(tester.nodeDetails).toContainText('Ola O1');
+      await tester.language.selectOptions('Español');
+      await expect.element(tester.tree).toHaveTextContent('Ola O1');
+      await expect(tester.nodeDetails).toHaveTextContent('Ola O1');
     });
   });
 });

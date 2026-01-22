@@ -7,6 +7,10 @@
       tabindex="0"
       (click)="toggleExpanded()"
       [class.expanded]="node.expanded || node.expandedForced"
+      [attr.aria-label]="
+        `faidare.node.${node.expanded || node.expandedForced ? 'collapse' : 'expand'}`
+          | translate: { name: node.text }
+      "
     ></span>
   }
 

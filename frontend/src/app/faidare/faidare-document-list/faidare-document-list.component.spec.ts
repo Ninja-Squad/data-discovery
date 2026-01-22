@@ -1,48 +1,33 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../../test/mock';
 
 import {
   FaidareDocumentListComponent,
   toAllTransition,
   toGermplasmTransition
 } from './faidare-document-list.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
-import { GenericDocumentComponent } from '../../urgi-common/generic-document/generic-document.component';
 import { Aggregation } from '../../models/page';
-import { NgbNavLink } from '@ng-bootstrap/ng-bootstrap';
 import { ReplaySubject } from 'rxjs';
 import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
 import { toSinglePage } from '../../models/test-model-generators';
 import { DocumentModel } from '../../models/document.model';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideDisabledNgbAnimation } from '../../disable-animations';
 import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 
-class FaidareDocumentListComponentTester extends ComponentTester<FaidareDocumentListComponent> {
+class FaidareDocumentListComponentTester {
   constructor() {
-    super(FaidareDocumentListComponent);
+    TestBed.createComponent(FaidareDocumentListComponent);
   }
-
-  get documents() {
-    return this.elements(GenericDocumentComponent);
-  }
-
-  get germplasmResults() {
-    return this.element(GermplasmResultsStubComponent);
-  }
-
-  get tabs() {
-    return this.elements(NgbNavLink);
-  }
-
-  get firstTab() {
-    return this.element('a')!;
-  }
-
-  get secondTab() {
-    return this.elements('a')[1];
-  }
+  readonly documents = page.getByCss('dd-document');
+  readonly germplasmResults = page.getByCss('dd-germplasm-results');
+  readonly tabs = page.getByCss('.nav-link');
+  readonly firstTab = page.getByCss('.nav-link').first();
+  readonly secondTab = page.getByCss('.nav-link').nth(1);
 }
 
 @Component({
@@ -55,12 +40,12 @@ class GermplasmResultsStubComponent {}
 describe('FaidareDocumentListComponent', () => {
   let tester: FaidareDocumentListComponentTester;
   let modelSubject: ReplaySubject<Model>;
-  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let searchStateService: MockObject<SearchStateService>;
 
   beforeEach(() => {
     modelSubject = new ReplaySubject<Model>(1);
     searchStateService = createMock(SearchStateService);
-    searchStateService.getModel.and.returnValue(modelSubject);
+    searchStateService.getModel.mockReturnValue(modelSubject);
 
     // use a stub for germplasm results
     TestBed.overrideComponent(FaidareDocumentListComponent, {
@@ -85,7 +70,7 @@ describe('FaidareDocumentListComponent', () => {
     tester = new FaidareDocumentListComponentTester();
   });
 
-  it('should list documents if no germplasm', async () => {
+  test('should list documents if no germplasm', async () => {
     const model: Model = {
       documents: toSinglePage<DocumentModel>([
         {
@@ -101,14 +86,13 @@ describe('FaidareDocumentListComponent', () => {
       }
     } as Model;
     modelSubject.next(model);
-    await tester.stable();
 
-    expect(tester.documents.length).toBe(1);
+    await expect.element(tester.documents).toHaveLength(1);
     // no germplasm tab
-    expect(tester.tabs.length).toBe(0);
+    await expect.element(tester.tabs).toHaveLength(0);
   });
 
-  it('should list documents in a germplasm tab if there is a germplasm document', async () => {
+  test('should list documents in a germplasm tab if there is a germplasm document', async () => {
     // given one entry aggregation, with one document of type germplasm
     const entry: Aggregation = {
       name: 'entry',
@@ -130,20 +114,19 @@ describe('FaidareDocumentListComponent', () => {
       }
     } as Model;
     modelSubject.next(model);
-    await tester.stable();
 
     // then we have a germplasm tab
-    expect(tester.tabs.length).toBe(2);
+    await expect.element(tester.tabs).toHaveLength(2);
     // first tab is All and is active
-    expect(tester.firstTab).toHaveText('All');
-    expect(tester.secondTab).toHaveText('Germplasm');
-    expect(tester.documents.length).toBe(1);
-    expect(tester.germplasmResults).toBeNull();
+    await expect.element(tester.firstTab).toHaveTextContent('All');
+    await expect.element(tester.secondTab).toHaveTextContent('Germplasm');
+    await expect.element(tester.documents).toHaveLength(1);
+    await expect.element(tester.germplasmResults).not.toBeInTheDocument();
     expect(searchStateService.disableAggregation).toHaveBeenCalledWith(null);
 
     await tester.secondTab.click();
-    expect(tester.documents.length).toBe(0);
-    expect(tester.germplasmResults).toBeNull();
+    await expect.element(tester.documents).toHaveLength(0);
+    await expect.element(tester.germplasmResults).not.toBeInTheDocument();
     expect(searchStateService.applyTransition).toHaveBeenCalledWith(toGermplasmTransition);
 
     modelSubject.next({
@@ -152,14 +135,13 @@ describe('FaidareDocumentListComponent', () => {
         fragment: 'germplasm'
       }
     } as Model);
-    await tester.stable();
 
-    searchStateService.applyTransition.calls.reset();
-    expect(tester.germplasmResults).not.toBeNull();
+    searchStateService.applyTransition.mockReset();
+    await expect.element(tester.germplasmResults).toBeInTheDocument();
 
     await tester.firstTab.click();
-    expect(tester.germplasmResults).toBeNull();
-    expect(tester.documents.length).toBe(0);
+    await expect.element(tester.germplasmResults).not.toBeInTheDocument();
+    await expect.element(tester.documents).toHaveLength(0);
     expect(searchStateService.applyTransition).toHaveBeenCalledWith(toAllTransition);
 
     modelSubject.next({
@@ -168,12 +150,11 @@ describe('FaidareDocumentListComponent', () => {
         fragment: 'all'
       }
     } as Model);
-    await tester.stable();
 
-    expect(tester.documents.length).toBe(1);
+    await expect.element(tester.documents).toHaveLength(1);
   });
 
-  it('should transition to all', async () => {
+  test('should transition to all', async () => {
     const criteria: SearchCriteria = {
       fragment: 'germplasm',
       page: 2,
@@ -199,7 +180,7 @@ describe('FaidareDocumentListComponent', () => {
     });
   });
 
-  it('should transition to Germplasm', () => {
+  test('should transition to Germplasm', () => {
     const criteria: SearchCriteria = {
       fragment: null,
       page: 2,
@@ -219,7 +200,7 @@ describe('FaidareDocumentListComponent', () => {
     });
   });
 
-  it('should transition to Germplasm when entry aggregation already there', () => {
+  test('should transition to Germplasm when entry aggregation already there', () => {
     const criteria: SearchCriteria = {
       fragment: null,
       page: 2,

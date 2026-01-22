@@ -2,66 +2,58 @@ import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../test/mock';
 
 import { PillarsComponent } from './pillars.component';
 import { PillarService } from '../pillar.service';
 import { PillarModel } from '../models/pillar.model';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 
-class PillarsComponentTester extends ComponentTester<PillarsComponent> {
-  constructor() {
-    super(PillarsComponent);
-  }
-
-  get dataProviders() {
-    return this.element('h4');
-  }
-
-  get pillarListItems() {
-    return this.elements('ul.pillar > li');
-  }
+class PillarsComponentTester {
+  readonly fixture = TestBed.createComponent(PillarsComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly dataProviders = page.getByRole('heading', { level: 4 });
+  readonly pillarListItems = page.getByCss('ul.pillar > li');
+  readonly noDataAlert = page.getByRole('alert');
 
   pillarListItem(index: number) {
-    return this.pillarListItems[index];
+    return this.pillarListItems.nth(index);
   }
 
   databaseSourceItem(pillarIndex: number, sourceIndex: number) {
-    return this.pillarListItem(pillarIndex).elements('li')[sourceIndex];
+    return this.pillarListItem(pillarIndex).getByCss('li').nth(sourceIndex);
   }
 
   databaseSourceLink(pillarIndex: number, sourceIndex: number) {
-    return this.databaseSourceItem(pillarIndex, sourceIndex).element('a');
-  }
-
-  get noDataAlert() {
-    return this.element('.alert');
+    return this.databaseSourceItem(pillarIndex, sourceIndex).getByCss('a');
   }
 }
 
 describe('PillarsComponent', () => {
   let tester: PillarsComponentTester;
-  let pillarService: jasmine.SpyObj<PillarService>;
+  let pillarService: MockObject<PillarService>;
   const pillars$ = new Subject<Array<PillarModel>>();
 
   beforeEach(async () => {
     registerLocaleData(localeFr);
     pillarService = createMock(PillarService);
-    pillarService.list.and.returnValue(pillars$);
+    pillarService.list.mockReturnValue(pillars$);
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: PillarService, useValue: pillarService }]
     });
 
     tester = new PillarsComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should not display any pillar nor any alert while pillars are not available yet', () => {
-    expect(tester.pillarListItems.length).toBe(0);
-    expect(tester.noDataAlert).toBeNull();
+  test('should not display any pillar nor any alert while pillars are not available yet', async () => {
+    await expect.element(tester.pillarListItems).toHaveLength(0);
+    // Alert doesn't exist yet, will appear when data loads
   });
 
-  it('should display pillars', async () => {
+  test('should display pillars', async () => {
     const pillars: Array<PillarModel> = [
       {
         name: 'Plant',
@@ -85,29 +77,29 @@ describe('PillarsComponent', () => {
     ];
     pillars$.next(pillars);
 
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.dataProviders).toHaveText('Data providers');
+    await expect.element(tester.dataProviders).toHaveTextContent('Data providers');
 
-    expect(tester.pillarListItem(0)).toContainText('Plant');
-    expect(tester.pillarListItem(1)).toContainText('Forest');
+    await expect.element(tester.pillarListItem(0)).toHaveTextContent('Plant');
+    await expect.element(tester.pillarListItem(1)).toHaveTextContent('Forest');
 
-    expect(tester.databaseSourceItem(0, 0)).toContainText('Florilège');
-    expect(tester.databaseSourceItem(0, 0)).toContainText('[1,000]');
+    await expect.element(tester.databaseSourceItem(0, 0)).toHaveTextContent('Florilège');
+    await expect.element(tester.databaseSourceItem(0, 0)).toHaveTextContent('[1,000]');
 
-    expect(tester.databaseSourceItem(0, 1)).toContainText('CNRGV');
-    expect(tester.databaseSourceItem(0, 1)).toContainText('[200]');
+    await expect.element(tester.databaseSourceItem(0, 1)).toHaveTextContent('CNRGV');
+    await expect.element(tester.databaseSourceItem(0, 1)).toHaveTextContent('[200]');
 
-    expect(tester.databaseSourceLink(0, 0).attr('href')).toBe(
+    await expect(tester.databaseSourceLink(0, 0).element().getAttribute('href')).toBe(
       'http://florilege.arcad-project.org/fr/collections'
     );
-    expect(tester.databaseSourceLink(0, 1)).toBeNull();
+    await expect.element(tester.databaseSourceLink(0, 1)).not.toBeInTheDocument();
   });
 
-  it('should display alert if no pillar has been found', async () => {
+  test('should display alert if no pillar has been found', async () => {
     pillars$.next([]);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.noDataAlert).toContainText('No data found');
+    await expect.element(tester.noDataAlert).toHaveTextContent('No data found');
   });
 });

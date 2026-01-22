@@ -1,24 +1,26 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { MarkdownPageComponent } from './markdown-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentTester, stubRoute } from 'ngx-speculoos';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideConfiguredMarkdown } from '../markdown';
+import { of } from 'rxjs';
 
-class MarkdownPageComponentTester extends ComponentTester<MarkdownPageComponent> {
-  constructor() {
-    super(MarkdownPageComponent);
-  }
+class MarkdownPageComponentTester {
+  readonly fixture = TestBed.createComponent(MarkdownPageComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly heading = page.getByRole('heading', { level: 1 });
 }
 
 describe('MarkdownPageComponent', () => {
   let tester: MarkdownPageComponentTester;
-  const route = stubRoute({
-    data: { mdFile: environment.helpMdFile }
-  });
+  const fakeRoute = {
+    data: of({ mdFile: environment.helpMdFile })
+  };
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -26,15 +28,15 @@ describe('MarkdownPageComponent', () => {
         provideHttpClientTesting(),
         provideI18nTesting(),
         provideConfiguredMarkdown(),
-        { provide: ActivatedRoute, useValue: route }
+        { provide: ActivatedRoute, useValue: fakeRoute }
       ]
     });
 
     tester = new MarkdownPageComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should load and display the help file', async () => {
+  test('should load and display the help file', async () => {
     const http = TestBed.inject(HttpTestingController);
 
     // the markdown file is extracted from the route data by our component
@@ -49,10 +51,9 @@ describe('MarkdownPageComponent', () => {
       })
       .flush('# Help section');
 
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // the markdown component should render the title
-    // no idea why using tester.element('h1') doesn't work
-    expect(tester.nativeElement.querySelector('h1')?.textContent).toBe('Help section');
+    await expect.element(tester.heading).toHaveTextContent('Help section');
   });
 });
