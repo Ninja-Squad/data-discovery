@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, input, TemplateRef } from '@angular/core';
 import { InternalTreeNode, TreeService } from '../tree.service';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'dd-node',
   templateUrl: './node.component.html',
   styleUrl: './node.component.scss',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeComponent<P> {

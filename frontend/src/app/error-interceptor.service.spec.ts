@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-
-import { errorInterceptor, ErrorInterceptorService, HttpError } from './error-interceptor.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { errorInterceptor, ErrorInterceptorService, HttpError } from './error-interceptor.service';
 
 describe('ErrorInterceptorService', () => {
   let service: ErrorInterceptorService;
@@ -23,7 +23,7 @@ describe('ErrorInterceptorService', () => {
     httpClient = TestBed.inject(HttpClient);
   });
 
-  it('should emit error when error is not an HTTP response', () => {
+  test('should emit error when error is not an HTTP response', () => {
     let error: HttpError;
     service.getErrors().subscribe(err => {
       error = err;
@@ -32,10 +32,10 @@ describe('ErrorInterceptorService', () => {
     httpClient.get('/test').subscribe({ error: noop });
     http.expectOne('/test').error(new ProgressEvent('unknown'));
 
-    expect(error.status).toBe(0);
+    expect(error!.status).toBe(0);
   });
 
-  it('should emit error when error is an HTTP response', () => {
+  test('should emit error when error is an HTTP response', () => {
     let error: HttpError;
     service.getErrors().subscribe(err => {
       error = err;
@@ -44,7 +44,7 @@ describe('ErrorInterceptorService', () => {
     httpClient.get('/test').subscribe({ error: noop });
     http.expectOne('/test').flush(null, { status: 500, statusText: 'Server Error' });
 
-    expect(error.status).toBe(500);
-    expect(error.message).toBe('Http failure response for /test: 500 Server Error');
+    expect(error!.status).toBe(500);
+    expect(error!.message).toBe('Http failure response for /test: 500 Server Error');
   });
 });

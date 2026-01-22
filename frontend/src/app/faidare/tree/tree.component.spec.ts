@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { TreeComponent } from './tree.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
-import { ComponentTester, TestHtmlElement } from 'ngx-speculoos';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 
 interface TestPayload {
   id: string;
@@ -100,29 +101,29 @@ class TestComponent {
 }
 
 class TestNode {
-  constructor(private element: TestHtmlElement<HTMLElement>) {}
+  constructor(private element: HTMLElement) {}
 
   get text() {
-    return this.element.element('label')?.textContent?.trim();
+    return this.element.querySelector('label')?.textContent?.trim();
   }
 
   get expander() {
-    return this.element.element<HTMLElement>('.expand') ?? null;
+    return this.element.querySelector<HTMLElement>('.expand') ?? null;
   }
 
   get checkbox() {
-    return this.element.input('input');
+    return this.element.querySelector<HTMLInputElement>('input') ?? null;
   }
 
   get visible() {
-    return this.element.visible;
+    return this.element.offsetParent !== null;
   }
 
   get selectionState(): NodeSelectionState {
     const cb = this.checkbox;
-    if (cb?.nativeElement.indeterminate) {
+    if (cb?.indeterminate) {
       return 'INDETERMINATE';
-    } else if (cb.checked) {
+    } else if (cb?.checked) {
       return 'CHECKED';
     } else {
       return 'UNCHECKED';
@@ -130,26 +131,26 @@ class TestNode {
   }
 
   get payload() {
-    return this.element.element<HTMLElement>('.node-payload');
+    return this.element.querySelector<HTMLElement>('.node-payload');
   }
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly componentInstance = this.fixture.componentInstance;
   node(text: string): TestNode | null {
+    const elements = Array.from(
+      this.fixture.nativeElement.querySelectorAll('dd-node') as NodeListOf<HTMLElement>
+    );
     const element =
-      this.elements<HTMLElement>('dd-node').find(
-        el => el.element('label')?.textContent?.trim() === text
-      ) ?? null;
-
+      elements.find(el => el.querySelector('label')?.textContent?.trim() === text) ?? null;
     return element ? new TestNode(element) : null;
   }
 
   get nodes(): Array<TestNode> {
-    return this.elements<HTMLElement>('dd-node').map(element => new TestNode(element));
+    return Array.from(
+      this.fixture.nativeElement.querySelectorAll('dd-node') as NodeListOf<HTMLElement>
+    ).map(element => new TestNode(element));
   }
 
   get visibleNodes(): Array<TestNode> {
@@ -173,13 +174,15 @@ describe('TreeComponent', () => {
   let tester: TestComponentTester;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideI18nTesting()]
+    });
 
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should create a tree, pre-select nodes, and pre-expand nodes so that selected nodes are visible', () => {
+  test('should create a tree, pre-select nodes, and pre-expand nodes so that selected nodes are visible', () => {
     expect(tester.nodes.length).toBe(6);
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'B', 'B1', 'B11', 'B12', 'B2']);
     expect(tester.componentInstance.selectedNodes()).toEqual([
@@ -197,38 +200,46 @@ describe('TreeComponent', () => {
     expect(tester.indeterminateNodes.map(n => n.text)).toEqual(['B']);
   });
 
-  it('should expand and collapse nodes', async () => {
+  test('should expand and collapse nodes', async () => {
     // collapse B
-    await tester.node('B').expander.click();
+    tester.node('B')!.expander!.click();
+    await tester.fixture.whenStable();
     // expand A
-    await tester.node('A').expander.click();
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
 
-    expect(tester.node('A').expander).toHaveClass('expanded');
+    expect(tester.node('A')!.expander!.classList.contains('expanded')).toBe(true);
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'A1', 'A2', 'B']);
 
-    await tester.node('A2').expander.click();
+    tester.node('A2')!.expander!.click();
+    await tester.fixture.whenStable();
 
-    expect(tester.node('A2').expander).toHaveClass('expanded');
+    expect(tester.node('A2')!.expander!.classList.contains('expanded')).toBe(true);
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'A1', 'A2', 'A21', 'A22', 'B']);
 
-    expect(tester.node('A21').expander).toBeNull();
+    expect(tester.node('A21')!.expander).toBeNull();
 
-    await tester.node('A').expander.click();
-    expect(tester.node('A').expander).not.toHaveClass('expanded');
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
+    expect(tester.node('A')!.expander!.classList.contains('expanded')).toBe(false);
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'B']);
 
-    await tester.node('A').expander.click();
-    expect(tester.node('A').expander).toHaveClass('expanded');
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
+    expect(tester.node('A')!.expander!.classList.contains('expanded')).toBe(true);
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'A1', 'A2', 'A21', 'A22', 'B']);
   });
 
-  it('should select and deselect nodes', async () => {
+  test('should select and deselect nodes', async () => {
     // expand A
-    await tester.node('A').expander.click();
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
     // expand A1
-    await tester.node('A1').expander.click();
+    tester.node('A1')!.expander!.click();
+    await tester.fixture.whenStable();
     // check A1
-    await tester.node('A1').checkbox.check();
+    tester.node('A1')!.checkbox!.click();
+    await tester.fixture.whenStable();
 
     expect(tester.componentInstance.selectedNodes()).toEqual([
       {
@@ -255,7 +266,8 @@ describe('TreeComponent', () => {
     expect(tester.uncheckedNodes.map(n => n.text)).toEqual(['A2', 'B2']);
     expect(tester.indeterminateNodes.map(n => n.text)).toEqual(['A', 'B']);
 
-    await tester.node('A11').checkbox.uncheck();
+    tester.node('A11')!.checkbox!.click();
+    await tester.fixture.whenStable();
     expect(tester.componentInstance.selectedNodes()).toEqual([
       {
         text: 'A12',
@@ -275,11 +287,12 @@ describe('TreeComponent', () => {
     expect(tester.indeterminateNodes.map(n => n.text)).toEqual(['A', 'A1', 'B']);
   });
 
-  it('should filter nodes and restore their expanded status when unfiltering', async () => {
-    await tester.node('A').expander.click();
+  test('should filter nodes and restore their expanded status when unfiltering', async () => {
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
 
     tester.componentInstance.filter.set('A');
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(tester.visibleNodes.map(n => n.text)).toEqual([
       'A',
@@ -292,22 +305,22 @@ describe('TreeComponent', () => {
     ]);
 
     tester.componentInstance.filter.set('A2');
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'A2', 'A21', 'A22']);
 
     tester.componentInstance.filter.set('A22');
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(tester.visibleNodes.map(n => n.text)).toEqual(['A', 'A2', 'A22']);
 
     tester.componentInstance.filter.set('A223');
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(tester.visibleNodes.map(n => n.text)).toEqual([]);
 
     tester.componentInstance.filter.set('');
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(tester.visibleNodes.map(n => n.text)).toEqual([
       'A',
@@ -321,11 +334,11 @@ describe('TreeComponent', () => {
     ]);
   });
 
-  it('should change the text accessor', async () => {
+  test('should change the text accessor', async () => {
     tester.componentInstance.textAccessor.set(
       payload => (payload.id.startsWith('a') ? 'z' + payload.id : payload.id) + '!'
     );
-    await tester.stable();
+    await tester.fixture.whenStable();
     expect(tester.visibleNodes.map(n => n.text)).toEqual([
       'b!',
       'b1!',
@@ -336,20 +349,27 @@ describe('TreeComponent', () => {
     ]);
   });
 
-  it('should honor the node template', async () => {
-    await tester.node('A').expander.click();
-    await tester.node('A1').expander.click();
-    expect(tester.node('A').payload.textContent.trim()).toBe('A');
-    expect(tester.node('A11').payload).toContainText('A11 foo');
+  test('should honor the node template', async () => {
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
+    tester.node('A1')!.expander!.click();
+    await tester.fixture.whenStable();
+    expect(tester.node('A')!.payload!.textContent!.trim()).toBe('A');
+    expect(tester.node('A11')!.payload!.textContent).toContain('A11');
+    expect(tester.node('A11')!.payload!.textContent).toContain('foo');
   });
 
-  it('should highlight nodes', async () => {
-    await tester.node('A').expander.click();
-    await tester.node('A1').expander.click();
-    await tester.node('A').payload.click();
+  test('should highlight nodes', async () => {
+    tester.node('A')!.expander!.click();
+    await tester.fixture.whenStable();
+    tester.node('A1')!.expander!.click();
+    await tester.fixture.whenStable();
+    tester.node('A')!.payload!.click();
+    await tester.fixture.whenStable();
     expect(tester.componentInstance.highlightedNode()).toEqual({ text: 'A', payload: { id: 'a' } });
 
-    await tester.node('A11').payload.click();
+    tester.node('A11')!.payload!.click();
+    await tester.fixture.whenStable();
     expect(tester.componentInstance.highlightedNode()).toEqual({
       text: 'A11',
       payload: {

@@ -1,7 +1,9 @@
+import { describe, expect, test } from 'vitest';
+
 import { HighlightService } from './highlight.service';
 
 describe('HighlightService', () => {
-  it('should truncate', () => {
+  test('should truncate', () => {
     const service = new HighlightService();
 
     const text = 'hello <em>great </em><em>great</em> &amp;big <em>world</em>!'; // 29 printable characters

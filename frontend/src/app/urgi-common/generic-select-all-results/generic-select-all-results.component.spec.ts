@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { GenericSelectAllResultsComponent } from './generic-select-all-results.component';
-import { ComponentTester } from 'ngx-speculoos';
 
 describe('GenericSelectAllResultsComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
-  it('should be empty', async () => {
-    const tester = ComponentTester.create(GenericSelectAllResultsComponent);
-    await tester.stable();
-    expect(tester.testElement).toHaveText('');
+  test('should be empty', async () => {
+    const fixture = TestBed.createComponent(GenericSelectAllResultsComponent);
+    await fixture.whenStable();
+    const root = page.elementLocator(fixture.nativeElement);
+    await expect.element(root).toHaveTextContent('');
   });
 });

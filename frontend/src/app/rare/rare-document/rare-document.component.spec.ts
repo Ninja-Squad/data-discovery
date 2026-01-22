@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 
 import { RareDocumentComponent } from './rare-document.component';
 import { toRareDocument } from '../../models/test-model-generators';
 import { BasketService } from '../../urgi-common/basket/basket.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RareDocumentModel } from '../rare-document.model';
 import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
@@ -20,54 +21,20 @@ class TestComponent {
   readonly document = signal<RareDocumentModel>(toRareDocument('Bacteria'));
 }
 
-class RareDocumentComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
-  get title() {
-    return this.element('h3');
-  }
-
-  get link() {
-    return this.element('.main-link');
-  }
-
-  get datasourceLink() {
-    return this.element('.datasource-link');
-  }
-
-  get taxon() {
-    return this.element('.taxon');
-  }
-
-  get type() {
-    return this.element('.type');
-  }
-
-  get description() {
-    return this.element('.description');
-  }
-
-  get fullDescriptionButton() {
-    return this.button('.description button');
-  }
-
-  get fullDescription() {
-    return this.element('.full-description');
-  }
-
-  get shortDescriptionButton() {
-    return this.button('.full-description button');
-  }
-
-  get addToBasketButton() {
-    return this.button('button.btn-outline-dark');
-  }
-
-  get removeFromBasketButton() {
-    return this.button('button.btn-success');
-  }
+class RareDocumentComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly title = page.getByRole('heading', { level: 3 });
+  readonly link = page.getByCss('.main-link');
+  readonly datasourceLink = page.getByCss('.datasource-link');
+  readonly taxon = page.getByCss('.taxon');
+  readonly type = page.getByCss('.type');
+  readonly description = page.getByCss('.description');
+  readonly fullDescriptionButton = page.getByCss('.description button');
+  readonly fullDescription = page.getByCss('.full-description');
+  readonly shortDescriptionButton = page.getByCss('.full-description button');
+  readonly addToBasketButton = page.getByCss('button.btn-outline-dark');
+  readonly removeFromBasketButton = page.getByCss('button.btn-success');
 
   get tooltip() {
     return document.querySelector('ngb-tooltip-window');
@@ -77,6 +44,7 @@ class RareDocumentComponentTester extends ComponentTester<TestComponent> {
 describe('RareDocumentComponent', () => {
   let basketService: BasketService;
   let basketAdapter: BasketAdapter;
+  let spyIsEnabled: Mock<() => boolean>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -86,37 +54,40 @@ describe('RareDocumentComponent', () => {
     basketAdapter = TestBed.inject(BasketAdapter);
     basketService = TestBed.inject(BasketService);
     basketService.clearBasket();
-    spyOn(basketService, 'isEnabled').and.returnValue(true);
+    spyIsEnabled = vi.spyOn(basketService, 'isEnabled');
+    spyIsEnabled.mockReturnValue(true);
   });
 
-  it('should display a resource', async () => {
+  test('should display a resource', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
     const resource = component.document();
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // then we should display it
-    expect(tester.title).toContainText(resource.name);
-    expect(tester.title).toContainText(resource.pillarName);
-    expect(tester.link).toContainText(resource.name);
-    expect(tester.link.attr('href')).toBe(resource.dataURL);
-    expect(tester.link.attr('target')).toBe('_blank');
-    expect(tester.datasourceLink).toContainText(resource.databaseSource);
-    expect(tester.datasourceLink.attr('href')).toBe(resource.portalURL);
-    expect(tester.datasourceLink.attr('target')).toBe('_blank');
-    resource.taxon.forEach(text => expect(tester.taxon).toContainText(text));
-    expect(tester.type).toContainText(resource.materialType[0]);
-    expect(tester.description).toContainText(resource.description);
-    expect(tester.fullDescriptionButton).toBeNull();
-    expect(tester.fullDescription).toBeNull();
-    expect(tester.shortDescriptionButton).toBeNull();
-    expect(tester.removeFromBasketButton).toBeNull();
-    expect(tester.addToBasketButton).not.toBeNull();
+    await expect.element(tester.title).toHaveTextContent(resource.name);
+    await expect.element(tester.title).toHaveTextContent(resource.pillarName);
+    await expect.element(tester.link).toHaveTextContent(resource.name);
+    await expect(tester.link.element().getAttribute('href')).toBe(resource.dataURL);
+    await expect(tester.link.element().getAttribute('target')).toBe('_blank');
+    await expect.element(tester.datasourceLink).toHaveTextContent(resource.databaseSource);
+    await expect(tester.datasourceLink.element().getAttribute('href')).toBe(resource.portalURL);
+    await expect(tester.datasourceLink.element().getAttribute('target')).toBe('_blank');
+    for (const text of resource.taxon) {
+      await expect.element(tester.taxon).toHaveTextContent(text);
+    }
+    await expect.element(tester.type).toHaveTextContent(resource.materialType[0]);
+    await expect.element(tester.description).toHaveTextContent(resource.description);
+    await expect.element(tester.fullDescriptionButton).not.toBeInTheDocument();
+    await expect.element(tester.fullDescription).not.toBeInTheDocument();
+    await expect.element(tester.shortDescriptionButton).not.toBeInTheDocument();
+    await expect.element(tester.removeFromBasketButton).not.toBeInTheDocument();
+    await expect.element(tester.addToBasketButton).toBeInTheDocument();
   });
 
-  it('should have a link to portal if data url is null or empty', async () => {
+  test('should have a link to portal if data url is null or empty', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
@@ -124,13 +95,13 @@ describe('RareDocumentComponent', () => {
     const resource = toRareDocument('Bacteria');
     resource.dataURL = null;
     component.document.set(resource);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // then we should link to portal url
-    expect(tester.link.attr('href')).toBe(resource.portalURL);
+    await expect(tester.link.element().getAttribute('href')).toBe(resource.portalURL);
   });
 
-  it('should display several types properly', async () => {
+  test('should display several types properly', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
@@ -138,61 +109,61 @@ describe('RareDocumentComponent', () => {
     const resource = toRareDocument('Bacteria');
     resource.materialType = ['type1', 'type2'];
     component.document.set(resource);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // then we should list them
-    expect(tester.type).toContainText('type1, type2');
+    await expect.element(tester.type).toHaveTextContent('type1, type2');
   });
 
-  it('should not have the basket button if the feature is disabled', async () => {
-    (basketService.isEnabled as jasmine.Spy).and.returnValue(false);
+  test('should not have the basket button if the feature is disabled', async () => {
+    spyIsEnabled.mockReturnValue(false);
     const tester = new RareDocumentComponentTester();
 
     // given a resource
-    await tester.stable();
+    await tester.fixture.whenStable();
     // then the button should not be displayed
-    expect(tester.addToBasketButton).toBeNull();
+    await expect.element(tester.addToBasketButton).not.toBeInTheDocument();
   });
 
-  it('should add/remove to/from basket', async () => {
+  test('should add/remove to/from basket', async () => {
     const tester = new RareDocumentComponentTester();
     const component = tester.componentInstance;
 
     // given a resource
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // when hovering the add to basket button
-    await tester.addToBasketButton.dispatchEventOfType('mouseenter');
+    await tester.addToBasketButton.hover();
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Add to basket');
+    expect(tester.tooltip?.textContent).toBe('Add to basket');
 
     await tester.addToBasketButton.click();
 
     // then we should have added the item to the basket
-    expect(
-      basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)
-    ).toBeTrue();
+    expect(basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)).toBe(
+      true
+    );
 
     // we switched the button to display a green one
-    expect(tester.addToBasketButton).toBeNull();
-    expect(tester.removeFromBasketButton).not.toBeNull();
+    await expect.element(tester.addToBasketButton).not.toBeInTheDocument();
+    await expect.element(tester.removeFromBasketButton).toBeInTheDocument();
 
     // when hovering the remove from basket button
-    await tester.removeFromBasketButton.dispatchEventOfType('mouseenter');
+    await tester.removeFromBasketButton.hover();
 
     // then we should have the tooltip displayed
     expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Remove from basket');
+    expect(tester.tooltip?.textContent).toBe('Remove from basket');
 
     await tester.removeFromBasketButton.click();
-    expect(
-      basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)
-    ).toBeFalse();
+    expect(basketService.isItemInBasket(basketAdapter.asBasketItem(component.document())!)).toBe(
+      false
+    );
 
     // we switched back the button
-    expect(tester.removeFromBasketButton).toBeNull();
-    expect(tester.addToBasketButton).not.toBeNull();
+    await expect.element(tester.removeFromBasketButton).not.toBeInTheDocument();
+    await expect.element(tester.addToBasketButton).toBeInTheDocument();
   });
 });

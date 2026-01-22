@@ -1,33 +1,33 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { RareHeaderComponent } from './rare-header.component';
-import { ComponentTester } from 'ngx-speculoos';
 
 describe('RareHeaderComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should display title and image for rare', async () => {
-    const tester = ComponentTester.create(RareHeaderComponent);
+  test('should display title and image for rare', async () => {
+    const fixture = TestBed.createComponent(RareHeaderComponent);
+    await fixture.whenStable();
 
-    await tester.stable();
+    const title = page.getByCss('h1');
+    await expect.element(title).toHaveTextContent('RARe');
 
-    const title = tester.element('h1');
-    expect(title).toContainText('RARe');
-
-    const image = tester.element('img');
-    expect(image).not.toBeNull();
+    const image = page.getByCss('img');
+    await expect.element(image).toBeInTheDocument();
   });
 
-  it('should display title and image for application other than rare', async () => {
-    const tester = ComponentTester.create(RareHeaderComponent);
-    tester.componentInstance.isRareApp = false;
+  test('should display title and image for application other than rare', async () => {
+    const fixture = TestBed.createComponent(RareHeaderComponent);
+    fixture.componentInstance.isRareApp = false;
 
-    await tester.stable();
+    await fixture.whenStable();
 
-    const title = tester.element('h1');
-    expect(title).toContainText('BRC4EnvBiological');
+    const title = page.getByCss('h1');
+    await expect.element(title).toHaveTextContent('BRC4EnvBiological');
 
-    const image = tester.element('img');
-    expect(image).not.toBeNull();
+    const image = page.getByCss('img');
+    await expect.element(image).toBeInTheDocument();
   });
 });

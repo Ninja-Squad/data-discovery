@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { PillarService } from './pillar.service';
 import { PillarModel } from './models/pillar.model';
@@ -18,7 +19,7 @@ describe('PillarService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('should list pillars', () => {
+  test('should list pillars', () => {
     let actualResults: Array<PillarModel>;
     service.list().subscribe(results => (actualResults = results));
 
@@ -29,7 +30,7 @@ describe('PillarService', () => {
     ] as Array<PillarModel>;
 
     http.expectOne('api/pillars').flush(expectedResults);
-    expect(actualResults).toEqual(expectedResults);
+    expect(actualResults!).toEqual(expectedResults);
 
     http.verify();
   });

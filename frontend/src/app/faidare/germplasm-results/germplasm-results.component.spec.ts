@@ -1,71 +1,38 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../../test/mock';
 
 import { GermplasmResultsComponent } from './germplasm-results.component';
 import { FaidareDocumentModel } from '../faidare-document.model';
 import { Page } from '../../models/page';
-import { ComponentTester, createMock } from 'ngx-speculoos';
 import { ExportService } from '../export.service';
 import { DownloadService } from '../../download.service';
 import { ReplaySubject, Subject } from 'rxjs';
 import { Model, SearchStateService } from '../../search-state.service';
 import { DocumentModel } from '../../models/document.model';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 
-class GermplasmResultsComponentTester extends ComponentTester<GermplasmResultsComponent> {
-  constructor() {
-    super(GermplasmResultsComponent);
-  }
-
-  get rows() {
-    return this.elements('tbody tr');
-  }
-
-  get links() {
-    return this.elements<HTMLAnchorElement>('tbody tr a');
-  }
-
-  get downloadDropdown() {
-    return this.button('#download-dropdown');
-  }
-
-  get downloadSpinner() {
-    return this.downloadDropdown.element('.fa-spinner');
-  }
-
-  get downloadMcpd() {
-    return this.button('#download-mcpd');
-  }
-
-  get downloadPlantMaterial() {
-    return this.button('#download-plant-material');
-  }
-
-  get downloadMiappeExcel() {
-    return this.button('#download-miappe-excel');
-  }
-
-  get headers() {
-    return this.elements<HTMLElement>('th div');
-  }
-
-  get sortedAscHeaders() {
-    return this.elements('th div').filter(
-      testElement => !!testElement.element('.fa-long-arrow-up')
-    );
-  }
-
-  get sortedDescHeaders() {
-    return this.elements('th div').filter(
-      testElement => !!testElement.element('.fa-long-arrow-down')
-    );
-  }
+class GermplasmResultsComponentTester {
+  readonly fixture = TestBed.createComponent(GermplasmResultsComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly rows = page.getByCss('tbody tr');
+  readonly links = page.getByCss('tbody tr a');
+  readonly downloadDropdown = page.getByCss('#download-dropdown');
+  readonly downloadMcpd = page.getByCss('#download-mcpd');
+  readonly downloadPlantMaterial = page.getByCss('#download-plant-material');
+  readonly downloadMiappeExcel = page.getByCss('#download-miappe-excel');
+  readonly downloadSpinner = this.downloadDropdown.getByCss('.fa-spinner');
+  readonly headers = page.getByCss('th div');
+  readonly sortedAscHeaders = page.getByCss('div:has(> .fa-long-arrow-up)');
+  readonly sortedDescHeaders = page.getByCss('div:has(> .fa-long-arrow-down)');
 }
 
 describe('GermplasmResultsComponent', () => {
   let tester: GermplasmResultsComponentTester;
-  let exportService: jasmine.SpyObj<ExportService>;
-  let downloadService: jasmine.SpyObj<DownloadService>;
-  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let exportService: MockObject<ExportService>;
+  let downloadService: MockObject<DownloadService>;
+  let searchStateService: MockObject<SearchStateService>;
   let modelSubject: ReplaySubject<Model>;
 
   let initialModel: Model;
@@ -73,7 +40,7 @@ describe('GermplasmResultsComponent', () => {
   beforeEach(async () => {
     modelSubject = new ReplaySubject<Model>(1);
     searchStateService = createMock(SearchStateService);
-    searchStateService.getModel.and.returnValue(modelSubject);
+    searchStateService.getModel.mockReturnValue(modelSubject);
 
     exportService = createMock(ExportService);
     downloadService = createMock(DownloadService);
@@ -122,51 +89,53 @@ describe('GermplasmResultsComponent', () => {
       }
     } as Model;
     modelSubject.next(initialModel);
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display a table of results', () => {
-    expect(tester.rows.length).toBe(2);
-    expect(tester.links[0].attr('href')).toBe('http://localhost:8380/faidare-dev/germplasms/g1');
-    expect(tester.links[0]).toHaveText('Germplasm 1');
-    expect(tester.rows[0]).toContainText('SP1, SP2');
-    expect(tester.rows[0]).toContainText('Institute 1');
-    expect(tester.rows[0]).toContainText('Natural');
-    expect(tester.rows[0]).toContainText('France');
-    expect(tester.rows[0]).toContainText('Acc1');
+  test('should display a table of results', async () => {
+    expect(tester.rows).toHaveLength(2);
+    await expect(tester.links.nth(0).element().getAttribute('href')).toBe(
+      'http://localhost:8380/faidare-dev/germplasms/g1'
+    );
+    await expect.element(tester.links.nth(0)).toHaveTextContent('Germplasm 1');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('SP1, SP2');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('Institute 1');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('Natural');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('France');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('Acc1');
   });
 
-  /*it('should download MCPD results', () => {
+  /*test('should download MCPD results', () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
-    exportService.export.and.returnValue(blobSubject);
+    exportService.export.mockReturnValue(blobSubject);
 
-    expect(tester.downloadMcpdSpinner).toBeNull();
+    await expect.element(tester.downloadMcpdSpinner).not.toBeInTheDocument();
 
     tester.downloadMcpd.click();
 
-    expect(tester.downloadMcpdSpinner).not.toBeNull();
+    await expect.element(tester.downloadMcpdSpinner).toBeInTheDocument();
     expect(exportService.export).toHaveBeenCalledWith(initialModel.searchCriteria, 'mcpd');
 
     blobSubject.next(blob);
     blobSubject.complete();
-    tester.detectChanges();
+    tester.fixture.detectChanges();
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'mcpd.csv');
-    expect(tester.downloadMcpdSpinner).toBeNull();
+    await expect.element(tester.downloadMcpdSpinner).not.toBeInTheDocument();
   });*/
 
-  it('should download plant material results (CSV)', async () => {
+  test('should download plant material results (CSV)', async () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
-    exportService.export.and.returnValue(blobSubject);
+    exportService.export.mockReturnValue(blobSubject);
 
-    expect(tester.downloadSpinner).toBeNull();
+    await expect.element(tester.downloadSpinner).not.toBeInTheDocument();
 
     await tester.downloadDropdown.click();
     await tester.downloadPlantMaterial.click();
 
-    expect(tester.downloadSpinner).not.toBeNull();
+    await expect.element(tester.downloadSpinner).toBeInTheDocument();
     expect(exportService.export).toHaveBeenCalledWith(
       initialModel.searchCriteria,
       'plant-material'
@@ -174,38 +143,38 @@ describe('GermplasmResultsComponent', () => {
 
     blobSubject.next(blob);
     blobSubject.complete();
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'plant-material.csv');
-    expect(tester.downloadSpinner).toBeNull();
+    await expect.element(tester.downloadSpinner).not.toBeInTheDocument();
   });
 
-  it('should download miappe results (Excel)', async () => {
+  test('should download miappe results (Excel)', async () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();
-    exportService.export.and.returnValue(blobSubject);
+    exportService.export.mockReturnValue(blobSubject);
 
-    expect(tester.downloadSpinner).toBeNull();
+    await expect.element(tester.downloadSpinner).not.toBeInTheDocument();
 
     await tester.downloadDropdown.click();
     await tester.downloadMiappeExcel.click();
 
-    expect(tester.downloadSpinner).not.toBeNull();
+    await expect.element(tester.downloadSpinner).toBeInTheDocument();
     expect(exportService.export).toHaveBeenCalledWith(initialModel.searchCriteria, 'miappe-excel');
 
     blobSubject.next(blob);
     blobSubject.complete();
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     expect(downloadService.download).toHaveBeenCalledWith(blob, 'miappe.xlsx');
-    expect(tester.downloadSpinner).toBeNull();
+    await expect.element(tester.downloadSpinner).not.toBeInTheDocument();
   });
 
-  it('should sort', async () => {
+  test('should sort', async () => {
     expect(tester.sortedAscHeaders.length).toBe(0);
     expect(tester.sortedDescHeaders.length).toBe(0);
 
-    const speciesHeader = tester.headers[2];
+    const speciesHeader = tester.headers.nth(2);
     await speciesHeader.click();
 
     expect(searchStateService.sort).toHaveBeenCalledWith({
@@ -224,11 +193,11 @@ describe('GermplasmResultsComponent', () => {
         }
       }
     });
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.sortedAscHeaders.length).toBe(1);
-    expect(tester.sortedAscHeaders[0]).toContainText('Species');
-    expect(tester.sortedDescHeaders.length).toBe(0);
+    await expect.element(tester.sortedAscHeaders).toHaveLength(1);
+    await expect.element(tester.sortedAscHeaders.nth(0)).toHaveTextContent('Species');
+    await expect.element(tester.sortedDescHeaders).toHaveLength(0);
 
     await speciesHeader.click();
 
@@ -248,11 +217,11 @@ describe('GermplasmResultsComponent', () => {
         }
       }
     });
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.sortedAscHeaders.length).toBe(0);
-    expect(tester.sortedDescHeaders.length).toBe(1);
-    expect(tester.sortedDescHeaders[0]).toContainText('Species');
+    await expect.element(tester.sortedAscHeaders).toHaveLength(0);
+    await expect.element(tester.sortedDescHeaders).toHaveLength(1);
+    await expect.element(tester.sortedDescHeaders.nth(0)).toHaveTextContent('Species');
 
     await speciesHeader.click();
 
@@ -272,10 +241,10 @@ describe('GermplasmResultsComponent', () => {
         }
       }
     });
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.sortedAscHeaders.length).toBe(1);
-    expect(tester.sortedAscHeaders[0]).toContainText('Species');
-    expect(tester.sortedDescHeaders.length).toBe(0);
+    await expect.element(tester.sortedAscHeaders).toHaveLength(1);
+    await expect.element(tester.sortedAscHeaders.nth(0)).toHaveTextContent('Species');
+    await expect.element(tester.sortedDescHeaders).toHaveLength(0);
   });
 });

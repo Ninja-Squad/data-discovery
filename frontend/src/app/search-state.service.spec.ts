@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { Model, SearchStateService } from './search-state.service';
 import { SearchService } from './search.service';
-import { Params, Router } from '@angular/router';
-import { ActivatedRouteStub, createMock, stubRoute } from 'ngx-speculoos';
+import { ActivatedRoute, Params, provideRouter, Router } from '@angular/router';
+import { createMock, MockObject } from '../test/mock';
 import { toAggregation, toRareDocument, toSecondPage } from './models/test-model-generators';
 import { of, Subject } from 'rxjs';
 import { DocumentModel } from './models/document.model';
@@ -11,28 +12,28 @@ import { Aggregation, Page } from './models/page';
 
 describe('SearchStateService', () => {
   let service!: SearchStateService;
-  let searchService!: jasmine.SpyObj<SearchService>;
-  let router!: jasmine.SpyObj<Router>;
+  let searchService!: MockObject<SearchService>;
+  let router!: Router;
 
   beforeEach(() => {
     searchService = createMock(SearchService);
-    router = createMock(Router);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: SearchService, useValue: searchService },
-        { provide: Router, useValue: router },
+        provideRouter([]),
         SearchStateService
       ]
     });
 
+    router = TestBed.inject(Router);
     service = TestBed.inject(SearchStateService);
   });
 
-  afterEach(() => jasmine.clock().uninstall());
+  afterEach(() => vi.useRealTimers());
 
-  it('should initialize state with query parameters and fragment', () => {
-    const route = stubRoute({
+  test('should initialize state with query parameters and fragment', async () => {
+    await router.navigate([], {
       queryParams: {
         query: 'Test',
         page: '2',
@@ -44,15 +45,16 @@ describe('SearchStateService', () => {
       },
       fragment: 'germplasm'
     });
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    const documents = toSecondPage([toRareDocument('Test')]);
+    searchService.search.mockReturnValue(of(documents));
+    const aggregations = [toAggregation('entry', ['Germplasm'])];
+    searchService.aggregate.mockReturnValue(of(aggregations));
 
+    const route = TestBed.inject(ActivatedRoute);
     const model$ = service.initialize(route);
 
-    const documents = toSecondPage([toRareDocument('Test')]);
-    searchService.search.and.returnValue(of(documents));
-    const aggregations = [toAggregation('entry', ['Germplasm'])];
-    searchService.aggregate.and.returnValue(of(aggregations));
-
-    let model: Model;
+    let model: Model | undefined;
     model$.subscribe(m => (model = m));
 
     expect(model!).toEqual({
@@ -83,19 +85,16 @@ describe('SearchStateService', () => {
       aggregationsLoading: false
     });
 
-    expect(router.navigate).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('should initialize state without loading status if it does not take too much time', () => {
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
-    const route = stubRoute({
+  test('should initialize state without loading status if it does not take too much time', async () => {
+    vi.useFakeTimers();
+    await router.navigate([], {
       queryParams: {
         query: 'Test'
       }
     });
-
-    const model$ = service.initialize(route);
 
     const documents = toSecondPage([toRareDocument('Test')]);
     const aggregations = [toAggregation('entry', ['Germplasm'])];
@@ -103,19 +102,22 @@ describe('SearchStateService', () => {
     const documentsSubject = new Subject<Page<DocumentModel>>();
     const aggregationsSubject = new Subject<Array<Aggregation>>();
 
-    searchService.search.and.returnValue(documentsSubject);
-    searchService.aggregate.and.returnValue(aggregationsSubject);
+    searchService.search.mockReturnValue(documentsSubject);
+    searchService.aggregate.mockReturnValue(aggregationsSubject);
 
-    let model: Model;
+    const route = TestBed.inject(ActivatedRoute);
+    const model$ = service.initialize(route);
+
+    let model: Model | undefined;
     model$.subscribe(m => (model = m));
-    expect(model!).toBeFalsy();
+    expect(model).toBeFalsy();
 
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     documentsSubject.next(documents);
     documentsSubject.complete();
     expect(model!).toBeFalsy();
 
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     aggregationsSubject.next(aggregations);
     aggregationsSubject.complete();
     expect(model!).toEqual({
@@ -135,16 +137,13 @@ describe('SearchStateService', () => {
     });
   });
 
-  it('should initialize state with loading status if it does takes too much time', () => {
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
-    const route = stubRoute({
+  test('should initialize state with loading status if it does takes too much time', async () => {
+    vi.useFakeTimers();
+    await router.navigate([], {
       queryParams: {
         query: 'Test'
       }
     });
-
-    const model$ = service.initialize(route);
 
     const documents = toSecondPage([toRareDocument('Test')]);
     const aggregations = [toAggregation('entry', ['Germplasm'])];
@@ -152,14 +151,17 @@ describe('SearchStateService', () => {
     const documentsSubject = new Subject<Page<DocumentModel>>();
     const aggregationsSubject = new Subject<Array<Aggregation>>();
 
-    searchService.search.and.returnValue(documentsSubject);
-    searchService.aggregate.and.returnValue(aggregationsSubject);
+    searchService.search.mockReturnValue(documentsSubject);
+    searchService.aggregate.mockReturnValue(aggregationsSubject);
 
-    let model: Model;
+    const route = TestBed.inject(ActivatedRoute);
+    const model$ = service.initialize(route);
+
+    let model: Model | undefined;
     model$.subscribe(m => (model = m));
-    expect(model!).toBeFalsy();
+    expect(model).toBeFalsy();
 
-    jasmine.clock().tick(600);
+    vi.advanceTimersByTime(600);
     expect(model!).toEqual({
       searchCriteria: {
         query: 'Test',
@@ -211,28 +213,28 @@ describe('SearchStateService', () => {
     });
   });
 
-  it('should set loading to false if an error occurs', () => {
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
-    const route = stubRoute({
+  test('should set loading to false if an error occurs', async () => {
+    vi.useFakeTimers();
+    await router.navigate([], {
       queryParams: {
         query: 'Test'
       }
     });
 
-    const model$ = service.initialize(route);
-
     const documentsSubject = new Subject<Page<DocumentModel>>();
     const aggregationsSubject = new Subject<Array<Aggregation>>();
 
-    searchService.search.and.returnValue(documentsSubject);
-    searchService.aggregate.and.returnValue(aggregationsSubject);
+    searchService.search.mockReturnValue(documentsSubject);
+    searchService.aggregate.mockReturnValue(aggregationsSubject);
 
-    let model: Model;
+    const route = TestBed.inject(ActivatedRoute);
+    const model$ = service.initialize(route);
+
+    let model: Model | undefined;
     model$.subscribe(m => (model = m));
-    expect(model!).toBeFalsy();
+    expect(model).toBeFalsy();
 
-    jasmine.clock().tick(600);
+    vi.advanceTimersByTime(600);
     expect(model!).toEqual({
       searchCriteria: {
         query: 'Test',
@@ -286,13 +288,13 @@ describe('SearchStateService', () => {
 
   describe('once initialized', () => {
     let model: Model;
-    let route: ActivatedRouteStub;
+    let route: ActivatedRoute;
 
     let initialDocuments: Page<DocumentModel>;
     let initialAggregations: Array<Aggregation>;
 
-    beforeEach(() => {
-      route = stubRoute({
+    beforeEach(async () => {
+      await router.navigate([], {
         queryParams: {
           query: 'Test',
           page: '2',
@@ -304,30 +306,34 @@ describe('SearchStateService', () => {
         },
         fragment: 'germplasm'
       });
-
-      const model$ = service.initialize(route);
+      route = TestBed.inject(ActivatedRoute);
 
       initialDocuments = toSecondPage([toRareDocument('Test')]);
       initialAggregations = [toAggregation('entry', ['Germplasm'])];
 
-      searchService.search.and.returnValue(of(initialDocuments));
-      searchService.aggregate.and.returnValue(of(initialAggregations));
+      searchService.search.mockReturnValue(of(initialDocuments));
+      searchService.aggregate.mockReturnValue(of(initialAggregations));
+
+      const model$ = service.initialize(route);
 
       model$.subscribe(m => (model = m));
 
-      searchService.search.calls.reset();
-      searchService.aggregate.calls.reset();
-      router.navigate.calls.reset();
+      // Wait for initial model to be set
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      searchService.search.mockReset();
+      searchService.aggregate.mockReset();
     });
 
-    it('should start a new search and navigate', () => {
+    test('should start a new search and navigate', async () => {
       const documents = toSecondPage([toRareDocument('Test2')]);
       const aggregations = [toAggregation('entry', ['Germplasm2'])];
 
       const documentsSubject = new Subject<Page<DocumentModel>>();
       const aggregationsSubject = new Subject<Array<Aggregation>>();
-      searchService.search.and.returnValue(documentsSubject);
-      searchService.aggregate.and.returnValue(aggregationsSubject);
+      searchService.search.mockReturnValue(documentsSubject);
+      searchService.aggregate.mockReturnValue(aggregationsSubject);
+      const navigateSpy = vi.spyOn(router, 'navigate');
 
       service.newSearch('Test2');
       const expectedQueryParams: Params = {
@@ -335,13 +341,13 @@ describe('SearchStateService', () => {
         page: 1,
         descendants: false
       };
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(navigateSpy).toHaveBeenCalledWith(['.'], {
         relativeTo: route,
         queryParams: expectedQueryParams,
         fragment: undefined
       });
 
-      route.triggerNavigation({
+      await router.navigate([], {
         queryParams: expectedQueryParams,
         fragment: null
       });
@@ -368,14 +374,16 @@ describe('SearchStateService', () => {
       });
     });
 
-    it('should change aggregations and navigate', () => {
+    test('should change aggregations and navigate', async () => {
       const documents = toSecondPage([toRareDocument('Test2')]);
       const aggregations = [toAggregation('entry', ['Germplasm2'])];
 
       const documentsSubject = new Subject<Page<DocumentModel>>();
       const aggregationsSubject = new Subject<Array<Aggregation>>();
-      searchService.search.and.returnValue(documentsSubject);
-      searchService.aggregate.and.returnValue(aggregationsSubject);
+      searchService.search.mockReturnValue(documentsSubject);
+      searchService.aggregate.mockReturnValue(aggregationsSubject);
+
+      const navigateSpy = vi.spyOn(router, 'navigate');
 
       service.changeAggregations([{ name: 'coo', values: ['BE'] }]);
       const expectedQueryParams: Params = {
@@ -386,13 +394,16 @@ describe('SearchStateService', () => {
         sort: 'name',
         direction: 'desc'
       };
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(navigateSpy).toHaveBeenCalledWith(['.'], {
         relativeTo: route,
         queryParams: expectedQueryParams,
         fragment: 'germplasm'
       });
 
-      route.setQueryParams(expectedQueryParams);
+      await router.navigate([], {
+        queryParams: expectedQueryParams,
+        fragment: 'germplasm'
+      });
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).toHaveBeenCalled();
@@ -420,14 +431,16 @@ describe('SearchStateService', () => {
       });
     });
 
-    it('should change search descendants and navigate', () => {
+    test('should change search descendants and navigate', async () => {
       const documents = toSecondPage([toRareDocument('Test2')]);
       const aggregations = [toAggregation('entry', ['Germplasm2'])];
 
       const documentsSubject = new Subject<Page<DocumentModel>>();
       const aggregationsSubject = new Subject<Array<Aggregation>>();
-      searchService.search.and.returnValue(documentsSubject);
-      searchService.aggregate.and.returnValue(aggregationsSubject);
+      searchService.search.mockReturnValue(documentsSubject);
+      searchService.aggregate.mockReturnValue(aggregationsSubject);
+
+      const navigateSpy = vi.spyOn(router, 'navigate');
 
       service.changeSearchDescendants(false);
       const expectedQueryParams: Params = {
@@ -439,13 +452,16 @@ describe('SearchStateService', () => {
         direction: 'desc',
         descendants: false
       };
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(navigateSpy).toHaveBeenCalledWith(['.'], {
         relativeTo: route,
         queryParams: expectedQueryParams,
         fragment: 'germplasm'
       });
 
-      route.setQueryParams(expectedQueryParams);
+      await router.navigate([], {
+        queryParams: expectedQueryParams,
+        fragment: 'germplasm'
+      });
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).toHaveBeenCalled();
@@ -476,11 +492,13 @@ describe('SearchStateService', () => {
       });
     });
 
-    it('should sort and navigate, and not aggregate again', () => {
+    test('should sort and navigate, and not aggregate again', async () => {
       const documents = toSecondPage([toRareDocument('Test2')]);
 
       const documentsSubject = new Subject<Page<DocumentModel>>();
-      searchService.search.and.returnValue(documentsSubject);
+      searchService.search.mockReturnValue(documentsSubject);
+
+      const navigateSpy = vi.spyOn(router, 'navigate');
 
       service.sort({ sort: 'accession', direction: 'asc' });
       const expectedQueryParams: Params = {
@@ -492,13 +510,16 @@ describe('SearchStateService', () => {
         direction: 'asc',
         descendants: true
       };
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(navigateSpy).toHaveBeenCalledWith(['.'], {
         relativeTo: route,
         queryParams: expectedQueryParams,
         fragment: 'germplasm'
       });
 
-      route.setQueryParams(expectedQueryParams);
+      await router.navigate([], {
+        queryParams: expectedQueryParams,
+        fragment: 'germplasm'
+      });
 
       expect(searchService.search).toHaveBeenCalled();
       expect(searchService.aggregate).not.toHaveBeenCalled();
@@ -528,7 +549,7 @@ describe('SearchStateService', () => {
       });
     });
 
-    it('should disable aggregation', () => {
+    test('should disable aggregation', () => {
       service.disableAggregation('entry');
 
       expect(model!).toEqual({
@@ -554,17 +575,19 @@ describe('SearchStateService', () => {
       });
     });
 
-    it('should update model when query params and fragment change', () => {
+    test('should update model when query params and fragment change', async () => {
       const documents = toSecondPage([toRareDocument('Test2')]);
       const aggregations = [toAggregation('entry', ['Germplasm2'])];
 
       const documentsSubject = new Subject<Page<DocumentModel>>();
       const aggregationsSubject = new Subject<Array<Aggregation>>();
-      searchService.search.and.returnValue(documentsSubject);
-      searchService.aggregate.and.returnValue(aggregationsSubject);
+      searchService.search.mockReturnValue(documentsSubject);
+      searchService.aggregate.mockReturnValue(aggregationsSubject);
 
-      route.triggerNavigation({
-        queryParams: { query: 'foo' },
+      await router.navigate([], {
+        queryParams: {
+          query: 'foo'
+        },
         fragment: null
       });
 

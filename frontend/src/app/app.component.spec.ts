@@ -1,9 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { AppComponent } from './app.component';
-import { ComponentTester } from 'ngx-speculoos';
-import { provideI18nTesting } from './i18n/mock-18n.spec';
-import { provideRouter } from '@angular/router';
+import { provideI18nTesting } from './i18n/mock-18n';
+
+class AppComponentTester {
+  readonly componentInstance = TestBed.createComponent(AppComponent).componentInstance;
+}
 
 describe('AppComponent', () => {
   beforeEach(() =>
@@ -12,10 +16,9 @@ describe('AppComponent', () => {
     })
   );
 
-  it('should create the app', async () => {
-    const tester = new ComponentTester(AppComponent);
+  test('should create the app', async () => {
+    const tester = new AppComponentTester();
     const app = tester.componentInstance;
-    await tester.stable();
     expect(app).toBeTruthy();
   });
 });

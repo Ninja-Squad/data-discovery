@@ -1,9 +1,11 @@
 import { NodeDetailsComponent } from './node-details.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TypedNodeDetails } from '../ontology.model';
-import { ComponentTester } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: '<dd-node-details [node]="node()" />',
@@ -21,13 +23,13 @@ class TestComponent {
   } as TypedNodeDetails);
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly root = page.elementLocator(this.fixture.nativeElement);
   get nodeDetailsComponent(): NodeDetailsComponent {
-    return this.component(NodeDetailsComponent);
+    return this.fixture.debugElement.query(By.directive(NodeDetailsComponent))
+      ?.componentInstance as NodeDetailsComponent;
   }
 }
 
@@ -38,28 +40,28 @@ describe('NodeDetailsComponent', () => {
     TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
 
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display an ontology', () => {
-    expect(tester.testElement).toContainText('Test 1');
-    expect(tester.testElement).toContainText('Ontology');
+  test('should display an ontology', async () => {
+    await expect.element(tester.root).toHaveTextContent('Test 1');
+    await expect.element(tester.root).toHaveTextContent('Ontology');
   });
 
-  it('should display a trait class', async () => {
+  test('should display a trait class', async () => {
     tester.componentInstance.node.set({
       type: 'TRAIT_CLASS',
       details: {
         name: 'Test 1'
       }
     } as TypedNodeDetails);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.testElement).toContainText('Test 1');
-    expect(tester.testElement).toContainText('Trait class');
+    await expect.element(tester.root).toHaveTextContent('Test 1');
+    await expect.element(tester.root).toHaveTextContent('Trait class');
   });
 
-  it('should display a trait', async () => {
+  test('should display a trait', async () => {
     tester.componentInstance.node.set({
       type: 'TRAIT',
       details: {
@@ -68,13 +70,13 @@ describe('NodeDetailsComponent', () => {
         alternativeAbbreviations: []
       }
     } as TypedNodeDetails);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.testElement).toContainText('Test 1');
-    expect(tester.testElement).toContainText('Trait');
+    await expect.element(tester.root).toHaveTextContent('Test 1');
+    await expect.element(tester.root).toHaveTextContent('Trait');
   });
 
-  it('should display a variable', async () => {
+  test('should display a variable', async () => {
     tester.componentInstance.node.set({
       type: 'VARIABLE',
       details: {
@@ -88,15 +90,15 @@ describe('NodeDetailsComponent', () => {
         }
       }
     } as TypedNodeDetails);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.testElement).toContainText('Test 1');
-    expect(tester.testElement).toContainText('Variable');
+    await expect.element(tester.root).toHaveTextContent('Test 1');
+    await expect.element(tester.root).toHaveTextContent('Variable');
   });
 
-  it('should tell if a value is a URL or not', () => {
-    expect(tester.nodeDetailsComponent.isUrl('foo')).toBeFalse();
-    expect(tester.nodeDetailsComponent.isUrl('http://foo.com')).toBeTrue();
-    expect(tester.nodeDetailsComponent.isUrl('https://foo.com')).toBeTrue();
+  test('should tell if a value is a URL or not', () => {
+    expect(tester.nodeDetailsComponent.isUrl('foo')).toBe(false);
+    expect(tester.nodeDetailsComponent.isUrl('http://foo.com')).toBe(true);
+    expect(tester.nodeDetailsComponent.isUrl('https://foo.com')).toBe(true);
   });
 });

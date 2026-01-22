@@ -1,20 +1,20 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { WheatisHeaderComponent } from './wheatis-header.component';
-import { ComponentTester } from 'ngx-speculoos';
 
 describe('WheatisHeaderComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should display title and image', async () => {
-    const tester = ComponentTester.create(WheatisHeaderComponent);
+  test('should display title and image', async () => {
+    const fixture = TestBed.createComponent(WheatisHeaderComponent);
+    await fixture.whenStable();
 
-    await tester.stable();
+    const title = page.getByCss('h1');
+    await expect.element(title).toHaveTextContent('WheatIS');
 
-    const title = tester.element('h1');
-    expect(title).toContainText('WheatIS');
-
-    const image = tester.element('img');
-    expect(image).not.toBeNull();
+    const image = page.getByCss('img');
+    await expect.element(image).toBeInTheDocument();
   });
 });

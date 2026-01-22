@@ -191,6 +191,10 @@
       "TRAIT": "Trait",
       "VARIABLE": "Variable"
     },
+    "node": {
+      "expand": "Expand {{ name }}",
+      "collapse": "Collapse {{ name }}"
+    },
     "node-details": {
       "ontology-name": "Ontology name",
       "version": "Version",

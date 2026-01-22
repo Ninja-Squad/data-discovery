@@ -7,9 +7,9 @@ stages:
   - deploy-staging
   - deploy-production
 
-# The image contains a JDK 17 and a Chrome browser
+# The image contains a JDK 17
 # Node and pnpm are installed by Gradle
-image: cimg/openjdk:17.0.13-browsers
+image: cimg/openjdk:17.0.13
 
 workflow:
   rules:

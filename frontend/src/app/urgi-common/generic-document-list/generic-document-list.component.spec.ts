@@ -1,29 +1,27 @@
 import { TestBed } from '@angular/core/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../../test/mock';
 
 import { GenericDocumentListComponent } from './generic-document-list.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
-import { GenericDocumentComponent } from '../generic-document/generic-document.component';
 import { SearchStateService } from '../../search-state.service';
 import { toSinglePage } from '../../models/test-model-generators';
 import { of } from 'rxjs';
 
-class GenericDocumentListComponentTester extends ComponentTester<GenericDocumentListComponent> {
+class GenericDocumentListComponentTester {
   constructor() {
-    super(GenericDocumentListComponent);
+    TestBed.createComponent(GenericDocumentListComponent);
   }
-
-  get results() {
-    return this.elements(GenericDocumentComponent);
-  }
+  readonly results = page.getByCss('dd-document');
 }
 
 describe('GenericDocumentListComponent', () => {
   let tester: GenericDocumentListComponentTester;
-  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let searchStateService: MockObject<SearchStateService>;
 
   beforeEach(async () => {
     searchStateService = createMock(SearchStateService);
-    searchStateService.getDocuments.and.returnValue(
+    searchStateService.getDocuments.mockReturnValue(
       of(toSinglePage([{ name: 'doc 1', description: 'desc 1', identifier: 'd1', species: [] }]))
     );
 
@@ -31,10 +29,9 @@ describe('GenericDocumentListComponent', () => {
       providers: [{ provide: SearchStateService, useValue: searchStateService }]
     });
     tester = new GenericDocumentListComponentTester();
-    await tester.stable();
   });
 
-  it('should list documents', () => {
-    expect(tester.results.length).toBe(1);
+  test('should list documents', async () => {
+    await expect.element(tester.results).toHaveLength(1);
   });
 });

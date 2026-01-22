@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { Basket, BasketItem } from './basket.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -15,7 +16,7 @@ describe('BasketService', () => {
     service = TestBed.inject(BasketSenderService);
   });
 
-  it('should send the basket', () => {
+  test('should send the basket', () => {
     const basket: Basket = {
       items: [
         {

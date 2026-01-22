@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { filter, map, Observable, ReplaySubject } from 'rxjs';
-import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
-
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../test/mock';
 import { SearchComponent } from './search.component';
 import {
   toAggregation,
@@ -12,76 +13,57 @@ import {
   toSinglePage
 } from '../models/test-model-generators';
 import { AggregationsComponent } from '../aggregations/aggregations.component';
-import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 import { BasketService } from '../urgi-common/basket/basket.service';
 import { Model, SearchStateService } from '../search-state.service';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { GenericDocumentComponent } from '../urgi-common/generic-document/generic-document.component';
+import { By } from '@angular/platform-browser';
+import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 
-class SearchComponentTester extends ComponentTester<SearchComponent> {
-  constructor() {
-    super(SearchComponent);
-  }
-
-  get searchBar() {
-    return this.input('input')!;
-  }
-
-  get searchButton() {
-    return this.button('button')!;
-  }
-
-  get loaders() {
-    return this.elements('.loading');
-  }
-
-  get results() {
-    return this.elements(GenericDocumentComponent);
-  }
-
+class SearchComponentTester {
+  readonly fixture = TestBed.createComponent(SearchComponent);
+  readonly searchBar = page.getByCss('#query');
+  readonly searchButton = page.getByRole('button', { name: 'Search' });
+  readonly loaders = page.getByCss('.loading');
+  readonly filterToggler = page.getByCss('.filter-toggler');
+  readonly caretUp = page.getByCss('.fa-caret-up');
+  readonly caretDown = page.getByCss('.fa-caret-down');
+  readonly results = page.getByCss('dd-document');
   get pagination() {
-    return this.component(NgbPagination);
+    return this.fixture.debugElement.query(By.directive(NgbPagination))
+      ?.componentInstance as NgbPagination;
   }
-
   get aggregations() {
-    return this.elements(SmallAggregationComponent);
+    return this.fixture.debugElement.queryAll(By.directive(SmallAggregationComponent));
   }
-
   get aggregationsComponent() {
-    return this.component(AggregationsComponent);
-  }
-
-  get filterToggler() {
-    return this.button('.filter-toggler');
+    return this.fixture.debugElement.query(By.directive(AggregationsComponent))
+      ?.componentInstance as AggregationsComponent;
   }
 }
 
 describe('SearchComponent', () => {
-  let basketService: jasmine.SpyObj<BasketService>;
-  let searchStateService: jasmine.SpyObj<SearchStateService>;
+  let basketService: MockObject<BasketService>;
+  let searchStateService: MockObject<SearchStateService>;
   let modelSubject: ReplaySubject<Model>;
-  let route: ActivatedRoute;
 
   beforeEach(() => {
     basketService = createMock(BasketService);
-    basketService.isEnabled.and.returnValue(true);
-    basketService.isItemInBasket.and.returnValue(false);
+    basketService.isEnabled.mockReturnValue(true);
+    basketService.isItemInBasket.mockReturnValue(false);
 
     modelSubject = new ReplaySubject<Model>();
     searchStateService = createMock(SearchStateService);
-    searchStateService.initialize.and.returnValue(modelSubject);
-    searchStateService.getDocuments.and.returnValue(
+    searchStateService.initialize.mockReturnValue(modelSubject);
+    searchStateService.getDocuments.mockReturnValue(
       modelSubject.pipe(
         map(model => model.documents),
         filter(d => !!d)
       ) as Observable<Page<DocumentModel>>
     );
-
-    route = stubRoute();
 
     TestBed.overrideComponent(SearchComponent, {
       set: { providers: [{ provide: SearchStateService, useValue: searchStateService }] }
@@ -90,15 +72,16 @@ describe('SearchComponent', () => {
       providers: [
         provideHttpClientTesting(),
         provideI18nTesting(),
-        { provide: BasketService, useValue: basketService },
-        { provide: ActivatedRoute, useValue: route }
+        provideRouter([]),
+        { provide: BasketService, useValue: basketService }
       ]
     });
   });
 
-  it('should initialize state service when created', async () => {
+  test('should initialize state service when created', async () => {
+    const route = TestBed.inject(ActivatedRoute);
     const tester = new SearchComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
     expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
     const model: Model = {
@@ -124,11 +107,11 @@ describe('SearchComponent', () => {
       documentsLoading: true,
       documents: null
     });
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.results.length).toBe(0);
-    expect(tester.aggregations.length).toBe(0);
-    expect(tester.loaders.length).toBe(2);
+    await expect.element(tester.results).toHaveLength(0);
+    expect(tester.aggregations).toHaveLength(0);
+    await expect.element(tester.loaders).toHaveLength(2);
     expect(tester.pagination).toBeFalsy();
 
     modelSubject.next({
@@ -136,21 +119,21 @@ describe('SearchComponent', () => {
       documentsLoading: true,
       documents: null
     });
-    await tester.stable();
-    expect(tester.results.length).toBe(0);
-    expect(tester.aggregations.length).toBe(2);
-    expect(tester.loaders.length).toBe(1);
+    await tester.fixture.whenStable();
+    await expect.element(tester.results).toHaveLength(0);
+    expect(tester.aggregations).toHaveLength(2);
+    await expect.element(tester.loaders).toHaveLength(1);
     expect(tester.pagination).toBeFalsy();
 
     modelSubject.next(model);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     // then the search should be populated
-    expect(tester.searchBar).toHaveValue('Bacteria');
+    await expect.element(tester.searchBar).toHaveValue('Bacteria');
     // and the results fetched
-    expect(tester.results.length).toBe(2);
-    expect(tester.aggregations.length).toBe(2);
-    expect(tester.loaders.length).toBe(0);
+    await expect.element(tester.results).toHaveLength(2);
+    expect(tester.aggregations).toHaveLength(2);
+    await expect.element(tester.loaders).toHaveLength(0);
     expect(tester.pagination).toBeTruthy();
   });
 
@@ -159,8 +142,9 @@ describe('SearchComponent', () => {
     let initialModel: Model;
 
     beforeEach(async () => {
+      const route = TestBed.inject(ActivatedRoute);
       tester = new SearchComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
 
       expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
@@ -181,55 +165,55 @@ describe('SearchComponent', () => {
       };
 
       modelSubject.next(initialModel);
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should change aggregation', async () => {
+    test('should change aggregation', async () => {
       const event: Array<AggregationCriterion> = [];
-      tester.aggregationsComponent.aggregationsChange.emit(event);
-      await tester.stable();
+      tester.aggregationsComponent!.aggregationsChange.emit(event);
+      await tester.fixture.whenStable();
 
       expect(searchStateService.changeAggregations).toHaveBeenCalledWith(event);
     });
 
-    it('should change page', async () => {
-      tester.pagination.pageChange.emit(1);
-      await tester.stable();
+    test('should change page', async () => {
+      tester.pagination!.pageChange.emit(1);
+      await tester.fixture.whenStable();
 
       expect(searchStateService.changePage).toHaveBeenCalledWith(1);
     });
 
-    it('should change search descendants', async () => {
+    test('should change search descendants', async () => {
       const event = true;
-      tester.aggregationsComponent.searchDescendants.set(event);
-      await tester.stable();
+      tester.aggregationsComponent!.searchDescendants.set(event);
+      await tester.fixture.whenStable();
 
       expect(searchStateService.changeSearchDescendants).toHaveBeenCalledWith(event);
     });
 
-    it('should trigger new search', async () => {
-      await tester.searchBar.fillWith('hello');
+    test('should trigger new search', async () => {
+      await tester.searchBar.fill('hello');
       await tester.searchButton.click();
 
       expect(searchStateService.newSearch).toHaveBeenCalledWith('hello');
     });
 
-    it('should toggle filters', async () => {
-      expect(tester.element('.fa-caret-up')).toBeNull();
-      expect(tester.element('.fa-caret-down')).not.toBeNull();
+    test('should toggle filters', async () => {
+      await expect.element(tester.caretUp).not.toBeInTheDocument();
+      await expect.element(tester.caretDown).toBeInTheDocument();
 
       await tester.filterToggler.click();
 
-      expect(tester.element('.fa-caret-up')).not.toBeNull();
-      expect(tester.element('.fa-caret-down')).toBeNull();
+      await expect.element(tester.caretUp).toBeInTheDocument();
+      await expect.element(tester.caretDown).not.toBeInTheDocument();
 
       await tester.filterToggler.click();
 
-      expect(tester.element('.fa-caret-up')).toBeNull();
-      expect(tester.element('.fa-caret-down')).not.toBeNull();
+      await expect.element(tester.caretUp).not.toBeInTheDocument();
+      await expect.element(tester.caretDown).toBeInTheDocument();
     });
 
-    it('should limit pagination to 500 pages, even if more results', async () => {
+    test('should limit pagination to 500 pages, even if more results', async () => {
       const content: Array<DocumentModel> = [];
       for (let i = 0; i < 20; i++) {
         content.push(toRareDocument(`Bacteria ${i}`));
@@ -245,42 +229,42 @@ describe('SearchComponent', () => {
         ...initialModel,
         documents
       });
-      await tester.stable();
+      await tester.fixture.whenStable();
 
       // then it should limit the pagination to 500 pages in the pagination
       // and a pagination with one page
       expect(tester.pagination).not.toBeNull();
-      expect(tester.pagination.page).toBe(201);
-      expect(tester.pagination.pageCount).toBe(500);
+      expect(tester.pagination!.page).toBe(201);
+      expect(tester.pagination!.pageCount).toBe(500);
     });
 
-    it('should not display pagination if empty result', async () => {
+    test('should not display pagination if empty result', async () => {
       modelSubject.next({
         ...initialModel,
         documents: toSinglePage([])
       });
-      await tester.stable();
-      expect(tester.pagination).toBeNull();
+      await tester.fixture.whenStable();
+      expect(tester.pagination).toBeFalsy();
     });
 
-    it('should not display pagination if only one page of results', async () => {
+    test('should not display pagination if only one page of results', async () => {
       modelSubject.next({
         ...initialModel,
         documents: toSinglePage([toRareDocument('Bacteria')])
       });
-      await tester.stable();
+      await tester.fixture.whenStable();
 
-      expect(tester.pagination).toBeNull();
+      expect(tester.pagination).toBeFalsy();
     });
 
-    it('should update criteria when they change', async () => {
+    test('should update criteria when they change', async () => {
       modelSubject.next({
         ...initialModel,
         aggregations: [toAggregation('coo', ['France', 'Italy'])]
       });
-      await tester.stable();
+      await tester.fixture.whenStable();
 
-      expect(tester.aggregations.length).toBe(1);
+      expect(tester.aggregations).toHaveLength(1);
     });
   });
 });

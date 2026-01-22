@@ -1,7 +1,9 @@
-import { AggregationNamePipe } from './aggregation-name.pipe';
 import { TestBed } from '@angular/core/testing';
 import { MissingTranslationHandler } from '@ngx-translate/core';
-import { provideI18nTesting } from './i18n/mock-18n.spec';
+import { beforeEach, describe, expect, test } from 'vitest';
+
+import { AggregationNamePipe } from './aggregation-name.pipe';
+import { provideI18nTesting } from './i18n/mock-18n';
 
 describe('AggregationNamePipe', () => {
   let pipe: AggregationNamePipe;
@@ -30,7 +32,7 @@ describe('AggregationNamePipe', () => {
     pipe = TestBed.runInInjectionContext(() => new AggregationNamePipe());
   });
 
-  it('should return the displayed name of an aggregation', () => {
+  test('should return the displayed name of an aggregation', () => {
     // for known aggregation names
     const cooResult = pipe.transform('coo');
     expect(cooResult).toBe('Country of origin');
@@ -38,7 +40,7 @@ describe('AggregationNamePipe', () => {
     expect(domainResult).toBe('Domain');
   });
 
-  it('should return the key for an unknown aggregation', () => {
+  test('should return the key for an unknown aggregation', () => {
     // for an unknown aggregation names
     const result = pipe.transform('unknown');
     expect(result).toBe('unknown');

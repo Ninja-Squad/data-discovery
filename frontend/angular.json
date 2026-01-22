@@ -446,34 +446,16 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "aot": true,
-            "browsers": "ChromeHeadlessNoSandbox",
-            "main": "src/test.ts",
-            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.cjs",
-            "stylePreprocessorOptions": {
-              "sass": {
-                "silenceDeprecations": ["import"]
-              },
-              "includePaths": ["src/assets/rare/"]
-            },
-            "styles": ["src/styles.scss"],
-            "assets": [
-              {
-                "glob": "*",
-                "input": "src/assets/rare",
-                "output": "/assets"
-              },
-              "src/assets"
+            "runner": "vitest",
+            "runnerConfig": true,
+            "buildTarget": "::development",
+            "browsers": ["chromiumHeadless"],
+            "setupFiles": [
+              "src/test/test.ts"
             ]
-          },
-          "configurations": {
-            "test-multi-browsers": {
-              "browsers": "ChromeHeadlessNoSandbox,FirefoxHeadless"
-            }
           }
         },
         "lint": {

@@ -1,81 +1,44 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
+import { createMock, MockObject } from '../../../../test/mock';
 import { BasketItem, BasketService } from '../basket.service';
 import { LOCATION } from '../../../location.service';
-import { provideI18nTesting } from '../../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../../i18n/mock-18n';
 import { provideDisabledNgbAnimation } from '../../../disable-animations';
 import { BasketCreated, BasketSenderService } from '../basket-sender.service';
 import { of } from 'rxjs';
 
-class BasketComponentTester extends ComponentTester<BasketComponent> {
-  constructor() {
-    super(BasketComponent);
-  }
-
-  get basketCounterAsText() {
-    return this.element('.basket-counter.navbar-text');
-  }
-
-  get basketCounter() {
-    return this.button('.basket-counter.btn');
-  }
-
-  get tooltip() {
-    return document.querySelector('ngb-tooltip-window');
-  }
-
-  get modalWindow(): HTMLElement {
-    return document.querySelector('ngb-modal-window');
-  }
-
-  get modalBackdrop(): HTMLElement {
-    return document.querySelector('ngb-modal-backdrop');
-  }
-
-  get modalBody(): HTMLElement {
-    return document.querySelector('.modal-body');
-  }
-
-  get modalClose(): HTMLElement {
-    return document.querySelector('.btn-close');
-  }
-
-  get sendBasket(): HTMLElement {
-    return document.querySelector('#send-basket');
-  }
-
-  get eulaAgreement(): HTMLElement {
-    return document.querySelector('#eula-agreement');
-  }
-
-  get eulaAgreementError(): HTMLElement {
-    return document.querySelector('#eula-agreement-error');
-  }
-
-  get clearBasket(): HTMLElement {
-    return document.querySelector('#clear-basket');
-  }
-
-  get removeItemFromBasket(): HTMLElement {
-    return document.querySelector('.fa-trash');
-  }
-
-  get modalTitle(): HTMLElement {
-    return document.querySelector('.modal-title');
-  }
+class BasketComponentTester {
+  readonly fixture = TestBed.createComponent(BasketComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly basketCounterAsText = page.getByCss('.basket-counter.navbar-text');
+  readonly basketCounter = page.getByRole('button');
+  readonly tooltip = page.getByCss('ngb-tooltip-window');
+  readonly modalWindow = page.getByCss('ngb-modal-window');
+  readonly modalBackdrop = page.getByCss('ngb-modal-backdrop');
+  readonly modalBody = page.getByCss('.modal-body');
+  readonly modalTitle = page.getByCss('.modal-title');
+  readonly modalClose = page.getByCss('.btn-close');
+  readonly sendBasket = page.getByCss('#send-basket');
+  readonly eulaAgreement = page.getByCss('#eula-agreement');
+  readonly eulaAgreementError = page.getByCss('#eula-agreement-error');
+  readonly clearBasket = page.getByCss('#clear-basket');
+  readonly removeItemFromBasket = page.getByCss('.fa-trash');
 }
 
 describe('BasketComponent', () => {
   let tester: BasketComponentTester;
   let service: BasketService;
-  let basketSenderService: jasmine.SpyObj<BasketSenderService>;
-  let location: jasmine.SpyObj<Location>;
+  let basketSenderService: MockObject<BasketSenderService>;
+  let location: MockObject<Location>;
 
   beforeEach(() => {
     basketSenderService = createMock(BasketSenderService);
-    location = jasmine.createSpyObj<Location>('Location', ['assign']);
+    location = createMock(Location);
+    location.assign = vi.fn();
     TestBed.configureTestingModule({
       providers: [
         provideI18nTesting(),
@@ -87,105 +50,93 @@ describe('BasketComponent', () => {
 
     service = TestBed.inject(BasketService);
     service.clearBasket();
-    spyOn(service, 'isEnabled').and.returnValue(true);
+    vi.spyOn(service, 'isEnabled').mockReturnValue(true);
   });
 
   afterEach(() => {
-    if (tester.modalWindow) {
-      tester.modalWindow.parentElement.removeChild(tester.modalWindow);
+    if (tester.modalWindow.length) {
+      tester.modalWindow.element().parentElement.removeChild(tester.modalWindow.element());
     }
-    if (tester.modalBackdrop) {
-      tester.modalBackdrop.parentElement.removeChild(tester.modalBackdrop);
+    if (tester.modalBackdrop.length) {
+      tester.modalBackdrop.element().parentElement.removeChild(tester.modalBackdrop.element());
     }
-
-    jasmine.clock().uninstall();
+    vi.useRealTimers();
   });
 
-  it('should display the number of items', async () => {
+  test('should display the number of items', async () => {
     tester = new BasketComponentTester();
-    await tester.stable();
     // no item
-    expect(tester.basketCounterAsText).toContainText('0');
+    await expect.element(tester.basketCounterAsText).toHaveTextContent('0');
 
     // when hovering the navbar
-    await tester.basketCounterAsText.dispatchEventOfType('mouseenter');
+    await tester.basketCounterAsText.hover();
 
     // then we should not have the tooltip displayed
-    expect(tester.tooltip).toBeNull();
+    await expect.element(tester.tooltip).not.toBeInTheDocument();
 
     // 1 item
     service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
-    await tester.stable();
-    expect(tester.basketCounter).toContainText('1');
+    await expect.element(tester.basketCounter).toHaveTextContent('1');
 
     // when hovering the navbar
-    await tester.basketCounter.dispatchEventOfType('mouseenter');
+    await tester.basketCounter.hover();
 
     // then we should have the tooltip displayed
-    expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Click to view the item');
+    await expect.element(tester.tooltip).toBeInTheDocument();
+    await expect.element(tester.tooltip).toHaveTextContent('Click to view the item');
 
-    await tester.basketCounter.dispatchEventOfType('mouseleave');
+    await tester.basketCounter.unhover();
 
     // several items
     service.addToBasket({ accession: { url: 'rosa rosae', name: 'rosa rosae' } } as BasketItem);
-    await tester.stable();
-    expect(tester.basketCounter).toContainText('2');
+    await expect.element(tester.basketCounter).toHaveTextContent('2');
 
     // when hovering the navbar
-    await tester.basketCounter.dispatchEventOfType('mouseenter');
+    await tester.basketCounter.hover();
 
     // then we should have the tooltip displayed
-    expect(tester.tooltip).not.toBeNull();
-    expect(tester.tooltip.textContent).toBe('Click to view the 2 items');
+    await expect.element(tester.tooltip).toBeInTheDocument();
+    await expect.element(tester.tooltip).toHaveTextContent('Click to view the 2 items');
   });
 
-  it('should open a summary modal on click', async () => {
+  test('should open a summary modal on click', async () => {
     tester = new BasketComponentTester();
-    await tester.stable();
 
     service.addToBasket({
       accession: { url: 'rosa', name: 'Rosa', taxon: 'TheTaxon' }
     } as BasketItem);
-    await tester.stable();
     await tester.basketCounter.click();
 
-    expect(tester.modalTitle.textContent).toBe('Order summary');
-    expect(tester.modalBody.textContent).toContain('Rosa');
-    expect(tester.modalBody.textContent).toContain('TheTaxon');
+    await expect.element(tester.modalTitle).toHaveTextContent('Order summary');
+    await expect.element(tester.modalBody).toHaveTextContent('Rosa');
+    await expect.element(tester.modalBody).toHaveTextContent('TheTaxon');
 
     // remove item from basket
     await tester.removeItemFromBasket.click();
-    await tester.stable();
 
-    expect(tester.modalBody.textContent).not.toContain('Rosa');
-    expect(tester.modalBody.textContent).toContain('No item');
+    await expect.element(tester.modalBody).not.toHaveTextContent('Rosa');
+    await expect.element(tester.modalBody).toHaveTextContent('No item');
 
     await tester.modalClose.click();
-    expect(tester.modalTitle).toBeNull();
+    await expect.element(tester.modalTitle).not.toBeInTheDocument();
   });
 
-  it('should send the basket', async () => {
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
-    basketSenderService.sendBasket.and.returnValue(of({ reference: 'ABCDEFGH' } as BasketCreated));
+  test('should send the basket', async () => {
+    basketSenderService.sendBasket.mockReturnValue(of({ reference: 'ABCDEFGH' } as BasketCreated));
 
     tester = new BasketComponentTester();
-    await tester.stable();
     const reference = 'ABCDEFGH';
     service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
-    await tester.stable();
-    expect(tester.eulaAgreementError).toBeNull();
+    await expect.element(tester.eulaAgreementError).not.toBeInTheDocument();
+    await expect.element(tester.basketCounter).toBeVisible();
     await tester.basketCounter.click();
 
     await tester.sendBasket.click();
-    jasmine.clock().tick(400); // to resolve the animation
-    await tester.stable();
 
     const basket = service.basket();
 
     // EULA agreement is required
-    expect(tester.eulaAgreementError).not.toBeNull();
+    await expect.element(tester.eulaAgreementError).toBeVisible();
     // agree
     await tester.eulaAgreement.click();
     await tester.sendBasket.click();
@@ -193,29 +144,26 @@ describe('BasketComponent', () => {
     expect(basketSenderService.sendBasket).toHaveBeenCalledWith(basket);
     expect(service.basket().items.length).toBe(0);
 
-    expect(tester.modalTitle).toBeNull();
+    await expect.element(tester.modalTitle).not.toBeInTheDocument();
     expect(location.assign).toHaveBeenCalledWith(
       `http://localhost:4201/rare-basket/baskets/${reference}`
     );
   });
 
-  it('should clear the basket', async () => {
+  test('should clear the basket', async () => {
     tester = new BasketComponentTester();
-    await tester.stable();
     service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
 
-    await tester.stable();
     await tester.basketCounter.click();
 
     await tester.clearBasket.click();
     expect(service.basket().items.length).toBe(0);
   });
 
-  it('should not display if the basket feature is disabled', async () => {
-    (service.isEnabled as jasmine.Spy).and.returnValue(false);
+  test('should not display if the basket feature is disabled', async () => {
+    vi.mocked(service.isEnabled).mockReturnValue(false);
     tester = new BasketComponentTester();
-    await tester.stable();
-    expect(tester.basketCounter).toBeNull();
-    expect(tester.basketCounterAsText).toBeNull();
+    await expect.element(tester.basketCounter).not.toBeInTheDocument();
+    await expect.element(tester.basketCounterAsText).not.toBeInTheDocument();
   });
 });

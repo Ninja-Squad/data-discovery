@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { DescendantsCheckboxComponent } from './descendants-checkbox.component';
-import { ComponentTester } from 'ngx-speculoos';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 
 @Component({
   template:
@@ -21,18 +22,11 @@ class TestComponent {
   }
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
-  get label() {
-    return this.element('label')!;
-  }
-
-  get checkbox() {
-    return this.input('input')!;
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly label = page.getByCss('label');
+  readonly checkbox = page.getByCss('input');
 }
 
 describe('DescendantsCheckboxComponent', () => {
@@ -41,28 +35,28 @@ describe('DescendantsCheckboxComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({ providers: [provideI18nTesting()] });
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display a checkbox and emit changes', async () => {
-    expect(tester.label).toHaveText('Expand search');
-    expect(tester.checkbox).toBeChecked();
+  test('should display a checkbox and emit changes', async () => {
+    await expect.element(tester.label).toHaveTextContent('Expand search');
+    await expect.element(tester.checkbox).toBeChecked();
     // no event
     expect(tester.componentInstance.eventReceived()).toBe(null);
 
     // uncheck
-    await tester.checkbox.uncheck();
-    expect(tester.checkbox).not.toBeChecked();
+    await tester.checkbox.click();
+    await expect.element(tester.checkbox).not.toBeChecked();
     expect(tester.componentInstance.eventReceived()).toBe(false);
 
     // check
-    await tester.checkbox.check();
-    expect(tester.checkbox).toBeChecked();
+    await tester.checkbox.click();
+    await expect.element(tester.checkbox).toBeChecked();
     expect(tester.componentInstance.eventReceived()).toBe(true);
 
     // change input value
     tester.componentInstance.value.set(false);
-    await tester.stable();
-    expect(tester.checkbox).not.toBeChecked();
+    await tester.fixture.whenStable();
+    await expect.element(tester.checkbox).not.toBeChecked();
   });
 });
