@@ -105,26 +105,6 @@ describe('GermplasmResultsComponent', () => {
     await expect.element(tester.rows.nth(0)).toHaveTextContent('Acc1');
   });
 
-  /*test('should download MCPD results', () => {
-    const blob = new Blob();
-    const blobSubject = new Subject<Blob>();
-    exportService.export.mockReturnValue(blobSubject);
-
-    await expect.element(tester.downloadMcpdSpinner).not.toBeInTheDocument();
-
-    tester.downloadMcpd.click();
-
-    await expect.element(tester.downloadMcpdSpinner).toBeInTheDocument();
-    expect(exportService.export).toHaveBeenCalledWith(initialModel.searchCriteria, 'mcpd');
-
-    blobSubject.next(blob);
-    blobSubject.complete();
-    tester.fixture.detectChanges();
-
-    expect(downloadService.download).toHaveBeenCalledWith(blob, 'mcpd.csv');
-    await expect.element(tester.downloadMcpdSpinner).not.toBeInTheDocument();
-  });*/
-
   test('should download plant material results (CSV)', async () => {
     const blob = new Blob();
     const blobSubject = new Subject<Blob>();

@@ -146,6 +146,7 @@ describe('SearchComponent', () => {
       tester = new SearchComponentTester();
       await tester.fixture.whenStable();
 
+      // eslint-disable-next-line vitest/no-standalone-expect
       expect(searchStateService.initialize).toHaveBeenCalledWith(route);
 
       initialModel = {

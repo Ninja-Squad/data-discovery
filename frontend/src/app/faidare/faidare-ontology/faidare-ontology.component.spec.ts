@@ -196,6 +196,7 @@ describe('OntologyComponent', () => {
       tester = new OntologyComponentTester(await RouterTestingHarness.create('/ontology'));
       treeSubject.next(tree);
       treeI18nSubject.next(treeI18n);
+      // eslint-disable-next-line vitest/no-standalone-expect
       await expect.element(tester.tree).toBeVisible();
     });
 
