@@ -448,14 +448,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "tsconfig.spec.json",
-            "runner": "vitest",
             "runnerConfig": true,
-            "buildTarget": "::development",
             "browsers": ["chromiumHeadless"],
-            "setupFiles": [
-              "src/test/test.ts"
-            ]
+            "setupFiles": ["src/test/test.ts"]
           }
         },
         "lint": {
