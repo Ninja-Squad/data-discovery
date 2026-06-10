@@ -1,4 +1,4 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { effect, Service, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 /**
@@ -34,9 +34,7 @@ export interface Basket {
   readonly items: ReadonlyArray<BasketItem>;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class BasketService {
   private readonly _basket = signal<Basket>({ items: [] });
   readonly basket = this._basket.asReadonly();

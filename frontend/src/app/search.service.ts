@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   catchError,
@@ -15,9 +15,7 @@ import { Aggregation, Page } from './models/page';
 import { AggregationCriterion } from './models/aggregation-criterion';
 import { SortCriterion } from './search-state.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class SearchService {
   private http = inject(HttpClient);
 

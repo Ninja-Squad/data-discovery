@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 
 export type NodeSelectionState = 'CHECKED' | 'UNCHECKED' | 'INDETERMINATE';
@@ -120,7 +120,7 @@ export type PayloadPredicate<P> = (payload: P) => boolean;
 const NODE_COMPARATOR = (n1: InternalTreeNode<unknown>, n2: InternalTreeNode<unknown>) =>
   n1.text.localeCompare(n2.text);
 
-@Injectable()
+@Service({ autoProvided: false })
 export class TreeService<P> {
   private tree$ = new BehaviorSubject<InternalTree<P>>({
     rootNodes: [],

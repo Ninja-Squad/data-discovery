@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 
@@ -7,9 +7,7 @@ export interface HttpError {
   message: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class ErrorInterceptorService {
   private errorSubject = new Subject<HttpError>();
 

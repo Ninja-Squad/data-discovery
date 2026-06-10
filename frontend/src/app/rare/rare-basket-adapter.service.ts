@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { BasketAdapter } from '../urgi-common/basket/basket-adapter.service';
 import { DocumentModel } from '../models/document.model';
 import { BasketItem } from '../urgi-common/basket/basket.service';
 import { RareDocumentModel } from './rare-document.model';
 
-@Injectable()
+@Service({ autoProvided: false })
 export class RareBasketAdapter extends BasketAdapter {
   override asBasketItem(document: DocumentModel): BasketItem | null {
     const doc = document as RareDocumentModel;

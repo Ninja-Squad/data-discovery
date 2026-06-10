@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TreeNode } from './faidare/tree/tree.service';
 import { map, Observable, shareReplay } from 'rxjs';
@@ -104,9 +104,7 @@ export interface TreeI18n {
 export const ONTOLOGY_LANGUAGES = ['EN', 'FR', 'ES'] as const;
 export type OntologyLanguage = (typeof ONTOLOGY_LANGUAGES)[number];
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class OntologyService {
   private http = inject(HttpClient);
 

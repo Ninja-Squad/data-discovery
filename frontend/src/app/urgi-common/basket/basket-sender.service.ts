@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -9,9 +9,7 @@ export interface BasketCreated extends Basket {
   reference: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class BasketSenderService {
   private http = inject(HttpClient);
 

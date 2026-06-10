@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { environment } from '../environments/environment';
 
 export interface AnalyticsNavigation {
@@ -14,9 +14,7 @@ interface NavigationCommand extends AnalyticsNavigation {
   application: 'FAIDARE' | 'WHEATIS';
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class AnalyticsService {
   private readonly analyticsProperties = environment.analytics;
 
