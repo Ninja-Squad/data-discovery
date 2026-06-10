@@ -4,7 +4,7 @@ import { SelectAllResultsComponent } from './select-all-results.component';
 import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { BasketItem, BasketService } from '../basket.service';
-import { ChangeDetectionStrategy, Component, Injectable, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Service, signal } from '@angular/core';
 import { toSecondPage, toSinglePage } from '../../../models/test-model-generators';
 import { DocumentModel } from '../../../models/document.model';
 import { BasketAdapter } from '../basket-adapter.service';
@@ -30,7 +30,7 @@ interface TestDocumentModel extends DocumentModel {
   accessionHolder: string | null;
 }
 
-@Injectable()
+@Service({ autoProvided: false })
 class TestBasketAdapter extends BasketAdapter {
   override asBasketItem(document: DocumentModel): BasketItem | null {
     const testDocument = document as TestDocumentModel;

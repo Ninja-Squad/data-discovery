@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { DocumentModel } from '../../models/document.model';
 import { BasketItem } from './basket.service';
 
@@ -6,9 +6,7 @@ import { BasketItem } from './basket.service';
  * A service that must be provided by every application that needs to support baskets.
  * This default implementation is for applications that don't support baskets.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class BasketAdapter {
   /**
    * Transforms the given document into a basket item if it can be transformed, otherwise

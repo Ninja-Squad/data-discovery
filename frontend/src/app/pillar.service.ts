@@ -1,12 +1,10 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { PillarModel } from './models/pillar.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class PillarService {
   private http = inject(HttpClient);
 

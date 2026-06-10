@@ -1,13 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 interface Boundaries {
   startIndex: number;
   endIndex: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class HighlightService {
   /**
    * Truncates highlighted text (i.e. text containing words highlighted with `<em>word</em>`) so that it's at most

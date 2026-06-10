@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { Observable } from 'rxjs';
@@ -27,9 +27,7 @@ const EXPORT_ENDPOINTS: Record<ExportType, ExportEndpoint> = {
   }
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class ExportService {
   private http = inject(HttpClient);
 

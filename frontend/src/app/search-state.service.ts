@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -65,7 +65,7 @@ export interface Model {
   disabledAggregationName: string | null;
 }
 
-@Injectable()
+@Service({ autoProvided: false })
 export class SearchStateService {
   private searchService = inject(SearchService);
   private router = inject(Router);
