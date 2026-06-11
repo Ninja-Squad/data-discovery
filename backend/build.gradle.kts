@@ -10,7 +10,7 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "4.0.6"
+    id("org.springframework.boot") version "4.1.0"
     id("com.gorylenko.gradle-git-properties") version "4.0.1"
     id("org.asciidoctor.jvm.convert") version "4.0.5"
     id("io.spring.dependency-management") version "1.1.7"
@@ -30,7 +30,7 @@ asciidoctorj {
     setVersion("3.0.0")
 }
 
-extra["springCloudVersion"] = "2025.1.1"
+extra["springCloudVersion"] = "2025.1.2"
 
 val snippetsDir = file("build/generated-snippets")
 
