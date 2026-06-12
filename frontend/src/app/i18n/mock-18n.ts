@@ -3,16 +3,19 @@ import {
   inject,
   makeEnvironmentProviders,
   provideEnvironmentInitializer,
-  Provider
+  Provider,
+  Service
 } from '@angular/core';
 import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
+  provideMissingTranslationHandler,
   provideTranslateService,
   TranslateService
 } from '@ngx-translate/core';
 import EN_TRANSLATIONS from './en.json';
 
+@Service()
 class CustomMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams): never {
     throw new Error(`Missing translation for key ${params.key}`);
@@ -28,11 +31,9 @@ export function provideI18nTesting(options?: {
 }): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideTranslateService({
-      useDefaultLang: false,
-      missingTranslationHandler: options?.missingTranslationHandler ?? {
-        provide: MissingTranslationHandler,
-        useClass: CustomMissingTranslationHandler
-      }
+      missingTranslationHandler:
+        options?.missingTranslationHandler ??
+        provideMissingTranslationHandler(CustomMissingTranslationHandler)
     }),
     provideEnvironmentInitializer(() => {
       const translateService = inject(TranslateService);
