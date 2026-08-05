@@ -5,32 +5,26 @@
       <a class="btn btn-sm btn-link" (click)="removeAllFromBasket()">
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
 
-        @switch (vm.items.length) {
-          @case (1) {
-            <span translate="select-all-results.remove-one-from-basket"></span>
-          }
-          @default {
-            <span
-              translate="select-all-results.remove-all-from-basket"
-              [translateParams]="{ itemCounter: vm.items.length }"
-            ></span>
-          }
+        @if (vm.items.length === 1) {
+          <span translate="select-all-results.remove-one-from-basket"></span>
+        } @else {
+          <span
+            translate="select-all-results.remove-all-from-basket"
+            [translateParams]="{ itemCounter: vm.items.length }"
+          ></span>
         }
       </a>
     } @else {
       <a class="btn btn-sm btn-link" (click)="addAllToBasket()">
         <span class="fa fa-fw fa-shopping-basket"></span>&ngsp;
 
-        @switch (vm.items.length) {
-          @case (1) {
-            <span translate="select-all-results.add-one-to-basket"></span>
-          }
-          @default {
-            <span
-              translate="select-all-results.add-all-to-basket"
-              [translateParams]="{ itemCounter: vm.items.length }"
-            ></span>
-          }
+        @if (vm.items.length === 1) {
+          <span translate="select-all-results.add-one-to-basket"></span>
+        } @else {
+          <span
+            translate="select-all-results.add-all-to-basket"
+            [translateParams]="{ itemCounter: vm.items.length }"
+          ></span>
         }
       </a>
     }
