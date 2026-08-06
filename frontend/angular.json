@@ -21,6 +21,12 @@
               "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
+            // ngx-markdown v22 dynamically imports this optional peer even when KaTeX is unused.
+            // Keep it external so Vite does not require the package during development and E2E tests.
+            // See https://github.com/jfcere/ngx-markdown/issues/681.
+            "externalDependencies": [
+              "marked-katex-extension"
+            ],
             "assets": [
               {
                 "glob": "**/*",
