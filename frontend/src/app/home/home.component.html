@@ -6,14 +6,14 @@
     <div class="pt-md-5">
       <h2 class="visually-hidden" translate="home.title"></h2>
 
-      <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <form [formRoot]="searchForm">
         <label class="visually-hidden" for="query" translate="home.search"></label>
         <div class="input-group">
           <input
             id="query"
             class="form-control form-control-lg"
             [placeholder]="appName + '.search.placeholder' | translate"
-            formControlName="search"
+            [formField]="searchForm.search"
             [ngbTypeahead]="suggesterTypeahead"
             [focusFirst]="false"
           />
