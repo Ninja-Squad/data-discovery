@@ -87,7 +87,7 @@
           </div>
           <div class="form-check">
             <input
-              [formControl]="eulaAgreementControl"
+              [formField]="eulaAgreementForm"
               type="checkbox"
               class="form-check-input"
               id="eula-agreement"
@@ -97,7 +97,7 @@
               for="eula-agreement"
               translate="basket.eula-agreement"
             ></label>
-            @if (eulaAgreementControl.invalid && submitted()) {
+            @if (eulaAgreementForm().invalid() && submitted()) {
               <div class="invalid-feedback d-block" id="eula-agreement-error">
                 <span translate="basket.eula-agreement-required"></span>
               </div>
