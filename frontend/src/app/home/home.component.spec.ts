@@ -41,19 +41,19 @@ describe('HomeComponent', () => {
   );
 
   describe('when not showing aggregations', () => {
-    test('should navigate to search when a query is entered', () => {
+    test('should navigate to search when a query is entered', async () => {
       // given a component
       const router = TestBed.inject(Router);
-      vi.spyOn(router, 'navigate');
+      vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       const component = new HomeComponentTester().componentInstance;
 
       // with a query
       const query = 'Bacteria';
       const descendants = false;
-      component.searchForm.get('search')!.setValue(query);
+      component.searchFormValue.set({ search: query });
       // when searching
-      component.search();
+      await component.search();
 
       // then it should redirect to the search with correct parameters
       expect(router.navigate).toHaveBeenCalledWith(['/search'], {
@@ -78,7 +78,7 @@ describe('HomeComponent', () => {
       // trigger search
       await tester.searchButton.click();
       expect(component.search).toHaveBeenCalled();
-      expect(component.searchForm.get('search').value).toBe(query);
+      expect(component.searchFormValue().search).toBe(query);
     });
 
     test('should display the pillars', async () => {
