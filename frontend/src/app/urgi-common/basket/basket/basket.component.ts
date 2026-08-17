@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Basket, BasketItem, BasketService } from '../basket.service';
 import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, required } from '@angular/forms/signals';
 import { switchMap, timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +28,7 @@ import { BasketSenderService } from '../basket-sender.service';
     NgPluralCase,
     DecimalPipe,
     TranslateDirective,
-    ReactiveFormsModule,
+    FormField,
     NgbTooltip,
     TranslatePipe
   ],
@@ -52,10 +52,8 @@ export class BasketComponent {
     const basket = this.basket();
     return basket ? basket.items.some(item => item.accession.accessionNumber) : false;
   });
-  readonly eulaAgreementControl = inject(NonNullableFormBuilder).control(
-    false,
-    Validators.requiredTrue
-  );
+  readonly eulaAgreementFormValue = signal(false);
+  readonly eulaAgreementForm = form(this.eulaAgreementFormValue, path => required(path));
   readonly submitted = signal(false);
   readonly confirmForbidden = signal(false);
 
@@ -86,7 +84,7 @@ export class BasketComponent {
   sendBasket(modal: NgbModalRef) {
     this.submitted.set(true);
     // the EULA agreement is mandatory
-    if (this.eulaAgreementControl.invalid) {
+    if (this.eulaAgreementForm().invalid()) {
       this.confirmForbidden.set(true);
       timer(350)
         .pipe(takeUntilDestroyed(this.destroyRef))
