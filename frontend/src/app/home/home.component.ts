@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { Params, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -20,7 +20,8 @@ import { HeaderComponent } from '../../environments/header.default';
   styleUrl: './home.component.scss',
   imports: [
     RouterLink,
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
     TranslateDirective,
     TranslatePipe,
     NgbTypeahead,
@@ -34,8 +35,16 @@ export class HomeComponent {
   private readonly router = inject(Router);
   private readonly searchService = inject(SearchService);
 
-  readonly searchForm = inject(NonNullableFormBuilder).group({
+  readonly searchFormValue = signal({
     search: ''
+  });
+  readonly searchForm = form(this.searchFormValue, {
+    submission: {
+      action: async () => {
+        await this.search();
+        return undefined;
+      }
+    }
   });
   readonly appName = environment.name;
   readonly suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>> =
@@ -47,10 +56,10 @@ export class HomeComponent {
     : signal([]);
   readonly exampleQueries: Array<string> = environment.home.exampleQueries;
 
-  search() {
-    this.router.navigate(['/search'], {
+  async search(): Promise<void> {
+    await this.router.navigate(['/search'], {
       queryParams: {
-        query: this.searchForm.get('search')!.value,
+        query: this.searchFormValue().search,
         descendants: false
       }
     });
