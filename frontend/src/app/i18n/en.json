@@ -256,7 +256,9 @@
     "ontology-language": {
       "EN": "English",
       "FR": "Français",
-      "ES": "Español"
+      "ES": "Español",
+      "DE": "Deutsch",
+      "JP": "日本語"
     },
     "ontology-default-language": "EN",
     "germplasm-results": {

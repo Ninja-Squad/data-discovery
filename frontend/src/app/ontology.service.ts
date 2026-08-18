@@ -101,7 +101,7 @@ export interface TreeI18n {
   names: Record<OntologyNodeType, Record<string, string>>;
 }
 
-export const ONTOLOGY_LANGUAGES = ['EN', 'FR', 'ES'] as const;
+export const ONTOLOGY_LANGUAGES = ['EN', 'FR', 'ES', 'DE', 'JP'] as const;
 export type OntologyLanguage = (typeof ONTOLOGY_LANGUAGES)[number];
 
 @Service()
