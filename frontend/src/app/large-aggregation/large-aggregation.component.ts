@@ -1,15 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  OnChanges,
   output,
   inject,
-  viewChild,
   input,
-  model
+  model,
+  signal
 } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { disabled, form, FormField } from '@angular/forms/signals';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import {
   NgbHighlight,
@@ -40,7 +38,7 @@ const maxResultsDisplayed = 8;
     NgPlural,
     NgPluralCase,
     DecimalPipe,
-    ReactiveFormsModule,
+    FormField,
     TranslateDirective,
     TranslatePipe,
     NgbHighlight,
@@ -51,7 +49,7 @@ const maxResultsDisplayed = 8;
     AggregationNamePipe
   ]
 })
-export class LargeAggregationComponent implements OnChanges {
+export class LargeAggregationComponent {
   private readonly translateService = inject(TranslateService);
 
   readonly selectedKeys = model<Array<string>>([]);
@@ -64,10 +62,11 @@ export class LargeAggregationComponent implements OnChanges {
 
   readonly disabled = input(false);
 
-  readonly typeahead = viewChild<ElementRef<HTMLInputElement>>('typeahead');
-
   readonly focus$ = new Subject<string>();
-  readonly criterion = inject(NonNullableFormBuilder).control('');
+  private readonly criterionFormValue = signal('');
+  readonly criterionForm = form(this.criterionFormValue, path => {
+    disabled(path, { when: () => this.disabled() });
+  });
 
   readonly search = (text$: Observable<string>): Observable<Array<BucketOrRefine>> => {
     const inputFocus$ = this.focus$;
@@ -96,14 +95,6 @@ export class LargeAggregationComponent implements OnChanges {
     );
   };
 
-  ngOnChanges() {
-    if (this.disabled()) {
-      this.criterion.disable({ emitEvent: false });
-    } else {
-      this.criterion.enable({ emitEvent: false });
-    }
-  }
-
   onSearchDescendants(event: boolean) {
     this.searchDescendants.set(event);
   }
@@ -126,13 +117,13 @@ export class LargeAggregationComponent implements OnChanges {
       // we push the selected key to our collection of keys
       const newSelectedKeys = [...this.selectedKeys(), event.item.key];
       this.selectedKeys.set(newSelectedKeys);
-      this.criterion.setValue('');
+      this.criterionFormValue.set('');
       this.aggregationChange.emit({
         name: this.aggregation().name,
         values: newSelectedKeys
       });
     }
-    this.typeahead()!.nativeElement.focus();
+    this.criterionForm().focusBoundControl();
   }
 
   documentCountForKey(key: string) {
