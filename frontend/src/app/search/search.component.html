@@ -4,14 +4,14 @@
   <div class="row">
     <div class="col-12 col-md-8 offset-md-4 col-lg-9 offset-lg-3 d-flex align-items-center">
       <h2 class="visually-hidden" translate="search.new-search"></h2>
-      <form class="flex-fill" [formGroup]="searchForm" (ngSubmit)="newSearch()">
+      <form class="flex-fill" [formRoot]="searchForm">
         <label class="visually-hidden" for="query" translate="search.search"></label>
         <div class="input-group">
           <input
             id="query"
             class="form-control"
             [placeholder]="appName + '.search.placeholder' | translate"
-            formControlName="search"
+            [formField]="searchForm.search"
             [ngbTypeahead]="suggesterTypeahead"
             [focusFirst]="false"
           />

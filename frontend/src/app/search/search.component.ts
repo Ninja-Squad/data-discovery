@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 
 import { SearchService } from '../search.service';
@@ -29,7 +29,8 @@ interface ViewModel extends Model {
   imports: [
     TranslateDirective,
     TranslatePipe,
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
     NgbTypeahead,
     NgbCollapse,
     AggregationsComponent,
@@ -44,8 +45,16 @@ export class SearchComponent {
   private readonly searchStateService = inject(SearchStateService);
 
   readonly appName = environment.name;
-  readonly searchForm = inject(NonNullableFormBuilder).group({
+  private readonly searchFormValue = signal({
     search: ''
+  });
+  readonly searchForm = form(this.searchFormValue, {
+    submission: {
+      action: async () => {
+        this.newSearch();
+        return undefined;
+      }
+    }
   });
   readonly suggesterTypeahead: (text$: Observable<string>) => Observable<Array<string>>;
 
@@ -66,7 +75,7 @@ export class SearchComponent {
           collectionSize: model.documents ? this.computeCollectionSize(model.documents) : 0,
           filtersExpanded
         })),
-        tap(vm => this.searchForm.controls.search.setValue(vm.searchCriteria.query))
+        tap(vm => this.searchFormValue.set({ search: vm.searchCriteria.query }))
       )
     );
   }
@@ -76,7 +85,7 @@ export class SearchComponent {
    * It uses the new search terms in the form, and asks for the default page (1) for this new query
    */
   newSearch() {
-    const query = this.searchForm.controls.search.value;
+    const query = this.searchFormValue().search;
     this.searchStateService.newSearch(query);
   }
 
