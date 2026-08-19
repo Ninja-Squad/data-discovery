@@ -3,11 +3,11 @@ import {
   Component,
   inject,
   input,
+  linkedSignal,
   model,
-  OnChanges,
   output
 } from '@angular/core';
-import { FormControl, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { disabled, form, FormField } from '@angular/forms/signals';
 
 import { Aggregation } from '../models/page';
 import { AggregationCriterion } from '../models/aggregation-criterion';
@@ -25,15 +25,14 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgbTooltip,
-    ReactiveFormsModule,
+    FormField,
     DocumentCountComponent,
     DescendantsCheckboxComponent,
     TranslatePipe,
     AggregationNamePipe
   ]
 })
-export class SmallAggregationComponent implements OnChanges {
-  private readonly fb = inject(NonNullableFormBuilder);
+export class SmallAggregationComponent {
   private readonly translateService = inject(TranslateService);
 
   readonly aggregation = input.required<Aggregation>();
@@ -43,7 +42,17 @@ export class SmallAggregationComponent implements OnChanges {
   readonly aggregationChange = output<AggregationCriterion>();
   readonly disabled = input(false);
 
-  readonly aggregationForm = this.fb.record<FormControl<boolean>>({});
+  private readonly aggregationFormValue = linkedSignal<Record<string, boolean>>(() =>
+    Object.fromEntries(
+      this.aggregation().buckets.map(bucket => [
+        bucket.key,
+        this.selectedKeys().includes(bucket.key)
+      ])
+    )
+  );
+  readonly aggregationForm = form(this.aggregationFormValue, path => {
+    disabled(path, { when: () => this.disabled() || this.aggregation().buckets.length <= 1 });
+  });
 
   /**
    * This extracts the keys with a truthy value from an object.
@@ -58,30 +67,6 @@ export class SmallAggregationComponent implements OnChanges {
       .map(([key]) => key);
   }
 
-  ngOnChanges(): void {
-    // create as many form control as there are buckets
-    const buckets = this.aggregation().buckets;
-    buckets.forEach(bucket => {
-      let control = this.aggregationForm.get(bucket.key) as FormControl<boolean>;
-      if (!control) {
-        control = this.fb.control(false);
-        this.aggregationForm.addControl(bucket.key, control);
-      }
-      control.setValue(this.selectedKeys().includes(bucket.key));
-    });
-    Object.keys(this.aggregationForm.controls).forEach(key => {
-      if (!buckets.find(bucket => bucket.key === key)) {
-        this.aggregationForm.removeControl(key);
-      }
-    });
-
-    if (this.disabled() || this.aggregation().buckets.length <= 1) {
-      this.aggregationForm.disable();
-    } else {
-      this.aggregationForm.enable();
-    }
-  }
-
   displayableKey(key: string): string {
     return key === NULL_VALUE ? this.translateService.instant(NULL_VALUE_TRANSLATION_KEY) : key;
   }
@@ -91,7 +76,7 @@ export class SmallAggregationComponent implements OnChanges {
   }
 
   onChange() {
-    const values = SmallAggregationComponent.extractKeys(this.aggregationForm.value);
+    const values = SmallAggregationComponent.extractKeys(this.aggregationFormValue());
     const event: AggregationCriterion = {
       name: this.aggregation().name,
       values
