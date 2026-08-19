@@ -82,9 +82,8 @@
         }
       </div>
       <input
-        #typeahead
         class="form-control"
-        [formControl]="criterion"
+        [formField]="criterionForm"
         [ngbTypeahead]="search"
         (selectItem)="selectKey($event)"
         [resultTemplate]="resultTemplate"
