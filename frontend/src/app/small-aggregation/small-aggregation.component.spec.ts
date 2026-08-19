@@ -124,8 +124,8 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // then it should have a form with several fields
-    const controls = tester.smallAggregationComponent.aggregationForm.controls;
-    expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
+    const value = tester.smallAggregationComponent.aggregationForm().value();
+    expect(Object.keys(value)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
   });
 
   test('should build a form and check selected criteria', async () => {
@@ -140,10 +140,10 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // then it should have a form with several fields
-    const controls = tester.smallAggregationComponent.aggregationForm.controls;
-    expect(Object.keys(controls)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
+    const value = tester.smallAggregationComponent.aggregationForm().value();
+    expect(Object.keys(value)).toEqual(['France', 'Italy', 'New Zealand', NULL_VALUE]);
     // and France should be checked
-    expect(tester.smallAggregationComponent.aggregationForm.get('France')!.value).toBeTruthy();
+    expect(value['France']).toBeTruthy();
   });
 
   test('should emit an event when a checkbox is toggled', async () => {
@@ -175,7 +175,7 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // it should have a form with no selected checkbox
-    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm().value()).toEqual({
       France: false,
       Italy: false,
       'New Zealand': false,
@@ -187,7 +187,7 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // it should update the form selected checkbox
-    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm().value()).toEqual({
       France: true,
       Italy: false,
       'New Zealand': false,
@@ -199,7 +199,7 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // it should update the form selected checkboxes
-    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm().value()).toEqual({
       France: true,
       Italy: true,
       'New Zealand': false,
@@ -211,7 +211,7 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // it should leave the form selected checkboxes as they are
-    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm().value()).toEqual({
       France: true,
       Italy: true,
       'New Zealand': false,
@@ -223,7 +223,7 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // it should update the form selected checkboxes
-    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm().value()).toEqual({
       France: true,
       Italy: false,
       'New Zealand': false,
@@ -235,7 +235,7 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // it should update the form selected checkboxes
-    expect(tester.smallAggregationComponent.aggregationForm.value).toEqual({
+    expect(tester.smallAggregationComponent.aggregationForm().value()).toEqual({
       France: false,
       Italy: false,
       'New Zealand': false,
@@ -253,7 +253,7 @@ describe('SmallAggregationComponent', () => {
     tester.componentInstance.aggregation.set(toAggregation('coo', ['Italy']));
     await tester.fixture.whenStable();
 
-    expect(tester.smallAggregationComponent.aggregationForm.disabled).toBe(true);
+    expect(tester.smallAggregationComponent.aggregationForm().disabled()).toBe(true);
     await expect((tester.firstCheckbox.element() as HTMLInputElement).disabled).toBe(true);
 
     expect(tester.title.element().classList).toContain('text-body-secondary');
@@ -266,12 +266,12 @@ describe('SmallAggregationComponent', () => {
     tester.componentInstance.aggregation.set(aggregation);
     await tester.fixture.whenStable();
 
-    expect(tester.smallAggregationComponent.aggregationForm.disabled).toBe(false);
+    expect(tester.smallAggregationComponent.aggregationForm().disabled()).toBe(false);
     await expect((tester.firstCheckbox.element() as HTMLInputElement).disabled).toBe(false);
 
     tester.componentInstance.disabled.set(true);
     await tester.fixture.whenStable();
-    expect(tester.smallAggregationComponent.aggregationForm.disabled).toBe(true);
+    expect(tester.smallAggregationComponent.aggregationForm().disabled()).toBe(true);
     await expect((tester.firstCheckbox.element() as HTMLInputElement).disabled).toBe(true);
     expect(tester.title.element().classList).toContain('text-body-secondary');
   });

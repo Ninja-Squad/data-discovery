@@ -2,7 +2,7 @@
   <div class="card mb-1">
     <div class="card-body">
       <!-- title -->
-      <h3 class="card-title" [class.text-body-secondary]="aggregationForm.disabled">
+      <h3 class="card-title" [class.text-body-secondary]="aggregationForm().disabled()">
         {{ aggregation().name | aggregationName }}
         @if (aggregation().name === 'gl') {
           <span
@@ -15,7 +15,7 @@
       </h3>
 
       <!-- values -->
-      <form [formGroup]="aggregationForm">
+      <form>
         @for (bucket of aggregation().buckets; track bucket) {
           <div class="card-text">
             <div class="form-check">
@@ -23,7 +23,7 @@
                 class="form-check-input"
                 type="checkbox"
                 [id]="aggregation().name + bucket.key"
-                [formControlName]="bucket.key"
+                [formField]="aggregationForm[bucket.key]"
                 (change)="onChange()"
               />
               <label class="form-check-label" [for]="aggregation().name + bucket.key">
