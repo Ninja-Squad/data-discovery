@@ -15,7 +15,7 @@
               translate="faidare.ontology.filter"
             ></label>
             <input
-              [formControl]="treeFilterCtrl"
+              [formField]="filterForm.treeFilter"
               id="tree-filter"
               class="form-control"
               [placeholder]="'faidare.ontology.filter' | translate"
@@ -30,10 +30,15 @@
               for="language"
               translate="faidare.ontology.language"
             ></label>
-            <select [formControl]="languageCtrl" id="language" class="form-select">
+            <select
+              [formField]="filterForm.language"
+              id="language"
+              class="form-select"
+              (change)="languageChanged()"
+            >
               @for (language of languages; track language) {
                 <option
-                  [ngValue]="language"
+                  [value]="language"
                   [translate]="'faidare.ontology-language.' + language"
                 ></option>
               }

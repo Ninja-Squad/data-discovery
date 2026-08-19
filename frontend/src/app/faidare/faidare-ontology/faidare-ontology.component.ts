@@ -1,6 +1,16 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, Signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  Resource,
+  resourceFromSnapshots,
+  ResourceSnapshot,
+  signal
+} from '@angular/core';
 import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { debounce, form, FormField } from '@angular/forms/signals';
 import { TreeComponent } from '../tree/tree.component';
 import { NodeDetailsComponent } from '../node-details/node-details.component';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -10,19 +20,10 @@ import {
   OntologyPayload,
   OntologyService
 } from '../../ontology.service';
-import {
-  combineLatest,
-  debounceTime,
-  defer,
-  map,
-  Observable,
-  startWith,
-  Subject,
-  switchMap
-} from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { NodeInformation, PayloadPredicate, TextAccessor, TreeNode } from '../tree/tree.service';
 import { TypedNodeDetails } from '../ontology.model';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 interface TreeViewModel {
@@ -32,11 +33,25 @@ interface TreeViewModel {
   highlightedNodePredicate: PayloadPredicate<OntologyPayload> | undefined;
 }
 
+/** Keeps stale language data while replacements load so the tree preserves expansion and highlight state. */
+function withPreviousValue<T>(input: Resource<T>): Resource<T> {
+  const snapshots = linkedSignal<ResourceSnapshot<T>, ResourceSnapshot<T>>({
+    source: () => input.snapshot(),
+    computation: (snapshot, previous) => {
+      if (snapshot.status === 'loading' && previous?.value.status === 'resolved') {
+        return { status: 'loading', value: previous.value.value };
+      }
+      return snapshot;
+    }
+  });
+  return resourceFromSnapshots(snapshots);
+}
+
 @Component({
   selector: 'dd-faidare-ontology',
   imports: [
     OntologyNodeTypeComponent,
-    ReactiveFormsModule,
+    FormField,
     TreeComponent,
     NodeDetailsComponent,
     TranslateDirective,
@@ -48,61 +63,71 @@ interface TreeViewModel {
 })
 export class FaidareOntologyComponent {
   private readonly ontologyService = inject(OntologyService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
+  private readonly highlightedNodeId = inject(ActivatedRoute).snapshot.fragment ?? undefined;
+  private readonly highlightedNodePredicate: PayloadPredicate<OntologyPayload> | undefined = this
+    .highlightedNodeId
+    ? payload => payload.id === this.highlightedNodeId
+    : undefined;
 
-  readonly treeFilterCtrl = this.fb.control('');
-  readonly languageCtrl = this.fb.control<OntologyLanguage>('FR');
+  private readonly filterFormValue = signal({
+    treeFilter: '',
+    language: this.ontologyService.getPreferredLanguage()
+  });
+  readonly filterForm = form(this.filterFormValue, path => {
+    debounce(path.treeFilter, 400);
+  });
   readonly languages = ONTOLOGY_LANGUAGES;
-  readonly treeView: Signal<TreeViewModel | undefined>;
-  private readonly highlightedNodeSubject = new Subject<NodeInformation<OntologyPayload>>();
-  readonly highlightedNodeDetails: Signal<TypedNodeDetails | undefined>;
+  private readonly tree = toSignal(this.ontologyService.getCompleteTree());
+  private readonly treeI18n = withPreviousValue(
+    rxResource({
+      params: () => this.filterFormValue().language,
+      stream: ({ params: language }) => this.ontologyService.getTreeI18n(language)
+    })
+  );
+  private readonly textAccessor = computed<TextAccessor<OntologyPayload> | undefined>(() => {
+    if (!this.treeI18n.hasValue()) {
+      return undefined;
+    }
+    const treeI18n = this.treeI18n.value();
+    return payload => treeI18n.names[payload.type][payload.id];
+  });
+  readonly treeView = computed<TreeViewModel | undefined>(() => {
+    const tree = this.tree();
+    const textAccessor = this.textAccessor();
+    if (!tree || !textAccessor) {
+      return undefined;
+    }
+    return {
+      filter: this.filterFormValue().treeFilter,
+      tree,
+      textAccessor,
+      highlightedNodePredicate: this.highlightedNodePredicate
+    };
+  });
 
-  constructor() {
-    const highlightedNodeId = inject(ActivatedRoute).snapshot.fragment ?? undefined;
-    const highlightedNodePredicate: PayloadPredicate<OntologyPayload> | undefined =
-      highlightedNodeId ? payload => payload.id === highlightedNodeId : undefined;
-    this.languageCtrl.setValue(this.ontologyService.getPreferredLanguage());
-    this.languageCtrl.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(language => this.ontologyService.setPreferredLanguage(language));
+  private readonly highlightedNode = signal<NodeInformation<OntologyPayload> | undefined>(
+    undefined
+  );
+  private readonly highlightedNodeDetailsResource = withPreviousValue(
+    rxResource({
+      params: () => {
+        const highlightedNode = this.highlightedNode();
+        return highlightedNode
+          ? { payload: highlightedNode.payload, language: this.filterFormValue().language }
+          : undefined;
+      },
+      stream: ({ params }) => this.getTypedNodeDetails(params.payload, params.language)
+    })
+  );
+  readonly highlightedNodeDetails = computed(() =>
+    this.highlightedNodeDetailsResource.hasValue()
+      ? this.highlightedNodeDetailsResource.value()
+      : undefined
+  );
 
-    this.highlightedNodeDetails = toSignal(
-      combineLatest([
-        this.languageCtrl.valueChanges.pipe(startWith(this.languageCtrl.value)),
-        this.highlightedNodeSubject
-      ]).pipe(
-        switchMap(([language, nodeInformation]) => {
-          const payload = nodeInformation.payload;
-          return this.getTypedNodeDetails(payload, language);
-        })
-      )
-    );
-
-    const tree$ = this.ontologyService.getCompleteTree();
-
-    const textAccessor$: Observable<TextAccessor<OntologyPayload>> = defer(() =>
-      this.languageCtrl.valueChanges.pipe(
-        startWith(this.languageCtrl.value),
-        switchMap((language: OntologyLanguage) => this.ontologyService.getTreeI18n(language)),
-        map(treeI18n => (payload: OntologyPayload) => treeI18n.names[payload.type][payload.id])
-      )
-    );
-
-    const filter$ = this.treeFilterCtrl.valueChanges.pipe(debounceTime(400), startWith(''));
-
-    this.treeView = toSignal(
-      combineLatest([tree$, textAccessor$, filter$]).pipe(
-        map(([tree, textAccessor, filter]) => ({
-          tree,
-          textAccessor,
-          filter,
-          highlightedNodePredicate
-        })),
-        takeUntilDestroyed(this.destroyRef)
-      )
-    );
+  languageChanged() {
+    this.ontologyService.setPreferredLanguage(this.filterFormValue().language);
   }
 
   private getTypedNodeDetails(
@@ -131,7 +156,7 @@ export class FaidareOntologyComponent {
 
   highlightNode(information: NodeInformation<OntologyPayload> | undefined) {
     if (information) {
-      this.highlightedNodeSubject.next(information);
+      this.highlightedNode.set(information);
       this.router.navigate([], { fragment: information.payload.id });
     }
   }
