@@ -10,6 +10,7 @@ import { provideI18nTesting } from '../../../i18n/mock-18n';
 import { provideDisabledNgbAnimation } from '../../../disable-animations';
 import { BasketCreated, BasketSenderService } from '../basket-sender.service';
 import { of } from 'rxjs';
+import { provideDdSignalFormsConfig } from '../../../signal-forms';
 
 class BasketComponentTester {
   readonly fixture = TestBed.createComponent(BasketComponent);
@@ -43,6 +44,7 @@ describe('BasketComponent', () => {
       providers: [
         provideI18nTesting(),
         provideDisabledNgbAnimation(),
+        provideDdSignalFormsConfig(),
         { provide: BasketSenderService, useValue: basketSenderService },
         { provide: LOCATION, useValue: location }
       ]
@@ -131,6 +133,10 @@ describe('BasketComponent', () => {
     await expect.element(tester.basketCounter).toBeVisible();
     await tester.basketCounter.click();
 
+    await expect.element(tester.eulaAgreement).not.toHaveClass('is-invalid');
+    tester.componentInstance.eulaAgreementForm().markAsTouched();
+    await expect.element(tester.eulaAgreement).toHaveClass('is-invalid');
+
     await tester.sendBasket.click();
 
     const basket = service.basket();
@@ -139,6 +145,7 @@ describe('BasketComponent', () => {
     await expect.element(tester.eulaAgreementError).toBeVisible();
     // agree
     await tester.eulaAgreement.click();
+    await expect.element(tester.eulaAgreement).not.toHaveClass('is-invalid');
     await tester.sendBasket.click();
 
     expect(basketSenderService.sendBasket).toHaveBeenCalledWith(basket);

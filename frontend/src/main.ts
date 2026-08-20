@@ -7,10 +7,12 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideI18n } from './app/i18n/i18n';
 import { provideConfiguredMarkdown } from './app/markdown';
 import { environment } from './environments/environment';
+import { provideDdSignalFormsConfig } from './app/signal-forms';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideConfiguredMarkdown(),
+    provideDdSignalFormsConfig(),
     provideRouter(
       routes,
       withInMemoryScrolling({
