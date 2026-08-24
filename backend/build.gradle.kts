@@ -10,7 +10,7 @@ buildscript {
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "4.1.0"
+    id("org.springframework.boot") version "4.1.1"
     id("com.gorylenko.gradle-git-properties") version "4.0.1"
     id("org.asciidoctor.jvm.convert") version "4.0.5"
     id("io.spring.dependency-management") version "1.1.7"
@@ -30,7 +30,7 @@ asciidoctorj {
     setVersion("3.0.0")
 }
 
-extra["springCloudVersion"] = "2025.1.2"
+extra["springCloudVersion"] = "2025.1.3"
 
 val snippetsDir = file("build/generated-snippets")
 
@@ -121,7 +121,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-        mavenBom("com.squareup.okhttp3:okhttp-bom:5.4.0")
+        mavenBom("com.squareup.okhttp3:okhttp-bom:5.5.0")
     }
 }
 
