@@ -1,13 +1,10 @@
 {
   extends: [
-    "config:recommended",
+    "local>Ninja-Squad/renovate-config:base",
     "group:allNonMajor",
     "schedule:weekly",
-    "security:minimumReleaseAgeNpm"
+    "local>Ninja-Squad/renovate-config:typescript-patch-only"
   ],
-  lockFileMaintenance: {
-    enabled: true
-  },
   // target chore/next branch
   baseBranchPatterns: [
     "chore/next"
@@ -23,17 +20,6 @@
         "docker.elastic.co/elasticsearch/elasticsearch"
       ],
       matchUpdateTypes: [
-        "major"
-      ],
-      enabled: false
-    },
-    // allow only patch updates for TS packages
-    {
-      matchPackageNames: [
-        "typescript"
-      ],
-      matchUpdateTypes: [
-        "minor",
         "major"
       ],
       enabled: false
