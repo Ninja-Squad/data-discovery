@@ -71,12 +71,12 @@ describe('DocumentsComponent', () => {
     await expect.element(tester.results).toHaveLength(2);
 
     const result1 = tester.results.nth(0);
-    await expect.element(result1).toHaveTextContent(bacteria1.name);
+    await expect.element(result1).toMatchTextContent(bacteria1.name);
     const result2 = tester.results.nth(1);
-    await expect.element(result2).toHaveTextContent(bacteria2.name);
+    await expect.element(result2).toMatchTextContent(bacteria2.name);
 
-    await expect.element(tester.resume).toHaveTextContent('Results 1 to 2 of 2');
-    await expect.element(tester.resume).not.toHaveTextContent('limited');
+    await expect.element(tester.resume).toMatchTextContent('Results 1 to 2 of 2');
+    await expect.element(tester.resume).not.toMatchTextContent('limited');
   });
 
   test('should display limited results in resume, and format numbers', async () => {
@@ -100,6 +100,6 @@ describe('DocumentsComponent', () => {
     await expect.element(tester.results).toHaveLength(20);
     await expect
       .element(tester.resume)
-      .toHaveTextContent('Results 4,001 to 4,020 of 12,000 (limited to 10,000)');
+      .toMatchTextContent('Results 4,001 to 4,020 of 12,000 (limited to 10,000)');
   });
 });

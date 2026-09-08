@@ -12,7 +12,7 @@ describe('RareHeaderComponent', () => {
     await fixture.whenStable();
 
     const title = page.getByCss('h1');
-    await expect.element(title).toHaveTextContent('RARe');
+    await expect.element(title).toMatchTextContent('RARe');
 
     const image = page.getByCss('img');
     await expect.element(image).toBeInTheDocument();
@@ -25,7 +25,7 @@ describe('RareHeaderComponent', () => {
     await fixture.whenStable();
 
     const title = page.getByCss('h1');
-    await expect.element(title).toHaveTextContent('BRC4EnvBiological');
+    await expect.element(title).toMatchTextContent('BRC4EnvBiological');
 
     const image = page.getByCss('img');
     await expect.element(image).toBeInTheDocument();

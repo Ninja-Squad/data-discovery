@@ -44,8 +44,8 @@ describe('NodeDetailsComponent', () => {
   });
 
   test('should display an ontology', async () => {
-    await expect.element(tester.root).toHaveTextContent('Test 1');
-    await expect.element(tester.root).toHaveTextContent('Ontology');
+    await expect.element(tester.root).toMatchTextContent('Test 1');
+    await expect.element(tester.root).toMatchTextContent('Ontology');
   });
 
   test('should display a trait class', async () => {
@@ -57,8 +57,8 @@ describe('NodeDetailsComponent', () => {
     } as TypedNodeDetails);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.root).toHaveTextContent('Test 1');
-    await expect.element(tester.root).toHaveTextContent('Trait class');
+    await expect.element(tester.root).toMatchTextContent('Test 1');
+    await expect.element(tester.root).toMatchTextContent('Trait class');
   });
 
   test('should display a trait', async () => {
@@ -72,8 +72,8 @@ describe('NodeDetailsComponent', () => {
     } as TypedNodeDetails);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.root).toHaveTextContent('Test 1');
-    await expect.element(tester.root).toHaveTextContent('Trait');
+    await expect.element(tester.root).toMatchTextContent('Test 1');
+    await expect.element(tester.root).toMatchTextContent('Trait');
   });
 
   test('should display a variable', async () => {
@@ -92,8 +92,8 @@ describe('NodeDetailsComponent', () => {
     } as TypedNodeDetails);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.root).toHaveTextContent('Test 1');
-    await expect.element(tester.root).toHaveTextContent('Variable');
+    await expect.element(tester.root).toMatchTextContent('Test 1');
+    await expect.element(tester.root).toMatchTextContent('Variable');
   });
 
   test('should tell if a value is a URL or not', () => {

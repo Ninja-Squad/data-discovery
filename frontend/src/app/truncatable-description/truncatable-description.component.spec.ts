@@ -42,7 +42,7 @@ describe('TruncatableDescriptionComponent', () => {
     // then we should truncate it
     await expect.element(tester.fullDescriptionButton).toBeInTheDocument();
     const linkContent = '... (expand)';
-    await expect.element(tester.fullDescriptionButton).toHaveTextContent(linkContent);
+    await expect.element(tester.fullDescriptionButton).toMatchTextContent(linkContent);
     const descriptionText = await tester.description.element().textContent;
     expect(descriptionText.length).toBeLessThanOrEqual(256 + linkContent.length);
     expect(descriptionText.length).toBeGreaterThanOrEqual(252 + linkContent.length);
@@ -52,9 +52,9 @@ describe('TruncatableDescriptionComponent', () => {
 
     // then we should display the full description
     await expect.element(tester.fullDescription).toBeInTheDocument();
-    await expect.element(tester.fullDescription).toHaveTextContent(component.description());
+    await expect.element(tester.fullDescription).toMatchTextContent(component.description());
     await expect.element(tester.shortDescriptionButton).toBeInTheDocument();
-    await expect.element(tester.shortDescriptionButton).toHaveTextContent('Hide');
+    await expect.element(tester.shortDescriptionButton).toMatchTextContent('Hide');
     await expect.element(tester.description).not.toBeInTheDocument();
     await expect.element(tester.fullDescriptionButton).not.toBeInTheDocument();
   });
@@ -71,13 +71,13 @@ describe('TruncatableDescriptionComponent', () => {
     // it should highlight the short description
     await expect
       .element(tester.description)
-      .toHaveTextContent('Hello world! The world is beautiful.');
+      .toMatchTextContent('Hello world! The world is beautiful.');
 
     await tester.fullDescriptionButton.click();
 
     // and also the long description
     await expect
       .element(tester.fullDescription)
-      .toHaveTextContent('Hello world! The world is beautiful.');
+      .toMatchTextContent('Hello world! The world is beautiful.');
   });
 });
