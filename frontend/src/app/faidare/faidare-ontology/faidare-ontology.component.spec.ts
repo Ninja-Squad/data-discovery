@@ -27,6 +27,10 @@ class OntologyComponentTester {
 
   constructor(readonly harness: RouterTestingHarness) {}
 
+  get component(): FaidareOntologyComponent {
+    return this.harness.routeDebugElement!.componentInstance;
+  }
+
   expanderOfNodeContaining(text: string) {
     return page.getByRole('button', { name: `Expand ${text}` });
   }
@@ -206,10 +210,12 @@ describe('OntologyComponent', () => {
       await tester.expanderOfNodeContaining('T1').click();
 
       await expect.element(tester.tree).toHaveTextContent('TC1');
+      const textAccessor = tester.component.treeView()!.textAccessor;
 
       await tester.treeFilter.fill('TC45');
 
       await expect.element(tester.tree).not.toHaveTextContent('TC1');
+      expect(tester.component.treeView()!.textAccessor).toBe(textAccessor);
 
       await tester.treeFilter.fill('');
 
@@ -270,40 +276,36 @@ describe('OntologyComponent', () => {
       expect(TestBed.inject(Router).url).toBe('/ontology#v2');
     });
 
-    test('should change the language', async () => {
-      ontologyService.getOntology.mockReturnValue(
-        of({ ontologyName: 'O1', links: [] } as OntologyDetails)
-      );
-      await tester.nodeContaining('O1').click();
+    test('should keep the tree state while changing the language', async () => {
+      ontologyService.getTraitClass.mockReturnValue(of({ name: 'TC1' } as TraitClassDetails));
+      await tester.expanderOfNodeContaining('O1').click();
+      await tester.nodeContaining('TC1').click();
 
-      ontologyService.getTreeI18n.mockReturnValue(
-        of({
-          language: 'ES',
-          names: {
-            ONTOLOGY: {
-              o1: 'Ola O1'
-            },
-            TRAIT_CLASS: {
-              tc1: 'TC1'
-            },
-            TRAIT: {
-              t1: 'T1'
-            },
-            VARIABLE: {
-              v1: 'V1',
-              v2: 'V2',
-              v3: 'V3'
-            }
-          }
-        })
-      );
-      ontologyService.getOntology.mockReturnValue(
-        of({ ontologyName: 'Ola O1', links: [] } as OntologyDetails)
-      );
+      const nextTreeI18nSubject = new Subject<TreeI18n>();
+      const nextDetailsSubject = new Subject<TraitClassDetails>();
+      ontologyService.getTreeI18n.mockReturnValue(nextTreeI18nSubject);
+      ontologyService.getTraitClass.mockReturnValue(nextDetailsSubject);
 
       await tester.language.selectOptions('Español');
-      await expect.element(tester.tree).toHaveTextContent('Ola O1');
-      await expect(tester.nodeDetails).toHaveTextContent('Ola O1');
+
+      await expect.element(tester.tree).toHaveTextContent('TC1');
+      await expect.element(tester.highlightedNode).toHaveTextContent('TC1');
+      await expect.element(tester.nodeDetails).toHaveTextContent('TC1');
+      expect(ontologyService.setPreferredLanguage).toHaveBeenCalledWith('ES');
+
+      nextTreeI18nSubject.next({
+        ...treeI18n,
+        language: 'ES',
+        names: {
+          ...treeI18n.names,
+          TRAIT_CLASS: { tc1: 'Hola TC1' }
+        }
+      });
+      nextDetailsSubject.next({ name: 'Hola TC1' } as TraitClassDetails);
+
+      await expect.element(tester.tree).toHaveTextContent('Hola TC1');
+      await expect.element(tester.highlightedNode).toHaveTextContent('Hola TC1');
+      await expect.element(tester.nodeDetails).toHaveTextContent('Hola TC1');
     });
   });
 });
