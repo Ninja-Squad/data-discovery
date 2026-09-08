@@ -32,7 +32,7 @@ class OntologyComponentTester {
   }
 
   nodeContaining(text: string) {
-    return page.getByCss('.node-payload').and(page.getByText(text));
+    return page.getByCss('.node-payload').and(page.getByText(text, { exact: false }));
   }
 }
 
@@ -148,17 +148,17 @@ describe('OntologyComponent', () => {
     await expect.element(tester.language).toHaveDisplayValue('Français');
     await expect.element(tester.nodeDetails).not.toBeInTheDocument();
 
-    await expect.element(tester.tree).toHaveTextContent('O1');
-    await expect.element(tester.tree).toHaveTextContent('Ontology');
+    await expect.element(tester.tree).toMatchTextContent('O1');
+    await expect.element(tester.tree).toMatchTextContent('Ontology');
 
-    await expect.element(tester.tree).not.toHaveTextContent('TC1');
-    await expect.element(tester.tree).not.toHaveTextContent('Trait class');
+    await expect.element(tester.tree).not.toMatchTextContent('TC1');
+    await expect.element(tester.tree).not.toMatchTextContent('Trait class');
 
-    await expect.element(tester.tree).not.toHaveTextContent('T1');
-    await expect.element(tester.tree).not.toHaveTextContent('Trait');
+    await expect.element(tester.tree).not.toMatchTextContent('T1');
+    await expect.element(tester.tree).not.toMatchTextContent('Trait');
 
-    await expect.element(tester.tree).not.toHaveTextContent('V1');
-    await expect.element(tester.tree).not.toHaveTextContent('Variable');
+    await expect.element(tester.tree).not.toMatchTextContent('V1');
+    await expect.element(tester.tree).not.toMatchTextContent('Variable');
 
     await expect.element(tester.highlightedNode).not.toBeInTheDocument();
 
@@ -174,21 +174,21 @@ describe('OntologyComponent', () => {
     treeSubject.next(tree);
     treeI18nSubject.next(treeI18n);
 
-    await expect.element(tester.nodeDetails).toHaveTextContent('T1');
+    await expect.element(tester.nodeDetails).toMatchTextContent('T1');
 
-    await expect.element(tester.tree).toHaveTextContent('O1');
-    await expect.element(tester.tree).toHaveTextContent('Ontology');
+    await expect.element(tester.tree).toMatchTextContent('O1');
+    await expect.element(tester.tree).toMatchTextContent('Ontology');
 
-    await expect.element(tester.tree).toHaveTextContent('TC1');
-    await expect.element(tester.tree).toHaveTextContent('Trait class');
+    await expect.element(tester.tree).toMatchTextContent('TC1');
+    await expect.element(tester.tree).toMatchTextContent('Trait class');
 
-    await expect.element(tester.tree).toHaveTextContent('T1');
-    await expect.element(tester.tree).toHaveTextContent('Trait');
+    await expect.element(tester.tree).toMatchTextContent('T1');
+    await expect.element(tester.tree).toMatchTextContent('Trait');
 
-    await expect.element(tester.tree).not.toHaveTextContent('V1');
-    await expect.element(tester.tree).not.toHaveTextContent('Variable');
+    await expect.element(tester.tree).not.toMatchTextContent('V1');
+    await expect.element(tester.tree).not.toMatchTextContent('Variable');
 
-    await expect.element(tester.highlightedNode).toHaveTextContent('T1');
+    await expect.element(tester.highlightedNode).toMatchTextContent('T1');
   });
 
   describe('once initialized', () => {
@@ -205,15 +205,15 @@ describe('OntologyComponent', () => {
       await tester.expanderOfNodeContaining('TC1').click();
       await tester.expanderOfNodeContaining('T1').click();
 
-      await expect.element(tester.tree).toHaveTextContent('TC1');
+      await expect.element(tester.tree).toMatchTextContent('TC1');
 
       await tester.treeFilter.fill('TC45');
 
-      await expect.element(tester.tree).not.toHaveTextContent('TC1');
+      await expect.element(tester.tree).not.toMatchTextContent('TC1');
 
       await tester.treeFilter.fill('');
 
-      await expect.element(tester.tree).not.toHaveTextContent('TC1');
+      await expect.element(tester.tree).not.toMatchTextContent('TC1');
     });
 
     test('should highlight ontology node', async () => {
@@ -222,8 +222,8 @@ describe('OntologyComponent', () => {
       );
       await tester.nodeContaining('O1').click();
 
-      await expect.element(tester.highlightedNode).toHaveTextContent('O1');
-      await expect.element(tester.nodeDetails).toHaveTextContent('O1');
+      await expect.element(tester.highlightedNode).toMatchTextContent('O1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('O1');
       expect(TestBed.inject(Router).url).toBe('/ontology#o1');
     });
 
@@ -233,8 +233,8 @@ describe('OntologyComponent', () => {
       await tester.expanderOfNodeContaining('O1').click();
       await tester.nodeContaining('TC1').click();
 
-      await expect.element(tester.highlightedNode).toHaveTextContent('TC1');
-      await expect.element(tester.nodeDetails).toHaveTextContent('TC1');
+      await expect.element(tester.highlightedNode).toMatchTextContent('TC1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('TC1');
       expect(TestBed.inject(Router).url).toBe('/ontology#tc1');
     });
 
@@ -246,8 +246,8 @@ describe('OntologyComponent', () => {
       await tester.expanderOfNodeContaining('TC1').click();
       await tester.nodeContaining('T1').click();
 
-      await expect.element(tester.highlightedNode).toHaveTextContent('T1');
-      await expect.element(tester.nodeDetails).toHaveTextContent('T1');
+      await expect.element(tester.highlightedNode).toMatchTextContent('T1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('T1');
       expect(TestBed.inject(Router).url).toBe('/ontology#t1');
     });
 
@@ -265,8 +265,8 @@ describe('OntologyComponent', () => {
       await tester.expanderOfNodeContaining('T1').click();
       await tester.nodeContaining('V2').click();
 
-      await expect.element(tester.highlightedNode).toHaveTextContent('V2');
-      await expect.element(tester.nodeDetails).toHaveTextContent('V2');
+      await expect.element(tester.highlightedNode).toMatchTextContent('V2');
+      await expect.element(tester.nodeDetails).toMatchTextContent('V2');
       expect(TestBed.inject(Router).url).toBe('/ontology#v2');
     });
 
@@ -302,8 +302,8 @@ describe('OntologyComponent', () => {
       );
 
       await tester.language.selectOptions('Español');
-      await expect.element(tester.tree).toHaveTextContent('Ola O1');
-      await expect(tester.nodeDetails).toHaveTextContent('Ola O1');
+      await expect.element(tester.tree).toMatchTextContent('Ola O1');
+      await expect(tester.nodeDetails).toMatchTextContent('Ola O1');
     });
   });
 });

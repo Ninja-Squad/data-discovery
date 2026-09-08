@@ -86,7 +86,7 @@ describe('LargeAggregationComponent', () => {
     tester.componentInstance.aggregation.set(aggregation);
 
     // then it should display a title and the number of possible keys
-    await expect.element(tester.title).toHaveTextContent('Country of origin (4)');
+    await expect.element(tester.title).toMatchTextContent('Country of origin (4)');
     // and the buckets with their name and count in a typeahead
     await expect.element(tester.inputField).toBeInTheDocument();
     expect(tester.typeahead).not.toBeFalsy();
@@ -120,11 +120,11 @@ describe('LargeAggregationComponent', () => {
 
     // then it should have several removable pills
     expect(tester.pills).toHaveLength(3);
-    await expect.element(tester.pills.nth(0)).toHaveTextContent('France[10]');
+    await expect.element(tester.pills.nth(0)).toMatchTextContent('France[10]');
     expect(tester.pills.nth(0).element().querySelector('button')).not.toBeNull();
-    await expect.element(tester.pills.nth(1)).toHaveTextContent('Italy[20]');
+    await expect.element(tester.pills.nth(1)).toMatchTextContent('Italy[20]');
     expect(tester.pills.nth(1).element().querySelector('button')).not.toBeNull();
-    await expect.element(tester.pills.nth(2)).toHaveTextContent('None[40]');
+    await expect.element(tester.pills.nth(2)).toMatchTextContent('None[40]');
     expect(tester.pills.nth(2).element().querySelector('button')).not.toBeNull();
   });
 
@@ -264,7 +264,7 @@ describe('LargeAggregationComponent', () => {
 
     // and a pill should appear
     expect(tester.pills).toHaveLength(1);
-    await expect.element(tester.pills.nth(0)).toHaveTextContent('France[10]');
+    await expect.element(tester.pills.nth(0)).toMatchTextContent('France[10]');
 
     // when another value is entered
     await tester.inputField.fill('ly');
@@ -289,8 +289,8 @@ describe('LargeAggregationComponent', () => {
 
     // and another pill should appear
     expect(tester.pills).toHaveLength(2);
-    await expect.element(tester.pills.nth(0)).toHaveTextContent('France[10]');
-    await expect.element(tester.pills.nth(1)).toHaveTextContent('Italy[20]');
+    await expect.element(tester.pills.nth(0)).toMatchTextContent('France[10]');
+    await expect.element(tester.pills.nth(1)).toMatchTextContent('Italy[20]');
 
     // when a pill is removed
     const button = tester.pills.nth(0).element().querySelector('button')!;
@@ -306,7 +306,7 @@ describe('LargeAggregationComponent', () => {
 
     // and the pill should disappear
     expect(tester.pills).toHaveLength(1);
-    await expect.element(tester.pills.nth(0)).toHaveTextContent('Italy[20]');
+    await expect.element(tester.pills.nth(0)).toMatchTextContent('Italy[20]');
   });
 
   test('should not do anything if REFINE is selected', async () => {

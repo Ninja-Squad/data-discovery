@@ -12,7 +12,7 @@ describe('WheatisHeaderComponent', () => {
     await fixture.whenStable();
 
     const title = page.getByCss('h1');
-    await expect.element(title).toHaveTextContent('WheatIS');
+    await expect.element(title).toMatchTextContent('WheatIS');
 
     const image = page.getByCss('img');
     await expect.element(image).toBeInTheDocument();

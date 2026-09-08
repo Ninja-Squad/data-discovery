@@ -67,19 +67,19 @@ describe('RareDocumentComponent', () => {
     await tester.fixture.whenStable();
 
     // then we should display it
-    await expect.element(tester.title).toHaveTextContent(resource.name);
-    await expect.element(tester.title).toHaveTextContent(resource.pillarName);
-    await expect.element(tester.link).toHaveTextContent(resource.name);
+    await expect.element(tester.title).toMatchTextContent(resource.name);
+    await expect.element(tester.title).toMatchTextContent(resource.pillarName);
+    await expect.element(tester.link).toMatchTextContent(resource.name);
     await expect(tester.link.element().getAttribute('href')).toBe(resource.dataURL);
     await expect(tester.link.element().getAttribute('target')).toBe('_blank');
-    await expect.element(tester.datasourceLink).toHaveTextContent(resource.databaseSource);
+    await expect.element(tester.datasourceLink).toMatchTextContent(resource.databaseSource);
     await expect(tester.datasourceLink.element().getAttribute('href')).toBe(resource.portalURL);
     await expect(tester.datasourceLink.element().getAttribute('target')).toBe('_blank');
     for (const text of resource.taxon) {
-      await expect.element(tester.taxon).toHaveTextContent(text);
+      await expect.element(tester.taxon).toMatchTextContent(text);
     }
-    await expect.element(tester.type).toHaveTextContent(resource.materialType[0]);
-    await expect.element(tester.description).toHaveTextContent(resource.description);
+    await expect.element(tester.type).toMatchTextContent(resource.materialType[0]);
+    await expect.element(tester.description).toMatchTextContent(resource.description);
     await expect.element(tester.fullDescriptionButton).not.toBeInTheDocument();
     await expect.element(tester.fullDescription).not.toBeInTheDocument();
     await expect.element(tester.shortDescriptionButton).not.toBeInTheDocument();
@@ -112,7 +112,7 @@ describe('RareDocumentComponent', () => {
     await tester.fixture.whenStable();
 
     // then we should list them
-    await expect.element(tester.type).toHaveTextContent('type1, type2');
+    await expect.element(tester.type).toMatchTextContent('type1, type2');
   });
 
   test('should not have the basket button if the feature is disabled', async () => {

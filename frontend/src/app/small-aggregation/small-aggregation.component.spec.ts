@@ -72,17 +72,17 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // then it should display a title
-    await expect.element(tester.title).toHaveTextContent('Country of origin');
+    await expect.element(tester.title).toMatchTextContent('Country of origin');
     // and the buckets with their name and count
     expect(tester.labels).toHaveLength(4);
-    await expect.element(tester.labels.nth(0)).toHaveTextContent('France');
-    await expect.element(tester.labels.nth(0)).toHaveTextContent('[10]');
-    await expect.element(tester.labels.nth(1)).toHaveTextContent('Italy');
-    await expect.element(tester.labels.nth(1)).toHaveTextContent('[20]');
-    await expect.element(tester.labels.nth(2)).toHaveTextContent('New Zealand');
-    await expect.element(tester.labels.nth(2)).toHaveTextContent('[30]');
-    await expect.element(tester.labels.nth(3)).toHaveTextContent('None');
-    await expect.element(tester.labels.nth(3)).toHaveTextContent('[40]');
+    await expect.element(tester.labels.nth(0)).toMatchTextContent('France');
+    await expect.element(tester.labels.nth(0)).toMatchTextContent('[10]');
+    await expect.element(tester.labels.nth(1)).toMatchTextContent('Italy');
+    await expect.element(tester.labels.nth(1)).toMatchTextContent('[20]');
+    await expect.element(tester.labels.nth(2)).toMatchTextContent('New Zealand');
+    await expect.element(tester.labels.nth(2)).toMatchTextContent('[30]');
+    await expect.element(tester.labels.nth(3)).toMatchTextContent('None');
+    await expect.element(tester.labels.nth(3)).toMatchTextContent('[40]');
   });
 
   test('should not display an aggregation with empty buckets', async () => {
@@ -314,10 +314,10 @@ describe('SmallAggregationComponent', () => {
     await tester.fixture.whenStable();
 
     // then it should have a form with several fields
-    await expect.element(tester.root).toHaveTextContent('France');
-    await expect.element(tester.root).toHaveTextContent('Italy');
-    await expect.element(tester.root).toHaveTextContent('New Zealand');
-    await expect.element(tester.root).toHaveTextContent('None');
+    await expect.element(tester.root).toMatchTextContent('France');
+    await expect.element(tester.root).toMatchTextContent('Italy');
+    await expect.element(tester.root).toMatchTextContent('New Zealand');
+    await expect.element(tester.root).toMatchTextContent('None');
     expect(
       tester.checkboxes.elements().map(checkbox => (checkbox as HTMLInputElement).checked)
     ).toEqual([true, true, false, false]);
@@ -328,11 +328,11 @@ describe('SmallAggregationComponent', () => {
     tester.componentInstance.selectedKeys.set(['Italy', 'Portugal']);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.root).not.toHaveTextContent('France');
-    await expect.element(tester.root).toHaveTextContent('Italy');
-    await expect.element(tester.root).toHaveTextContent('New Zealand');
-    await expect.element(tester.root).not.toHaveTextContent('None');
-    await expect.element(tester.root).toHaveTextContent('Portugal');
+    await expect.element(tester.root).not.toMatchTextContent('France');
+    await expect.element(tester.root).toMatchTextContent('Italy');
+    await expect.element(tester.root).toMatchTextContent('New Zealand');
+    await expect.element(tester.root).not.toMatchTextContent('None');
+    await expect.element(tester.root).toMatchTextContent('Portugal');
     expect(
       tester.checkboxes.elements().map(checkbox => (checkbox as HTMLInputElement).checked)
     ).toEqual([true, false, true]);

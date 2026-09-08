@@ -79,16 +79,16 @@ describe('PillarsComponent', () => {
 
     await tester.fixture.whenStable();
 
-    await expect.element(tester.dataProviders).toHaveTextContent('Data providers');
+    await expect.element(tester.dataProviders).toMatchTextContent('Data providers');
 
-    await expect.element(tester.pillarListItem(0)).toHaveTextContent('Plant');
-    await expect.element(tester.pillarListItem(1)).toHaveTextContent('Forest');
+    await expect.element(tester.pillarListItem(0)).toMatchTextContent('Plant');
+    await expect.element(tester.pillarListItem(1)).toMatchTextContent('Forest');
 
-    await expect.element(tester.databaseSourceItem(0, 0)).toHaveTextContent('Florilège');
-    await expect.element(tester.databaseSourceItem(0, 0)).toHaveTextContent('[1,000]');
+    await expect.element(tester.databaseSourceItem(0, 0)).toMatchTextContent('Florilège');
+    await expect.element(tester.databaseSourceItem(0, 0)).toMatchTextContent('[1,000]');
 
-    await expect.element(tester.databaseSourceItem(0, 1)).toHaveTextContent('CNRGV');
-    await expect.element(tester.databaseSourceItem(0, 1)).toHaveTextContent('[200]');
+    await expect.element(tester.databaseSourceItem(0, 1)).toMatchTextContent('CNRGV');
+    await expect.element(tester.databaseSourceItem(0, 1)).toMatchTextContent('[200]');
 
     await expect(tester.databaseSourceLink(0, 0).element().getAttribute('href')).toBe(
       'http://florilege.arcad-project.org/fr/collections'
@@ -100,6 +100,6 @@ describe('PillarsComponent', () => {
     pillars$.next([]);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.noDataAlert).toHaveTextContent('No data found');
+    await expect.element(tester.noDataAlert).toMatchTextContent('No data found');
   });
 });

@@ -97,12 +97,12 @@ describe('GermplasmResultsComponent', () => {
     await expect(tester.links.nth(0).element().getAttribute('href')).toBe(
       'http://localhost:8380/faidare-dev/germplasms/g1'
     );
-    await expect.element(tester.links.nth(0)).toHaveTextContent('Germplasm 1');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('SP1, SP2');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('Institute 1');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('Natural');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('France');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('Acc1');
+    await expect.element(tester.links.nth(0)).toMatchTextContent('Germplasm 1');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('SP1, SP2');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('Institute 1');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('Natural');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('France');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('Acc1');
   });
 
   test('should download plant material results (CSV)', async () => {
@@ -176,7 +176,7 @@ describe('GermplasmResultsComponent', () => {
     await tester.fixture.whenStable();
 
     await expect.element(tester.sortedAscHeaders).toHaveLength(1);
-    await expect.element(tester.sortedAscHeaders.nth(0)).toHaveTextContent('Species');
+    await expect.element(tester.sortedAscHeaders.nth(0)).toMatchTextContent('Species');
     await expect.element(tester.sortedDescHeaders).toHaveLength(0);
 
     await speciesHeader.click();
@@ -201,7 +201,7 @@ describe('GermplasmResultsComponent', () => {
 
     await expect.element(tester.sortedAscHeaders).toHaveLength(0);
     await expect.element(tester.sortedDescHeaders).toHaveLength(1);
-    await expect.element(tester.sortedDescHeaders.nth(0)).toHaveTextContent('Species');
+    await expect.element(tester.sortedDescHeaders.nth(0)).toMatchTextContent('Species');
 
     await speciesHeader.click();
 
@@ -224,7 +224,7 @@ describe('GermplasmResultsComponent', () => {
     await tester.fixture.whenStable();
 
     await expect.element(tester.sortedAscHeaders).toHaveLength(1);
-    await expect.element(tester.sortedAscHeaders.nth(0)).toHaveTextContent('Species');
+    await expect.element(tester.sortedAscHeaders.nth(0)).toMatchTextContent('Species');
     await expect.element(tester.sortedDescHeaders).toHaveLength(0);
   });
 });

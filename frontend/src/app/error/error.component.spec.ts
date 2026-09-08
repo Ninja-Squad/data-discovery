@@ -45,16 +45,16 @@ describe('ErrorComponent', () => {
       message: 'Oulala'
     });
 
-    await expect.element(tester.error).toHaveTextContent('Unexpected error occurred.');
-    await expect.element(tester.status).toHaveTextContent('Status: 500');
-    await expect.element(tester.message).toHaveTextContent('Message: Oulala');
+    await expect.element(tester.error).toMatchTextContent('Unexpected error occurred.');
+    await expect.element(tester.status).toMatchTextContent('Status: 500');
+    await expect.element(tester.message).toMatchTextContent('Message: Oulala');
 
     httpErrors.next({
       status: null,
       message: null
     });
 
-    await expect.element(tester.error).toHaveTextContent('Unexpected error occurred.');
+    await expect.element(tester.error).toMatchTextContent('Unexpected error occurred.');
     await expect.element(tester.status).not.toBeInTheDocument();
     await expect.element(tester.message).not.toBeInTheDocument();
 

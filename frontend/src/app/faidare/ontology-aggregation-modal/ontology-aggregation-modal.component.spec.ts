@@ -168,17 +168,17 @@ describe('OntologyAggregationModalComponent', () => {
     await expect.element(tester.language).toHaveDisplayValue('Français');
     await expect.element(tester.nodeDetails).not.toBeInTheDocument();
 
-    await expect.element(tester.tree).toHaveTextContent('O1');
-    await expect.element(tester.tree).toHaveTextContent('Ontology');
+    await expect.element(tester.tree).toMatchTextContent('O1');
+    await expect.element(tester.tree).toMatchTextContent('Ontology');
 
-    await expect.element(tester.tree).toHaveTextContent('TC1');
-    await expect.element(tester.tree).toHaveTextContent('Trait class');
+    await expect.element(tester.tree).toMatchTextContent('TC1');
+    await expect.element(tester.tree).toMatchTextContent('Trait class');
 
-    await expect.element(tester.tree).toHaveTextContent('T1');
-    await expect.element(tester.tree).toHaveTextContent('Trait');
+    await expect.element(tester.tree).toMatchTextContent('T1');
+    await expect.element(tester.tree).toMatchTextContent('Trait');
 
-    await expect.element(tester.tree).toHaveTextContent('V1');
-    await expect.element(tester.tree).toHaveTextContent('Variable');
+    await expect.element(tester.tree).toMatchTextContent('V1');
+    await expect.element(tester.tree).toMatchTextContent('Variable');
 
     expect(ontologyService.getTree).toHaveBeenCalledWith({
       selectableVariableIds: ['v1', 'v2', 'v3'],
@@ -195,15 +195,15 @@ describe('OntologyAggregationModalComponent', () => {
     });
 
     test('should filter', async () => {
-      await expect.element(tester.tree).toHaveTextContent('TC1');
+      await expect.element(tester.tree).toMatchTextContent('TC1');
 
       await tester.treeFilter.fill('TC45');
 
-      await expect.element(tester.tree).not.toHaveTextContent('TC1');
+      await expect.element(tester.tree).not.toMatchTextContent('TC1');
 
       await tester.treeFilter.fill('');
 
-      await expect.element(tester.tree).toHaveTextContent('TC1');
+      await expect.element(tester.tree).toMatchTextContent('TC1');
     });
 
     test('should highlight ontology node', async () => {
@@ -212,14 +212,14 @@ describe('OntologyAggregationModalComponent', () => {
       );
       tester.nodeContaining('O1')!.click();
 
-      await expect.element(tester.nodeDetails).toHaveTextContent('O1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('O1');
     });
 
     test('should highlight trait class node', async () => {
       ontologyService.getTraitClass.mockReturnValue(of({ name: 'TC1' } as TraitClassDetails));
       tester.nodeContaining('TC1')!.click();
 
-      await expect.element(tester.nodeDetails).toHaveTextContent('TC1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('TC1');
     });
 
     test('should highlight trait node', async () => {
@@ -228,7 +228,7 @@ describe('OntologyAggregationModalComponent', () => {
       );
       tester.nodeContaining('T1')!.click();
 
-      await expect.element(tester.nodeDetails).toHaveTextContent('T1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('T1');
     });
 
     test('should highlight variable node', async () => {
@@ -242,7 +242,7 @@ describe('OntologyAggregationModalComponent', () => {
       );
       tester.nodeContaining('V2')!.click();
 
-      await expect.element(tester.nodeDetails).toHaveTextContent('V2');
+      await expect.element(tester.nodeDetails).toMatchTextContent('V2');
     });
 
     test('should change the language', async () => {
@@ -283,8 +283,8 @@ describe('OntologyAggregationModalComponent', () => {
         select.dispatchEvent(new Event('change'));
       }
 
-      await expect.element(tester.tree).toHaveTextContent('Ola O1');
-      await expect.element(tester.nodeDetails).toHaveTextContent('Ola O1');
+      await expect.element(tester.tree).toMatchTextContent('Ola O1');
+      await expect.element(tester.nodeDetails).toMatchTextContent('Ola O1');
     });
 
     test('should cancel', async () => {
@@ -308,7 +308,7 @@ describe('OntologyAggregationModalComponent', () => {
       await expect.element(tester.ok).toBeDisabled();
       await expect
         .element(tester.limitSelection)
-        .toHaveTextContent('3 variables selected. Please limit the selection to max 2.');
+        .toMatchTextContent('3 variables selected. Please limit the selection to max 2.');
 
       tester.nodeCheckboxContaining('V2')!.click();
       await tester.fixture.whenStable();
