@@ -81,16 +81,16 @@ describe('FaidareDocumentComponent', () => {
     await tester.fixture.whenStable();
 
     // then we should display it
-    await expect.element(tester.title).toHaveTextContent(resource.name);
-    await expect.element(tester.title).toHaveTextContent(resource.databaseName);
-    await expect.element(tester.link).toHaveTextContent(resource.name);
+    await expect.element(tester.title).toMatchTextContent(resource.name);
+    await expect.element(tester.title).toMatchTextContent(resource.databaseName);
+    await expect.element(tester.link).toMatchTextContent(resource.name);
     await expect(tester.link.element().getAttribute('href')).toBe(resource.url);
     await expect(tester.link.element().getAttribute('target')).toBe('_blank');
-    await expect.element(tester.type).toHaveTextContent(resource.entryType);
+    await expect.element(tester.type).toMatchTextContent(resource.entryType);
     for (const text of resource.species) {
-      await expect.element(tester.species).toHaveTextContent(text);
+      await expect.element(tester.species).toMatchTextContent(text);
     }
-    await expect.element(tester.description).toHaveTextContent(resource.description);
+    await expect.element(tester.description).toMatchTextContent(resource.description);
     await expect.element(tester.fullDescriptionButton).not.toBeInTheDocument();
     await expect.element(tester.fullDescription).not.toBeInTheDocument();
     await expect.element(tester.shortDescriptionButton).not.toBeInTheDocument();

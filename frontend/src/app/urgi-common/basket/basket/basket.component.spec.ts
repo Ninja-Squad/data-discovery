@@ -38,7 +38,7 @@ describe('BasketComponent', () => {
   beforeEach(() => {
     basketSenderService = createMock(BasketSenderService);
     location = createMock(Location);
-    location.assign = vi.fn();
+    location.assign = vi.fn<Location['assign']>();
     TestBed.configureTestingModule({
       providers: [
         provideI18nTesting(),
@@ -66,7 +66,7 @@ describe('BasketComponent', () => {
   test('should display the number of items', async () => {
     tester = new BasketComponentTester();
     // no item
-    await expect.element(tester.basketCounterAsText).toHaveTextContent('0');
+    await expect.element(tester.basketCounterAsText).toMatchTextContent('0');
 
     // when hovering the navbar
     await tester.basketCounterAsText.hover();
@@ -76,27 +76,27 @@ describe('BasketComponent', () => {
 
     // 1 item
     service.addToBasket({ accession: { url: 'rosa', name: 'rosa' } } as BasketItem);
-    await expect.element(tester.basketCounter).toHaveTextContent('1');
+    await expect.element(tester.basketCounter).toMatchTextContent('1');
 
     // when hovering the navbar
     await tester.basketCounter.hover();
 
     // then we should have the tooltip displayed
     await expect.element(tester.tooltip).toBeInTheDocument();
-    await expect.element(tester.tooltip).toHaveTextContent('Click to view the item');
+    await expect.element(tester.tooltip).toMatchTextContent('Click to view the item');
 
     await tester.basketCounter.unhover();
 
     // several items
     service.addToBasket({ accession: { url: 'rosa rosae', name: 'rosa rosae' } } as BasketItem);
-    await expect.element(tester.basketCounter).toHaveTextContent('2');
+    await expect.element(tester.basketCounter).toMatchTextContent('2');
 
     // when hovering the navbar
     await tester.basketCounter.hover();
 
     // then we should have the tooltip displayed
     await expect.element(tester.tooltip).toBeInTheDocument();
-    await expect.element(tester.tooltip).toHaveTextContent('Click to view the 2 items');
+    await expect.element(tester.tooltip).toMatchTextContent('Click to view the 2 items');
   });
 
   test('should open a summary modal on click', async () => {
@@ -107,15 +107,15 @@ describe('BasketComponent', () => {
     } as BasketItem);
     await tester.basketCounter.click();
 
-    await expect.element(tester.modalTitle).toHaveTextContent('Order summary');
-    await expect.element(tester.modalBody).toHaveTextContent('Rosa');
-    await expect.element(tester.modalBody).toHaveTextContent('TheTaxon');
+    await expect.element(tester.modalTitle).toMatchTextContent('Order summary');
+    await expect.element(tester.modalBody).toMatchTextContent('Rosa');
+    await expect.element(tester.modalBody).toMatchTextContent('TheTaxon');
 
     // remove item from basket
     await tester.removeItemFromBasket.click();
 
-    await expect.element(tester.modalBody).not.toHaveTextContent('Rosa');
-    await expect.element(tester.modalBody).toHaveTextContent('No item');
+    await expect.element(tester.modalBody).not.toMatchTextContent('Rosa');
+    await expect.element(tester.modalBody).toMatchTextContent('No item');
 
     await tester.modalClose.click();
     await expect.element(tester.modalTitle).not.toBeInTheDocument();
