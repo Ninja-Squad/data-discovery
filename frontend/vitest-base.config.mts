@@ -7,6 +7,10 @@ export default defineConfig({
     exclude: ['marked-katex-extension']
   },
   test: {
+    reporters: process.env.CI ? ['default', 'junit'] : ['default'],
+    outputFile: {
+      junit: 'build/test-results/vitest.xml'
+    },
     expect: {
       poll: {
         interval: 5
