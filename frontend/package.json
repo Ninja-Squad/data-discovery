@@ -19,7 +19,8 @@
     "lint": "mkdir -p build && ng lint > build/eslint-result.txt",
     "e2e": "ng e2e --ui",
     "e2e:standalone": "ng e2e",
-    "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "knip": "npx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore",
     "playwright-install": "pnpm exec playwright install",
     "playwright-install-deps": "pnpm exec playwright install-deps"
@@ -66,11 +67,9 @@
     "@vitest/spy": "5.0.5",
     "angular-eslint": "22.6.0",
     "eslint": "10.12.0",
-    "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-prettier": "5.5.7",
+    "oxfmt": "0.73.0",
     "playwright": "1.64.1",
     "playwright-ng-schematics": "22.1.2",
-    "prettier": "3.9.10",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.2",
     "vitest": "5.0.5"

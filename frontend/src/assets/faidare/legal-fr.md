@@ -29,7 +29,7 @@ Users are warned that the information must be used for strictly professional pur
 The portal may give access to personal and professional data concerning technical and scientific actors in relation with the data.
 This information helps to identify and acknowledge the authors of the scientific works.
 This personal information is attached to the produced datasets and follows the data life cycle.
- 
+
 ## Personal data
 
 Technical data (date, hour, IP address of the computer of the visitor, pages viewed) are collected only for the statistical analysis of the usage of the portal.
@@ -41,6 +41,7 @@ Visitors can configure their web browsers in order to be informed of the setting
 
 According to the European Regulation on the protection of personal data (EU Regulation 2016/679), you have the right to access, rectify, oppose and delete information about yourself.
 If you wish to exercise this right and obtain information about yourself, please contact us:
+
 - By [email](mailto:urgi-contact@inra.fr?subject=%5BData%20Discovery%5D%20GPDR%20request)
 - Or via any other way available on our [contact form](https://urgi.versailles.inra.fr/Contact-us)
 

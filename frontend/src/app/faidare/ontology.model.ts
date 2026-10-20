@@ -32,4 +32,7 @@ interface TypedVariableDetails extends BaseTypedNodeDetails {
 }
 
 export type TypedNodeDetails =
-  TypedOntologyDetails | TypedTraitClassDetails | TypedTraitDetails | TypedVariableDetails;
+  | TypedOntologyDetails
+  | TypedTraitClassDetails
+  | TypedTraitDetails
+  | TypedVariableDetails;

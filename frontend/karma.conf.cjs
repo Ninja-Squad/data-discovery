@@ -12,7 +12,7 @@ module.exports = function (config) {
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
       require('karma-junit-reporter'),
-      require('karma-mocha-reporter'),
+      require('karma-mocha-reporter')
     ],
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
@@ -22,11 +22,7 @@ module.exports = function (config) {
     },
     coverageReporter: {
       subdir: '.',
-      reporters: [
-        { type: 'html' },
-        { type: 'text-summary' },
-        { type: 'lcovonly' }
-      ]
+      reporters: [{ type: 'html' }, { type: 'text-summary' }, { type: 'lcovonly' }]
     },
     reporters: ['mocha', 'kjhtml', 'junit'],
     junitReporter: {
