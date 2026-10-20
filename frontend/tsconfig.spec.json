@@ -4,12 +4,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "strictNullChecks": false,
-    "types": [
-      "@angular/localize"
-    ]
+    "types": ["@angular/localize"]
   },
-  "include": [
-    "src/**/*.ts",
-    "e2e/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "e2e/**/*.ts"]
 }

@@ -7,8 +7,6 @@ import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 // Allows us to bring in the recommended rules for Angular projects from angular-eslint
 import angular from 'angular-eslint';
-// Allows us to bring in the recommended rules for Prettier from eslint-plugin-prettier
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 // Allows us to bring in the recommended rules for Vitest
 import vitest from '@vitest/eslint-plugin';
@@ -125,7 +123,6 @@ export default [
       }
     }
   ),
-  eslintPluginPrettierRecommended,
   // set the parse options for typed rules
   {
     languageOptions: {

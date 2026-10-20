@@ -1,0 +1,11 @@
+{
+  "oxc.enable.oxfmt": true,
+  "oxc.enable.oxlint": false,
+  "oxc.path.oxfmt": "./node_modules/.bin/oxfmt",
+  "oxc.fmt.configPath": "./.oxfmtrc.json",
+  "[typescript][javascript][javascriptreact][typescriptreact][html][scss][css][json][jsonc][markdown][yaml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  }
+}

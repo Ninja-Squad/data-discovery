@@ -17,35 +17,25 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "polyfills": [
-              "@angular/localize/init"
-            ],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             // ngx-markdown v22 dynamically imports this optional peer even when KaTeX is unused.
             // Keep it external so Vite does not require the package during development and E2E tests.
             // See https://github.com/jfcere/ngx-markdown/issues/681.
-            "externalDependencies": [
-              "marked-katex-extension"
-            ],
+            "externalDependencies": ["marked-katex-extension"],
             "assets": [
               {
                 "glob": "**/*",
                 "input": "src/assets/rare",
                 "followSymlinks": true,
-                "ignore": [
-                  "**/*.scss"
-                ],
+                "ignore": ["**/*.scss"],
                 "output": "/assets"
               }
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/assets/rare/"
-              ],
+              "includePaths": ["src/assets/rare/"],
               "sass": {
-                "silenceDeprecations": [
-                  "import"
-                ]
+                "silenceDeprecations": ["import"]
               }
             },
             "styles": [
@@ -149,13 +139,9 @@
               ],
               "baseHref": "/brc4env-dev/",
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "src/assets/brc4env/"
-                ],
+                "includePaths": ["src/assets/brc4env/"],
                 "sass": {
-                  "silenceDeprecations": [
-                    "import"
-                  ]
+                  "silenceDeprecations": ["import"]
                 }
               },
               "assets": [
@@ -163,9 +149,7 @@
                   "glob": "*",
                   "input": "src/assets/brc4env",
                   "followSymlinks": true,
-                  "ignore": [
-                    "**/*.scss"
-                  ],
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
                 }
               ]
@@ -190,13 +174,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "src/assets/brc4env/"
-                ],
+                "includePaths": ["src/assets/brc4env/"],
                 "sass": {
-                  "silenceDeprecations": [
-                    "import"
-                  ]
+                  "silenceDeprecations": ["import"]
                 }
               },
               "assets": [
@@ -204,9 +184,7 @@
                   "glob": "*",
                   "input": "src/assets/brc4env",
                   "followSymlinks": true,
-                  "ignore": [
-                    "**/*.scss"
-                  ],
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
                 }
               ]
@@ -224,13 +202,9 @@
               ],
               "baseHref": "/wheatis-dev/",
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "src/assets/wheatis/"
-                ],
+                "includePaths": ["src/assets/wheatis/"],
                 "sass": {
-                  "silenceDeprecations": [
-                    "import"
-                  ]
+                  "silenceDeprecations": ["import"]
                 }
               },
               "assets": [
@@ -238,9 +212,7 @@
                   "glob": "*",
                   "input": "src/assets/wheatis",
                   "followSymlinks": true,
-                  "ignore": [
-                    "**/*.scss"
-                  ],
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
                 }
               ]
@@ -257,13 +229,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "src/assets/wheatis/"
-                ],
+                "includePaths": ["src/assets/wheatis/"],
                 "sass": {
-                  "silenceDeprecations": [
-                    "import"
-                  ]
+                  "silenceDeprecations": ["import"]
                 }
               },
               "assets": [
@@ -271,9 +239,7 @@
                   "glob": "*",
                   "input": "src/assets/wheatis",
                   "followSymlinks": true,
-                  "ignore": [
-                    "**/*.scss"
-                  ],
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
                 }
               ]
@@ -323,13 +289,9 @@
               ],
               "baseHref": "/faidare-dev/",
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "src/assets/faidare/"
-                ],
+                "includePaths": ["src/assets/faidare/"],
                 "sass": {
-                  "silenceDeprecations": [
-                    "import"
-                  ]
+                  "silenceDeprecations": ["import"]
                 }
               },
               "assets": [
@@ -337,9 +299,7 @@
                   "glob": "*",
                   "input": "src/assets/faidare",
                   "followSymlinks": true,
-                  "ignore": [
-                    "**/*.scss"
-                  ],
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
                 }
               ]
@@ -388,13 +348,9 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "src/assets/faidare/"
-                ],
+                "includePaths": ["src/assets/faidare/"],
                 "sass": {
-                  "silenceDeprecations": [
-                    "import"
-                  ]
+                  "silenceDeprecations": ["import"]
                 }
               },
               "assets": [
@@ -402,9 +358,7 @@
                   "glob": "*",
                   "input": "src/assets/faidare",
                   "followSymlinks": true,
-                  "ignore": [
-                    "**/*.scss"
-                  ],
+                  "ignore": ["**/*.scss"],
                   "output": "/assets"
                 }
               ]
@@ -462,11 +416,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html",
-              "e2e/**/*.ts"
-            ],
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html", "e2e/**/*.ts"],
             "maxWarnings": 0,
             "concurrency": "auto"
           }
