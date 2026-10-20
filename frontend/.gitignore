@@ -35,7 +35,6 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-/karma-junit-tests-report
 eslint-result.txt
 __screenshots__
 

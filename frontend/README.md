@@ -21,7 +21,7 @@ Use the `pnpm build:wheatis` flag for a production build of WheatIS, and `pnpm b
 
 ## Running unit tests
 
-Run `pnpm test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `pnpm test` to execute the unit tests via [Vitest](https://vitest.dev) in headless Chromium.
 
 ## Linting and formatting
 
