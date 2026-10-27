@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { DocumentComponent } from '../../../environments/document.default';
 import { DocumentModel } from '../../models/document.model';
 import { Page } from '../../models/page';
 import { SearchStateService } from '../../search-state.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { DocumentComponent } from '../../../environments/document.default';
 
 /**
  * Default implementation of the document list (the search results).

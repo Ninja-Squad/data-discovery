@@ -1,5 +1,5 @@
-import { MARKED_OPTIONS, MarkedOptions, provideMarkdown } from 'ngx-markdown';
 import { HttpClient } from '@angular/common/http';
+import { MARKED_OPTIONS, MarkedOptions, provideMarkdown } from 'ngx-markdown';
 
 const markedOptions: MarkedOptions = {
   gfm: true,

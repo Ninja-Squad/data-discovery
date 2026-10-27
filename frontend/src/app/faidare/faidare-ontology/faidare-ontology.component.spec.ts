@@ -1,4 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { of, Subject } from 'rxjs';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import {
   OntologyDetails,
   OntologyPayload,
@@ -8,15 +15,8 @@ import {
   TreeI18n,
   VariableDetails
 } from '../../ontology.service';
-import { of, Subject } from 'rxjs';
 import { TreeNode } from '../tree/tree.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { RouterTestingHarness } from '@angular/router/testing';
-import { provideRouter, Router } from '@angular/router';
 import { FaidareOntologyComponent } from './faidare-ontology.component';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-import { createMock, MockObject } from '../../../test/mock';
 
 class OntologyComponentTester {
   readonly treeFilter = page.getByCss('#tree-filter');

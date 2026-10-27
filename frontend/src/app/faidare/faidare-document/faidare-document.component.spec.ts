@@ -1,18 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
-
-import { FaidareDocumentComponent } from './faidare-document.component';
-import { toFaidareDocument } from '../../models/test-model-generators';
-import { BasketService } from '../../urgi-common/basket/basket.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FaidareDocumentModel } from '../faidare-document.model';
-import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
-import { FaidareBasketAdapter } from '../faidare-basket-adapter.service';
-import { AnalyticsNavigation, AnalyticsService } from '../../analytics.service';
-import { createMock, MockObject } from '../../../test/mock';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { AnalyticsNavigation, AnalyticsService } from '../../analytics.service';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { toFaidareDocument } from '../../models/test-model-generators';
+import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
+import { BasketService } from '../../urgi-common/basket/basket.service';
+import { FaidareBasketAdapter } from '../faidare-basket-adapter.service';
+import { FaidareDocumentModel } from '../faidare-document.model';
+import { FaidareDocumentComponent } from './faidare-document.component';
 
 @Component({
   template: '<dd-document [document]="document()" />',

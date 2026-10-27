@@ -1,9 +1,8 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
-
-import { PillarService } from './pillar.service';
 import { PillarModel } from './models/pillar.model';
+import { PillarService } from './pillar.service';
 
 describe('PillarService', () => {
   let service: PillarService;

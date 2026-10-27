@@ -1,13 +1,13 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
-import { bootstrapApplication } from '@angular/platform-browser';
 import { errorInterceptor } from './app/error-interceptor.service';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideI18n } from './app/i18n/i18n';
 import { provideConfiguredMarkdown } from './app/markdown';
-import { environment } from './environments/environment';
 import { provideDdSignalFormsConfig } from './app/signal-forms';
+import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [

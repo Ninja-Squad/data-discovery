@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { Sort } from '../germplasm-results.component';
 import { SortCriterion } from '../../../search-state.service';
+import { Sort } from '../germplasm-results.component';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector

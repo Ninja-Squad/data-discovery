@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,8 +7,10 @@ import {
   Signal,
   signal
 } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import {
   combineLatest,
   debounceTime,
@@ -18,21 +21,18 @@ import {
   Subject,
   switchMap
 } from 'rxjs';
-import { NodeInformation, TextAccessor, TreeNode } from '../tree/tree.service';
+import { Aggregation } from '../../models/page';
 import {
   ONTOLOGY_LANGUAGES,
   OntologyLanguage,
   OntologyPayload,
   OntologyService
 } from '../../ontology.service';
-import { TypedNodeDetails } from '../ontology.model';
-import { Aggregation } from '../../models/page';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
-import { DecimalPipe } from '@angular/common';
-import { TreeComponent } from '../tree/tree.component';
 import { NodeDetailsComponent } from '../node-details/node-details.component';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { TypedNodeDetails } from '../ontology.model';
+import { TreeComponent } from '../tree/tree.component';
+import { NodeInformation, TextAccessor, TreeNode } from '../tree/tree.service';
 
 interface TreeViewModel {
   filter: string;

@@ -1,15 +1,15 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { BasketService } from '../urgi-common/basket/basket.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateDirective } from '@ngx-translate/core';
 import { map } from 'rxjs';
+import { DocumentListComponent } from '../../environments/document-list.default';
+import { MapContainerComponent } from '../../environments/map-container.default';
+import { SelectAllResultsComponent } from '../../environments/select-all-results.default';
 import { DocumentModel } from '../models/document.model';
 import { Page } from '../models/page';
 import { SearchStateService } from '../search-state.service';
-import { TranslateDirective } from '@ngx-translate/core';
-import { DecimalPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { SelectAllResultsComponent } from '../../environments/select-all-results.default';
-import { DocumentListComponent } from '../../environments/document-list.default';
-import { MapContainerComponent } from '../../environments/map-container.default';
+import { BasketService } from '../urgi-common/basket/basket.service';
 
 interface ViewModel {
   documents: Page<DocumentModel>;

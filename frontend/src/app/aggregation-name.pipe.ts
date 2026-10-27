@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
-import { environment } from '../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../environments/environment';
 
 /**
  * Returns the translation of an aggregation key, or the key itself if the aggregation is unknown.

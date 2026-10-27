@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { GenericDocumentModel } from '../generic-document.model';
 import { Page } from '../../models/page';
+import { GenericDocumentModel } from '../generic-document.model';
 
 /**
  * Generic component used to select all the search results.

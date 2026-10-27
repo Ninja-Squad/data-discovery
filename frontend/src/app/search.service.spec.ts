@@ -1,8 +1,9 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
+import { DocumentModel } from './models/document.model';
+import { Aggregation, Page } from './models/page';
 import {
   toAggregation,
   toAggregationCriterion,
@@ -10,8 +11,6 @@ import {
   toSinglePage
 } from './models/test-model-generators';
 import { SearchService } from './search.service';
-import { Aggregation, Page } from './models/page';
-import { DocumentModel } from './models/document.model';
 
 describe('SearchService', () => {
   let service: SearchService;

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { SearchComponent } from './search/search.component';
-import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
 import { environment } from '../environments/environment';
 import { OntologyComponent } from '../environments/ontology.default';
+import { HomeComponent } from './home/home.component';
+import { MarkdownPageComponent } from './markdown-page/markdown-page.component';
+import { SearchComponent } from './search/search.component';
 
 const additionalRoutes: Routes =
   environment.name === 'faidare' ? [{ path: 'ontology', component: OntologyComponent }] : [];

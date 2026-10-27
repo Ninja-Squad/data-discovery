@@ -1,10 +1,9 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
-
-import { OntologyPayload, OntologyService } from './ontology.service';
 import { TreeNode } from './faidare/tree/tree.service';
 import { provideI18nTesting } from './i18n/mock-18n';
+import { OntologyPayload, OntologyService } from './ontology.service';
 
 describe('OntologyService', () => {
   let service: OntologyService;

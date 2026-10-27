@@ -1,7 +1,7 @@
-import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AggregationCriterion } from '../models/aggregation-criterion';
+import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AggregationCriterion } from '../models/aggregation-criterion';
 
 export const EXPORT_TYPES = ['plant-material', 'mcpd', 'miappe-excel', 'miappe-csv'] as const;
 export type ExportType = (typeof EXPORT_TYPES)[number];

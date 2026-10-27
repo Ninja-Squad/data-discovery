@@ -1,8 +1,8 @@
-import { Aggregation, Bucket, Page } from './page';
-import { AggregationCriterion } from './aggregation-criterion';
+import { FaidareDocumentModel } from '../faidare/faidare-document.model';
 import { RareDocumentModel } from '../rare/rare-document.model';
 import { GenericDocumentModel } from '../urgi-common/generic-document.model';
-import { FaidareDocumentModel } from '../faidare/faidare-document.model';
+import { AggregationCriterion } from './aggregation-criterion';
+import { Aggregation, Bucket, Page } from './page';
 
 export function toSinglePage<T>(content: Array<T>): Page<T> {
   return {

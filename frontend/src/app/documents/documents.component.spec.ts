@@ -1,19 +1,18 @@
-import { TestBed } from '@angular/core/testing';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createMock, MockObject } from '../../test/mock';
-
-import { DocumentsComponent } from './documents.component';
-import { toRareDocument, toSinglePage } from '../models/test-model-generators';
-import { DocumentModel } from '../models/document.model';
-import { BasketService } from '../urgi-common/basket/basket.service';
+import { TestBed } from '@angular/core/testing';
 import { ReplaySubject } from 'rxjs';
-import { SearchStateService } from '../search-state.service';
-import { Page } from '../models/page';
-import { provideI18nTesting } from '../i18n/mock-18n';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../test/mock';
 import { provideDisabledNgbAnimation } from '../disable-animations';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { DocumentModel } from '../models/document.model';
+import { Page } from '../models/page';
+import { toRareDocument, toSinglePage } from '../models/test-model-generators';
+import { SearchStateService } from '../search-state.service';
+import { BasketService } from '../urgi-common/basket/basket.service';
+import { DocumentsComponent } from './documents.component';
 
 class DocumentsComponentTester {
   constructor() {
