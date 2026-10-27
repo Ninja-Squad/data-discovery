@@ -2,9 +2,9 @@
 // `ng build --configuration=production` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { DataDiscoveryEnvironment } from './environment.model';
-import { BasketAdapter } from '../app/urgi-common/basket/basket-adapter.service';
 import { FaidareBasketAdapter } from '../app/faidare/faidare-basket-adapter.service';
+import { BasketAdapter } from '../app/urgi-common/basket/basket-adapter.service';
+import { DataDiscoveryEnvironment } from './environment.model';
 
 export const environment: DataDiscoveryEnvironment = {
   production: false,

@@ -1,20 +1,19 @@
 import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
-
-import { SearchService } from '../search.service';
-import { environment } from '../../environments/environment';
-import { Model, SearchStateService } from '../search-state.service';
-import { DocumentModel } from '../models/document.model';
-import { Page } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
-import { DocumentsComponent } from '../documents/documents.component';
-import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
-import { AggregationsComponent } from '../aggregations/aggregations.component';
+import { ActivatedRoute } from '@angular/router';
 import { NgbCollapse, NgbPagination, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AggregationsComponent } from '../aggregations/aggregations.component';
+import { DocumentsComponent } from '../documents/documents.component';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { DocumentModel } from '../models/document.model';
+import { Page } from '../models/page';
+import { Model, SearchStateService } from '../search-state.service';
+import { SearchService } from '../search.service';
 
 interface ViewModel extends Model {
   collectionSize: number;

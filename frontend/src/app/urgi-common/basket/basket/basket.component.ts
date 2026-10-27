@@ -1,3 +1,4 @@
+import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,16 +9,15 @@ import {
   Signal,
   TemplateRef
 } from '@angular/core';
-import { Basket, BasketItem, BasketService } from '../basket.service';
-import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
+import { NgbModal, NgbModalRef, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { switchMap, timer } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LOCATION } from '../../../location.service';
 import { BasketSenderService } from '../basket-sender.service';
+import { Basket, BasketItem, BasketService } from '../basket.service';
 
 @Component({
   selector: 'dd-basket',

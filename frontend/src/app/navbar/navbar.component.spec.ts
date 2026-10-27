@@ -1,13 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-
-import { NavbarComponent } from './navbar.component';
-import { provideI18nTesting } from '../i18n/mock-18n';
-import { provideRouter } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideDisabledNgbAnimation } from '../disable-animations';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { environment } from '../../environments/environment';
+import { provideDisabledNgbAnimation } from '../disable-animations';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { NavbarComponent } from './navbar.component';
 
 class NavbarComponentTester {
   constructor() {

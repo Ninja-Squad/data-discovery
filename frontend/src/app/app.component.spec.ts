@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, test } from 'vitest';
-
 import { AppComponent } from './app.component';
 import { provideI18nTesting } from './i18n/mock-18n';
 

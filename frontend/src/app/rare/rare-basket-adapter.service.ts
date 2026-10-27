@@ -1,6 +1,6 @@
 import { Service } from '@angular/core';
-import { BasketAdapter } from '../urgi-common/basket/basket-adapter.service';
 import { DocumentModel } from '../models/document.model';
+import { BasketAdapter } from '../urgi-common/basket/basket-adapter.service';
 import { BasketItem } from '../urgi-common/basket/basket.service';
 import { RareDocumentModel } from './rare-document.model';
 

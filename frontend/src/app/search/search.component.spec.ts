@@ -1,27 +1,27 @@
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { filter, map, Observable, ReplaySubject } from 'rxjs';
-import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../test/mock';
-import { SearchComponent } from './search.component';
+import { AggregationsComponent } from '../aggregations/aggregations.component';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { DocumentModel } from '../models/document.model';
+import { Page } from '../models/page';
 import {
   toAggregation,
   toRareDocument,
   toSecondPage,
   toSinglePage
 } from '../models/test-model-generators';
-import { AggregationsComponent } from '../aggregations/aggregations.component';
-import { BasketService } from '../urgi-common/basket/basket.service';
 import { Model, SearchStateService } from '../search-state.service';
-import { DocumentModel } from '../models/document.model';
-import { Page } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
-import { provideI18nTesting } from '../i18n/mock-18n';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
 import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
+import { BasketService } from '../urgi-common/basket/basket.service';
+import { SearchComponent } from './search.component';
 
 class SearchComponentTester {
   readonly fixture = TestBed.createComponent(SearchComponent);

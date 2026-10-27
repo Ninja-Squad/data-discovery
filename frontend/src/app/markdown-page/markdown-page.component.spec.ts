@@ -1,14 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-
-import { MarkdownPageComponent } from './markdown-page.component';
-import { ActivatedRoute } from '@angular/router';
-import { environment } from '../../environments/environment';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { environment } from '../../environments/environment';
 import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideConfiguredMarkdown } from '../markdown';
-import { of } from 'rxjs';
+import { MarkdownPageComponent } from './markdown-page.component';
 
 class MarkdownPageComponentTester {
   readonly fixture = TestBed.createComponent(MarkdownPageComponent);

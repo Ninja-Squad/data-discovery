@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
-import { RareDocumentModel } from '../rare-document.model';
-import { BasketItem, BasketService } from '../../urgi-common/basket/basket.service';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
-import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
+import { BasketItem, BasketService } from '../../urgi-common/basket/basket.service';
+import { RareDocumentModel } from '../rare-document.model';
 
 interface ViewModel {
   document: RareDocumentModel;

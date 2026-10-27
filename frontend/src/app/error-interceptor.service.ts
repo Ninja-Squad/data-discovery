@@ -1,6 +1,6 @@
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 
 export interface HttpError {
   status: number | null;

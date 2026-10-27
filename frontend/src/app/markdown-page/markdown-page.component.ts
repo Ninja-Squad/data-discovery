@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, LOCALE_ID } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
 @Component({

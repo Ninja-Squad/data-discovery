@@ -1,16 +1,16 @@
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { By } from '@angular/platform-browser';
-import { SmallAggregationComponent } from './small-aggregation.component';
-import { toAggregation } from '../models/test-model-generators';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { environment } from '../../environments/environment';
+import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { AggregationCriterion } from '../models/aggregation-criterion';
 import { NULL_VALUE } from '../models/document.model';
-import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
-import { environment } from '../../environments/environment';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Aggregation } from '../models/page';
-import { provideI18nTesting } from '../i18n/mock-18n';
+import { toAggregation } from '../models/test-model-generators';
+import { SmallAggregationComponent } from './small-aggregation.component';
 
 @Component({
   template: `@if (aggregation(); as aggregation) {

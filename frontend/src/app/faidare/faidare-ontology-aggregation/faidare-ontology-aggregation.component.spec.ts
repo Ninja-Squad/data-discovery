@@ -1,16 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createMock } from '../../../test/mock';
-
-import { toAggregation } from '../../models/test-model-generators';
-import { AggregationCriterion } from '../../models/aggregation-criterion';
-import { FaidareOntologyAggregationComponent } from './faidare-ontology-aggregation.component';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
-import { NULL_VALUE } from '../../models/document.model';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock } from '../../../test/mock';
 import { provideI18nTesting } from '../../i18n/mock-18n';
+import { AggregationCriterion } from '../../models/aggregation-criterion';
+import { NULL_VALUE } from '../../models/document.model';
+import { toAggregation } from '../../models/test-model-generators';
+import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
+import { FaidareOntologyAggregationComponent } from './faidare-ontology-aggregation.component';
 
 @Component({
   template:

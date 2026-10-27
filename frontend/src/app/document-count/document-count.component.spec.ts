@@ -1,11 +1,10 @@
-import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
-
-import { DocumentCountComponent } from './document-count.component';
-import { provideI18nTesting } from '../i18n/mock-18n';
+import { page } from 'vitest/browser';
 import { provideDisabledNgbAnimation } from '../disable-animations';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { DocumentCountComponent } from './document-count.component';
 
 @Component({
   template: `<dd-document-count

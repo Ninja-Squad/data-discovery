@@ -1,10 +1,9 @@
-import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
-
-import { DescendantsCheckboxComponent } from './descendants-checkbox.component';
+import { page } from 'vitest/browser';
 import { provideI18nTesting } from '../i18n/mock-18n';
+import { DescendantsCheckboxComponent } from './descendants-checkbox.component';
 
 @Component({
   template:

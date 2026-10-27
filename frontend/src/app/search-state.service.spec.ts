@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
-import { Model, SearchStateService } from './search-state.service';
-import { SearchService } from './search.service';
 import { ActivatedRoute, Params, provideRouter, Router } from '@angular/router';
-import { createMock, MockObject } from '../test/mock';
-import { toAggregation, toRareDocument, toSecondPage } from './models/test-model-generators';
 import { of, Subject } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createMock, MockObject } from '../test/mock';
 import { DocumentModel } from './models/document.model';
 import { Aggregation, Page } from './models/page';
+import { toAggregation, toRareDocument, toSecondPage } from './models/test-model-generators';
+import { Model, SearchStateService } from './search-state.service';
+import { SearchService } from './search.service';
 
 describe('SearchStateService', () => {
   let service!: SearchStateService;

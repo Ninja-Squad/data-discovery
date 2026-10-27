@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-import { createMock, MockObject } from '../../../test/mock';
-
-import { GenericDocumentListComponent } from './generic-document-list.component';
-import { SearchStateService } from '../../search-state.service';
-import { toSinglePage } from '../../models/test-model-generators';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { toSinglePage } from '../../models/test-model-generators';
+import { SearchStateService } from '../../search-state.service';
+import { GenericDocumentListComponent } from './generic-document-list.component';
 
 class GenericDocumentListComponentTester {
   constructor() {

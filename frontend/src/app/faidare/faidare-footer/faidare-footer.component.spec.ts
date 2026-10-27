@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
-
-import { FaidareFooterComponent } from './faidare-footer.component';
+import { page } from 'vitest/browser';
 import { provideI18nTesting } from '../../i18n/mock-18n';
+import { FaidareFooterComponent } from './faidare-footer.component';
 
 class FaidareFooterComponentTester {
   readonly fixture = TestBed.createComponent(FaidareFooterComponent);

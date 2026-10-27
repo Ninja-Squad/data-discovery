@@ -1,18 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { Params, Router, RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
-
-import { SearchService } from '../search.service';
-import { environment } from '../../environments/environment';
-import { Aggregation } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
-import { AggregationsComponent } from '../aggregations/aggregations.component';
-import { PillarsComponent } from '../pillars/pillars.component';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { HeaderComponent } from '../../environments/header.default';
+import { AggregationsComponent } from '../aggregations/aggregations.component';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { Aggregation } from '../models/page';
+import { PillarsComponent } from '../pillars/pillars.component';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'dd-home',

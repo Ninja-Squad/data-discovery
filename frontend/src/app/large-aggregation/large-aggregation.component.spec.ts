@@ -1,18 +1,18 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { By } from '@angular/platform-browser';
-import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
-import { toAggregation } from '../models/test-model-generators';
-import { AggregationCriterion } from '../models/aggregation-criterion';
-import { Aggregation, Bucket } from '../models/page';
-import { NULL_VALUE } from '../models/document.model';
-import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
-import { environment } from '../../environments/environment';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { environment } from '../../environments/environment';
+import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { provideI18nTesting } from '../i18n/mock-18n';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { NULL_VALUE } from '../models/document.model';
+import { Aggregation, Bucket } from '../models/page';
+import { toAggregation } from '../models/test-model-generators';
+import { BucketOrRefine, LargeAggregationComponent } from './large-aggregation.component';
 
 @Component({
   template: `@if (aggregation(); as aggregation) {

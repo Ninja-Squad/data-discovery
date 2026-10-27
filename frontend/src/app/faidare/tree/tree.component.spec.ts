@@ -1,10 +1,9 @@
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
-
-import { TreeComponent } from './tree.component';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
 import { provideI18nTesting } from '../../i18n/mock-18n';
+import { TreeComponent } from './tree.component';
+import { NodeInformation, NodeSelectionState, TextAccessor, TreeNode } from './tree.service';
 
 interface TestPayload {
   id: string;

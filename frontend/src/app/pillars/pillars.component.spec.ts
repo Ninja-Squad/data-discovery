@@ -1,15 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
+import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../test/mock';
-
-import { PillarsComponent } from './pillars.component';
-import { PillarService } from '../pillar.service';
-import { PillarModel } from '../models/pillar.model';
 import { provideI18nTesting } from '../i18n/mock-18n';
+import { PillarModel } from '../models/pillar.model';
+import { PillarService } from '../pillar.service';
+import { PillarsComponent } from './pillars.component';
 
 class PillarsComponentTester {
   readonly fixture = TestBed.createComponent(PillarsComponent);

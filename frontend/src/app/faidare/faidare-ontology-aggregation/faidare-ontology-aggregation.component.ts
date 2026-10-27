@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { Aggregation } from '../../models/page';
-import { AggregationCriterion } from '../../models/aggregation-criterion';
-import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
-import { NULL_VALUE } from '../../models/document.model';
 import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateDirective } from '@ngx-translate/core';
+import { AggregationCriterion } from '../../models/aggregation-criterion';
+import { NULL_VALUE } from '../../models/document.model';
+import { Aggregation } from '../../models/page';
+import { OntologyAggregationModalComponent } from '../ontology-aggregation-modal/ontology-aggregation-modal.component';
 
 @Component({
   selector: 'dd-ontology-aggregation',

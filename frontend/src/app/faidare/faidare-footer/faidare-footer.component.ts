@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-
 import { TranslateDirective } from '@ngx-translate/core';
 
 interface DataProvider {

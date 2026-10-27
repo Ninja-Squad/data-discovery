@@ -1,8 +1,8 @@
-import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TreeNode } from './faidare/tree/tree.service';
-import { map, Observable, shareReplay } from 'rxjs';
+import { inject, Service } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { map, Observable, shareReplay } from 'rxjs';
+import { TreeNode } from './faidare/tree/tree.service';
 
 export type OntologyNodeType = 'ONTOLOGY' | 'TRAIT_CLASS' | 'TRAIT' | 'VARIABLE';
 

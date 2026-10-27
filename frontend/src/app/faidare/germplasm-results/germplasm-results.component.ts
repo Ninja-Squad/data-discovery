@@ -6,16 +6,16 @@ import {
   signal,
   Signal
 } from '@angular/core';
-import { Page } from '../../models/page';
-import { FaidareDocumentModel } from '../faidare-document.model';
-import { EXPORT_TYPES, ExportService, ExportType } from '../export.service';
-import { DownloadService } from '../../download.service';
-import { finalize } from 'rxjs';
-import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
-import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
-import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
+import { DownloadService } from '../../download.service';
+import { Page } from '../../models/page';
+import { SearchCriteria, SearchStateService, SortCriterion } from '../../search-state.service';
+import { EXPORT_TYPES, ExportService, ExportType } from '../export.service';
+import { FaidareDocumentModel } from '../faidare-document.model';
+import { SortableHeaderComponent } from './sortable-header/sortable-header.component';
 
 interface ViewModel {
   documents: Page<FaidareDocumentModel> | null;

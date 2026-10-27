@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,12 +7,7 @@ import {
   inject,
   Signal
 } from '@angular/core';
-import { map } from 'rxjs';
-import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
-import { AggregationCriterion } from '../../models/aggregation-criterion';
-import { DocumentModel } from '../../models/document.model';
-import { Page } from '../../models/page';
-import { NgTemplateOutlet } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   NgbNav,
   NgbNavContent,
@@ -19,10 +15,14 @@ import {
   NgbNavLink,
   NgbNavOutlet
 } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 import { TranslateDirective } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { DocumentComponent } from '../../../environments/document.default';
+import { AggregationCriterion } from '../../models/aggregation-criterion';
+import { DocumentModel } from '../../models/document.model';
+import { Page } from '../../models/page';
+import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
+import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 
 const ENTRY_AGGREGATION_KEY = 'entry';
 const GERMPLASM_BUCKET_KEY = 'Germplasm';

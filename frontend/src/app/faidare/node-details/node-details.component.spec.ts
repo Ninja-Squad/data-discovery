@@ -1,11 +1,11 @@
-import { NodeDetailsComponent } from './node-details.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { TypedNodeDetails } from '../ontology.model';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { provideI18nTesting } from '../../i18n/mock-18n';
 import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { TypedNodeDetails } from '../ontology.model';
+import { NodeDetailsComponent } from './node-details.component';
 
 @Component({
   template: '<dd-node-details [node]="node()" />',

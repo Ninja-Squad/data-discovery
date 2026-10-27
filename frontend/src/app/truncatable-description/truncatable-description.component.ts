@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal, computed } from '@angular/core';
-import { HighlightService } from '../highlight.service';
 import { TranslateDirective } from '@ngx-translate/core';
+import { HighlightService } from '../highlight.service';
 
 @Component({
   selector: 'dd-truncatable-description',

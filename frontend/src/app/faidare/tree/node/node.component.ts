@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, input, TemplateRef } from '@angular/core';
-import { InternalTreeNode, TreeService } from '../tree.service';
 import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, TemplateRef } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InternalTreeNode, TreeService } from '../tree.service';
 
 @Component({
   selector: 'dd-node',

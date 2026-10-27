@@ -7,6 +7,9 @@ import {
   OutputRef,
   TemplateRef
 } from '@angular/core';
+import { outputFromObservable, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
+import { NodeComponent } from './node/node.component';
 import {
   InternalTree,
   InternalTreeNode,
@@ -16,9 +19,6 @@ import {
   TreeNode,
   TreeService
 } from './tree.service';
-import { distinctUntilChanged, map, merge, Observable, skip, switchMap, tap } from 'rxjs';
-import { NodeComponent } from './node/node.component';
-import { outputFromObservable, toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 interface BaseAction {
   type: 'FILTER' | 'CHANGE_TEXT';

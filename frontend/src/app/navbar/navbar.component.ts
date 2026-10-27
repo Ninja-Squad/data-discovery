@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { RouterLink } from '@angular/router';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import {
   NgbCollapse,
   NgbDropdown,
   NgbDropdownMenu,
   NgbDropdownToggle
 } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { BasketComponent } from '../../environments/basket.default';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'dd-navbar',

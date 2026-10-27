@@ -1,11 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-
-import { OntologyNodeTypeComponent } from './ontology-node-type.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { OntologyNodeType } from '../../ontology.service';
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { provideI18nTesting } from '../../i18n/mock-18n';
+import { OntologyNodeType } from '../../ontology.service';
+import { OntologyNodeTypeComponent } from './ontology-node-type.component';
 
 @Component({
   template: '<dd-ontology-node-type [type]="type()" />',

@@ -1,4 +1,5 @@
 import { inject, Service } from '@angular/core';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import {
   BehaviorSubject,
   catchError,
@@ -19,10 +20,9 @@ import {
   tap
 } from 'rxjs';
 import { AggregationCriterion } from './models/aggregation-criterion';
-import { SearchService } from './search.service';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { Aggregation, Page } from './models/page';
 import { DocumentModel } from './models/document.model';
+import { Aggregation, Page } from './models/page';
+import { SearchService } from './search.service';
 
 export interface SortCriterion {
   sort: string;

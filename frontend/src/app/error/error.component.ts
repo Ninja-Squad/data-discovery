@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
-import { delay, filter, map, merge } from 'rxjs';
-import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
+import { delay, filter, map, merge } from 'rxjs';
+import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
 
 /**
  * Component which displays the errors emitted by the error-interceptor service, until the user navigates elsewhere

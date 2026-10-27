@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { Subject } from 'rxjs';
-import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ErrorComponent } from './error.component';
+import { page } from 'vitest/browser';
 import { ErrorInterceptorService, HttpError } from '../error-interceptor.service';
 import { provideI18nTesting } from '../i18n/mock-18n';
+import { ErrorComponent } from './error.component';
 
 class ErrorComponentTester {
   constructor() {

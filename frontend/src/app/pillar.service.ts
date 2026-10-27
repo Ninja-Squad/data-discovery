@@ -1,7 +1,6 @@
-import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { PillarModel } from './models/pillar.model';
 
 @Service()

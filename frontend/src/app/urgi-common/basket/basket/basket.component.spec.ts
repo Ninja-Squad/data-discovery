@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-
-import { BasketComponent } from './basket.component';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
-import { createMock, MockObject } from '../../../../test/mock';
-import { BasketItem, BasketService } from '../basket.service';
-import { LOCATION } from '../../../location.service';
-import { provideI18nTesting } from '../../../i18n/mock-18n';
-import { provideDisabledNgbAnimation } from '../../../disable-animations';
-import { BasketCreated, BasketSenderService } from '../basket-sender.service';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../../test/mock';
+import { provideDisabledNgbAnimation } from '../../../disable-animations';
+import { provideI18nTesting } from '../../../i18n/mock-18n';
+import { LOCATION } from '../../../location.service';
 import { provideDdSignalFormsConfig } from '../../../signal-forms';
+import { BasketCreated, BasketSenderService } from '../basket-sender.service';
+import { BasketItem, BasketService } from '../basket.service';
+import { BasketComponent } from './basket.component';
 
 class BasketComponentTester {
   readonly fixture = TestBed.createComponent(BasketComponent);

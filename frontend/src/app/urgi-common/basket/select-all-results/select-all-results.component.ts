@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
-import { BasketItem, BasketService } from '../basket.service';
 import { TranslateDirective } from '@ngx-translate/core';
-import { Page } from '../../../models/page';
 import { DocumentModel } from '../../../models/document.model';
+import { Page } from '../../../models/page';
 import { BasketAdapter } from '../basket-adapter.service';
+import { BasketItem, BasketService } from '../basket.service';
 
 interface ViewModel {
   items: Array<BasketItem>;

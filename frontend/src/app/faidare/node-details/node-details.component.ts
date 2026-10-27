@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { TypedNodeDetails } from '../ontology.model';
-
-import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
 import { TranslateDirective } from '@ngx-translate/core';
+import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { TypedNodeDetails } from '../ontology.model';
 
 @Component({
   selector: 'dd-node-details',

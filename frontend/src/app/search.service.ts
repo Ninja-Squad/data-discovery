@@ -1,5 +1,5 @@
-import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { inject, Service } from '@angular/core';
 import {
   catchError,
   debounceTime,
@@ -9,10 +9,9 @@ import {
   of,
   switchMap
 } from 'rxjs';
-
+import { AggregationCriterion } from './models/aggregation-criterion';
 import { DocumentModel } from './models/document.model';
 import { Aggregation, Page } from './models/page';
-import { AggregationCriterion } from './models/aggregation-criterion';
 import { SortCriterion } from './search-state.service';
 
 @Service()

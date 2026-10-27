@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { OntologyNodeType } from '../../ontology.service';
 import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
+import { OntologyNodeType } from '../../ontology.service';
 
 @Component({
   selector: 'dd-ontology-node-type',

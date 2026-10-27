@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-
-import { environment } from '../environments/environment';
+import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, map, of } from 'rxjs';
-import { RouterOutlet } from '@angular/router';
+import { environment } from '../environments/environment';
+import { FooterComponent } from '../environments/footer.default';
 import { ErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FooterComponent } from '../environments/footer.default';
 
 @Component({
   selector: 'dd-root',
