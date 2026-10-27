@@ -1,17 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-import { createMock, MockObject } from '../../../test/mock';
-
-import { GermplasmResultsComponent } from './germplasm-results.component';
-import { FaidareDocumentModel } from '../faidare-document.model';
-import { Page } from '../../models/page';
-import { ExportService } from '../export.service';
-import { DownloadService } from '../../download.service';
 import { ReplaySubject, Subject } from 'rxjs';
-import { Model, SearchStateService } from '../../search-state.service';
-import { DocumentModel } from '../../models/document.model';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { DownloadService } from '../../download.service';
 import { provideI18nTesting } from '../../i18n/mock-18n';
+import { DocumentModel } from '../../models/document.model';
+import { Page } from '../../models/page';
+import { Model, SearchStateService } from '../../search-state.service';
+import { ExportService } from '../export.service';
+import { FaidareDocumentModel } from '../faidare-document.model';
+import { GermplasmResultsComponent } from './germplasm-results.component';
 
 class GermplasmResultsComponentTester {
   readonly fixture = TestBed.createComponent(GermplasmResultsComponent);

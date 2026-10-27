@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { Aggregation } from '../../models/page';
 import { AggregationCriterion } from '../../models/aggregation-criterion';
+import { Aggregation } from '../../models/page';
 
 /**
  * This is a fake component that does nothing, because it's never displayed in applications, except on faidare which has an ontology

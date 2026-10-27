@@ -1,3 +1,4 @@
+import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,22 +9,20 @@ import {
   signal
 } from '@angular/core';
 import { disabled, form, FormField } from '@angular/forms/signals';
-import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import {
   NgbHighlight,
   NgbTooltip,
   NgbTypeahead,
   NgbTypeaheadSelectItemEvent
 } from '@ng-bootstrap/ng-bootstrap';
-import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
-
-import { Aggregation, Bucket } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';
 import { AggregationNamePipe } from '../aggregation-name.pipe';
 import { DescendantsCheckboxComponent } from '../descendants-checkbox/descendants-checkbox.component';
 import { DocumentCountComponent } from '../document-count/document-count.component';
-import { DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { NULL_VALUE, NULL_VALUE_TRANSLATION_KEY } from '../models/document.model';
+import { Aggregation, Bucket } from '../models/page';
 
 export type BucketOrRefine = Bucket | 'REFINE';
 

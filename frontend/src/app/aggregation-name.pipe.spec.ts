@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MissingTranslationHandler } from '@ngx-translate/core';
 import { beforeEach, describe, expect, test } from 'vitest';
-
 import { AggregationNamePipe } from './aggregation-name.pipe';
 import { provideI18nTesting } from './i18n/mock-18n';
 

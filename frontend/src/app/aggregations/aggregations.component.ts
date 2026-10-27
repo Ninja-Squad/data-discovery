@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
-
-import { Aggregation } from '../models/page';
-import { AggregationCriterion } from '../models/aggregation-criterion';
-import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
-import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
-
-import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
 import { OntologyAggregationComponent } from '../../environments/ontology-aggregation.default';
+import { LargeAggregationComponent } from '../large-aggregation/large-aggregation.component';
+import { LoadingSkeletonComponent } from '../loading-skeleton/loading-skeleton.component';
+import { AggregationCriterion } from '../models/aggregation-criterion';
+import { Aggregation } from '../models/page';
+import { SmallAggregationComponent } from '../small-aggregation/small-aggregation.component';
 
 @Component({
   selector: 'dd-aggregations',

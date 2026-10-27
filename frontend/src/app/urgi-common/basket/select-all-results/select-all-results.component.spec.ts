@@ -1,14 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-
-import { SelectAllResultsComponent } from './select-all-results.component';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-import { BasketItem, BasketService } from '../basket.service';
 import { ChangeDetectionStrategy, Component, Service, signal } from '@angular/core';
-import { toSecondPage, toSinglePage } from '../../../models/test-model-generators';
-import { DocumentModel } from '../../../models/document.model';
-import { BasketAdapter } from '../basket-adapter.service';
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { provideI18nTesting } from '../../../i18n/mock-18n';
+import { DocumentModel } from '../../../models/document.model';
+import { toSecondPage, toSinglePage } from '../../../models/test-model-generators';
+import { BasketAdapter } from '../basket-adapter.service';
+import { BasketItem, BasketService } from '../basket.service';
+import { SelectAllResultsComponent } from './select-all-results.component';
 
 @Component({
   selector: 'dd-select-all-results-tester',

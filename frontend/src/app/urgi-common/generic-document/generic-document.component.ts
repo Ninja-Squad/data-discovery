@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-
-import { GenericDocumentModel } from '../generic-document.model';
-import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
 import { AnalyticsService } from '../../analytics.service';
+import { TruncatableDescriptionComponent } from '../../truncatable-description/truncatable-description.component';
+import { GenericDocumentModel } from '../generic-document.model';
 
 @Component({
   selector: 'dd-document',

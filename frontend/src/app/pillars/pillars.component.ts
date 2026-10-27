@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-
-import { PillarService } from '../pillar.service';
-import { DocumentCountComponent } from '../document-count/document-count.component';
-import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateDirective } from '@ngx-translate/core';
+import { DocumentCountComponent } from '../document-count/document-count.component';
+import { PillarService } from '../pillar.service';
 
 @Component({
   selector: 'dd-pillars',

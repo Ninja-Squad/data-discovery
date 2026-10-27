@@ -1,7 +1,7 @@
+import { NgPlural, NgPluralCase, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateDirective } from '@ngx-translate/core';
-import { NgPlural, NgPluralCase, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'dd-document-count',

@@ -1,14 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-
-import { GenericDocumentComponent } from './generic-document.component';
-import { toWheatisDocument } from '../../models/test-model-generators';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { GenericDocumentModel } from '../generic-document.model';
-import { AnalyticsNavigation, AnalyticsService } from '../../analytics.service';
-import { createMock, MockObject } from '../../../test/mock';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { AnalyticsNavigation, AnalyticsService } from '../../analytics.service';
+import { toWheatisDocument } from '../../models/test-model-generators';
+import { GenericDocumentModel } from '../generic-document.model';
+import { GenericDocumentComponent } from './generic-document.component';
 
 @Component({
   template: `@if (document(); as document) {

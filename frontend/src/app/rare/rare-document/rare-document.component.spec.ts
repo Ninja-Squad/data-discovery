@@ -1,15 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
-
-import { RareDocumentComponent } from './rare-document.component';
-import { toRareDocument } from '../../models/test-model-generators';
-import { BasketService } from '../../urgi-common/basket/basket.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { RareDocumentModel } from '../rare-document.model';
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { toRareDocument } from '../../models/test-model-generators';
 import { BasketAdapter } from '../../urgi-common/basket/basket-adapter.service';
+import { BasketService } from '../../urgi-common/basket/basket.service';
 import { RareBasketAdapter } from '../rare-basket-adapter.service';
+import { RareDocumentModel } from '../rare-document.model';
+import { RareDocumentComponent } from './rare-document.component';
 
 @Component({
   template: '<dd-document [document]="document()" />',

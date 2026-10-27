@@ -9,22 +9,22 @@ import {
   ResourceSnapshot,
   signal
 } from '@angular/core';
-import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { debounce, form, FormField } from '@angular/forms/signals';
-import { TreeComponent } from '../tree/tree.component';
-import { NodeDetailsComponent } from '../node-details/node-details.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { map, Observable } from 'rxjs';
 import {
   ONTOLOGY_LANGUAGES,
   OntologyLanguage,
   OntologyPayload,
   OntologyService
 } from '../../ontology.service';
-import { map, Observable } from 'rxjs';
-import { NodeInformation, PayloadPredicate, TextAccessor, TreeNode } from '../tree/tree.service';
+import { NodeDetailsComponent } from '../node-details/node-details.component';
+import { OntologyNodeTypeComponent } from '../ontology-node-type/ontology-node-type.component';
 import { TypedNodeDetails } from '../ontology.model';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { TreeComponent } from '../tree/tree.component';
+import { NodeInformation, PayloadPredicate, TextAccessor, TreeNode } from '../tree/tree.service';
 
 interface TreeViewModel {
   filter: string;

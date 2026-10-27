@@ -1,10 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
-
-import { TruncatableDescriptionComponent } from './truncatable-description.component';
-import { provideI18nTesting } from '../i18n/mock-18n';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { TruncatableDescriptionComponent } from './truncatable-description.component';
 
 @Component({
   template: `<dd-truncatable-description [description]="description()" />`,

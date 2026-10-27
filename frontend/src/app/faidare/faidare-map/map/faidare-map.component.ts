@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   afterRenderEffect,
   ChangeDetectionStrategy,
@@ -7,11 +8,11 @@ import {
   input,
   ViewEncapsulation
 } from '@angular/core';
-import L from 'leaflet';
-import 'leaflet.markercluster';
-import { FaidareDocumentModel } from '../../faidare-document.model';
-import { DOCUMENT } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import L from 'leaflet';
+import { FaidareDocumentModel } from '../../faidare-document.model';
+// Keep this after Leaflet: the plugin reads the global L during initialization.
+import 'leaflet.markercluster';
 
 @Component({
   selector: 'dd-faidare-map',

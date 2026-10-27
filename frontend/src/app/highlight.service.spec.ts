@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-
 import { HighlightService } from './highlight.service';
 
 describe('HighlightService', () => {

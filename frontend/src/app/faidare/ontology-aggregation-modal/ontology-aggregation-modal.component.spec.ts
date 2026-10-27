@@ -1,9 +1,11 @@
-import { OntologyAggregationModalComponent } from './ontology-aggregation-modal.component';
-import { page } from 'vitest/browser';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { createMock, MockObject } from '../../../test/mock';
 import { TestBed } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { of, Subject } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { toAggregation } from '../../models/test-model-generators';
 import {
   OntologyDetails,
   OntologyPayload,
@@ -13,10 +15,8 @@ import {
   TreeI18n,
   VariableDetails
 } from '../../ontology.service';
-import { toAggregation } from '../../models/test-model-generators';
-import { of, Subject } from 'rxjs';
 import { TreeNode } from '../tree/tree.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
+import { OntologyAggregationModalComponent } from './ontology-aggregation-modal.component';
 
 class OntologyAggregationModalComponentTester {
   readonly fixture = TestBed.createComponent(OntologyAggregationModalComponent);

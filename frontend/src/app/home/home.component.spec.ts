@@ -1,16 +1,15 @@
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { page } from 'vitest/browser';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
-import { HomeComponent } from './home.component';
-import { SearchService } from '../search.service';
 import { of } from 'rxjs';
-import { Aggregation } from '../models/page';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
 import { environment } from '../../environments/environment';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideI18nTesting } from '../i18n/mock-18n';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Aggregation } from '../models/page';
+import { SearchService } from '../search.service';
+import { HomeComponent } from './home.component';
 
 class HomeComponentTester {
   readonly fixture = TestBed.createComponent(HomeComponent);

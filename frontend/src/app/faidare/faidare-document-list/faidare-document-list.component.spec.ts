@@ -1,23 +1,22 @@
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
+import { ReplaySubject } from 'rxjs';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
-
+import { provideDisabledNgbAnimation } from '../../disable-animations';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { DocumentModel } from '../../models/document.model';
+import { Aggregation } from '../../models/page';
+import { toSinglePage } from '../../models/test-model-generators';
+import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
+import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 import {
   FaidareDocumentListComponent,
   toAllTransition,
   toGermplasmTransition
 } from './faidare-document-list.component';
-import { Aggregation } from '../../models/page';
-import { ReplaySubject } from 'rxjs';
-import { Model, SearchCriteria, SearchStateService } from '../../search-state.service';
-import { toSinglePage } from '../../models/test-model-generators';
-import { DocumentModel } from '../../models/document.model';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { provideDisabledNgbAnimation } from '../../disable-animations';
-import { GermplasmResultsComponent } from '../germplasm-results/germplasm-results.component';
 
 class FaidareDocumentListComponentTester {
   constructor() {
