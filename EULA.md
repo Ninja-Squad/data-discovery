@@ -1,35 +1,56 @@
-# Commander du matériel biologique
+# Ordering Biological Materials
 
-À travers le portail RARe, vous avez la possibilité de passer commande de matériel biologique auprès des différentes collections présentes. Voici quelques informations importantes sur les conditions requises pour passer cette commande, ainsi que sur le déroulement du processus sur ce site.
+hrough this portal, you can place orders for biological materials from the various Biological Resource Centers (BRCs) whose collections are listed here. Here is some important information about the requirements for placing an order, as well as how the process works on this site.
 
-## Qui peut commander
+## Who Can Place an Order
 
-N’importe qui peut passer commande de matériel biologique auprès des collections du réseau. Cependant&nbsp;:
+Anyone can place an order for biological materials from the BRCs in the network. However:
 
-- Les commandes passées le sont toujours à titre d’expérimentation ou d’essai. En particulier, aucune commande à des fins commerciales ne pourra être honorée. Plus précisément, les quantités de matériel délivrées par les CRB correspondent à des échantillons de taille restreinte, prévus pour des essais ou de l’évaluation.
-- Des renseignements personnels vous seront demandés afin d’évaluer la recevabilité de votre demande. Ils peuvent varier selon les CRB, et selon que vous êtes ou non un professionnel.
+- Orders are always placed for experimental or testing purposes. In particular, no orders for commercial purposes will be honored. More specifically, the quantities of material provided by the BRCs consist of small samples intended for testing or evaluation.
+- You will be asked to provide personal information so that we can assess the eligibility of your request. This information may vary depending on the BRC and whether or not you are a professional.
 
-## Conditions
+## Terms and Conditions
 
-### Accord de Transfert de Matériel biologique
+### Biological Material Transfer Agreement
 
-D’une manière générale, passer commande de matériel biologique auprès d’une collection du réseau impliquera toujours la signature préalable d’un Accord de Transfert de Matériel biologique (ATM). Ce document officiel précisera entre autres les droits et devoirs dont vous disposerez pour l’utilisation de ce matériel biologique, dans le respect des réglementations internationales en vigueur sur les ressources génétiques. Ce document vous sera transmis directement par le CRB responsable de la collection dans laquelle vous souhaitez commander du matériel biologique.
+In general, placing an order for biological material from a collection in the network will always require the prior signing of a Biological Material Transfer Agreement (BMTA). This official document will specify, among other things, your rights and obligations regarding the use of this biological material, in accordance with current international regulations on genetic resources. This document will be sent to you directly by the CRB responsible for the collection from which you wish to order biological material.
 
-### Sélection du matériel biologique
+### Selection of Biological Material
 
-Sur le présent portail, vous pouvez effectuer votre sélection de matériel biologique dans certaines des différentes collections représentées. Vous discuterez ensuite directement avec les responsables des collections pour affiner votre demande. Cependant, il vous sera demandé de préciser l’utilisation que vous comptez faire des ressources biologiques commandées.
+On this portal, you can select biological material from several represented collections. You will then discuss your request directly with the collection managers to refine your request. However, you will be asked to specify how you intend to use the biological resources you have ordered.
 
-### Frais applicables
+### Applicable Fees
+As a general rule, orders for biological material are free of charge. However:
 
-En règle générale, les commandes de matériel biologique sont gratuites. Cependant&nbsp;:
+- This is not an absolute rule, and exceptions may apply depending on the collection; therefore, fees may apply.
+- Shipping and delivery fees for biological materials are often billed.
 
-- Ce n’est pas une règle absolue et des exceptions existent selon les collections et dès lors, des frais peuvent s'appliquer,
-- Il est fréquent que les frais d’expédition et de livraison du matériel biologique donnent lieu à facturation.
+### Ordering Period
+In some cases, orders for biological materials can only be placed during a specific time of year. Outside of this period, it is not possible to place orders with these collections.
 
-### Période de commande
+## Order Processing
+Once these conditions are met, an email will be sent to the BRC responsible for the collection from which you wish to order materials. You will receive another email summarizing your request. The decision to accept or reject the order is the sole responsibility of the BRC managing the collection in question. From this point on, order tracking will take place exclusively between the relevant BRC and you. The portal does not track the subsequent fulfillment of the order. The feasibility of the request will be assessed by each BRC and may be denied based on legal or phytosanitary criteria, or due to the unavailability of the material.
 
-Dans certains cas, les commandes de matériel biologique ne sont possibles que durant une période précise de l’année. Hors de cette période, il n’est pas possible de passer commande auprès de ces collections.
+## Personal Data
+To manage orders, the BRC needs to collect certain personal data (last name, first name, email address, mailing address, etc.) from applicants for biological resources. This processing of personal data is based on the legal basis of carrying out a mission in the public interest.
 
-## Prise en compte de la commande
+The recipients of this personal data are:
+- BRC members responsible for the relevant collections, who will handle the order
+- the BRC accounting department, responsible for invoicing if necessary
+- subcontractors responsible for delivering orders.
 
-Une fois ces conditions remplies, un e-mail sera expédié au CRB responsable de la collection dans laquelle vous souhaitez commander du matériel. Un autre courrier vous sera adressé pour récapituler votre demande. L'acceptation ou non de la commande relève de l'entière responsabilité du CRB gestionnaire de la collection en question. À partir de ce stade, le suivi de la commande se déroulera exclusivement entre le CRB concerné et vous-même. Le portail ne suit pas la réalisation ultérieure de la commande. La faisabilité de la demande sera étudiée par chaque CRB et pourra éventuellement être refusée en fonction de critères juridiques, phytosanitaires ou de disponibilité du matériel.
+This information will be stored, under the strictest security and confidentiality measures, for the entire duration of the biological resource’s use for research or commercialization and/or for the entire duration of the BRC or the collection’s existence.
+
+In accordance with the European General Data Protection Regulation and the French “Data Protection Act” of January 6, 1978, as amended in 2004, you have the right to access your personal data, correct it, object to its processing on grounds related to your particular situation, or have it deleted.  
+To exercise these rights or if you have any questions about the processing of your data, you may contact us:
+* by email: urgi-contact@inrae.fr
+* by mail: INRAE - URGI, RD 10 Route de Saint-Cyr, 78026 Versailles Cedex, France
+
+If you encounter any difficulties, you may also contact INRAE’s Data Protection Officer (DPO). Their contact information is as follows:
+* mailing address: 24, Chemin de Borde Rouge - Auzeville - CS 52627; 31326 Castanet Tolosan Cedex; France
+* phone: +33 1 (0)5 61 28 54 37
+* email: cil-dpo@inrae.fr
+
+If, after contacting us, you believe that your data protection rights have not been respected, you may file a complaint with the CNIL:
+* online: https://www.cnil.fr/
+* by mail: Commission nationale de l’informatique et des libertés, 3 Place de Fontenoy – TSA 80715 – 75334 PARIS CEDEX 07

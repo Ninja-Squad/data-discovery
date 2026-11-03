@@ -1,51 +1,61 @@
 # Conditions générales d'utilisation 
 
-En parcourant ce site web, vous reconnaissez et acceptez les présentes conditions générales.
+En naviguant sur ce site web, vous reconnaissez et acceptez les conditions générales d'utilisation décrites ci-dessous.
 
 ## Propriété intellectuelle
 
-Sauf exception mentionnée, le contenu de ce site est diffusé sous une licence [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/).
+Sauf exception mentionnée, le contenu de ce site est soumis à une licence [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/).
 
 Le logo est la propriété d'INRAE et vous n'êtes pas autorisé à le réutiliser pour quelque raison que ce soit.
 
 ## Contenu
 
-Le portail est maintenu par l'URGI, une unité INRAE, et son [Plan de Gestion de Données (DOI : 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI) a été défini dans le cadre de la [plateforme de bioinformatique des plantes (PlantBioinfoPF, DOI: 10.15454/1.5572414581735654E12)](https://doi.org/10.15454/1.5572414581735654E12) qui héberge le portail.
+Le portail est maintenu par l'[URGI](https://urgi.versailles.inrae.fr), une unité [INRAE](https://www.inrae.fr/). La description du cycle de vie des données qu'il contient figure dans le [Plan de gestion des données de l’URGI (DOI : 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI).
 
-L'accès à ce site web peut être interrompu à tout moment et sans notification préalable en cas de force majeure.
-En cas d'arrêt de service prévu, les utilisateurs seront prévenus au préalable par l'éditeur dans la mesure du possible.
+L'accès à ce site web peut être interrompu à tout moment et sans notification préalable en cas de force majeure. En cas  d’interruption de service planifiée, les utilisateurs seront informés à l’avance par l’éditeur.
 
-Le portail permet de trouver des données publiques à travers une fédération de bases de données.
-Les licences associées aux données sont de ce fait définies par les instituts en charge de celles-ci.
+Le portail permet de rechercher des données publiques à travers une fédération de bases de données. Les licences associées aux données sont de ce fait définies par les instituts en charge de celles-ci.  
+Le portail renvoie vers des sites web externes. INRAE décline toute responsabilité sur le contenu de ces sites web.  
+Les utilisateurs sont seuls responsables des recherches qu'ils effectuent, ainsi que de l'interprétation et de l'usage qu'ils font des résultats.
 
-Ce portail présente des hyperliens vers des sites web externes.
-INRAE décline toute responsabilité sur le contenu de ces sites web.
+Les utilisateurs sont informés que leur usage des résultats ne devrait pas enfreindre la législation en vigueur ni les recommandations de la Commission Nationale Informatique et Libertés (CNIL) en matière de données à caractère personnel.  
+Les utilisateurs sont avertis que les informations doivent être utilisées à des fins strictement professionnelles. Télécharger des impressions d'écran dans le but de constituer ou d'enrichir une base de données tierce est contraire à la Loi française, cela est donc interdit, tout comme leur utilisation à des fins commerciales ou publicitaires (CNIL).
 
-Les utilisateurs sont seuls responsables des recherches qu'ils font, de même que leur interprétation et de l'usage qu'ils font des résultats.
+## Données à caractère personnelles
 
-Les utilisateurs sont informés que leur usage des résultats ne devrait pas enfreindre la législation ou les recommandations de la Commission Nationale Informatique et Libertés (CNIL) dans le respect des données personnelles.
-Les utilisateurs sont avertis que les informations doivent être utilisées à un usage strictement professionnel et télécharger des impressions d'écran dans l'objectif de constituer ou enrichir une base de données tierce est contraire à la Loi française et est ainsi interdit, de même que tout usage commercial ou publicitaire (CNIL).
+Des données à caractère personnel sont collectées par l’URGI dans le cadre de l’exploitation du site web (mesure d’audience, gestion des incidents, autorisation d’accès au service). Le portail contient des données à caractère personnel et professionnel concernant les acteurs techniques et scientifiques associés aux données. Ces informations permettent d’identifier les auteurs de ces ensembles de données et de garantir la reconnaissance de leurs travaux scientifiques.  
+Les bases juridiques de ce traitement sont l’exécution d’une mission d’intérêt public confiée au responsable du traitement et, le cas échéant, l’intérêt légitime du responsable du traitement.
 
-Le portail peut rendre accessible des données personnelles et professionnelles concernant des acteurs scientifiques et techniques en lien avec les données.
-Ces informations participent à identifier et accorder aux auteurs la reconnaissance des travaux scientifiques associés.
+Les catégories de données à caractère personnel collectées sont les suivantes :
+* informations d’identité : nom, prénom, organisme de rattachement, (etc.) ;
+* coordonnées : coordonnées professionnelles ;
+* données relatives à la navigation et aux mesures d’audience : date, adresse IP, pages consultées.
 
-## Données personnelles
+Ces informations seront conservées, dans les meilleures conditions de sécurité et de confidentialité.  
+Durées de conservation :
+* Formulaire de contact : 5 ans à compter de la date de traitement de la demande
+* Mesure d’audience et informations de navigation : 13 mois maximum
+* Paternité des jeux de données : Pendant toute la durée d’existence du jeu de données
 
-Des données techniques (date, horodatage, adresses IP du terminal de l'utilisateur, les pages visitées) sont collectées uniquement à des fins d'analyse statistique de l'utilisation du portail web.
-Ces données demeurent confidentielles et ne sont pas transmises à des tierces parties.
-Elles sont stockées sur les serveurs privés d'INRAE pour une durée de 5 ans.
+Les destinataires des données sont les agents habilités en charge de la mise en oeuvre de l’offre de services. Les informations recueillies ne feront l’objet de communication extérieure que pour les seules nécessités liées à la gestion du site internet, et notamment les mesures d’audience, ou pour satisfaire aux obligations légales et réglementaires.    
+Aucune donnée ne sera transférée en dehors de l’Union européenne.
 
-Lors des visites sur le site de l'URGI et des applications que l'unité héberge, un _cookie_ peut être déposé automatiquement dans le navigateurs des visiteurs afin de remonter des statistiques sur les pages visitées et pour faciliter l'amélioration des services fournis par le site web.
+Conformément au Règlement européen relatif à la protection des données personnelles et à la loi "Informatique et Libertés" du 6 janvier 1978 modifiée en 2004, vous pouvez accéder aux données vous concernant, les rectifier, vous opposer sur motifs tenant à votre situation particulière ou les faire supprimer.  
+Pour exercer ces droits ou pour toute question sur le traitement de vos données, vous pouvez nous contacter :
+* par e-mail : urgi-contact@inrae.fr
+* par courrier : INRAE - URGI, RD 10 Route de Saint-Cyr, 78026 Versailles Cedex, France
+  
+Si vous rencontrez des difficultés, vous pouvez également contacter le délégué à la protection des données (DPD) de l'INRAE. Ses coordonnées sont les suivantes :
+* adresse postale : 24, Chemin de Borde Rouge - Auzeville - CS 52627 ; 31326 Castanet Tolosan Cedex ; France
+* téléphone : +33 1 (0)5 61 28 54 37
+* e-mail : cil-dpo@inrae.fr.
 
-Les visiteurs peuvent configurer leur navigateur web pour être informés du dépôt de _cookies_ et pour les refuser.
-
-En accord avec les réglementations européennes sur les données personnelles (Règlement (UE) 2016/679), vous avez un droit d'accès, de rectification, d'opposition et de suppression des données vous concernant.
-Si vous souhaitez exercer ce droit et obtenir les informations collectées à votre sujet, veuillez nous contacter :
-- par [email](mailto:urgi-contact@inrae.fr?subject=%5BData%20Discovery%5D%20GPDR%20request)
-- ou par n'importe quel autre moyen disponible sur notre [formulaire de contact](https://urgi.versailles.inrae.fr/Contact-us).
+Si, après nous avoir contactés, vous estimez que vos droits en matière de protection des données n’ont pas été respectés, vous pouvez déposer une réclamation auprès de la CNIL :
+* en ligne : https://www.cnil.fr/
+* par courrier : Commission nationale de l’informatique et des libertés, 3 Place de Fontenoy – TSA 80715 – 75334 PARIS CEDEX 07
 
 ## Modifications
 
-L'éditeur peut changer les conditions d'utilisation et les mentions légales sans notification préalable.
+L'éditeur se réserve le droit de modifier les conditions d'utilisation et les droits des utilisateurs sans préavis.
 
-Dernière modification : le 22 février 2021
+Dernière mise à jour : 16 octobre 2026

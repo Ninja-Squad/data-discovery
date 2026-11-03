@@ -10,42 +10,54 @@ The logo is the property of INRAE and you are not allowed to re-use it for your 
 
 ## Content
 
-The portal is maintained by URGI, an INRAE unit, and its [Data Management Plan (DOI: 10.15454/9HM5UI)](https://doi.org/10.15454/9HM5UI) has been defined in the frame of the [Plant Bioinformatics Facility (PlantBioinfoPF, DOI: 10.15454/1.5572414581735654E12)](https://doi.org/10.15454/1.5572414581735654E12) that hosts the portal.
+The portal is maintained by [URGI](https://urgi.versailles.inrae.fr), an [INRAE](https://www.inrae.fr/) unit.   
+Description of the data life cycle in FAIDARE is included in the [URGI Data Management Plan (DOI : 10.15454/9HM5UI )](https://doi.org/10.15454/9HM5UI).
 
-Access to this web site can be interrupted at any time and without prior warning in case of force majeure.
-In case of a planned service interruption, users will be notified in advance by the editor as far as possible.
+Access to this web site may be interrupted at any time and without prior notice in case of force majeure. In case of a planned service interruption, users will be notified in advance by the editor.
 
-The portal allows to find public data across a federation of databases.
-The licences associated to data are therefore defined by the institutes in charge of them.
-
-The portal links to external web sites.
-INRAE does not take responsibility of the content of these web site.
-
+The portal allows to find public data across a federation of databases. The licences associated to the data are therefore defined by the institutes in charge of them.  
+The portal links to external web sites. INRAE does not take responsibility of the content of these web site.  
 Users are sole responsible for the searches they carry out, as well as for the interpretation and for the use they make of the results.
 
-Users are informed that their use of the results should not infringe on current legislation or the recommendations of the French Data Protection Authority (CNIL) with respect to personal data.
-Users are warned that the information must be used for strictly professional purposes only and downloading screen shots in order to constitute or enrich a database is contrary to French law and therefore forbidden, as is its use for commercial or advertising purposes (CNIL).
-
-The portal may give access to personal and professional data concerning technical and scientific actors in relation with the data.
-This information helps to identify and acknowledge the authors of the scientific works.
-This personal information is attached to the produced datasets and follows the data life cycle.
+Users are informed that their use of the results should not infringe on current legislation or the recommendations of the French Data Protection Authority (CNIL) with respect to personal data.  
+Users are warned that the information must be used for strictly professional purposes only. Downloading screen shots in order to constitute or enrich a database is contrary to French law and therefore forbidden, as is its use for commercial or advertising purposes.
 
 ## Personal data
 
-Technical data (date, hour, IP address of the computer of the visitor, pages viewed) are collected only for the statistical analysis of the usage of the portal.
-These data are kept confidential and not transmitted to any other party.
-They are stored on INRAE’s private servers for 5 years.
+Personal data are collected by URGI for the operation of the website (audience measurement, incidents handling, authorization to access the service). The portal contains personal and professional data concerning technical and scientific actors associated to the data. This information helps to identify the authors of these datasets and ensure their recognition for their scientific work.  
+The legal bases for this processing are the performance of a public interest mission entrusted to the data controller and, where applicable, the data controller’s legitimate interest.  
 
-During visits on URGI web site and its hosted applications, a cookie can be automatically installed on visitor’s web browsers to retrieve statistics on the pages that are visited and support improvements of the services provided by the web site.
-Visitors can configure their web browsers in order to be informed of the setting of cookies and refuse them.
+The categories of personal data collected are:
+* identity information: last name, first name, affiliated organization, (etc.);
+* contact information: professional contact details;
+* data related to browsing and audience metrics: date, IP address, pages viewed.
 
-According to the European Regulation on the protection of personal data (EU Regulation 2016/679), you have the right to access, rectify, oppose and delete information about yourself.
-If you wish to exercise this right and obtain information about yourself, please contact us:
-- By [email](mailto:urgi-contact@inrae.fr?subject=%5BData%20Discovery%5D%20GPDR%20request)
-- Or via any other way available on our [contact form](https://urgi.versailles.inrae.fr/Contact-us)
+This information will be stored under the highest standards of security and confidentiality.  
+Retention periods:
+* Contact form: 5 years from the date the request is processed
+* Audience measurement and browsing information: Maximum 13 months
+* Dataset ownership: For the entire duration of the dataset’s existence
+
+The recipients of the data are authorized staff members who are responsible for operating the service offer. The information collected will only be disclosed externally when necessary for the management of the website, including audience measurement, or to comply with legal and regulatory obligations.
+No data is transferred outside the European Union.
+
+In accordance with the European General Data Protection Regulation and the French “Data Protection Act” of January 6, 1978, as amended in 2004, you have the right to access your personal data, correct it, object to its processing on grounds related to your particular situation, or have it deleted.  
+To exercise these rights or if you have any questions about the processing of your data, you may contact us:
+* by email: urgi-contact@inrae.fr
+* by mail: INRAE - URGI, RD 10 Route de Saint-Cyr, 78026 Versailles Cedex, France
+
+If you encounter any difficulties, you may also contact INRAE’s Data Protection Officer (DPO). Their contact information is as follows:
+* mailing address: 24, Chemin de Borde Rouge - Auzeville - CS 52627; 31326 Castanet Tolosan Cedex; France
+* phone: +33 1 (0)5 61 28 54 37
+* email: cil-dpo@inrae.fr
+
+If, after contacting us, you believe that your data protection rights have not been respected, you may file a complaint with the CNIL:
+* online: https://www.cnil.fr/
+* by mail: Commission nationale de l’informatique et des libertés, 3 Place de Fontenoy – TSA 80715 – 75334 PARIS CEDEX 07
 
 ## Modifications
 
-The editor might change the terms of use and user’s rights without prior warning.
+The editor reserves the right to change the terms of use and user’s rights without prior notice.
 
-Last update: 2021 February 22th
+
+Last update: 2026 October 16th
