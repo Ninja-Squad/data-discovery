@@ -65,10 +65,8 @@ export class FaidareOntologyComponent {
   private readonly ontologyService = inject(OntologyService);
   private readonly router = inject(Router);
   private readonly highlightedNodeId = inject(ActivatedRoute).snapshot.fragment ?? undefined;
-  private readonly highlightedNodePredicate: PayloadPredicate<OntologyPayload> | undefined = this
-    .highlightedNodeId
-    ? payload => payload.id === this.highlightedNodeId
-    : undefined;
+  private readonly highlightedNodePredicate: PayloadPredicate<OntologyPayload> | undefined =
+    this.highlightedNodeId ? payload => payload.id === this.highlightedNodeId : undefined;
 
   private readonly filterFormValue = signal({
     treeFilter: '',
